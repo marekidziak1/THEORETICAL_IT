@@ -4,19 +4,19 @@ DATAIKU - NAJWAŻNIEJSZE:
 	   Apart of the the type of dataset DSS automatical change the type of dataset for 
 	   one type
 	2* Ikony na górze:
-			*flow - the graphical flow of datasets
-			*datasets --> entering in to specific dataset --> side panel
-			*visual analasys (Lab)
-			*Dashboards -SLAJDY
+		*flow - the graphical flow of datasets
+		*datasets --> entering in to specific dataset --> side panel
+		*visual analasys (Lab)
+		*Dashboards -SLAJDY
 	3*DATASET:
 		*SETTINGS/SCHEMA:
 			*Storage type - how dataset backend should store the column data
-										how many bytes will be allocated to store these values
+							how many bytes will be allocated to store these values
 				*for CSV files all storage col types are strings
 				*when you import dataset from a connection (np SQL table) you shouldn't 
 				 change a datatype
 			*Meaning type - semantic data type
-					*there is an automative measureing the data type quality
+				*there is an automative measureing the data type quality
 		*EXPLORE / COLUMNS QUICK VIEW (ON THE RIGHT SIDE) 
 			*there are columns values statistics
 			*in other way to say: there is a knowledge of the distributions within columns
@@ -32,14 +32,14 @@ DATAIKU - NAJWAŻNIEJSZE:
 		*EXPLORE-> CHARTS:
 			*chose type of chart and drag and drop columns
 			*on the X or Y axis by left clicking you can change agregation function and
-			 limit of values
+ 			 limit of values
 			*by clicking on the chart on the specific category you can filter her values
 			*https://academy.dataiku.com/basics-101/497938 - you can do a lot other things 
 			 like comparing charts, short animations, 
 			*EXECUTION ENGINE --> you can change it and in sql for greater speed use 
 			 "In database"
 		*STATISTICS -> WORKSHEET  - tool to perform STATISTICAL ANALYSES to visual them
-		 https://academy.dataiku.com/path/core-designer/basics-102/497961
+		  https://academy.dataiku.com/path/core-designer/basics-102/497961
 			*UNIVARIATE - categorical and numerical HISTOGRAM
 			*FIT CURVES & DISTRIBUTIONS -> Fit distribution (choose numerical column and 
 			 choose your distribution ex.: Exponential)
@@ -48,9 +48,9 @@ DATAIKU - NAJWAŻNIEJSZE:
 		a* DATASETS - blue
 		b* RECIPES (connects datasets AND contains transformation steps/processing 
 			logic on them)- yellow, orange, red:
-					*yellow - visual recipes - data transformation operations
-					*orange - code rexipes - perform data processing task in Python, R, SQL
-					*red - plugin recipes - some prepered extra set of instructions (plugins)
+				*yellow - visual recipes - data transformation operations
+				*orange - code rexipes - perform data processing task in Python, R, SQL
+				*red - plugin recipes - some prepered extra set of instructions (plugins)
 			  *Recipe is a list of instructions (list of used processors on the left side)
 			  *Recipe is not execute immediately. You have to execute it by button RUN 
 			   (on the down side)
@@ -59,7 +59,7 @@ DATAIKU - NAJWAŻNIEJSZE:
 			   be created by this recipe will be showed in FLOW
 	  *PERFORM:
 		a* with CTRL + MOUSE you can select DATASETS and RECIPES and tagged them 
-					
+			
 	5*COMPUTATION STRATEGIES - you can choose a 
 		*computation on DSS server [in-memory (data in RAM, is for Python scripts in 
 		 RECPIES) OR streamed to DSS servers] 
@@ -70,12 +70,12 @@ DATAIKU - NAJWAŻNIEJSZE:
 		 Cubernetes cluster
 	
 	6* JOBS - is created when you buld a dataset, run a recipe, or train a model
-			*in jobs you can check a logs for potential errors
-			
+		*in jobs you can check a logs for potential errors
+		
 	7*Recipes:
 	  *VISUAL RECIPES(YELLOW):
 		*PREPARE recipe - data cleansing, normalization, enrichment. 
-		*on the left side: ADD NEW STEP 
+			*on the left side: ADD NEW STEP 
 				***90 processors (90 sql actions what you can do on your dataset such 
 				   as: split columns, fin &replace, concatenate columns etc.), In side 
 				   the one of thestep you can chose a columns which them concerns)
@@ -88,13 +88,13 @@ DATAIKU - NAJWAŻNIEJSZE:
 				*FORMULA processor - you can type excel formula (ex. create new columns
 					from those which already exist by for ex. multiplying them)
 					*** DSS has its own formula language for FORMULA PROCCESOR IN VISUAL
-							RECIPES: This language is great for perform calculations and 
-							manipulate strings. USE:
-									*mathematical functions: round(), sum(), max()
-									*comparision& logical operators: > < = && ||
-									*add test for missing values: isBlank(), isNull()
-									*string functions: contains(), length() startswith(),
-							https://doc.dataiku.com/dss/9.0/formula/index.html
+						RECIPES: This language is great for perform calculations and 
+						manipulate strings. USE:
+							*mathematical functions: round(), sum(), max()
+							*comparision& logical operators: > < = && ||
+							*add test for missing values: isBlank(), isNull()
+							*string functions: contains(), length() startswith(),
+						https://doc.dataiku.com/dss/9.0/formula/index.html
 				*PYTHON FUNCTION - you can type a python function for each row
 		*GROUP recipe - grouping components (by specific column) and use Agregation 
 		  functions for other components (other columns):
@@ -133,5 +133,9 @@ DATAIKU - NAJWAŻNIEJSZE:
 		*in the flow you always have to run recipes when you want to open charts in the
 		 specific dataset, in the lab
 		*Sampling & Engine:
-				*In Lab you don't have to use sample. You should working by whole data
-				 so change Sampling method for (No sampling (whole data))
+			*In Lab you don't have to use sample. You should working by whole data
+			 so change Sampling method for (No sampling (whole data))
+		
+		
+				
+	
