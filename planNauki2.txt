@@ -1,0 +1,57 @@
+PLAN NAUKI:
+*Główne założenie - perfekcyjnie nauczyć się podstaw bo potem nie będzię na nie czasu, 
+ będzie czas tylko na rozwijanie się w Django. 
+ 
+dokcer:
+2|12*Docker Tutorial for Beginer - youtube tutorial with mosh
+
+linux:
+1|10*bash tutorial
+1|14*windows cmd commands
+
+git:
+5|	*git intermediate freecode camp - https://www.youtube.com/watch?v=e2IbNHi4uCI&t=1s
+5|	*git advanced freecodecamp - https://www.youtube.com/watch?v=Uszj_k0DGsg&t=1s
+	
+sql:
+0|2 *powtórka i ćwiczenia sql KBD and RBD+SBD 
+	 pojscie do biblioteki i zobaczyć prace inżynierskie z baz danych
+1|4	*postgres basics -> youtube
+1|6	*postgres ->corey shafer
+1|	*tutorials point -> python postgres
+1|	*tutorials point ->python sqlite
+ 
+python:
+1|3 *Corey Shafer - INTERMEDIATE (13, 14, 18, 19, 29, 30, 32, 35, 36, 37, 38, 39, 45, 47, 48, 53, 54, 55, 49, 76, 90, 91, 122, 123, 124, 125)
+1|4+*text-Programmizz: Object & class ;; Adavaced Topics :: Date & Time
+1|5 *Python engineer --> intermediate python course, freecod camp 
+2|5+*12 projects
+1|7	*Free Code camp/dr chuck - python
+ 	*
+ 	*
+4|	*coding entrepreneurs OD 10 ODCINKA
+4|	*COREY SHAFER - PRE-ADVANCED- (12, 15, 16, 17, 20, 26, 27, 46, 51, 59, 60, 61, 62, 63, 92, 101, 102, 103, 107, 110, 111 126, 127, 139, 140, 141, 142, 143)
+
+	
+Django:
+2|8 *Corey Shaffer - DJANGO
+1|9	*Traversy media - Django Crash Course
+3|11*freecodecamp--> django web framework
+3|13*dr chuck--> django
+4|	*codingentrepreneurs --> django
+4|	*https://www.youtube.com/watch?v=Kg1Yvry_Ydk --> django projects (clever programming)
+
+Zrobione:
+1.Kanał o wszystkim - python
+2.W3 school - python
+3.Hackerrank - Python exercises
+4.Hackerrank - Regular expresions exercises
+5.Hackerrank - Sql, query exercises
+6.Kanal o wszystkim - html i css
+7.Kanal o wszystkim - javascipt basics
+8.Socratica - python intermediate
+9.Corey shaffer - basics + oop
+10.Django Tutorial for Beginer - tutorial with mosh
+11.kurs GIT - overment - https://www.youtube.com/watch?v=D6EI7EbEN4Q&list=PLjHmWifVUNMKIGHmaGPVqSD-L6i1Zw-MH
+12.GIT - Git and GitHub for Beginners - Crash Course - FREECODECAMP: https://www.youtube.com/watch?v=RGOj5yH7evk&t=48s
+13. 

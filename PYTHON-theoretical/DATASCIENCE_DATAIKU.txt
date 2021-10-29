@@ -1,0 +1,137 @@
+DATAIKU - NAJWAŻNIEJSZE:
+	0* Dataiku DSS allows you to interact with all kinds of datasets in the same manner.
+	1* DSS doesn't need to downloading all dataset. Only needs a sample of dataset. 
+	   Apart of the the type of dataset DSS automatical change the type of dataset for 
+	   one type
+	2* Ikony na górze:
+			*flow - the graphical flow of datasets
+			*datasets --> entering in to specific dataset --> side panel
+			*visual analasys (Lab)
+			*Dashboards -SLAJDY
+	3*DATASET:
+		*SETTINGS/SCHEMA:
+			*Storage type - how dataset backend should store the column data
+										how many bytes will be allocated to store these values
+				*for CSV files all storage col types are strings
+				*when you import dataset from a connection (np SQL table) you shouldn't 
+				 change a datatype
+			*Meaning type - semantic data type
+					*there is an automative measureing the data type quality
+		*EXPLORE / COLUMNS QUICK VIEW (ON THE RIGHT SIDE) 
+			*there are columns values statistics
+			*in other way to say: there is a knowledge of the distributions within columns
+		*EXPLORE/CONFIGURE SAMPLE:
+			*you can chose a sampling method 
+			*you can chose a number of records 
+		*EXPLORE-> COLUMN NAME:
+			*sort, filter data
+			*color column by value
+			*Analyze window:
+				*shows valid, invalid values and nulls
+				*shows numerical histogram of values
+		*EXPLORE-> CHARTS:
+			*chose type of chart and drag and drop columns
+			*on the X or Y axis by left clicking you can change agregation function and
+			 limit of values
+			*by clicking on the chart on the specific category you can filter her values
+			*https://academy.dataiku.com/basics-101/497938 - you can do a lot other things 
+			 like comparing charts, short animations, 
+			*EXECUTION ENGINE --> you can change it and in sql for greater speed use 
+			 "In database"
+		*STATISTICS -> WORKSHEET  - tool to perform STATISTICAL ANALYSES to visual them
+		 https://academy.dataiku.com/path/core-designer/basics-102/497961
+			*UNIVARIATE - categorical and numerical HISTOGRAM
+			*FIT CURVES & DISTRIBUTIONS -> Fit distribution (choose numerical column and 
+			 choose your distribution ex.: Exponential)
+	4*FLOW:
+	  *OPTIONS:
+		a* DATASETS - blue
+		b* RECIPES (connects datasets AND contains transformation steps/processing 
+			logic on them)- yellow, orange, red:
+					*yellow - visual recipes - data transformation operations
+					*orange - code rexipes - perform data processing task in Python, R, SQL
+					*red - plugin recipes - some prepered extra set of instructions (plugins)
+			  *Recipe is a list of instructions (list of used processors on the left side)
+			  *Recipe is not execute immediately. You have to execute it by button RUN 
+			   (on the down side)
+			  *Recipes is not changing original dataset. It creates a special copy
+			   where you can see what have been done. Every recipe and dataset which will 
+			   be created by this recipe will be showed in FLOW
+	  *PERFORM:
+		a* with CTRL + MOUSE you can select DATASETS and RECIPES and tagged them 
+					
+	5*COMPUTATION STRATEGIES - you can choose a 
+		*computation on DSS server [in-memory (data in RAM, is for Python scripts in 
+		 RECPIES) OR streamed to DSS servers] 
+		*computations push to in-database servers like SQL server
+		*computations push to the external servers like HADOOP engines(there are 
+		 transleted for Hive, Impala, Spark language)  
+		*computations in-memory or streamed using container execution like Docker/
+		 Cubernetes cluster
+	
+	6* JOBS - is created when you buld a dataset, run a recipe, or train a model
+			*in jobs you can check a logs for potential errors
+			
+	7*Recipes:
+	  *VISUAL RECIPES(YELLOW):
+		*PREPARE recipe - data cleansing, normalization, enrichment. 
+		*on the left side: ADD NEW STEP 
+				***90 processors (90 sql actions what you can do on your dataset such 
+				   as: split columns, fin &replace, concatenate columns etc.), In side 
+				   the one of thestep you can chose a columns which them concerns)
+			*in the dataset on COLUMNNAME CONTEXT MENU (between 'Edit column details'
+			 and 'More action' DSS give you a recomendation wchich SQL action you can
+			 choose. DSS will SUGGEST you an option (a processor)
+			*in the dataset on COLUMNNAME CONTEXT MENU -> 'ANALYZE...' window you can 
+			 also add some special steps such as MERGING specific values or REMOVE them
+			*Some special processors in Prepare Recipe:
+				*FORMULA processor - you can type excel formula (ex. create new columns
+					from those which already exist by for ex. multiplying them)
+					*** DSS has its own formula language for FORMULA PROCCESOR IN VISUAL
+							RECIPES: This language is great for perform calculations and 
+							manipulate strings. USE:
+									*mathematical functions: round(), sum(), max()
+									*comparision& logical operators: > < = && ||
+									*add test for missing values: isBlank(), isNull()
+									*string functions: contains(), length() startswith(),
+							https://doc.dataiku.com/dss/9.0/formula/index.html
+				*PYTHON FUNCTION - you can type a python function for each row
+		*GROUP recipe - grouping components (by specific column) and use Agregation 
+		  functions for other components (other columns):
+			*GROUP OPTIONS:
+				*choose key (a specific column against which you will be grouping)
+				*choose per field agregation (choose a specific columns on which you 
+				 use agregation functions and choose agregation function)
+			*CUSTOM AGREGATION:
+				*place where you can type SQL instruction with agregation function
+		*JOIN recipe - enrich one dataset with column from another 
+			*DSS mathes values using a key column that is common to both data sets. You
+			 can always change the key value
+			*only two datasets can be added in the Join recipe creation dialog, more 
+			 datasets can be added at the Join step after creating the recipe. On the
+			 right side (+ADD INPUT) 
+			*LEFT JOIN - it keeps all values from basic dataset and enrich it by values 
+			 from the second dataset (it means that if in the second dataset there is
+			 no value wchich we can compare with key value from basic dataset the 
+			 value from that basic dataset still remains). you can always change the
+			 type of join.
+			*In the 'Selected columns' you can select the columns you want need
+			*RUN + AT THE BOTTOM 'Explore dataset ... '
+			 
+	8*THE EXPERIMENTAL LAB - it has modelling (Recipes items don't)
+		*Lab has option for visualising and for coding
+		*ADVANTEGES
+			**lab is for experimantation
+			**lab like flow has its own recipes (visual and code)
+			**helps avoid overcrowding the flow by unnecessary items wchich should not
+			  be in production
+		*Lab has special function 'create predicition model' when you drag on the name 
+		 of the column. Beside it has option 'Models' on top
+		*work in the lab is seperate from the flow but it can be deployed to the flow 
+		 you can do it by 'deploy script' button. Still Dataset is not created by 
+		 deploying it. you have to do by clicking 'BUILD' label (on the RIGHT PANEL)
+		*in the flow you always have to run recipes when you want to open charts in the
+		 specific dataset, in the lab
+		*Sampling & Engine:
+				*In Lab you don't have to use sample. You should working by whole data
+				 so change Sampling method for (No sampling (whole data))

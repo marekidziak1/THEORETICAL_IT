@@ -1,0 +1,242 @@
+
+	
+
+3. MODUŁY i FOLDERY w APLIKACJACH/pojedyńczych_funkcjonalnościach:
+	*module VIEWS.PY:
+		*funkcje w views.py sa 'request handlerami' i przyjmują 'request' a zwracają 'response'
+		*w inncyh frameworkach module view.py miałby imię action 
+		*wewnątrz tych funkcji we view.py mógłbyś:
+			*wysyłać dane z bazy danych do innej bazy danych 
+			*przetwarzać dane i je modyfikować
+			*wysyłać maile, itp.
+		*zwrócenie obiektu typu response: 
+			*przy pomocy funkcji HttpResponse z modułu django.http (zwraca podany tekst 
+			 w obiekcie HttpResponse:
+					from django.http import HttpResponse
+					def say_hello(request):
+						return HttpResponse('Hello World')
+			*przy pomocy rendera z django.shortcuts który jako argumenty przyjmuję requesta 
+			 (pierwszy argument funkcji we views.py) oraz nazwę pliku html znajdującego się w 
+			 katalogu templates oraz jakikolwiek mapping object np.: dictionary którego 
+			 później będziesz używał w dokumencie html'a:
+					from django.shortcuts import render
+					def say_hello(request):
+						return render(request, 'helloHTML.html',{'name':'Mosh'})
+	*module URLS.PY
+		*ten moduł nie powstanie automatycznie w naszych modułach w aplikacji i trzeba go 
+		 stworzyć samemu
+		*musisz zaimportować module django.urls oraz module views(ten powyżej) 
+		*musisz stworzyć URLconf tworząc listę 'urlpatterns' (koniecznie tak nazwaną bo 
+		 django będzie tego szukał) i wpisać w nią obiekty typu 'URLpattern' za pomocą 
+		 funkcji path(), którą zaimportowałeś z django.urls:
+					from django.urls import path
+					from . import views		#kropka oznacza: 'z folderu rodzica' 
+											#(czyli tego samego w którym się znajduję) 
+					#URLConf:				#każda aplikacja/pojedyńcza funkcjonalność 
+					urlpatterns = [			#ma swoje URLConf (URL configuration)
+						path('hello/', views.says_hello)
+					]					#path() zwraca obiekt typu URLpattern
+										#przyjmuję w argumencie ścieżkę względną pod którą 
+										#będzie wyświetlać się funkcja podana w 2gim 
+										#argumencie. Ścieżka ta nie ma zawierać nazwy folderu/
+										#aplikacji gdyż ten podamy w urlpatterns w urls.py
+										#w głównym katalogu projektu.
+		*następnie musisz zaimportować cały ten moduł do głównego URLConf (URL configuration
+		 który znajduję się w głównym folderze projektu w module URLS.PY. 
+			*Wenwnątrz tego moduły urls.py z głównego katalogu projektu musisz zaimportować
+			 metody include i path z django.urls 
+			*dodać do tamtejszej listy urlpatterns obiekt URLpattern poprzez funkcje path 
+			 z 1wszym argumentem w postaci ścieżki/nazwy_folderu_projektu oraz drugim
+			 w postaci funkcji include z argumentem który będzie ścieżką do pliku urls.py 
+			 w katalogu naszej funkcjonalnośći(aplikacji) nazwanym tak jakby to była funkcja 
+			 w module: 'nazwa_katalogu.urls':
+					from django.urls import include, path
+					urlpatterns =[
+						... ,
+						path('playground/', include('playground.urls'))
+					]
+	*katalog TEMPLATES (musi być tak nazwany)
+		*w inncyh frameworkach byłoby to nazwane views ale w Django odpowiada to za coś innego
+		*znajdują się tam m.in dokumenty html które możesz przekazywać poprzez metodę render 
+		 w module views.py 
+		*pliki html możesz edytować wpisując w nie:
+			*w podwójne nawiasy wąsowe możesz wpisywać klucze ze słownika z metody render
+				<h1>Hello {{name}}</h1>
+			*w nawisy wąsowe ze znakiem procenta możesz wpisywać IF statement wg takiej składni:
+				{% if name %}
+				<h1>Hello {{name}}</h1>
+				{% else %}
+				<h1>Hello World</h1>
+				{% endif %}
+		
+2.2. DEBUGOWANIE CAŁEGO PROJEKTU:
+  *UTWORZENIE PLIKU potrzebnego DO DEBUGOWANIA
+	*znajdując się wewnątrz jakiegokolwiek pliku z rozszerzeniem .py przechodzisz w panelu
+	 bocznym na ikonę "play z żuczkiem" i klikasz na napis: "create a launch.json file" i
+	 z dostępnych opcji wybierasz opcje z DJANGO.
+	*Tworzy ci się on plik launch.json w folderze .vscode. Ten plik służy tylko do debugowania 
+	 więc jeżeli np zmienisz port w "args" dodając do listy w cudzysłowiu nowy nr portu to 
+	 podczas odpalania  projektu poprzez wpisywanie ręcznie komend w terminalu, nie będzie to
+	 miało znaczenia tylko podczas jego debugowania (chyba że odpalisz projekt przez CTRL + F5
+	 (czyli Run without debugging) 
+	*launch.json - składa się z par kluczy i wartości dających "launch profile"
+  *DEBUGOWANIE:	
+	*żeby rozpocząć debugowanie to (już po zaznaczeniu breakpoint'ów), przechodzisz na ikonę 
+	 "play z żuczkiem" i u góry wciskasz play. Uruchomi się Tobie projekt w taki sam sosób 
+	 jakbyś uruchamiał go w terminalu (pipenv shell ;; python manage.py runserver) tylko w 
+	 miejscach breakpointów się zatrzyma (otworzy ci się nowy teminal) 
+	*KOLEJNE FUNKCJE wyświetlone w panelu:
+		*STEP OVER f10- przejdź przez kolejną linijkę
+			*panel boczny - wraz z przechodzeniem przez kolejne linijki panel będzie (inspect)
+			 sprawdzał wartości w tych linijkach 
+		*STEP INTO f11 - jeżeli natrafisz w linijce na funkcje to możesz wejśc wewnątrz jej 
+		 ciała i zobaczyć czy tam nie ma jakiegoś buga
+		*STEP OUT SHIFT +f11 - następnie możesz wyjśc z takiej funkcji 
+		*RESTART - załączasz debugowanie od nowa
+		*STOP - kończysz debugowanie
+	*żeby włączyć projekt bez debugowania to robisz:
+			CTRL + f5 (RUN --> Run without debugging)
+  *DEBUGOWANIE poprzez DJANGO-DEBUG-TOOLBAR:
+   https://django-debug-toolbar.readthedocs.io/en/latest/installation.html
+    *ZALETY: 
+		*mając odpowiednio przygotowany plik html (czyli conajmniej zawierający tagi html 
+		 oraz body) mozesz w przeglądarce po wcześniejszym odpaleniu pliku (CTRL + f5 / F5)
+		 korzystać z panelu do debugowaniu gdzie masz wszystkie potrzebne opcje i informacje.
+	*INSTALACJA:	
+		*instalacja w wirtualce:
+				pipenv install django-debug-toolbar
+		*dodanie do settings.py w głównym katalogu projektu do sekcji INSTALLED_APPS:
+				... ,
+				'debug_toolbar 
+		*dodanie do urls.py w głównym katalogu projektu do urlpatterns (+ dodanie biliotek):
+				import debug_toolbar
+				from django.conf import settings
+				from django.urls import include, path
+				urlpatterns = [
+					...
+					path('__debug__/', include(debug_toolbar.urls)),
+				]
+		*dodanie do settings.py w głównym katalogu projektu do sekcji MIDDLEWARE:
+				... ,
+				'debug_toolbar.middleware.DebugToolbarMiddleware',
+		*dodanie do settings.py w głównym katalogu projektu całej sekcji INTERNAL_IPS wraz
+		 ze swoim ip:
+				INTERNAL_IPS = [
+					# ...
+					'127.0.0.1',
+					# ...
+				]
+	
+2.1. KOMENDY które warto opisać do 'django-admin' a raczej do 'python manage.py' który jest 
+  wrapperem do django-admin (specjalnie używamy python manage.py _____ zamiast 
+  django-admin _______ gdyz ta pierwsza komenda bierze pod uwage plik settings.py):
+		*runserver - URUCHOMIENIE SERWERA gdzie domyślnym portem jest 8000 ale można podać 
+			swój port jak kolejny argument - w tym przypadku jest to 8000.
+						python manage.py runserver    ||   python manage.py runserver 9000  
+				*Po tej komendzie pokażę się adres strony który będzie działał na lokalnym 
+				 serwerze i będzie odzwierciedleniem tego co zrobiłeś. Wklej go do przeglądarki.
+				*jeżeli pojawi się Tobie błąd invalid syntax to oznacza to że nie została 
+				 aktywowana wirtualka (pipenv shell) 
+				*żeby zakończyć wciśnij CTRL + C
+		*startapp - tworzy nową pojedyńczą funkcjonalność zwaną aplikacją. 
+						python manage.py startapp nameapp
+				
+				
+1. INSTALACJA, URUCHOMIENIE oraz STRUKTURA PROJEKTU:
+	1) Stworzenie WIRTUALKI i pobranie django:
+		*najważniejsze jest to że zanim stworzysz irtualkę to najpierw zadabaj o to żeby być 
+		 WEWNĄTRZ głównego katalogu proejtku a nie folder wyżej:
+			pip3 install pipenv 	#jeżeli nie masz pipenv'a zainstalowanego globalnie u siebie
+									#jest to wirtualka żeby nie instalować wszystkich modułów w 
+									#jednym miejscu będąc w folderze projektu:
+			pipenv install django	#kopiujesz link do virtualenv loacation i przechodzisz do 
+									#miejsca gdzie zosała zapisan wirtualka a w niej 
+									#zainstalowane Django
+	
+	2) START PROJEKTu w terminalu: 
+			*musisz aktywować wirtualkę tak żeby interpreter pythona mógł działać dlatego 
+			 będąc w folderze projektu wpisujesz komendę:
+						pipenv shell 
+			*żeby wyświetlić wszystkie funkcje którymi można się posługiwać w Django użyj:
+						django-admin
+			*następnie rozpocznij start nowego projektu:
+						django-admin startproject nameproject .	
+									#dodaj kropkę na samym końcu żeby projekt został stworzony w 
+									#aktualnym folderze zmiast tworzyć dodatkowy pośredni folder
+	
+	3)URUCHOMIENIE PROJEKTU W TERMINALU:
+				pipenv shell
+				python manage.py runserver
+				
+	4) STRUKTURA Twojego PROJEKTU (powstała ona poprzez komende 
+	   django-admin startproject nameproject) a wewnątrz jej znajdują się pliki:
+		A* folder nameproject:
+			*__init__.py - odpowiada za definiowanie ścieżki jako modułu. 
+			*settings.py - odpowiada z austawienia naszej aplikacji - składa się z sekcji:
+				**INSTALLED_APPS składa sie z:
+						*wbudowanych aplikacji w Django zaczynających się od django.contrib:
+							*.admin - admin interface to manage data,
+							*.auth - authenticating app to authentication users
+							*.contetypes
+							*.session - (no longer use this)
+							*.messages - display user a one-time notifications
+							*.staticfiles - for serving files (images, css files, itp)
+						*z wpisanych przez nas nazwy aplikacji po wcześniejszym jej utworzeniu
+						 (python manage.py startsapp nameapp), (nazwę wpisujesz w cudzysłowiu)
+			*urls.py - tutaj definiujemy linki url naszej aplikacji
+			*asgi.py oraz wsgi.py - odpowiadają za deployment
+		B* manage.py - to jest wrapper naszej komendy django-admin, który powinniśmy uruchamiać z
+			komendami dajngo-admin zamiast djagno-admin z komendami. Wszystko dlatego że 
+			manage.py bierzez pod uwagę również plik settings.py a komenda django-admin już nie.
+					*zamiast używać: django-admin runserver 	
+							#spowoduję Tobie to błąd django.core.excpetionsImproperlyConfigured
+					*dlatego użyj: 
+							  python manage.py runserver  
+		C* FOLDERY Z POJEDYŃCZYMI APLIKACJAMI:
+			*(pojedyńczą funkcjonalnością a nie całym projektem)
+			*pojedyńczy folder/APLIKACJA tworzy się w terminalu poprzez: 	  
+							python manage.py startapp nameApp
+			 i następnie trzeba go zarejestrować w
+							folderZprojektem --> settings.py --> INSTALLED_APPS
+			 *STRUKTURA APLIKACJI/pojedyńczego folderu:	
+						*folder migrations - do generowania baz danych 
+						*admin module - wygląd admin interface dla tej aplikacji 
+						*app module - miejsce do konfigurowania aplikacji 
+						*models module - miejsce do definiowania modeli klas - służy do 
+							przechowywania i pobierania danych; służy do wyciągania danych z 
+							bazy danych i przedstawiania ich użytkownikowi.
+						*tests module - miejsce do unittestów do aplikacji 
+						*views module - request handler, używa się przy wymianie danych między 
+							użytkownikiem (który wysyła rządanie (request)) a serwerem który 
+							odsyła odpowiedź (response).
+	*) Aktywując wirtualkę (pipenv shell) automatycznie zostanie wybrany interpreter pythona
+	   z wirtualki ale możesz to zrboić ręcznie Visual Studio wybierz View --> Command Palette 
+	   i tam wklej ścieżkę do wirtualki (będąc wcześniej w terminalu w ścieżce projektu +
+	   pipenv --venv) i dodać do tej ścieżki '\bin\python'.
+	   
+0. PODSTAWY:
+	*Backend in Webdevelopment - "how you're going to respond to clients":
+		*by generating requested page using HTML on the server and respond client by sending it 
+		*by returning only the data needed on the requested page ---> Server is the gateway to 
+		 the data ---> Server provides an API to the clients
+	*Frameworki:
+		*SERVER-SIDE FRAMEWORK:
+			*Django
+			*Node.js / Express
+		*CLIENT-SIDE FRAMWORKS:
+			*React
+			*Angular
+			*Vue
+	*DJANGO:	
+		*Advanteges:
+				*LESS TIME & LESS CODE with huge community
+				*it's slower but can take more data
+				*youtube, instagram, spotify, dropbox
+		*Django is a collection of various apps each providing certain functionality - some 
+		 examples of created builtin features:
+				*admin site
+				*Object-relational-mapper
+				*authentication
+				*caching
+		
+	

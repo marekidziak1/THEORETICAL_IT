@@ -1,0 +1,812 @@
+HTML:
+	1.PODSTAWY:
+		*plik główny w projekcie nazwa się index.html => domyślnie serwer wyszukuję go jako główną stronkę
+		*HTML oznacza HYPER TEXT MARKUP LANGUAGE - język znaczników/TAGÓW
+		*html opiera się na znacznikach które zagnieżdżasz wewnątrz siebie
+		*komentarze w htmlu: <!-- ... -->
+		*do kolorowania składni używasz programu BRACKETS
+		
+	2. ZNACZNIKI/TAGI POCZĄTKOWE:
+						<!DOCKTYPE HTML>						--> zawsze zaczynasz od niego	
+						<html lang="pl">						--> wskazywane 
+							<head>				 				--> nagłówek strony
+		*podstawowe:			<meta charset="UTF8" />			--> określasz kodowanie strony
+								<title>...</title>				--> określasz tytuł dla strony 
+		*metadane:				<meta name='description' content='myDescription'/>
+																-->opis wykorzystywane w SEO
+								<meta name='keywords' content='myKeyword1, myKeyword2'/>
+																--> slowa kluczowe wykorzystywane w SEO
+								<meta name='author' content='nameAuthor'/>
+																--> slowa kluczowe wykorzystywane w SEO
+		*podlinkowany CSS		<link rel='stylesheet' type='text/css' href='style.css'/>
+						 //LUB:	<style>...	</style>			--> to i powyżęj odwołąnie się do CSSa
+								<link rel='icon' href="images/favicon.ico"/>
+																-->podlinkowana ikona do paska na stronie
+							</head>	
+							<body>...</body> 					--> ciało funkcji 
+						</html>	
+
+	3. SCHEMATY BUDOWY WEWNĄTRZ BODY (przydają się w pozycjnowaniu strony(SEO)):
+		A) ZNACZNIKI HTML 5 
+		  *(głównie mają wartość semantyczną dla SEO), również używasz divów w HTML5
+			<body>
+				<header></header>
+				<nav></nav>										#menu główne
+				<main>
+					<article>									#znacznik dla artykułów
+						<section></section>						#znacznik sekcji
+						<section></section>
+					</article>
+					<aside>										#menu boczne
+					</aside>
+				</main>
+				<footer></footer>
+			</body>
+		B) DIV'y (używane jeszcze przed HTML5).To bloki które możesz w odpowiedni sposób układać na stronie.
+			<body>
+				<div id=container>
+					<div id="header"> ... </div>
+					<div id="navbar"> ... </div>
+					<div id="main">
+						<div id="content"> ... </div>
+					</div>
+					<div id="footer"> ... </div>
+				</div>
+			</body>
+		C) TABELE i związane z nimi TAGI (już używane tylko do pomniejszych rzeczy ze względu na responsywność)
+			<table>											
+				<caption> ... </caption>					****<caption> - NAGŁÓWEK TABELI
+				<thead> 									****<thead> - GŁOWA TABELI 
+					<tr>									  **<tr> - rząd w tabeli (table row), ktory 
+															    musi być gdyż to <Tr> dzieli tabele 
+						<th>1wsza kolumna</th>				  **<th> - kolumna w tabeli (table header)												   
+						<th>2ga kolumna</th>
+						<th>3cia kolumna</th>				  **w <thead> robisz tylko jeden rząd <tr> 
+					</tr>									    gdzie wypisujesz kolumny a w <tbody> robisz
+				</thead>									    wszystkie pozstałe rzędy gdzie będzie tresc
+				<tbody> 				 					****<tbody> - CIAŁO TABELI 
+					<tr>	
+						<td id="navbar"> tekst				  **<td> jest alternatywą dla <th>, jednakże  
+						</td>									nie jest do kolumn ale do określania pól
+						<td id='text'>tekst2					za pomocą id. Tagów <td> powinno być zawsze
+						</td>									tyle samo co tagów <th> w sekcji <thead>
+					</tr>		
+				</tbody>
+				<tfoot> 									****<tfoot> - STOPKA TABELI, (warto korzystać z
+																tagów thead, tbody, tfoot w tabelach bo one 
+				</tfoot>										ustawiają się automatycznie w odpowiedniej 
+			<table>												kolejności)
+															  **MUSISZ MIEĆ TAKĄ KONSTRUKCJĘ gdzie tagi tr i
+															    td są wykorzystywane bo inaczej przeżuci ci 
+																wszystkot na górę	
+
+	4. ZNACZNIKI/TAGI WEWNĄTRZ BODY (przydają się przy pozycjonowaniu strony)
+		a)TAGI PODSTAWOWE:
+			*<h1></h1> (<h1;h2;h3;h4;h5;h6>) - nagłówki strony, h1 jest najważniejszy i pojedyńczy. 
+			*<p></p> (od słowa paragraph) - jest blokiem który przerzuca tekst do nowej linii i 
+				dorzuca pewien odstęp do natępnej linii.
+			*<span></span> (od słowa spanning (łączyć)) - nie jest blokiem i nie przerzuca tekstu 
+				do nowej liniii nie tworzy rzadnego odstępu.
+			*<a href='adresWWWW' target='_blank' >...</a> - służy do linkowania tekstu danym linkiem. Tagiem
+				'a' okalasz dany tekst lub zdjęcie.
+					* href - tu wpisujesz adres zewnętrzny www lub adres względny na inną podstronę
+					* target='_blank' - otwiera link z hrefa w nowej karcie 
+							<a href='www.google.pl' target='_blank'><a/>
+							<a href='test.html' target='_blank'><a/>
+			*<img src="images/obraz1.jpg" alt="alternativeText" /> - służy do podlinkowania zdjęć; 
+				w SRC podajesz link względny do zdjęć a w ALT podajesz alternatywny tekst gdyby zdjecie 
+				się nie wyświetliło.
+			*<button><button> - tworzy ci guzik. W JAVASCRIPT'cie trzeba później obsłużyć taki button
+				poprzez eventListener'a (button.addEventListener("click", funkcja);
+			*<input /> -pozwala stworzyć pusty tekst w którym możesz wpisywać jakiś tekst.
+		b)TAGI do list:
+			*<ol></ol> (order list)   - służy do wyróznienia listy i jej elementy wewnątrz są numerowane
+									  - głównie zagnieżdża się w niej tagi <li></li>
+			*<ul></ul> (unorded list) - służy do wyróżnienia listy ale nie jest ona numerowana. 
+									  - głównie zagnieżdża się w niej tagi <li></li>
+									  - de facto działa tak samo jak ORDER LIST bo NUMEROWANIE zrobisz w CSS
+			*<li></li> (list item) - jes to lista numerowana (albo kropkami albo literami albo cyframi)
+						<ul>
+					*		<li>RAZ</li>			
+					*		<li>RAZ					-->można zagnieżdżeździć to w <li> i dodać jeszcze tekst
+								<ul>
+									<li>RAZ</li>
+									<li>DWA</li>
+								</ul>
+							</li>
+					*		<ol>					-->można zagnieździć bez <li> ALE wtedy wygląda jakby 
+								<li>RAZ</li>   		   było to zagnieżdżone w <li> chociaż wcale nie jest
+							</ol>					   dlatego raczej zagnieżdża się w <li>
+						</ul>
+													#zwróci: 	1.RAZ
+																	*  RAZ
+																	*  DWA
+																	1. RAZ
+		c)TAGI do FORMULARZY:
+			*<form></form> - służy do określenia początku i końca formularza. Ma takie cechy jak:
+				**action="..." - cecha określająca co ma się stać po wysłaniu formularza (dla backendu)
+				**method="get" - jawna metoda wysyłania danych 
+				  method="post" - niejawna metoda wysyłania danych
+			*<p>...<input /><p> | <p><input />...<p> 
+						- inputa nie musisz wpisywac wewnątrz formularza. Możesz też zrobić to poza niim - 
+						  szczególnie jeżeli kod wykonuję sie po stronie klienta a nie po stronie serwera
+						- caly input okalasz w tagu <p> żeby pola formularza były pod sobą a nie obok siebie
+						- input pozwala na sprecyzowanie typu pól formularza. Ma cechy jak:
+				**type - pozwala wybrać typ pola w formularzu GDYŻ oprócz pola na tekst są też inne:
+					*type="text" - białe puste pole do wpisywania tekstu;
+									<p>TEXT: <input type="text" name="poleText" 
+										value="Jan Kowalski" size="50" maxlength="10"/></p>
+					*type="email" - białe puste pole do wpisywania emaili;
+									<p>Email: <input type="email" name="email" required></p>
+					*type="password" - białe puste pole do wpisywania haseł- przy wpisywaniu gwiazdki 
+						zamiast liter;
+									<p>PASSWORD: <input type="password" name="hasło" 
+										placeholder="Podaj haslo"></p>
+					*type="number" - białe pole gdzie możesz wpisywać tylko liczby i masz dodatkowo z prawej
+					    strony strzałki w górę i w dół którymi możesz modyfikować licze o jedno w górę 
+						lub jedno w dół
+									<p>NUMBER: <input type="number" name="numer"></p>
+					*type="date" - białe pole z domyślnie wypisanym układem daty i ikonką kalendarza gdzie
+						możesz wybrać sobie datę z podpowiedzianego kalendarza;
+									<p>DATE: <input type='date' name="data"></p>
+					*type="radio" - kółko do zaznaczania danej opcji (TYLKO jednej z wielu). W przypadku
+						typu radio cały input okala się dodatkowo w tag label żeby przy zaznaczaniu danej 
+						opcji dało się to zrobić poprzez klikanie na cały tekst a nie tylko na kółko.
+									<p>
+									<label><input type=radio name="plec" 
+										value="kobieta" checked="checked">Kobieta</label>
+									</p>
+									<p>
+									<label><input type=radio name="plec" 
+										value="mezczyzna" >Mężczyzna</label>
+									</p>
+					*type="checkbox" - kwadracik do zaznaczania danej opcji (możesz wybrać wiele z wielu)
+						W przypadku typu radio cały input okala się dodatkowo w tag label żeby przy 
+						zaznaczaniu danej opcji dało się to zrobić poprzez klikanie na cały tekst a nie 
+						tylko na kółko.
+									<p>Języki programowania:</p>
+									<p>
+									<label><input type="checkbox" name="jezyki" value="C">C</label>
+									</p>
+									<p><label><input type="checkbox" name="jezyki" 
+										value="JAVA">JAVA</label>
+									</p>
+									<p><label><input type="checkbox" name="jezyki" 
+										value="PYTHON">PYTHON</label>
+									</p>
+					*type="submit" - tworzy przycisk dzięki któremu będziemy mogli wysłać formularz
+						**value="wyśłij" - pozwali na nazwianie przycisku we formularzu.
+									<input type="submit" value="Wyslij">
+					*type="reset" - tworzy przycisk dzięki któremu będziemy mogli zrestartować cały formularz
+							poprzez odświeżenie strony
+						**value="resetuj" - pozwali na nazwanie przycisku we formularzu.
+									<input type="reset" value="Resetuj">
+				**name="..." 
+					*to takie id tylko że dla formularza gdyż pozwala ziidentyfikować i wydostać dane z 
+					 formularza przy wysłaniu go.
+					*Jest bardzo istotne żeby przy polach typu radio i checkbox (przy polach wyboru) było 
+					 to samo name. Dzięki temu przy wysyłaniu danych dane te zostaną potraktowane jako
+					 jedna dana a nie kilka osobnych. 
+				**value="..."
+					*pozwala wpisać domyślny tekst który nie zninie po rozpoczęciu wpisywania tekstu w pole
+					*jeżeli modyfikuję się ten tekst i się go skasuję to nie zostanie on przywrócony do 
+						pierwotnej wersji. 
+					*wartość z pola value będzie przekazywana przez formularz w momencie wysyłania. 
+					 Dlatego value jest bardzo istotne w przypadku pól typu "radio" i "checkbox" gdyż tam
+					 użytkownik nie może edytować danego value a tylko i wyłącznie go wybrać, a to co
+					 wybierze będzie przekazane poprzez value dalej pry wysyłaniu danych z formularza.
+				**placeholder="..." - pozwala na wpisanie domyślnego tekstu w pole który zniknie w momencie 
+					wpisywania tekstu do wysłania przez formularz(value) i przy skaskowaniu tego tekstu  
+					domyślny tekst pojawi się na nowo. Jest lekko wyszarzały. 
+				**DODATKOWE:
+					**required - cecha pozwalająca określić że pole jest wymagane i bez uzupełnia go nie
+							zostanie wysłany formularz.
+					**checked="checked" - cecha wykorzystywana przy polach typu "radio" i "checkbox". 
+							Pozwala na domyślnie zaznaczenie jakieś opcji. 
+					**maxlength="10" - przy polach gdzie wpisujesz dany tekst pozwala na określenie 
+							długości napisu.
+					**size="20" - przy polach gdzie wpisujesz tekst określa minimalna długośc tego pola 
+			*<select></select> - jest to lista w której mozemy wybrać dane opcje;
+					**name="..." - tak samo jak w input'cie pozwala na wybranie id dla danej opcji.
+					**size="7" - jest to domyślny rozmiar szerokości listy (na ile znaków jest przeznaczona)
+					**multiple="multiple" - czy lista ma być wielokrotnego wyboru 
+				*<optgroup></optgroup> - pozwala na pogrupowanie danych opcji
+						**label="Sekcja 1" - cecha pozwalająca na wpisanie nazwy danej grupy która 
+						  wyświetli się na liście.
+				*<option>...</option> - wyswietlona opcja w danej grupie. 
+						**selected="selected" - domyślnie wybrana opcja w liście.					
+							<p>
+							<select name="select" size="7" multiple="multiple">
+							  <optgroup label ="Sekcja 1">
+								<option selected="selected">1 opcja</option>
+								<option>2 opcja</option> 
+							  </optgroup>
+							  <optgroup label ="Sekcja 2">
+								<option>3 opcja</option> 
+								<option>4 opcja</option> 
+							  </optgroup>
+							</select>
+						    </p>
+			*<textarea></textarea> - obszar do wpisywania 
+					**name="..." - jak w inputcie pozwala na wybranie id dla textarea
+					**rows="10" & cols="40" - domyśłna szerokość i długość textarea
+					**placeholder="wpisz tekst" - jak w inputcie jest to domyślny napis.
+							<p>
+							<textarea name="textarea1" rows="10" cols="40" placeholder="Wpisz tekst">
+							</textarea>
+							</p>			
+		d)TAGI DODATKOWE:
+			*<br> lub <br/> - w htmlu przerzuca tekst do nowej linii. NIE jest zalecany, robi się to w CSSie
+			*<hr> lub <hr/> - oddziela jedną sekcję od drugiej 
+			*<q></q> - (quotes),wpisujesz w te tagi cytaty.
+			*<figure></figure> - specjalne obramowanie/figura w którą możesz wrzucić obraz
+				<figcaption></figcaption> jest to podpis znajdujący sie w wewnątrz obramowania
+		e)TAGI jak SPAN ale stylizujące tekst. 
+		  *NIE ZALECANE gdyz powinno się to robić w CSSie
+		  *nie są blokami więc nie tworzą marginseu i nie przerzucają nowego tekstu do nowej linii
+				*<b></b> (od bolt) lub <strong></strong> - pogrubiony tekst
+				*<i></i> lub <em></em> - pochylenie tekstu
+				*<u></u> - podkreślony tekst
+			
+	5. ATRYBUTY DO TAGÓW:
+		*PODSTAWOWE:
+			*id - powinien być unikalny i po nim powinniśmy móc sprecyzować dokłądnie 1 element
+						<h1 id='idName'> ... </h1>
+			*class - tę samą klasę sprecyzowaną w CSSie można przypisać do wielu elementów/tagów pózniej
+						<h1 class='className'> ... </h1>
+		*DODATKOWE:	
+			*colspan - wykorzystywane w tabelach, łączy jedną kolumnę w kilka.
+						<td id='...' colspan=2>
+			*rowspan - wykorzystywane w tabelach, łączy jedrn wiersz w kilka.
+						<td id='...' rowspan=2>
+			*align='center' - już w tagu HTML ustawiasz że dany blok ma być na środku. 
+
+			
+============================================================================================================		
+CSS:
+	0.PODSTAWY:	
+		*CASCADE STYLE SHEETS - kaskadowe arkusze stylów
+		*dzięki CSSowi możemy operować na wyglądzie strony i dodawać mikro animacje
+		*po każdym atrybucie pamiętaj o tym że musisz zapisać średnik
+		*komentarze w CSS robi się poprzez /* ... */ (crtl+slash na zaznaczonym tekście)
+		*w momencie gdy chcesz na szybko wymusić żeby dany kolor/lub inny atrybut byl wyswietlany najpierw
+		 zamiasy jakiegośinnego to użyj klauzuli !important; na samym końcu dangeo atrybutu i wartości:
+						.square{
+							background-color: bisque!important;
+						.square{
+							background-color: red;		#wyświetli się pierwszy kolor zamiast drugiego 
+						}
+	1. ZAPISYWANE atrybuty CSSowe:
+		*** wewnątrz tagów HTMLa, -> ten rodzaj jest najwyżej w hierarchi ważnośći. Jest niezalecany.
+						<h1 style='color:#ff000'>...</h1> ALBO
+		*** w osobnym tagu style w HTMLU w sekcji head -> jest niżej w hierarchi ważnośći. Jest niezalecany.
+						<head>
+							<style>
+								#namedID{			--> odwołuję się do atrybutu id o nazwie namedID
+									color: blue
+									}						
+							</style>
+						</head>
+		*** w osobnym pliku CSS -> Jest zalecany, tworzysz nowy plik i linkujesz go w tagu head w HTMLU
+						<head>
+							...
+							<link rel='stylesheet' type='text/css' href='style.css' />
+						</head>
+					
+	2. HIERACHIA TAGów HTMLa odwołujących się do CSSa:
+		*położenie w pliku CSS przy tej samej nazwie - przy tych samych nazwach im późniejsze położenie
+		 w pliku CSS tym jest większa waga tego tagu, klasy lub id.
+		*gwiazdka (*) - poprzez gwiazdkę odwołujemy się do wszystkich tagów - w CSSie ma najmniejszą wagę.
+						*{
+							...
+						}
+		*tagName - w CSSie odwołanie się do tagu poprzez wypisanie go w CSSie ma 2gą najmniejszą wagę.
+						p{	
+							...
+						}
+				 - w przypadku gdy tagi zagnieżdżają się w sobie na wielu poziomach to jeżeli chcesz 
+				   uzyskać specjalne stylizowanie do najbardziej zagnieżdżonego tagu to musisz wypisać
+				   po sobie te zagnieżdżenia po spacji. Te najbardziej zagnieżdżone będą miały 
+				   większe pierszeństo niż te mniej zagnieżdżone niezależnie od tego czy zostaną
+				   zapisane wcześniej czy później w pliku CSS.
+						ol li ol li{
+							...
+						}
+				   powyższe wypisywanie po spacjach oznacza że muszą się one znajdować wewnątrz ALE 
+				   nie koniecznie bezpośrednio po sobie. Wypisywanie ze strzałkami ostrymi wskazuję tylko
+				   na te które bezpośrednio znajdują się w zagnieżdżeniu za zagnieżdżeniem (jak pomylisz
+				   kolejność to wszystko się wysypie)
+						body > table > tbody > tr > td{
+							...
+						}					
+				   te dwa sposoby możesz ze sobą łączyć:
+						body tr >td{
+							...
+						}
+				- niektóre tagi mogą być w rónżnym stanie dlatego zostały stworzone selektory które 
+				  wypisuję się po dwukropku - mają one taką samą wagę jak TAGI gdyż de facto są traktowane 
+				  jako nowe tagi.
+						a:visited{
+							...
+						}
+		*class (.) - w CSSie żeby odwołać się do tagu id w htmlu używamy kropki . czyli: .nameAtrr{...}
+				KLasa ma wagę pośrednią - jeżeli odwołujemy się do id to klasa przegrywa z nim
+						.nameClass{
+							...
+						}
+				- możemy też zawęzić obszar stylizowania przy elementach z daną klasą poprzez wypisanie 
+				  jej za danym tagiem - wtedy wystylizowane zostaną tylko te elementy które mają daną klasę
+				  i są danym tagiem.
+						span.nameClass{
+							...
+						}
+		*id (#) - w CSSie żeby odwołać się do tagu id w htmlu używamy znaku # czyli: #nameAtrr{...}
+				Id ma największą wagę.
+						#nameID{
+							...
+						}	
+	
+	3.DODATKOWE ELEMENTY:					
+	3.1 SELEKTORY W TAGACH - wykorzystywane są do wystylizowania tagów gdy znajdują się one w innym stanie
+			niż domyślny:
+		*tag a (nie odwiedzony) a:visited (link odwiedzony/kliknięty), a:hover (najechanie na link)
+		*jakisTag:nth-child(1) / jakisTag:nth-child(even) (parzyste TAGi) oznacza numer taga w kolejności 
+		 od 1 ktory jest wewnątrz tag "jakisTag" 
+		*jakisTag:first-child / jakisTag:last-child pierwszy lub ostatni tag wewnątrz tagu jakistag
+	
+	3.2 PSEUDOELEMENTY W TAGACH - wykorzystywane są do wpływania na strukturę htmla z poziomu CSSa:
+		*poprzez pseudoelementy jeteśmy w stanie dodać napisy z poziomu CSSa:
+						#title::before{
+							content: 'jakis napis przed';
+						}
+						#title::after{
+							content: 'jakis napis po';
+						}
+	
+	4.ATRYBUTY w CSS do TAGÓW i Selektorów od tagów:
+	  *wszystkie wartości gdzie podajesz piksele możesz tez podać względnie poprzez procenty lub 'auto'
+	  *jeżeli kilka atrybutów jest takich samych dla kilku tagów/klas/id to te tagi/klasy/id wymieniasz 
+	   po przecinku i dla nich wypisujesz te atrybuty:
+						h1,p,#mojeId{
+							float:left;
+						}	
+	  *wartości atrybutów dla koloru możesz podawć na 3 sposoby (w trybie szesnastkowym, za pomocą tekstu
+	   i w trybie rgb(135, 206, 235) / rgba(135,206,235,0.25) (w rgba 4tą wartością jest poziom
+	   przezroczystości))
+						h1{
+							background-color: rgba(10,240,233,0.5);
+						}
+		
+		A)DISPLAY - pozwala ułożyć dany znaczniki według danego schematu:
+				**block - scheamat blokowy, zostawia odstęp i każdy nowy tekst jest pisany od nowej linii,
+						  wykorzystywany bardzo często gdy chesz posutawiac tekst od nowej linii; (wtedy 
+						  kazdy jest traktowany jak div)
+						- jest bardzo ważny i praktycznie zawsze się z niego korzysta;
+									display: block;
+				**None - nie wyświetla danego tagu jako blok
+				**inline - wyświtle w jednej linii i nie przerzuca tego do nowej linii
+				**inline-block - wyświetla to jako bloki które są w jednej linii ale w momencie zmniejszenia
+						szerokości ekranu dochodzi do przenisienia elementów w dół i zachowują się one typowo
+						jak bloki
+			*DISPLAY: FLEX lub GRID - FLEX używaj do rozwiązań niesymetrycznych a GRID do symetrycznych
+				**flex - elementy dostosowują swoją szerokość do szerokości ekranu chyba że dodasz atrybut
+						flex-wrap: wrap (domyślnie jest nowrap) wtedy - elementy będą zachowywały swoje
+						wymiary i będą przerzucane do nowej linii. 
+				  **flex-wrap: wrap; - elementy przerzucane do nowej linii przy display:flex;
+				  **justify-content:center;   |   justify-items:center; - rozciąga elementy względem
+				    szerokości div'a w jakim się znajdują.
+				   *align-items:center;   |   align-content:center; - ustawia ułożenie elementów względem 
+				    wysokości. Ma te same opcje co justify-content.
+						* :space-between; - układa elementy bez przerw między zewnętrznymi granicami. 
+							Przerwy wystęują tylko pomiędzy elementami.						
+						* :space-around; - przerwy występują również na zawnętrznych granicach ale stanowią 
+							tylko połowę przerw między elementami.
+						* :space-evenly;  - przerwy występują na zewnętrznych granicach i są tej samej 
+							szerokośći co przerwy między elementami.
+						* :center; - ustawia elementy bez przerw w centrum szerokośći strony				
+				  **flex-direction: row-reverse; - podczas przeżucania elementów wybiera czy będzie przerzucał
+							od pierwszego elementu czy od ostatniego.
+				  **flex-basis:300px; - zamiast ustawić sobie width to możesz ustawić flex-basis;
+				  **flex-grow:1; - elementy rozciągają się do krawędzi diva w którym się znajdują, bez 
+							żadnych przerw. Rozciągają się powyżej szerokości podstawowej ustalonej w width.
+				  **flex-shrink:0;  - elementy nie kurczą się poniżej wartośći podstawowej ustalonej w width.
+							gdy masz ustaloną wartość większą niż 0 np 5 to elementy będą się kurczyć
+							w szerokośći 5 razy sbyciej ni normalnie by to było robione.
+				  **order: 2; - dzięki order jesteś w stanie odpowiednio uporządkować elementy zawierające 
+							ten atrybut. Domyślna wartość dla wszystkich to 0;				  
+									#container{
+										background-color: #eee;
+										height: 800px;
+											/*FLEX*/										
+										display:flex;
+										flex-wrap: wrap; /*nowrap*/
+										justify-content: center; /*space-between space-evenly*/
+										align-items: center;
+										flex-direction: row-reverse;
+									}
+									.square{
+										height:150px;
+										width:150px;
+										background-color: bisque;
+											/*FLEX*/
+										display: flex;
+										justify-content:center;
+										align-items: center;
+									}
+						DOMYŚLNIE USTAWIENIA DLA FLEXA POWINNY WYGLĄDAĆ JAK PONIŻEJ:
+									*{
+										font-size:2rem;
+										text-align: center;
+										font-family: sans-serif;
+										color: #444;
+									}
+									body{
+										padding:25px;
+										display: flex;
+										flex-direction: column;
+										justify-content: center;
+										align-items:center;    
+									}
+									.box{
+										margin: 35px;
+										padding: 30px;
+										border: 7px solid #aaa;
+										display:block;
+										border-radius:25px;
+										box-shadow: 5px 5px 10px #999;
+										font-size: 1.7rem;
+									}
+				**grid - tworzy siatkę w 'kontenerze' na stronie w którą elementy wewnętrzne się dopasowują. 
+									display:grid;
+				  **grid-template-columns    |   grid-template-rows - pozwala na sprecyzowanie ile dokładnie
+						ma być kolumn/wierszy w siatce.
+						*grid-template-columns: 200px 20% 1fr 2fr; - możemy sprecyzować szerokość kolumn 
+							poprzez piksele, procenty i ilość jednostek.
+						*grid-template-columns: repeat(2, 1fr 2fr); - możemy też ustalić szerokość kolumn
+							poprzez schemat repeat - w tym przypadku(2 razy po 2 kolumny: pierwsza 1 
+							jednostka druga 2 jednostki)
+				  **grid-row-gap:10px;   |   grid-column-gap:10px;   |   grid-gap:10px; - pozwala na 
+						sprecyzowanie ile mają wynosić przerwy między elementami (bez granic zewnetrznych) -
+						jeżeli chciałbyś z granicami zewnętrznymi to trzebaby było to zrobić poprzez margin.
+				  **justify-items: stretch;  |  align-items:stretch; - pozwala na ustawienie elementu w 
+				    komórce siatki. justify-items dotyczy ustawienia poziomego czyli lewo-prawo, align-items 
+					dotyczy ustawienia pionowego czyli góra-dół, 
+				   *justify-content:stretch;  |  align-content:stretch; - pozwala na rozstawienie całej 
+				    siatki. Justify-content dotyczy ustawienia poziomego czyli lewo-prawo, align-content 
+					dotyczy ustawienia pionowego czyli góra-dół, 
+				   *w tych czterech przypadkach powyżej masz 4 opcje do wyboru:
+						* :stretch - dopasowuję się jak najbardziej do granic 
+						* :flex-start - przerzuca jak najbardziej na lewą stronę 
+						* :flex-end - przerzuca jak najbardziej na prawą stronę
+						* :center - dopasowuję się jak najbardziej do centrum
+				  **order: 2; - dzięki order jesteś w stanie odpowiednio uporządkować elementy zawierające 
+							ten atrybut. Domyślna wartość dla wszystkich to 0;	
+				  **grid-column-start: 1;  |  grid-column-end:4;  |   grid-column: 1 /4;
+				   *grid-row-start: 1;  |  grid-row-end:4;  |  grid-row: 1 / 4;- powala na określenie w 
+						elemencie ile kolumn/wierszy ma zajmować - w grid-...-end'zie masz granicę otwartą 
+						czyli numer wiersza lub kolumny musisz policzyć poprzez wzór n-1; Umieszczasz te 
+						atrybuty nie w kontenerze a w konkretnym elemencie;
+				   *grid-template-areas: - możesz też stworzyć całą swoją siatkę poprzez nazwanie każdego
+						z jej elementów. Jeżeli nazwiesz poszczególne elementy w siatce tak samo to w 
+						momencie gdy później przypiszesz tę nazwę do danego elementu to zajmię on odpowiednio
+						tyle miejsc ile nazw użyłeś. Przykład: 'Chcesz stworzyć sobie 8 komórkową siatkę 
+						która tak wygląda:	
+										---------------------------------
+										|		|		|		|		|
+										---------------------------------
+										|		|		|		|		|
+										---------------------------------
+						w momencie gdy w kontenerze użyjesz atrybutu grid-template-areas a w poszczególnych 
+						divach użyjesz nazw poszczególnych komórek (z grid-template-areas) poprzez 
+						atrybut grid-area: nazwa; (bez cudzysłów) to dane divy zostaną odpowiednio 
+						rozmieszczone.
+								#container{
+									grid-template-areas: 
+									"lefttop lefttop top righttop"
+									"bottom bottom bottom bottom"
+								}
+								#first{
+									grid-area:lefttop;
+								}
+								#second{
+									grid-top;
+								}
+								#third{
+									grid-area:righttop;
+								}
+								fourth{
+									grid-area:bottom;
+								}
+						poprzez takie działanie nasz rozstaw komórek będzie wyglądał w ten sposób:
+										---------------------------------
+										|	   first	| second| third	|
+										---------------------------------
+										|			  fourth			|
+										---------------------------------	
+						w momencie 
+		B)UŁOŻENIE ZNACZNIKów/TAGów:
+			*float - pozwala w danym bloku ułożyć odpowiednio dane elementy
+						float: left;
+						float: right;
+			*width - określenie szerokosci strony. Tak samo height ale width jest o wiele ważniejsze;
+						width: 100%;
+						heiht: 500px;	
+			  **box-sizing: border-box - dzięki temu atrybutowi przy elementach znajdujących się obok siebie
+			    jesteś w stanie ustawić sobie width na 50% i padding na piksele np 20px; Dzięki box-sizing
+				ten padding licznony w pikselach będzie już wliczony w te 50%.
+						box-sizing: border-box
+			*min-hegiht & max-hegiht   &&   min-width & max-width
+					wykorzystywane w elementach gdy chcesz ustalić jak bardzo może się poszerzyć dany 
+					element w sytuacji przy zmianie szerokości strony gdy wewnątrz tego elementu jest
+					np dużo tekstu.
+			*margin-right: auto;		- pozwala to na automatyczne obliczenie przez przeglądarkę 
+			 margin-left: auto; 		  marginesu z lewj i prawej strony gdy na sztywno wyliczysz
+										  sobie szerokość (width) strony;
+			*z-index:number- pozwala na ułożenie kolejności w elementach któe się powtarzają. 
+					Im wyższa wartość tym element jest bardziej na powierzchni:
+						z-index: 10;
+			*position: relative;	|	 position: absolute;
+				*dla tagu w którm użyjesz position: absolute; i następnie ułożysz go poprzez wskaźniki 
+				 takie jak: top, left, bottom, right; dany tag będzie wyświetlany względem wartości
+				 absolutnej danego ekranu.
+						#title{
+							position:absolute;
+							left:50%;
+							top:20px;
+						}
+				*jeżeli użyjesz w jakimś tagu wczesniej position: relative; a w późniejszym tagu 
+				 zawierającym się w tym pierwszym position:absolute; to od lewego górnego rogu tego 
+				 tagu będzie liczona pozycja absolutna zamiast lewego górnego rogu strony; 
+						header{
+							position:relative;
+						}
+						#title{
+							position:absolute;
+							left:50%;
+							top 20px;
+						}
+			*vertical-align - ułożenie contentu względem pionu (czy na górze, czy na dole)
+						vertical-align: top;
+			*text-align - ułożenie tekstu.
+						text-align: center;
+
+		C)CZCIONKI:
+			*color - zmienia kolor czcionki. Wyrażany w systemie szesnastkowym albo przez nazwe zwykłą
+						color:#ff000;
+						color:red;
+			*font-size - zmienia rozmiar czcionki
+						font-size: 20px;
+						font-size: 200%;
+			*font-family - zmienia rodzaj czcionki np czy serif czy cursive czy sans-serif
+						font-family: sans-serif;			#najlepiej ustawić na sans-serif
+			*line-height - określa wysokość między tekstem;
+						line-height: 150%;
+			*POGRUBIENIE/POCHYLENIE/PODKREŚLENIE TEKSTU
+				*font-weight - ustawia czy dany tekst ma być pogrubiony czy nie (wartosc 700 to pogrubiona)
+						font-weight: 700;
+						font-weight:bold;
+				*font-style - styl tekstu (pochylony - ITALIC):
+						font-style: italic;
+				*text-decoration - M.IN :pochylenie tekstu (underline
+						text-decoration: underline;
+			
+		D)TŁO i GRANICE:
+			*background (używasz dla tagu body):
+				*background-color - kolor tła
+						background-color: gray;	
+				*background-image: url(images/obraz.jpg) - zdjęcie jako tło dla strony;
+						background-image: url(images/obraz.jpg);
+					*background-repeat - pozwala na powielanie zdjęcia które jest w tle. Domyślnie: repeat
+						background-repeat: no-repeat;
+					*background-attachment - pozwala na ustawienie zdjęcia podczas scrolowania  
+						background-attachment: scroll - podczas skrolowania zdjęcie w tle będzie skrolowane
+						background-attachment: fixed - podczas skrolowania zdjęcie w tle będzie przytwierdzone
+					*background-size - pozwala na pokrycie całego tła zdjęciem
+						background-size: cover; - parametr cover pokrywa całe tło zdjęciem na szerokość 
+						background-size: contain; - parametr contain pokrywa zdjęciem tło na wysokość. 
+			*border (border-top-.../border-bottom-.../border-left-.../border-right-...) - granice bloku
+				*border -można podać od razu wszystkie cechy lub po kolei każdą:
+						border: 5px solid yellowgreen;
+					*border-color - kolor ranicy
+						border-left-color: gray;		
+					*border-width - szerokość granicy
+						border-width: 5px;
+					*border-style - styl granicy (solid)
+						border-style: solid;
+				*border-radius - zaokąglenie bordera
+						border-radius: 25px;
+						
+		E)DO MARGINESÓW:
+			*margin - tworzy odpowiedni margines z każdej strony. Tworzy margines na zewnątrz bloku.
+			  *margin-top / margin-bottom / margin-left / margin-right = margines ZEW. tylko z danej strony
+						margin: 15px;  
+						margin: 15px 45px;  -->  wpisując tylko 2 liczby określasz góre-dół i prawą lewą; 
+						margin: 15px 10px 30px 10px;  -->  wpisując 4 liczby określasz góre, prawą, dół, lewą; 
+						margin-left: 15px;
+			*padding - jest to margines wewnętrzny dzięki czemu kolor tła pozostaje taki dam jak blok
+			  *padding-top /padding-bottom /padding-left /padding-right = margines WEW. tylko z danej strony
+						padding: 10px;
+						padding-top: 10px;
+						
+		F)DO SPECYFICZNYCH ELEMENTÓW:
+		  *DO LIST ul/ol/li:
+				*list-style-type - DO LIST ustala czy w elementach listy będą kółka, cyfry, czy litery
+						ul{
+							list-style-type: circle;
+						}	
+					*circle - kółka
+					*decimal - cyfry
+					*lower-latin - litery
+		  *DO LINKÓW (a):
+				*color - odpowiada za kolor wszystkich linków
+				*text-decoration: none; - likwiduje podkreślenie w linkach
+				*transition: color 0.5s; - robi 0.5sekundową animację przejścia miedzy kolorami;
+						a{
+							color:blueviolet;
+							text-decoration: none;
+							
+						}
+			 ***SELEKTORY które występuję po dwukropku dla TAGU a:
+				*a:visited - selektor odpowiadający za kliknięte/odwiedzone linki
+						a:visited{
+							color: gray;
+						}
+				*a:hover - selektor odpowiadający za najechanie 
+						a:visited{
+							color: deepskyblue;
+						}
+		  *DO OBRAZÓW (IMG):
+				*width/height - odpowiada za szerokość/wysokość obrazu na stronie.
+							  - możemy podawać rozmiar względny w %
+						      - wystarczy że podasz jeden wymiar
+						#obraz1{					--> podaję dany obraz po ID
+							width:50% #lub width:300px;
+						}
+		  *DO WSKAŹNIKA:
+				*cursor:pointer - pozwala na zmianę wskaźnika na 
+				
+	4.1. EFEKTY SPECJALNE:
+			*background-image: linear-gradient(to right bottom, yellow, green, purple; - pozwala na 
+				stworzenie elementu z liniowym gradientem w tle o podanych kolorach i w odpowiednim kierunku.
+						background-image: linear-gradient(to right bottom, yellow, green, purple;
+			*box-shadow: ...; - daję cień do elementów. Struktura jego wykonania to: 
+				box-shawdow:odsunięcie od osi X; odsunięcie od osi Y; rozmycie, poszerzenie, kolor cienia
+						box-shadow: 0 0 15px 0 black; 
+			*opacity: 50%; - przezroczystość danego elementu.
+						opacity:80%;
+			*visibility: hidden; - widoczność danego elementu.
+						visibility: hidden;
+			*overflow:hidden; - w momencie gdzy tekst wystaję poza ustalone wartośći elementu to zostaje 
+				skrócony i niewidoczny.
+						overflow:hidden;
+		**wszystkie te atrybuty mają rację bytu występowania jako efekty specjalne w momencie gdy dodatkowo
+		  stosuję się je w przejściach (patrz punkt poniżej) czyli używa się atrybutu transition przy 
+		  jednoczesnym wykorzystaniu selektorów np selektora hover;
+						.square{
+							background-color: bisque
+							box-shadow: 0 0 5px 0 black; 
+							transition: all 0.2s ease-out;
+						}
+						.square:hover{
+							box-shadow: 0 0 15px 0 black; 
+							opacity: 80%
+						}
+	4.2 ATRYBUTY ANIMACJI I TRANSFORMACJI DO TAGÓW I SELEKTORÓW OD TAGÓW:
+		A) PRZEJŚCIA:
+			*transition 
+			   A)*wykorzystujesz wewnątrz tagów i selektorów od tagów.
+			   B)*jeżeli podasz ten atrybut w danym tagu/klasie/id (a nie w selektorze to atrybut transition
+ 				  zrobi przejście na wszystkie inne atrybuty dla tego tagu czyli np dla ustanowienia coloru
+				  czcionki, wielkości czcionki (z podstawowej na powiększona), marginu itp:
+						#title{
+							color: brown;
+							margin: 15px;
+							color: brown;
+							font-size: 150%;
+							transition: all 1s linear;
+						}
+				  lub będzie się uruchamiał dla tagu/klasy/id wyżej zawierającego tag gdzie umieścilismy
+				  atrybut transition (w 2 przykładach uruchomi się to tak samo):
+						span{
+							color: brown;
+							margin: 15px;
+							color: brown;
+							font-size: 150%;
+						}
+						#title{
+							transition: all 1s linear;
+						}
+			   C)*możesz podać jego poszczególne cechy wymieniając je w wyspecjalizowanych atrybutach:
+				  (3 kropki oznaczają jakieś inne atrybuty np color, font-size, itp)
+						#title{
+							...
+							transition-property: all;				# jakich cech dotyczy; możesz wpisać 
+																	#  pojedyńczą np color;
+							transition-duration: 1s;				# czas trwania przejścia
+							transition-timing-function: ease-out;	# w jaki sposób ma się pojawiać 
+																	#  *ease-out - szybko wyskakuje i zwalnia
+																	#  *linear - pokazuję się liniowo 
+							transistion-delay: 0.5s;				# czas opóźnienia zanim się rozpocznie
+						}
+				  lub wymienić je po spacji w jednym atrybucie transition:
+						#title{
+							...
+							transition: all 1s ease-out 0.5s;		# dotyczy wszystkich cech; 
+						}											# czas trwania całego przejścia:1s ; 
+																	# sposób pojawiania się: ease-out ;
+																	# opóźnienie: 0.5s ;;
+			   D)*możesz podać atrybut transition tylko w głównym tagu > wtedy nie mając zdefiniowanych 
+			      selektorów do tego tagu będzie ci się robiło przejście tylko przy uruchamianiu strony;
+						#title{
+							...
+							transition: all 1s;
+						}
+				  jednakże gdy zawrzesz dodatkowe selektory do danego tagu to one jakby "odziedziczą" ten
+				  atrybut transition i wtedy na nich też będzie odbywać się to przejście (np przy najężdzaniu na 
+				  dany tag (:hover)). Ponadto po zakończeniu działania tego selektora (czyli np odsunieciu 
+				  myszki od danego linka (od :hover)) nadal będzie działął ten atrybut transition bo zrobi 
+				  przejście do tego poprzedniego (początkowego) stanu:
+						#title{
+							...(inne atrybuty)...
+							transition: all 1s;
+						}
+						#title:hover{
+							...(inne atrybuty)...
+						}
+						
+				  możesz też podać atrybut transition tylko w danym selektorze i wtedy będzie się uruchamiał 
+				  TYLKO przy wywołaniu danego selektora (w poniższym przykładzie gdy najedziesz myszką na tag o 
+				  id="title"), jednakże po zakończeniu działania tego selektora to już atrybut transition nie 
+				  będzie chodził (w przypadku poniższym nagle zmieni kolor) dlatego najlepiej używać tej drugiej
+				  powyższej wersji)
+						#title:hover{
+							...
+							transition: all 1s;
+						}
+			*transform
+			  **służy do odpowiedniego ułożenia tekstu
+			  **ma takie cechy jak:
+				rotate(10deg) - rotuję dany element o 10 stopni
+				translate(-100px) - przesuwa element o 100px w lewo
+				skewX(10deg) - przechyla element o 10stopni
+						transform: rotate(10deg) translate(-100px) skewX(10deg);
+				translateX(-50%) - przemienia element że wyświetla się od środka od miejsca startu 
+					wykorzystywane głównie przy animowaniu podkreślenia:
+					1*w pseudoelemencie tworzysz content='', ustawiasz display jako block, ustawiasz 
+					  position: absolute; określasz położenie (top, left, right bottom) oraz przejście w
+					  postaci transition.
+					2*określasz cechę atrybut transform (translate) na -50%
+						#title::after{
+							content: '';
+							display:block;
+							height: 5px;
+							width: 0px;  
+							transition: all 1s ease-out;
+							
+							position: absolute;
+							bottom: 20px;
+							left: 50%;
+							transform: translateX(-50%);    
+						}
+						#title:hover::after{
+							width:600px;
+						}
+					3* w pseudoelemencie w selektorze hover określasz szerokość width tego podkreślenia
+	5. RWD - MEDIA QUERIES
+		*wykorzystuję się do zmiany ułożenia elementów w przypadku odpalenia storny na mniejszych 
+		 urządzeniach np na smartphone'ach
+		*atrybut/slektor @media działa jak if tylko że jest w Cssie; Określasz w nim jakich elementów/tagów
+		 dotyczy i jakie warunki mają zostać spełnione żeby to co jest wewnątrz zadziałało:
+						@media screen and (max-width:1500px) and (min-width1000px ){
+							#container{							--> screen jako wybrany element + warunek 
+								align-items: stretch;			że min-width będzie równe conajmniej 1000px +
+																max-width będzie nie-większy niż 1500px;										
+							}
+						}																	
+					
+			
+			
+						
+
+			
+		

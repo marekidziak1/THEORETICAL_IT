@@ -1,0 +1,963 @@
+GIT:
+KRÓTKI SPIS KOMEND GITa:	https://rogerdudler.github.io/git-guide/index.pl.html
+CAŁY KURS GITa:				https://www.youtube.com/watch?v=D6EI7EbEN4Q&list=PLjHmWifVUNMKIGHmaGPVqSD-L6i1Zw-MH&index=2
+====================================================================================================================================================
+====================================================================================================================================================
+====================================================================================================================================================
+====================================================================================================================================================
+====================================================================================================================================================
+[																	LOCAL										  			 ]	[	  REMOTE      ]
+	  						KATALOG ROBOCZY	   					    PRZECHOWALNIA	  		REPOZYTORIUM						REPOZYTORIUM ZDALNE
+			  				(working directory)						(stage area)	  		(git folder)	
+====================================================================================================================================================
+    pliki usunięte			plik nieśledzony  plik zmodyfikowany 	plik sledzony		 plik zatwierdzony
+	(deleted)				  (unstaged)		(modified)   		  (staged)		   		(comitted)								
+====================================================================================================================================================
+							   [git add . ]----------------------------->  
+												[git add . ]------------>  
+									<--------------------------------[git reset ]
+																	 [git commit -m "" ]--------->
+									<-----------------------------------------------------[git checkout nazwaPliku] 
+									<-----------------------------------------------------[git checkout nrHasha nazwaPliku] 
+<-----------------------------[git clean -i]					  
+<-----------------------------------------------------------------------------------------[git rm + 
+																						   git commit -m "..."]
+		   <------------------------------------------------------------------------------[git rm ]
+[[COFNIĘCIE ZMIAN 
+    PO git rm:
+ [git reset +
+  git checkout nazwaPliku]	--------------------------------------------------------------------->
+ [git restore --staged nazwaPliku +
+  git restore nazwaPliku] ]]--------------------------------------------------------------------->
+====================================================================================================================================================
+====================================================================================================================================================
+====================================================================================================================================================
+====================================================================================================================================================
+====================================================================================================================================================
+SPIS TREŚCI SAMYCH POLECEŃ:
+1.START
+2.POBIERANIE ZMIAN
+3.HISTORIA COMMITÓW
+4.COFANIE ZMIAN
+5.BRANCHe
+6.MERGOWANIE i REBASOWANIE
+7.TAGI
+8.STOS PODRĘCZNY
+-------------------------------------------START----------------------------------------------------------------------------------------------------
+SKRÓTY DLA KONSOLI:
+	SHIFT + INSERT - wklejanie
+	CTRL + INSERT - kopiowanie
+UWIERZYTELNIE KOMPUTERA Z GITHUBEM 	- https://www.youtube.com/watch?v=9qrgY2Dw30g  [24-26min]
+  *SPRAWDZENIE WERSJE INSTALACJI
+	git --version 						
+  *USTAWIENIE EDYTORA i TWOJEGO PROFILU AUTHORA
+	git config --global core.editor nano	
+	git config --global user.name Twoje_imie_i_nazwisko
+	git config --global user.email twoj_mail
+UTWORZENIE PROJEKTU
+	git init
+POŁĄCZENIE REPOZYTORIUM LOKALNEGO ZE ZDALNYM:
+	git remote add origin https://github.com/marekidziak1/cPlusPlusPodstawy.git
+KLONOWANIE PROJEKTU:	
+	cd sciezka -> mkdir katalog (nie wchodzisz do tego katalogu) 
+	git clone https://github.com/marekidziak1/cPlusPlusPodstawy.git
+PIERWSZE WYSŁANIE DANEGO BRANCHA lub TAGA i KOLEJNE WYSYŁANIA BRANCHA lub TAGA
+	git push -u origin branch1  		
+			 -u origin tag1				
+	git push	
+------------------------------------- POBIERANIE ZMIAN ---------------------------------------------------------------------------------------------
+UKAZANIE RÓŹNIC W BRANCHU2 W STOSUNKU DO BRANCHA1
+	git diff branch1 branch2			
+POBRANIE WSZYSTKICH ZMIAN Z REPOZYTORIUM ZDALNEGO
+	git fetch							
+		+git log --graph --decorate 	  + następnie zmergowanie jednego brancha ze zdalnym
+				 --all --oneline   		  repozytorium + następnie wypushowanie tychże zmian
+		+git merge origin/remoteBrancha   na pojedyńczym branchu w celu zrównania brancha     
+		+git push						  z repozytorium zdalnego z repozytorium lokalnym
+POBRANIE WSZYSTKICH ZMIAN Z REPOZYTORIUM ZDALNEGO i TYLKO NA AKTYWNYM BRANCHU ZMERGOWANIE ICH:
+	git pull							  + następnie wypushowanie tychże zmian na pojedyńczym
+		+git push						  branchu w celu zrównania brancha z repozytorium 
+										  zdalnego z repozytorium lokalnym
+--------------------------------- HISTORIA COMMITÓW ------------------------------------------------------------------------------------------------
+COMMITY i ICH HISTORIA:
+  *STAN AKTUALNY:
+	git status
+  *ZMIANA KOMENTARZA DO OSTATNIEGO COMMITA:
+	git commit --amend -m "nowyKomentarz"
+  *DODANIE KOMENTARZA DO TYTUŁU KOMENTARZA:
+	git commit -m "tytulKomentarza" -m "trescKomentarza"
+  *HISTORIA COMMITÓW: (dział 5+6)
+	git log								 
+    git reflog   
+	git shortlog
+	git log --oneline 					
+	git log --oneline - liczbaOstatnichCommitów
+	git log --oneline --author				
+	git log --oneline --grep="wyszukiwaneSlowo"	
+	git log --oneline -- nazwaPliku				
+  *SKRÓCONA HISTORIA COMMITÓW (dodawany/odejmowany kod, najważniejsze info,ilość dod/odj linii):
+	git log --oneline --patch -- nazwaPliku		
+	git log --oneline --summary -- nazwaPliku		
+	git log --oneline --stat --nazwaPliku		
+---------------------------------- COFANIE ZMIAN ---------------------------------------------------------------------------------------------------
+COFANIE ZMIAN (dział 4ty):
+  *PRZYWRÓCENIE STANU PLIKU NA STAREJ GAŁĘZI:
+	git checkout nazwaPliku
+	git checkout nrHasha nazwaPliku
+  *PRZYWRÓCENIE STANU COMMITA NA NOWEJ GAŁĘZI:
+	git checkout nr Hasha 	+ 	git checkout -b newBranchName   +   następnie zmergowanie ze starą gałęzią] 
+  *ANULOWANIE ZMIAN Z KONKRETNEGO COMMITA:
+	git revert nrHasha				[cofa update'y tworząc nowe commity]
+  *PRZYWRÓCENIE STANY COMMITA NA STAREJ GAŁĘZI
+	git reset nrHasha
+			  --soft nrHasha		[pliki updatowane przerzuca do śledzonych]
+			  --mixed nrHasha		[pliki updatowane przerzuca do nieśledzonych i modyfikowanych]
+			  HEAD					[o 1 commit do tyłu]			[to samo co mixed]
+			  HEAD~jakasLiczba  	[o jakasLiczba commitów do tyłu][to samo co mixed]
+			  --hard nrHasha		[usuwa historie commitów oraz updatowane treści i nowo dodane pliki]
+  *PRZYWRÓCENIE STANU COMMITA KTÓRY WCZESNIEJ ZOSTAŁ PRZEZ PRZYPADEK SKASOWANY:
+	git reflog --> git reset --hard nrHasha
+------------------------------------ BRANCHE -------------------------------------------------------------------------------------------------------
+BRANCHE:
+  *LISTOWANIE BRANCHy (dział 8)
+	git branch
+	git log --graph --decorate -- all --oneline		[q zeby wyjsc]
+  *UTWORZENIE GAŁĘZI:
+	git branch newBranchName
+  *ZMIANA GAŁĘZI: (używaj TABa do podpowiedzi nazwy gałęzi)
+	git switch branchName
+	git checkout branchName
+	git branch -B branchName
+  *ZAPIS NA NOWEJ GAŁĘZI:
+	git checkout -b newBranchName LUB		
+	git switch -c newBranchName	
+  *ZMERGOWANIE GAŁĘZI NA KTÓREJ SIĘ ZNAJDUJESZ Z PODANYM BRANCHEM:
+	git merge branchName
+  *USUWANIE BRANCHA:
+	git branch -D branchName
+  *USUNIĘCIE BRANHA NA ZDALNYM REPOZYTORIUM
+	git push origin -d branchName	
+--------------------------- MERGOWANIE i REBASOWANIE -----------------------------------------------------------------------------------------------
+MERGOWANIE BRANCHY (ważniejszego z mniej ważnym): (dział 10+11)
+	git merge branchName						
+			  --abort		
+REBASE MNIEJ WAŻNEGO BRANCHA W STOSUNKU DO bardziej ważengo:		  
+	git rebase ważniejszyBranch					
+		+ git switch ważniejszyBranch			  
+		+ git merge branchName	
+			  --abort					
+------------------------------------- TAGI ---------------------------------------------------------------------------------------------------------
+TAGI:
+  *WYLISTOWANIE TAGÓW
+	git tag										
+  *UTWORZENIE TAGU
+	git tag v1.0.0								
+				   nrHasha 				   		
+		           -a -m "komentarz"	   		
+				   nrHasha -a -m "comment" 				
+  *POKAZANIE SZCZEGÓŁÓW DANEGO COMMITA 
+	git show v1.0.0		
+  *USUNIĘCIE TAGU	
+	git tag -d v1.0.0	
+  *WYSŁANIE TAGÓW/TAGU NA REPOZYTORIUM ZDALNE
+	git push --tags 	
+			 origin v1.0.0
+  *USUNIĘCIE TAGU NA ZDALNYM REPOZYTORIUM
+	git push origin -d v1.0.0				
+-------------------------------- STOS PODRĘCZNY ----------------------------------------------------------------------------------------------------
+STOS PODRĘCZNY (dział 7):
+	git stash list
+  *DODANIE DO STOSU (będacych na stage'u, na stage'u z komentarzem, nie będacych na stage'u)
+	git stash
+	git stash push -m "komentarz"	
+	git stash push -u
+  *PRZYWRÓCENIE PLIKÓW ZE STOSU (z usunięciem ich ze stosu, z pozostaniem ich na stosie, z 
+   przeniesieniem na nowy branch):
+	git stash pop nrIdentyfikatora
+	git stash apply nrIdentyfikatora
+	git stash branch newBranchName
+  *USUNIĘCIE PLIKÓW NA STOSIE/CAŁEGO STOSU:
+	git stash drop nrIdentyfikatora
+	git stash clear		
+----------------------------------------------------------------------------------------------------------------------------------------------------
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+SPIS TREŚCI:
+odc9+10,WYRÓWNYWANIE BRANCHY, PULL REQUEST, DZIAŁANIE NA FORKACH 
+odc10+11 MERGE, MERGE CONFLICT, REBASE 
+odc8+12. BRANCHe i TAGi
+odc7.STOS PODRĘCZNY i GIT STASH 
+odc5+6. PRZEGLĄDANIE HISTORII COMMITÓW + KOMENTARZE DO COMMITÓW 
+odc4. PRZYWRACANIE ZMIAN 
+odc3. PRZESTRZEŃ ROBOCZA I STAGE: USUWANIE
+odc2. git STATUS, git ADD, git COMMIT 
+odc1+9 DZIAŁANIE NA ZDALNYM REPOZYTORIUM 
+odc0. PODSTAWY i DODATKI
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////// odc9+10,WYRÓWNYWANIE BRANCHY, PULL REQUEST, DZIAŁANIE NA FORKACH //////////////////////////////////////////////////////////////////
+*** odc 9 i 10 (obydwa od połowy filmu)
+
+1* WSKAZÓWKI DO WYRÓWNYWANIA BRANCHY w drzewie logów na repozytorium lokalnym:
+	*Dla branchy lokalnych i zdalnych o tych samych nazwach na repozytorium lokalnym
+		A) jezeli branch lokalny jest niżej niż zdalny to zrób git pull
+		B) jeżelu branch zdalny jest niżej niż lokalny to zrób git push 
+			*jeżeli pokazuję Tobie błąd i wskazówkę żeby zrobić git pull TO NIE RÓB TEGO!
+			 NAJPRAWDOPODOBNIEJ zrobiłes REBASE mniejważnej gałęzi na ważniejszą i następnie na 
+			 ważniejszym Branchu je zmergowaleś. To co teraz powinineś zrobić to usunąc branch 
+			 mniej ważny
+			*jeżeli zrobisz ten git pull to wtedy branch na którym go zrobisz wyprzedzi 
+			 ważniejszy branch i trzeba będzie mniej ważny branch zmergowac (na nim będziesz 
+			 musiał się znajdować) z ważniejszym. NIE MUSISZ OBAWIAĆ SIĘ TEGO gdyż to będzie 
+			 ta sama treśc co w branchu ważniejszym więc nie dojdzie do żadnych zmian. NASTĘPNIE 
+			 w celu wyrówania brancha WAŻNIEJSZEGO i MNIEJWAŻNEGO wypushuj zarówno jeden jak i 
+			 drugi. 
+		C) jeżeli branch Ważniejszy (typ lokalny i zdalny będacy na tym samym poziomie) jest 
+		   niżej niż ten Mniej_ważny to zmerguj go z tym ważniejszym
+		D) jeżeli branch Mniej_ważny (typ lokalny i zdalny będacy na tym samym poziomie) jest
+		   niżej niż ten Ważniejszy i już go zmergowałeś z tym ważniejszym to możesz go usunąć 
+		   Zarówno typ lokalny i typ zdalny:
+				git branch -d branchName 		(typ lokalny)
+				git push origin -d branchName  	(typ zdalny)
+
+2* PULL REQUEST:
+	*PODSTAWY:
+		a) inaczej MERGOWANIE różnych branchy poprzez githuba zamiast w linii poleceń
+		b) można to zrobić poprzez JEDNO repozytorium zdalne ALE GŁÓWNIE korzysta się z tego 
+		   przy FORKACH
+		c) opcja pull requesta pojawia się przy tworzeniu nowej gałęzi oraz jej pierwszym 
+		   pushu. Można skorzystac z niej bezterminowo ale tylko raz)
+		d) robiąc pullrequest + merge (jest to do zrobienia tylko na githubie a nie w konsoli) 
+		   musisz pamiętac, żeby na repozytorium lokalnym:
+				*wyrównać lokalnego mastera poprzez git pull 
+				*pousuwać stare dodatkowe gałęzie czyli te feature'owe
+	*USUWANIE BRANCHA W REPOZYTORIUM ZDALNYM po zrobieniu pull requesta:
+	   *USUWAJ BRANCHE TYLKO NA REPOZYTORIUM LOKALNYM.
+	   *Jeżeli jednak usuniesz brancha w repozytorium zdalnym, to nawet po zrobieniu git pull'a
+	    na repozytorium lokalnym nie zaktualizuję się Tobie to usunięcie tego brancha w liscie
+		branchy na repozytorium lokalnym. Jedyne co to wyświetli ci się informacja:
+				Your configuration specifies to merge with the ref 'refs/heads/br1'
+				from the remote, but no such ref was fetched.
+		Wtedy będziesz wiedzieć że branch został usunięty na repozytorium zdalnym i na lokalnej
+		maszynie będziesz musiał usunąć jego odpowiednik lokalny i zdalny (obydwie widoczne na 
+		lokalnej maszynie). Usunięcie to zrobisz poprzez:
+				git branch -d nameBranch			(usunięcie lokalnego) 
+				git push origin -d nameBranch		(usunięcie zdalnego)  
+		Może się Tobie nie udać usunąć odpowiednika zdalnego widocznego na maszynie. Wtedy 
+		musisz przywrócić te gałąź, wypushowac ją na nowo (tak żeby na powstała na repozytorium
+		zdalnym i dopiero wtedy ją usunąć na repozytorium lokalnym (opcje lokalną i zdalną). Po
+		wszystkim wypushuj wszystko i na zdalnym repo
+
+3* FORK 
+	0) PODSTAWY - działając na Forku nie masz dostępu do GŁÓWNEGO zdalnego repozytorium. Dlatego
+		możesz zrobić FORKa czyli KOPIE tego GŁÓWNEGO zdalnego repozytorium na inne zdalne 
+		repozytorium. 
+	1) SCHEMAT DZIAŁANIA NA FORKu:
+		a) UTWORZENIE:
+			*na swoim dodatkowym repozytorium zdalnym tworzysz FORKa czyli kopię GŁÓWNEGO 
+			 zdalnego repozytorium. 
+			*kopiujesz tego forka na repozytorium lokalne   
+					git clone link_do_GŁÓWNEGO_repozytorium_zdalnego
+			# jeżeli na swojej lokalnej maszynie masz kilka kont githuba to żeby zasygnalizować
+			  że chcesz przy klonowaniu używać danego konta to link zmodyfiku tak by przed 
+			  adresem była nazwa twojego profilu i @
+							  https://nazwa_konta@github.com/nazwa_projektu
+		b) WYSYŁANIE ZMIAN:
+			*na repozytorium lokalnym, (dobrze by było gdybyś robił to NA NOWYM BRANCHu) 
+			 tworzysz zmiany i NIE MERGUJESZ ICH ani ich NIE REBASE'ujesz tylko wysyłasz na
+			 swojego FORK'a.  
+					git push -u origin branchName
+			*z FORKa tworzysz PULL REQUESTA wysyłając zmiany na GŁÓWNE zdalne repozytorium. 
+			 Pamiętaj:
+				*żeby base repository było ustawione na GŁÓWNE REPOZYTORIUM ZDALNE
+			     a head repository na reozytorium zdalne w postaci Forka.
+			*Po zrobieniu pull requesta NIE ZAMYKAJ GO bo inaczej będzie niewidoczny w GŁÓWNYM
+			 REPOZYTORIUM ZDALNYM (będzie w zakładce 'closed') 
+		c) ZATWIERDZENIE ZMIAN:
+			*jeżeli jesteś właścicielem GŁÓWNEGO repozytorium zdalnego to możesz ZMERGOWAĆ 
+			 przesłany branch ze zmianami z innym branchem (albo z masterem)
+		d) POBRANIE ZMIAN z GŁÓWNEGO REPOZYTORIUM ZDALNEGO:
+			*jeżeli nie masz połączonego GŁÓWNEGO REPOZYTORIUM ZDALNEGO w repozytorium lokalnym
+ 			 to musisz przypisać mu jakiś alis np. upstream:
+					git remote add upstream111 link_do_GŁÓWNEGO_repozytorium_zdalnego
+			*następnie pobrierasz zmiany (z GŁÓWNEGO REPOZYTORIUM ZDALNEGO) i mergujesz je:
+					git pull upstream111 branchName 			ALBO:
+					git fetch upstream1111 branchName + git merge
+			*kończysz synchronizując swojego FORK'a ze zmianami które pobrałeś z GŁÓWNEGO 
+			 REPOZYTORIUM ZDALNEGO wypushowując te zmiany z repozytorium lokalnego na SWOJE
+			 repozytorium zdalne.
+					git push 
+	2) ROZWIĄZYWANIE MERGE CONFLICT'ÓW na GŁÓWNYM REPOZYTORIUM ZDALNYM po próbie PULL REQUEST'a
+	   wysłanego z FORKa:
+		1* POPRZEZ EDYTOR ONLINE - wysyłasz pullrequest'a na GŁÓWNE ZDALNE REPOZYTORIUM po czym
+		   klikasz w RESOLVE CONFLICTS i standardowo rozwiązujesz MERGE CONFLICT. Kończysz 
+		   poprzez oznaczenie że MERGE CONFLICT został rozwiązany.
+		2* POPRZEZ LINIE POLECEŃ (terminal) połączoną z GŁÓWNYM REPOZYTORIUM ZDALNYM - ten 
+		   sposób polega na tym że na repozytorium zdalnym GŁÓWNEGO REPOZYTORIUM tworzysz 
+		   dodatkową gałąź (utworzoną z mastera) i pull'ujesz na nią zmiany które są w FORKu.
+		   W ten sposób tworzą ci się MERGE CONFLICTY któe rozwiązujesz na tej dodatkowej 
+		   gałęzi:
+					[BĘDĄC NA REPOZYTORIUM LOKALNYM GŁÓWNEGO REPOZYTORIUM]
+					git checkout -b additionalBranch
+					git pull link_do_LOKALNEGO_FORKOWEGO_REPOZYTORIUM branchName
+					[ROZWIĄZANIE MERGE CONFLICTów]
+		   Następnie przełączasz się na mastera i mergujesz go z tą nowo-utworzoną gałęzią 
+		   w trybie --no-ff  (czyli jest tworzony dodatkowy commit). Po wszystkim wszystko 
+		   pushujesz na GŁÓWNE_REPOZYTORIUM_ZDALNE.
+					git switch master
+					git merge --no-ff additionalBranch
+					git push origin master
+					
+					
+
+//////////////////////////// odc10+11 MERGE, MERGE CONFLICT, REBASE ////////////////////////////////////////////////////////////////////////////////
+//..............//
+		git merge branchName						- zmergowanie branchy
+				  --abort							- przerwanie mergowania
+		git rebase ważniejszyBranch					- na mniej ważnej gałęzi zmieniasz commita
+			+ git switch ważniejszyBranch			  na podstawie którego powstał branch
+			+ git merge branchName	
+				  --abort							- przerwanie rebase'a
+//..............//
+1. Mergowanie polega na tym że do gałezi ważniejszej hierarchicznie (na której musisz się 
+   znajdować) mergujesz gałąź mniej istotną. Na tej mniej istotnej (jest do jakby testowania)
+   dodajesz zmiany i później będąc na tej ważniejszej łączysz mniej istotną z ważniejszą. 
+   W ten sposób wszystko co dodałeś na tej mniej istotnej zostanie dodane do tej ważniejszej:
+						git merge branchName
+   PO ZMERGOWANIU BRANCHY USUŃ TEN MNIEJ WAŻNY BRANCH!!!
+2. MERGE CONFLICTs: 
+		*Gdybyś nie potrafił rozwiązać merge conflictu to zawsze możęsz przerwać mergowanie:
+						git merge --abort
+		*INSERTION MERGE CONFLICT - czasem zdarza się że na jednej i drugiej gałęzi zrobisz 
+				kilka commitów (dodając na każdej gałęzi różne linie tekstu). Wtedy przy 
+				mergowaniu pojawi się MERGE CONFLICT. W pliku tekstowym w którym on wystąpi 
+				pojawią się linie:
+									<<<<<<< HEAD
+									tekst w branchu na którym się znajdujesz 
+									=======
+									tekst w branchu mergowanym
+									>>>>>>> nazwaBranchaMergowanego 
+				Żeby móc dalej mergować zostaw to na czym ci zależy i usuń reszte. Następnie
+				dodaj zmodyfikowany plik na stage (git add .) a potem scommituj wszystko
+				(git commit -m "merge on branchA with branchB"). Na sam koniec możesz usunąć
+				brancha mniej istotnego (mergowanego)
+						git add nazwaPliku
+						git commit -m "merge on branchA with branchB")
+		*DELETED FILE MERGE CONFLICT - gdy na jednym branchu dokonasz modyfikacji w pliku i to 
+				zacommitujesz, a na drugim branchu usuniesz cały plik i to zacommitujesz to
+				wystąpi MERGE CONFLICT. Żeby go rozwiązać ALBO dodaj plik (git add nazwaPliku)
+				albo go usuń (git rm nazwaPliku) i następnie to zacommituj:
+						git status
+						git add nazwaPliku		|		git rm nazwaPliku
+						git commit -m "merge on branchA with branchB")
+3.Mergowanie odbywa się domyślnie w trybie FAST-FORWARD czyli nie powstał żaden dodatkowy
+  commit reprezentujący łączenie zmian. Jednakże gdybyś chciał żeby mergowanie odbywało się
+  włąsnie poprzez utworzenie nowego commitu to trzeba podczas merge dopisać flagę: --no-ff
+						git merge branchName --no-ff
+4.REBASE 
+	*proces polegający na zmianie commitu na najnowszy (na branchu ważniejszym), na podstawie
+	 którego został utworzony inny branch (branch mniej ważny). (wydląda to tak jakby branch 
+	 mniej ważny został utworzony z najnowszego commita) 
+	*rebase modyfikuję historię commitów dlatego UWAŻAJ NA TO (szczególnie w repozytorium 
+	 zdalnym)
+	*rebase wykorzystuję się podczas chęci zmergowania branchy i jednoczesnego unikniecia 
+	 dużego skomplikowania ilości branchy (rebaseować powinno się zmiany na innych branchach 
+	 które nie mają dużego znaczenia z perspektywy całego repozytorium)
+	*PROCES:
+		*Będąc na gałęzi mniej ważnej robisz rebase (zmieniasz commita na podstawie którego 
+		 powstała cała ta mniej ważna gałąź) w stosunku do gałęzi ważniejszej (na najnowszego 
+		 commita w tej ważniejszej gałęzi)
+						git rebase branchWazniejszy
+		*Dalszy etap to zmergowanie brancha ważniejszego z poziomem brancha mniej ważnego.
+		 (Jednakże tutaj commity z brancha mniej ważnego będą mieć pierszeństwo nad tymi z 
+		 brancha ważniejszego bo jest to tylko wyrównanie brancha do najnowszego commitu).
+		 Musisz przenieść się na branch ważniejszy z mergować go z mniej ważnym:
+						git switch branchWazniejsza
+						git merge branchmniejWazny
+	*git rebase można uruchomić w trybie interaktywnym z flagą -i:
+	 [od 6:30] https://www.youtube.com/watch?v=OvqJ5RDg7rk
+						git rebase branchName -i-
+						
+5. REBASE CONFLICT:
+		*gdybyś nie potrafił rozwiązać rebase conflictu w łatwy sposób to go przerwij:
+						git rebase --abort
+		*INSERTION REBASE CONFLICT - działa to tak samo jak INSERTION MERGE CONFLICT. Żeby móc
+				to rozwiązać musisz w danym pliku usunąć/zostawić to co chcesz ORAZ następnie
+				dodać plik do stage'a (git add nazwaPliku) i zrobić kontynuacje rebase'a
+				(git rebase --continue)
+						git add nazwaPliku
+						git rebase --continue
+				(+na samym końcu zmienić gałąź na tę ważniejszą i zmergować ją z tą mniej 
+				wążną - zgodnie z działaniami jak się robi w rebase'ie)
+						git switch branchWazniejsza
+						git merge branch mniejWażna
+		*DELETED REBASE CONFLICT - działą tak samo jak DELETED REBASE CONFLICT. Żeby móc to 
+				rozwiązać musisz dodać bądź usunąc plik (git add nazwaPliku | git rm nazwaPliku)
+				i następnie zrobić kontynuacje rebase'a (git rebase --continue)
+						git add nazwaPliku	|  git rm nazwaPliku
+						git rebase --continue	
+				(+na samym końcu zmienić gałąź na tę ważniejszą i zmergować ją z tą mniej 
+				wążną - zgodnie z działaniami jak się robi w rebase'ie)
+						git switch branchWazniejsza
+						git merge branch mniejWażna
+		
+////////////////////////////////// odc8+12. BRANCHe i TAGi /////////////////////////////////////////////////////////////////////////////////////////
+//..............//
+		git log --graph --decorate -- all --oneline	- stworzenie graphu do brancha
+		git branch									- wylistowanie brancha (używać tego poniżej)
+					-a								- wylistowanie branchy lokalnych i zdalnych 
+					newBranchName					- utworzenie
+					-D branchName					- usuwanie 
+					-m oldBranchName newBranchName  - zmiana nazwy brancha
+		git switch branchName						- zmiana gałęzi (używaj TABa do nazw gałęzi)
+		git checkout branchName						- 	--||--
+		git branch -B branchName					- 	--||--
+		git checkout -b newBranchName 				- zapis na nowej gałęzi	
+		git switch -c newBranchName					- 	--||--
+		git push origin -d branchName				- usunięcie brancha na zdalnym repozytorium
+  //............//
+		git tag										- wylistowanie wszystkich tagów
+		git tag v1.0.0								- utworzenie tagu na aktualnym commitcie
+					   nrHasha 				   		- utworzenie tagu na podanym commitcie
+			           -a -m "komentarz"	   		- utworzenie tagu z podaniem autora i 
+													  komentarza
+					   -a -m "comment" 				- utworzenie tagu z podaniem autora i 
+													  komentarza na podanym commitcie
+		git show v1.0.0								- pokazanie szczegółów danego commita 
+													  związanego z danym tagiem
+		git tag -d v1.0.0							- usunięcie tagu
+		git push --tags 							- wysłanie tagów na repozytorium zdalne
+				 origin v1.0.0						- wysłanie pojedynczego tagu
+				 origin -d v1.0.0					- usunięcie tagu ze zdalnego repozytorium
+//..............//	
+0. Branch to rodzaj wskaźnika wskazującego na konkretny snapshot czyli commit
+1. DOBRE PRAKTYKI przy branchach:
+		*MASTER branch - zawiera stabilna wersję projektu, która jest złączona z serwerem 
+					produkcyjnym. Ma ograniczoną możliwość wprowadzania zmian.
+		*DEV branch - gałąź na której znajduję się wersja testowa projektu. Zwykle połączona z
+					serwerem testowym
+		*FEATURE branch - gałęzie na której produkuję się nowe funkcje
+		*USER branch - służy indywidualnej pracy członka zespołu
+		***TEST / BUGFIX branch / HTO FIX - wykorzystywane w szczegolnych przypadkach gdy 
+					pojawi się nieprzewidziany błąd. Wykorzystuję się tylko na jeden commit. 
+	*schemat budowania branchy [od 5:30]:
+	 https://www.youtube.com/watch?v=I8lQK0NK0lY&list=PLjHmWifVUNMKIGHmaGPVqSD-L6i1Zw-MH&index=8
+2. DZIAŁANIE:
+	A. Żeby wylistowoać wszystkie branche użyj:
+						git branch 										#jako lista
+						git log --graph --decorate -- all --oneline		#jako graph połączeń
+	B. Żeby stowrzyć nowego brancha użyj (musisz też przełączyćsię na niego switchem):
+						git branch newBranchName
+	C. Zmiana gałęzi sprawia że wskaznik HEAD jest przesuwany na dany commit. Wykorzystuj TABa 
+	   do podpowiedzi nazwy gałęzi.
+						git checkout branchName			LUB
+						git switch branchName			LUB
+						git branch -B branchName
+	D. Zapis na nowej gałęzi:
+						git checkout -b newBranchName LUB		
+						git switch -c newBranchName	
+	E. Usuwanie brancha (nie powoduję usunięcie ściezki w grafie):
+						git branch -D branchName
+3.TAGI:
+	A)Tagi to rodzaj zakładek który pozwala nam odnaleźć ważny commit i wrócić do nieg poprzez 
+	  jego Hash. Tagi wykorzystuję się najcześciej przy zakończonych kolejnych wersjach naszego 
+	  projektu . Najczęsciej oznacza się to wg zasady x.y.z (x-dla zmian dotyczących API, y-dla
+	  nowej funkcjonalności, z-dla rozwiązanych kolejnych błędów)
+	B)Wylistowanie wszystkich tagów:
+						git tag
+	C)Utworzenie tagu na aktualnym commitcie:
+						git tag v1.0.0
+						git tag v1.0.0 nrHasha 				   #Możemy utworzyć tag do 
+															   #dowolnego commitu 
+						git tag v1.0.0 -a -m "komentarz"	   #flaga '-a' oznacza że zostaną 
+								v1.0.0 nrHasha -a -m "comment" #przypisane informacje o autorze
+															   #flaga '-m' oznacza że zostanie
+															   #przypisany komentarz
+	D)Pokazanie szczegółów danego commita związanego z danym tagiem
+						git show v1.0.0
+	E)Usunięcie tagu:
+						git tag -d v1.0.0
+	F)TAGI TAK JAK COMMITY muismy wysłać OSOBNO do zdalnego repozytorium albo wszystkie za 
+	  jednym razem poprzez flagę --tags albo każdy tag pojedyńczo:
+						git push --tags 
+						git push origin v1.0.0
+	G)USUNIĘCIE TAGU ZE ZDALNEGO REPOZYTORIUM:
+						git push origin -d v1.0.0
+  *WYDANIE - można utworzyć w githubie na podstawie TAGU. Zaletą wydania jest to że można 
+   dołączyć	do niego dodatkowe pliki.
+	
+	
+						
+///////////////////////////// odc7.STOS PODRĘCZNY i GIT STASH //////////////////////////////////////////////////////////////////////////////////////
+//..............//
+		git stash list							- lista na stosie
+		git stash
+				  push -m "komentarz"			- dodanie do stosu
+				  push -u						- dodanie do stosu zmian niebędacych na stage'u
+				  pop nrIdentyfikatora			- przywrócenie zmian wraz z usunięciem ze stosu
+				  apply nrIdentyfikatora		- przywrócenie zmian z pozostaniem na stosie
+				  branch newBranchName			- przywrócenie zmian wraz ze stworzeniem nowej
+												  gałęzi
+				  drop nrIdentyfikatora			- usunięcie ze stosu
+				  clear							- usunięcie całego stosu
+//..............//
+0. Możemy podejrzeć listę zmian poprzez :
+						git stash list
+1. W momencie edycji pliku (plik znajduję się w katalogu roboczym jako modified) nie można
+   przełączyć się między branchami. To co można zrobić to zmiany z katalogu roboczego odłożyć 
+   na bok na stos komendą (git stash), przełączyć się na drugi branch i przywrócić zmiany z 
+   katalogu roboczego komendą (git stash pop):
+						git stash
+						git checkout branchName
+						git stash pop
+2. DODAWANIE do stosu:
+	*Do komendy dodawania do stosu możesz dodać też komentarz:
+						git stash push -m "komentarz"
+	*Zmiany które nie są zapisane na stage możemy też dodać do stosu, wtedy trzeba dodać 
+	 flagę -u:
+						git stash push -m "komentarz" -u
+3. PRZYWRACANIE ZMIAN ZE STOSU:
+	*apply - przywraca zmiany do katalogu roboczego i jednocześnie pozostają one na stosie:
+						git stash apply nrIdentyfikatora
+	*pop - przywraca zmiany do katalogu roboczego i jednocześnie zostają one usunięte ze stosu:
+						git stash pop nrIdentyfikatora
+	*branch nameBranch - przywracanie nowych zmian tworząc przy okazji nowego brancha:
+						git stash branch newBranchName
+4. USUWANIE ZMIAN ZE STOSU:
+	*drop nrIdentyfikatora - usunięcie tylko pojedyńczej zmiany
+						git stash drop nrIdentyfikatora
+	*clear - usunięciewszystkich zmian
+						git stash clear
+				
+						
+//////////////// odc5+6. PRZEGLĄDANIE HISTORII COMMITÓW + KOMENTARZE DO COMMITÓW ///////////////////////////////////////////////////////////////////
+//..............//
+		git shortlog						- szybka historia commitów
+		git log								- pozwala zobaczyc pełną historie commitow
+		git log --oneline 					- (w skrócie: [hashe + komentarze] ;q - zeby wyjść 
+											  z historii zmian (lub :q!))
+				- liczbaOstatnichCommitów	- wyswietla tylko ilość wskazanych commitów
+				--author					- dla danego autora
+				--grep="wyszukiwaneSlowo"	- dla wyszukiwaneegoSlowa
+				-- nazwaPliku				- dla danego pliku
+				--patch	-- nazwaPliku		- dodawany/odejmowany kod dla danego pliku
+				--summary -- nazwaPliku		- najważniejsze info na temat tego co sie działo 
+				--stat --nazwaPliku			- ilość dodanych/odjętych linii w commitach 
+				--format="..."				- możliwośc zformatowania zwracanej historii
+											  commitów
+//..............//
+0. Szybka historia commitów:
+						git shortlog
+1. Aby zobaczyć historie wszystkich commitów skorzystaj z (git log). Zostaną pokazane Tobie 
+   wszystkie commity z danej gałęzi wraz z komentarzami w formie całkowtej.
+						git log
+2. Dodatkowo możesz to polecenie skonfigurować według swoich zasad, używając flag (flgi te 
+   możesz łączyć ze sobą w jednej komendzie):
+		* --help - wyświetlą ci się wszystkie flagi i ich znaczenia
+		* --oneline - wyświetli się tylko pierwsza linia (standardowo: hashe + comment). 
+		* -liczbaOstatnichCommitów - możemy wskazać ile ostatnich commitów chcemy zobaczyć	
+						git log --oneline -4
+						git log --oneline	
+		* --author="nazwaAutora" - wyświetlą ci się commity tylko danego autora:
+						git log --oneline --author nazwaAutora
+		* --grep="wyszukiwaneSlowo" - wyświtela wszystkie commity w których komentarzach 
+				znajdzie poszukiwane słowo
+						git log --grep-"wyszukiwaneSlowo"
+	  *DLA DANEGO PLIKU LUB PLIKÓW Z DANEGO KATALOGU:
+		* -- nazwaPliku || -- \nazwaKatalogu - możemy sprawdzić wszystkie te commity gdzie 
+				występuję modyikacja danego pliku lub plików w katalogu. 
+						git log --oneline -- index.html		#miedzy nazwaPliku a dwoma
+						git log --oneline -- \katalog		#myślnikami jest spacja
+		* --patch -- nazwaPliku - możemy w skrócie zobaczyć jaki kod był dodawany i odejmowany
+				w danym pliku/plików w danym katalogu na przestrzeni różnych commitów:
+						git log --oneline --patch -- index.html
+		* --summary -- nazwaPliku - skrót i najważniejsze info na temat tego co się działo z 
+				danym plikiem/katalogiem na przestrzeni commitów
+						git log --oneline --summary -- \katalogName
+		* --stat -- nazwaPliku - statystyki ilości dodawanych/odejmowanych linii w danym pliku
+				/ w plikach w danym katalogu na przestrzeni commitów
+						git log --oneline --stat -- \katalogName
+	  *WŁASNA KONFIGURACJA:
+		* --format="..." - możliwośc zformatowania zwracanej histori commitów wedługg podanych 
+				wg: https://git-scm.com/docs/pretty-formats#Documentation/pretty-formats.txt-emHem
+						git log --format="%h %an %s %cr"	
+												#zwróci w konwencji: HASH, autora, tytuł, czas
+3. DOBRE PRAKTYKI PISANIA KOMENTARZY w poleceniu (git commit)
+	*dobrze jest miec dobrany odpowiedni edytor:
+						git config --global core.editor vim	
+										#save end exit ==> 	ESC, :x ENTER
+	*podział na TYTUŁ i TREŚĆ oddzielone pustą linią - po to żeby podczas (git log --oneline) 
+	 pojawiały się tylko tytuły.
+	*TYTUŁ w formie rozkazującej, z dużej litery, bez kropki na samym końcu, do 50 znaków.
+	*TREŚĆ dzielić na 72 znaki w linii, gdyż git domyślnie nie będzie nam łamał komentarzy
+	*KOMENTARZ powinien być tak stworzony żeby odpowiadał na pytania CO i DLACZEGO
+	
+	
+	
+						
+/////////////////////////////// odc4. PRZYWRACANIE ZMIAN ///////////////////////////////////////////////////////////////////////////////////////////
+https://www.youtube.com/watch?v=bdtaspSmFCk
+PRZYWRACANIE ZMIAN W GITcie:
+//..............//
+	   [git checkout branchName		  LUB		 
+		git switch branchName]				- zmiana gałęzi 
+	   [git checkout -b newBranchName LUB		
+		git switch -c newBranchName]		- zapisuję aktualny stan projektu z ostatniego 
+											  commita (czyli z repozytorium na aktualnej gałęzi)
+											  wraz z plikami na stage DO NOWEJ GAŁĘZI		
+		git ckeckout nazwaPliku				- przywraca TYLKO plik do stanu z ostatniego commita
+											  (do aktualnego stanu z repozytorium)
+					 nrHasha nazwaPliku		- przywraca TYLKO plik do stanu z podanego commita
+					 nrHasha				- przywraca stan wszystkich plików z danego commita
+											  (w trybie 'detached HEAD' (odłączonej głowy) czyli
+											  przeglądania projektu i możlwiości wprowadzania 
+											  zmian, które nie zostaną zapisane po wyjściu
+												*Żeby zapisać wprowadzone zmiany użyj: 
+																[git checkout -b newBranchName]
+												*Żeby wyjść z trybu odłączonej głowy bez zapisu
+												 wprowadzonych zmian zmień gałąź.
+																[git switch branchName] 	
+		git revert nrHasha					- anuluję zmiany z konkretnego commita, nie wpływa
+											  na późniejsze zmiany, działą na tej samej gałęzi
+				   HEAD~nrCommita			- tak samo jak powyżej tylko że zamiast wpisywać 
+											  nrHasha to wpisujesz numer Commita w kolejnosci
+											  od 0 jako ostatni commit 
+				   HEAD~nrCommita..HEAD~nrCommita
+											- to samo co powyżej ale kilka commitów naraz, 
+											  wpisujesz od końca do początku np(4..1)
+				   --abort				    - w przypadku MERGE CONFLICT'u przerwij działanie
+		git reset --soft nrHasha			- usuwa zmiany po wybranym commitcie, zmiany które
+											  były dokonane po danym commitcie zostają dodane 
+											  na stage
+				  --mixed nrHasha(domyślnie)- to samo ale zmiany które były dokonane po danym
+											  commitcie zostają przenisienione do katalogu 
+											  roboczego 
+				  --hard nrHasha			- to samo ale zmiany dokonane po danym commit'cie
+											  zostają całkowicie usunięte
+		git reflog 							- wykaz wszystkich nrHashy (nawet tych skasowanych)
+											  na których był ustawiony wskaźnik HEAD
+//..............//
+0. Do zapisu aktualnego stanu projektu na nowej gałęzi (pliki z repozytorium (z ostatniego 
+	commita) oraz pliki ze stage'u) użyj:
+				git checkout -b newBranchName 	LUB		
+				git switch -c newBranchName
+1. (git checkout) - DO PRZYWRÓCENIA STANU z danego commitu: 
+		*Do wczytania wersji pliku z ostatniego commita (czyli wersji z repozytorium) (nie 
+		 wymaga utworzenia nowej gałęzi):
+				git chechout nazwaPliku 
+		*Do wczytania wersji pliku z danego commita (nie wymaga utworzenia nowej gałęzi):
+				git chechout nrHasha nazwaPliku 
+		*Do wczytania wersji wszystkich plików z danego poziomu commita (wymaga utworzenia 
+		 nowej gałęzi)
+				git checkout nrHasha 
+			*Mozesz ten stan modyfikowac i gdybys chciał go zapisac to musisz uzyc komendy:
+				git checkout -b newBranchName  		#wszystko zostanie zapisane na nowej gałęzi
+			*Jeżeli nie chcesz zapisywać tego zmień gałąź 
+				git checkout branchName	
+				git switch branchName
+2. (git revert) - DO ANULOWANIA ZMIAN Z KONKRETNEGO COMMITa albo kilku:
+	*Nie usuwa ani nie modyfikuje historii zmian tylko dodaje nowego commita o nazwie "Revert 
+	 commit nrHasha"
+	*Działasz na tej samej gałęzi
+	*Działanie:
+	  *opcje:
+		*dokonuje odwrócenia zmian z wybranego commitu - tzn że wszystkie zmiany z późniejszych 
+		 commitów nie zostaną cofnięte - tylko te z wybranego commitu:
+				git revert nrHasha
+		*zamiast nrHasha możesz wpisać nrCommita liczony od ostatniego który ma przypisaną 
+		 pozycję zero (0)
+				git revert HEAD~0				#odwraca zmiany w ostatnim commitcie
+				git revert HEAD~4				#odwraca zmiany w 5 commit'cie od końca 
+		*możesz cofnąć grupę commitów tzn że kilka występujących po sobie:
+				git revert HEAD~3..HEAD~0 		#cofnie commity o numerach 1,2,3,4 (0,1,2,3)
+				git revert HEAD~3..HEAD~2 		#cofnie commity o numerach 4,5 (3,4)
+	  *zatwierdzenia - po każdym revertcie przenosi cię do edytora tekstu w celu zapisania
+	   nazwy reverta w drzewie commitów. 
+	  *problemy:
+		*ponieważ polecenie (git revert nrHasha) powinno się dokonywać CHRONOLOGICZNIE tzn na 
+		 commitach na których były dokonane najnowsze modyfikacje danych plików a nie na 
+		 commitach które dotyczą zmian wcześniejszych tychże plików to w momencie gdybyś użył 
+		 polecenia git revert niechronologicznie (czyli zrobiłbyś to na commitach które nie 
+		 byłyby najnowszymi dla danych plików) to pojawi ci się MERGE CONFLICT. 
+		*W takiej sytuacji mozesz przerwać reverta (git revert --abort ) i zrobic revertowanie 
+		 CHRONOLOGICZNIE od nowa ALBO zrobić mergowanie (patrz dział 10)
+				git revert --abort
+3. (git reset) - DO PRZYWRÓCENIA STANU Z DANEGO COMMITA, na tej samej gałęzi:
+	*usuwa historię zmian za wybranym commitem 
+	*ze względów bezpieczeństwa wykorzystuję się tylko na commitach które nie zostały
+	 wypushowane na repozytorium zdalne.
+	*opcje:
+		* --soft - zmiany które były dokonane po wybranym commitcie zostaną dodane na stage
+					skąd możemy je albo na nowo scommit'owac albo zreset'owac i wyclean'ować
+		* --mixed - (domyślnie), zmiany które były dokonane po wybranym commitcie zostaną dodane
+					do katalogu roboczego skąd możemy je albo wyclean'ować albo dodać na stage'a
+		* --hard - zmiany które były dokonane po wybranym commitcie zostaną całkowicei usunięte
+4. (git reflog) - DO WYLISTOWANIA w jaki sposób zmieniała się pozycja wskaźnika HEAD. 
+	*dzięki temu gdy usuniesz jakieś commity poleceniem git reset (któego normalnie nie da się 
+	 odwrócić) to pokazą ci się historycznie wszystkie hashe commitów na których był ustwiony
+	 wskaźnik HEAD. Weżmiesz sobie nrHasha wskaźnika któy znajduję się przed skasowaniem i 
+	 wywołąsz (git reset) na tym nrHashu, dzieki czemu powrócisz do miejsca spredz skasowania:
+				git reflog
+				git reset --hard nrHashaSprzedSkasowaniaCommitow
+	 
+
+	 
+////////////////////// odc3. PRZESTRZEŃ ROBOCZA I STAGE: USUWANIE //////////////////////////////////////////////////////////////////////////////////
+//..............//
+
+		git clean 			- usuwa pliki NIESLEDZONE (te pliki w katalogu roboczym które nigdy 
+							  nie zostały dodane do repozytorium)
+						-n 	- tryb testowy (wyswietla co by bylo usuniete gdybys użył flagi -f)
+						-f	- (force) usun wszystko na sile (jest wymagane zeby rzeczywiscie 
+							  usunal)
+						-i 	- (interactive) wyswietla i daje opcje wyboru usuniecia
+						-d	- bierze pod uwage rowniez katalogi do usuniecia
+						-x  - bierze pod uwage dodatkowo pliki z gitignore 
+							  (zwiazane ze srodowiskiem uruchomieniowym) (NIE DZIAŁA
+		git reset			- przenosi pliki ze stage (przechowalni) do working directory 
+							  [odwrotnosc do git add.]
+		git rm / git mv 	- usuwa/przenosi pliki ze stage'a (nie z roboczego)
+							  i trzeba to potem potwierdzic zacommitowaniem
+		git reset + git checkout <nazwaPliku> 
+							- by przwrocic plik po git rm gdy juz jest poza przechowalnia 
+							  tj. w repozytorium 
+		git checkout nazwaPliku
+		git checkout -- nazwaPliku
+							- zmodyfikowany plik przywraca do stanu z ostatniego commita 
+							  (czyli do stanu w jakim aktualnie znajduję się w repozytorium)
+
+//..............//
+Komendy w przestrzeni roboczej:
+1. Polecenie do usuniacie wszystkich plikow w katlagu roboczym ktore nie zostaly nigdy 
+   wczesniej dodane do repozytorium; 
+				git clean 
+ 		*Jednakze ze wzgledow bezpieczenstwa to polecenie nie zadziala; najpierw musisz
+		 sprawdzic ktore pliki maja zostac usuniete poprzez polecenie
+				git clean -n 			- to jest taki tryb testowy dla git clean - wyswietla 
+										  Tobie pliki ktore maja zostać usuniete 
+ 		*Jednakze gdybys chcial jeszcze usunac katalogi to musisz dolozyc flage d
+				git clean -nd	
+		*Gdybys chcial zrobic usuwanie w trybie interaktywnym tzn takim gdzie wyswietli ci sie
+  		 lista polecen to uzyj polecenia:
+				git clean -idf  		- flagi: i-(interactive); d-(directories) ; f-(force) 
+		*Usuniecie plikow zwiazanych ze srodowiskiem uruchomieniowym (które znajduja sie w
+  		 pliku gitignore) jest:
+				git clean -xn 
+		 nie zawsze pliki w pliku gitignore beda bezuzyteczne - mogą to byc tez klucze do API 
+		 ktorych zdecydowanie nie chcialbys udostepniac ani usuwać.
+2. Gdybys chcial cofnac z przechowalni (stage'a) plik i go zmodyfikowac to albo po prostu po 
+   zmodyfikowaniu uzyj polecenia git add. albo uzyj polecenia:
+				git reset 
+3. Gdybys zmodyfikował plik (który niezmodyfikowany znajduję się w repozytorium) i chcial
+   cofnac te wszystkie modyfikacje w pliku do stanu z ostatniego commita (stanu z repozytorium):
+				git checkout nazwapliku 
+				git checkout -- nazwapliku 
+4. USUWANIE PLIKU z REPOZYTORIUM odbywa sie poprzez:
+				git rm nazwaPliku 	 -> a następnie trzeba to zacommitowac: git commit -m "..."
+   od (git clean) rozni sie to tym ze (git clean) jest dla katalogu roboczego a (git rm) dla 
+   repozytorium no i dodatkowo przy (git rm) mozna cofnac zmiany przed i po commitcie za pomocą: 
+				git reset + git checkout nazwaPliku
+
+
+
+/////////////////////////// odc2. git STATUS, git ADD, git COMMIT //////////////////////////////////////////////////////////////////////////////////
+//..............//
+
+		.gitignore 				 - w takim specjalnym pliku zapisujesz po enterze wszystkie 
+								   pliki i katalogi(katalogi z prawym slashem na koncu (/))
+
+		git init 				 - inicjalizuje gita
+		git status				 - sprawdza status w working directory i na stage'u
+		git add.				 - dodaje zmiany w plikach na stage'u
+		git commit -m "komentarz"- dodaje zmiany w repozytorium z komentarzem 
+				   --amend -m "komentarz"
+								 - zmienia komentarz dla ostatniego commita
+				   -m "tytułKomentarza" -m "tresc komentarza"
+								 - drugie '-m' wprowadza komentarz do tytułu komentarza
+//..............//
+1. mozesz sprawdzic tez aktualny status swojego repozytorium poprzez polecenie 
+					git status  
+2. będziesz miał pliki ktore nic nie wnoszą do projektu (np.: DS_Store i .\idea) dlatego 
+   powinenes wpisaĆ ich nazwy do pliku .gitignore (byc moze bedziesz musial najpierw stworzyc 
+   ten plik) -> (git nie bedzie na nie zwracal uwagi)
+3. Aby dodac zmodyfikowany plik do przechowalni musisz uzyc komendy:
+					git add .gitignore  		- dodasz tylko ten plik do przechowalni ALBO
+					git add . 					- dodasz wszystkie pliki ktore sie pojawily
+4. Ostatnia rzecz to wyslanie pliku z przechowalni na repozytorium. Dobra praktyka jest 
+   dodawanie komentarza [-m "komentarz"]
+					git commit -m "komentarz" 
+		*Jezeli nie zapisze komentarza to przy samym poleceniu git commit uruchomi sie 
+		 domyslny edytor tekstu ktory wskaze mi miejsce na wpisanie tego komentarza
+5. Oprócz tytułu komentarza możesz wprowadzić do niego treść :
+					git commit -m "tytulKomentarza" -m "trescKomentarza"
+6. Żeby zmienić komentarz dla ostatniego commita powtórz komende commit z flagą --amend
+					git commit --amend -m "nowyKomentarz"
+
+
+
+//////////////////////////// odc1+9 DZIAŁANIE NA ZDALNYM REPOZYTORIUM //////////////////////////////////////////////////////////////////////////////
+//..............//
+https://www.youtube.com/watch?v=9qrgY2Dw30g  -UWIERZYTELNIENIE KOMPUTERA Z GITHUBEM-24 - 26min
+		git --version 						- sprawdzenie wersje instalacji
+		git config --global core.editor nano	
+											- ustawienie edytora
+		git config --global user.name Twoje_imie_i_nazwisko
+		git config --global user.email twoj_mail
+											-ustawienie imienia nazwiska (author) + mail
+//..............//
+		git push -u origin branch1  		- pierwsze wysłanie danego brancha
+				 -u origin tag1				- pierwsze wysłanie danego taga
+		git push							- wszystkie kolejne wysyłania brancha albo taga
+		git diff branch1 branch2			- ukazanie róźnic w branchu2 w stosunku do brancha1
+		git fetch							- pobranie wszystkich zmian z repozytorium zdalnego
+			+git log --graph --decorate 	  + następnie zmergowanie jednego brancha ze zdalnym
+					 --all --oneline   		  repozytorium + następnie wypushowanie tychże zmian
+			+git merge origin/remoteBrancha   na pojedyńczym branchu w celu zrównania brancha     
+			+git push						  z repozytorium zdalnego z repozytorium lokalnym
+		git pull							- pobranie wszystkich zmian z repozytorium zdalnego
+			+git push						  i ich auto zmergowanie na aktualnie aktywnym 
+											  branchu + następnie wypushowanie tychże zmian na
+											  pojedyńczym branchu w celu zrównania brancha     
+											  z repozytorium zdalnego z repozytorium lokalnym
+//..............//
+0* INSTALACJA i UWIERZYTELNIANIE GIT'a dla komputera:  
+	A) Na początku musisz zainstalować GITa z sieci + sprawdzić czy się zainstalował:
+					git --version - sprawdzenie wersje instalacji
+	B) Następnie zrob uwierzytelnianie SSH w githubie (uwierzytelnianie swojego komputera dla 
+	   githuba) [24min -26min] Musisz to robic na konsoli w bashu (GIT-BASH) iNSTRUKCJA 
+	   znajduję się w poniższych linkach. WYKONUJ wszystkie polecenia po kolei do MIEJSCA: 
+	   adding-a-new-ssh-key-to-your-github-account 
+			https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent
+	   NASTĘPNIE dodaj swoje ssh do githuba:
+			https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account
+	   ***KONFIGURACJA MOŻE TEŻ ODBYĆ SIĘ RĘCZNIE POPRZEZ:
+			a) utworzenie klucza w konsoli:
+					ssh-keygen -t rsa -b 4096 -C "email@example.com"
+			   Te klucze są przechowywane w:  C:\Users\nazwa_uzytkownika\.ssh
+			b) następnie w konsoli kopiujesz klucz o danej nazwie np id_rsa poprzez polecenie:
+					clip < ~/.ssh/id_rsa
+			   i wklejasz go do kluczy w SETTINGS --> ADD NEW KEY
+	C) Następnie skofiguruj swoje ustwienia:
+					git config --global core.editor nano 
+									#(ustawiasz nano gdyz przy komendzie git commit (bez -m) 
+									#gdybyś pozostawil domyslny edytor czyli VIM to nie da się
+									#z tego wyjść => jedyna opcja to ESC + :q! Przy nano 
+									#wytarczy ctrl+X
+					git config --global user.name Twoje_imie_i_nazwisko
+					git config --global user.email twoj_mail
+1.1* DO POBRANIA/SKOPIOWANIA ISTNIEJĄCEGO PROJEKTU ZE ZDALNEGO REPOZYTORIUM (szybsza opcja):
+		*Sklonuję Tobie całe repozytorium łącznie z branchami (które trzeba wylistować poprzez
+		 git branch -a zamiast git branch) i z tagami: 
+					git clone adresHTTPS_do_zdalnego_repozytorium		
+													#pobierze cały katalog z projektem dlatego 
+													#nie trzeba tworzyć osobnego katalogu 
+			*w przypadku gdybyś na nowym projekcie chciał zmienić nazwę głównego brancha z 
+			 main na master to musisz to zrobić na githubie w repozytorium zdalnym na początku 
+			 działania projektu (wejdz w zakładke '1 branch' + zmien nazwe na ikonie ołówka)
+				
+1.2* UTWORZENIE REPOZYTORIUM NA REPOZYTORIUM ZDALNYM i LOKALNYM oraz POŁĄCZENIE ICH:
+	A) Utwórz repozytorium lokalne w folderze projektu poprzez  'git init'  oraz poprzez 
+	   komendy : 'git add. ' --> ' git commit'  stwórz pierwszego commita ktorego bedzie mozna 
+	   wysłac na repozytorium zdalne (remote repository)
+					git init
+					git add .
+					git commit -m "nameCommit"	
+	B) Nastepnie utwórz puste repozytorium zdalne (bez żadnych plików) i w repozytorium 
+	   lokalnym dodaj je do listy repozytoriów zdalnych (git remote add adressHttp) wraz z 
+	   aliasem origin:
+					git remote add origin https://github.com/marekidziak1/cPlusPlusPodstawy.git
+					###git branch -M master				#ta komenda jest zapisana w instrukcji
+														#ale jest niepotrzebna
+	C) Nastepnie wypushuj branch master 'pierwszym pushem z flagą -u (--set-upstream)':
+					git push -u origin master
+	   od tego momentu mozesz wysylac zmiany na branch master na repozytorium zdalne poleceniem:
+					git push
+					
+2* PUSHOWANIE - oprócz commitów ODDZIELNIE trzeba WYPUSHOWAĆ BRANCHE oraz TAGI:
+		*za pierwszym razem uzywając flagi -u (--set-upstream)
+					git push -u origin branch1  |  git push -u origin tag1
+		 dzięki temu teraz za każdym razem będąc w repozytorium lokalnym na danym branchu git
+		 będzie śledził tenże branch na repozytorium zdalnym i będziesz mógł używać skróconej 
+		 formy komendy (czyli git push) [origin jest aliasem do linku twojego repozytorium 
+         zdalnego które ustawiłeś wczesniej tj przy komendzie git remote add origin link]
+		*za każdym kolejnym razem (niezależnie od tego czy po drodze poprzełączasz się na inne 
+		 branche) zwyczajnie, poprzez:
+					git push
+					
+3* SPRAWDZENIE RÓŻNIC (git diff) - pokazuję róźnice na drugim podanym branchu w stosunku do 
+   pierwszego podanego co oznacza że widać jakie linie odjęto(na czerwono) i jakie linie 
+   dodano (na zielono) na drugim podanym branchu:
+		*różnice w różnych branchach:
+					git diff branch1 branch2
+		*różnice w tych samych branchach ale na repozytorium zdalnym i lokalnym:
+					git diff localBranch origin/remoteBranch
+					
+4* POBIERANIE ZMIAN Z GTHUBa:
+	A) PIERWSZA CZĘŚC - POBRANIE Z MERGEM:
+		*git fetch - tylko POBIERA ZMIANY na WSZYSTKIE branche typu REMOTE (bez ich 
+			jednoczesnego zmergowania) po czym nastepnie (będąc na branchach typu local (o tych 
+			samych nazwach co remote)) musisz zrobić merge i rozwiązać MERGE CONFLICTy:
+					git fetch
+					git log --graph --decorate --all --oneline  
+					git merge origin/nazwaREMOTEbrancha
+			Po pobraniu zmian (git fetch) zanim je zmergujesz możesz sprawdzić czym różnią się 
+			od siebie branch lokalny i branch zdalny poprzez:
+					git diff origin/branchRemote branchLocal
+		*git pull - POBIERA zmiany na wszystkie branche i MERGUJE branche typu remote z 
+			branchami local (o tych samych nazwach co remote) ALE TYLKO NA BRANCHU NA KTÓRYM 
+			SIĘ AKTUALNIE ZNAJDUJESZ (na reszcie branchy musisz się zeswitchować i jeszcze raz 
+			użyć komendy (git pull )). Jeżeli przy mergowaniu dochodzi do MERGE CONFLICT'ów to 
+			musisz je rozwiązać:
+					git pull 
+					git switch branchName + git pull 
+			Podczas git pulla jeżeli pojawią się MERGE CONFLICTY to możesz sprawdzić czym róźnią 
+			się od siebie branch lokalny i branch zdalny poprzez:
+					git diff origin/branchRemote branchLocal
+	B) DRUGA CZĘŚĆ - WYPUSHOWANIE dzięki któremu nastąpi ZRÓWNANIE BRANCHA LOKALNEGO z 
+	   BRANCHEM ZDALNYM:
+		*Po zmergowaniu brancha lokalnego z branchem zdalnym (albo po komendzie git fetch i
+		 zmergowaniu albo po komendzie git pull) trzeba jeszcze ustawić branch lokalny i zdalny 
+		 na tym samym commitcie. Zeby to zrobić to musisz zrobić pusha:
+					git push
+		*Chcąc cofnąc się o kilka commitów robiąc git reset oprócz cofania się na repozytorium 
+		 lokalnym trzeba cofnąć się tez na repozytorium zdalnym. Też robisz to przez pusha ale 
+		 z flagą -f (--force):
+					git reset --hard nrHaszha
+					git push -f origin master
+
+ 
+
+
+///////////////////////////////// odc0. PODSTAWY i DODATKI /////////////////////////////////////////////////////////////////////////////////////////
+0* ZALETY GITa (system kontroli wersji jak Github, BitBucket, GitLab)
+	*przeglad historii zmian
+	*przywrocenie dowolnej wesji pliku
+	*praca zespolowa z mozliwoscia pracy zdalnej offline
+	*mozliwosc rozgaleziania kodu (rozwijanie aplikacji przy jednoczesnym nieruszania stabilnej 
+	 wesji (master branch))
+
+1* LOKALNE REPOZYTORIUM (lokalny git) sklada sie z:
+		*REPOZYTORIUM LOKALNE - (.git folder) - pliki przygotowane do wysłania na repozytorium 
+		 zdalne
+		*STAGE - PLIKI na STAGE'U - pliki przygotowane do commita (czyli zapisania plikow w ich 
+									aktualnym stanie wraz z inf. co zostało zmienione a co 
+									zapisane)
+		*KATOLOG ROBOCZY:
+			*TRACKED - PLIKI ŚLEDZONE - pliki ktore są na STAGE'u ale zostały ZMODYFIKOWANE
+			*UNTRACKED - PLIKI NIEŚLEDZONE - pliki które nigdy nie zostały dodane na STAGE'a
+		*IGNORED - pliki ktorych nie chcemy wysyłać na zdalne repozytorium (np klucze do API)
+
+2. DODATKI:
+	*PRACA Z EDYTOREM TEKSTU:	
+		- VIM - zapisywanie ESC + :q + ENTER
+		- NANO - zapisywanie ctrl +x
+	*WYŚWIETLENIE WIELU LINIJEK TEKSTU W TERMINALU:
+		- żeby przerwać te wyświetlenie wpisz 'q'
+	*KOPIOWANIE I WKLEJANIE W TERMINALU:
+		*CTRL + INSERT - kopiowanie
+		*SHIFT + INSERT - wklejanie
+	*INNE KURSY DO GITHUB'A:
+		*PLURALSIGHT: HOW GIT WORKS
+		*PLURALSIGHT: MASTERING GIT
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

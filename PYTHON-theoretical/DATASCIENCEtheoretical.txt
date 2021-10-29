@@ -1,0 +1,355 @@
+POZOSTAŁE:   
+	MATPLOTLIB: 		https://www.w3schools.com/python/matplotlib_intro.asp
+	NUMPY:				https://www.w3schools.com/python/numpy/default.asp
+	SCIPY:				https://www.w3schools.com/python/scipy/index.php
+
+	SCRAPPY:			https://www.tutorialspoint.com/scrapy/index.htm
+	PANDAS:				https://www.w3schools.com/python/pandas/default.asp
+	MACHINE LEARNING: 	https://www.w3schools.com/python/python_ml_getting_started.asp
+
+######################################## MODULE NUMPY ##########################################
+
+################################# MODULE MATH/CMATH/STATISTICS #################################
+MODUŁ MATH: 			https://www.w3schools.com/python/module_math.asp
+	  CMATH:			https://www.w3schools.com/python/module_cmath.asp
+	  STATISTICS:		https://www.w3schools.com/python/module_statistics.asp
+	  
+##################################### PODSTAWY NA LICZBACH #####################################
+	
+	  
+	  
+	  
+	  
+######################################## MODULE NUMPY ##########################################
+1* MODUŁ NUMPY:
+  *PODSTAWY:
+	*funkcje z numpy są stosowane do działań na ogormnych zbiorach danych
+	*wymaga pobrania modułu numpy 	
+				import numpy
+	*tablice w numpy mają format zbliżony do list ale nie zawierają przecinków tj [[1 2 3][4 5 6]]
+	 przy tworzeniu. najczęsciej wykorzystuję się tablice dwuwymiarowe poprzez określenie lub modyfikacje
+     zwykłej listy na zagnieżdzone listy w liscie gdzie elementy z zewnetrznej listy są traktowane jako 
+	 wiersze (czyli każda zagnieżdona lista jest wierszem) a elementy z wewnętrznych list są traktowane 
+	 jako kolumny:
+					arr =numpy.array([1, 2, 3, 4, 5, 6])
+					numpy.reshape(arr,(3,2))
+					arr.shape =(3,2)								#(3,2) czyli 3 wiersze i 2 kolumny
+  *FUNKCJE:
+	**numpy.array(list)
+		*pozwala na stworzenie listy liczb o ogromnych rozmiarach. W argumencie możesz podać listę 
+		 niekoniecznie o typie intów albo floatów tylko mogą być też liczby zapisane w stringu 
+		 jednakże wtedy wszystkie muszą być jednego typu:
+				lst=['1','2','3']
+				numpy.array(lst)		#zwroci ['1' '2' '3']
+		*jednakże jeżeli chcesz działąć na liczbach to musisz przypisać drugi argument któy przyjmuje typ 
+		 danych dzieki czemu możesz przy tworzeniu takiej listy liczb od razu przekonwertować na typ który
+		 Cię interesuje (np int albo float)
+				numpy.array(lst,int)	#zwroci: [1 2 3]
+				numpy.array(lst,float)	#zwroci: [1. 2. 3.]
+	**arr.shape ;; numpy.reshape(arr,(int,int))   gdzie: arr=numpy.array(list)
+		*arr.shape służy do zwracanie wymiaru danej tablicy:
+			*Zwraca wymiar tablicy poprzez krotkę w postaci ilośći zagnieżdonych list tj ilość elemntów w
+			 każdej kolejnej liście. Pole shape NIE ZMIENIA TEJŻE tablicy(array) tylko zwraca krotkę wymiaru. 
+			*wszystkie elementy muszą być tak samo zwymiarowane tj każdy element musi mieć tak samo 
+			 zagnieżdzone listy, inaczej zostanie zwrócony błąd: VisibleDeprecationWarning 
+			*Dla przykładu:
+				*zwykła lista 3 elementów bez zagnieżdżeń skłąda się z 3 elemntów czyli (3,)
+					arr = numpy.array([1, 2, 3])
+					arr.shape  						#print(arr.shape) --> #zwróci (3,)
+				*lista 3 zagnieżdżonych list dwuelementowych to 3 elementy z 2oma elementami czyli (3,2)
+					arr =numpy.array([[1, 2],[3, 4],[5, 6]])
+					arr.shape  						#print(arr.shape) --> zwróci (3,2)	
+				*lista 3 zagnieżdonych list o zagnieżdzonych 2óch dwuelementowych listach to 3 elementy z 
+				 2oma 2 elementowymi elementami czli (3,2,2) 
+					arr =numpy.array( [  [[1,1], [2,2]],  [[3,3], [4,4]],  [[5,5], [6,6]]  ] ) #bez spacji
+					arr.shape  						#print(arr.shape) --> zwróci (3,2,2)	
+		*arr.shape=(3,2) służy do zmiany wymiaru danej tablicy
+			*poprzez przypisanie do danej tablicy krotki o odpwiednim wymiarze czyli zagnieżdzeniu list 
+			 tablica zostaje zmodyfikowana według podanych wartośći w krotce:
+					arr = numpy.array([1, 2, 3, 4, 5, 6])
+					arr.shape =(3,2)
+					print(arr)				#zwroci [[1 2][3 4][5, 6]]
+		*numpy.reshape(arr,(3,2))
+			*robi to samo co arr.shape ale jest metodą a nie polem oraz nie modyfikuję podanej tablicy tylko 
+			 działą na kopii zwracając tablicę o nowym wymiarze (o nowm zagnieżdżeniu list)
+					arr = numpy.array([1, 2, 3, 4, 5, 6])
+					print(numpy.reshape(arr,(3,2))				#zwroci [[1 2]
+																		 [3 4]
+																		 [5 6]] czyli 3 wiersze i 2 kolumny
+	**numpy.transponse(arr)  gdzie arr=numpy.aray(listOfLists)
+		*bierze i łączy ze sobą pierwsze, drugie, trzecie, itd elementy z każdej zagnieżdżonej listy.
+		*nie działa na orginalnej tablicy tylko tworzy nową kopie
+					arr = numpy.array([[1,2,3], [4,5,6]])
+					print( numpy.transpose(arr) )					#zwroci: [[1,4], [2,5], [3,6]]
+		*działa tylko na najniższym poziomie łącząc elementy o tych samych miejscach w zagnieżdżeniach:
+					arr = numpy.array([ [[1,2], [3,8]],   [[4,5], [6,9]] ])
+					print( numpy.transpose(arr) )
+	**numpy.flatten(arr)
+		*całkowicie rozmontowuję zagnieżdżenie w liście nawet jeżeli występowało ono na wielu poziomach
+		*nie działa na orginalnej tablicy tylko tworzy nową kopie
+					arr = numpy.array([[1,2,3], [4,5,6]])
+					print(arr.flatten())							#zwroci: [1 2 3 4 5 6]
+		*nie rozmontowuję zagnieżdżenia list tylko na jednym poziomie ale na wszyskich:
+					arr = numpy.array([  [[1],[2],[3]], [[4],[5],[6]]  ])
+					print(arr.flatten())							#także zwroci: [1 2 3 4 5 6]
+	**numpy.concatenate((arr1, arr2, arr3)) 	#musisz podać argumenty w podwójnym nawiasie
+		*pozwala łączyć ze sobą wiele tablic w jedną:
+					arr1=numpy.array([1,2,3])
+					arr2=numpy.array([4,5,6])
+					arr3=numpy.array([7,8,9])
+					arr=numpy.concatenate(arr1, arr2, arr3)			#zwroci: [1 2 3 4 5 6 7 8 9]
+		*gdy listy są zagnieżdzone wewntarz innymi listami (czyli mają więcej niż jeden wymiar) to
+		 te tylko listy zewnętrzne zostaną połączone w jedną (wewnętrzne pozostaną takie jak były)
+					array_1 = numpy.array([[1,2,3],[0,0,0]])
+					array_2 = numpy.array([[0,0,0],[7,8,9]])
+					print(numpy.concatenate((array_1, array_2)))	
+														#zwroci:[ [1 2 3]  [0 0 0]  [0 0 0]  [7 8 9] ]
+		*jednakże gdy dodamy dodatkowy parametr axis=1 wtedy wewnętrzne listy też zostaną połączone 
+		 ale nie wszystkie ze sobą tylko te które były ze sobą w danej grupie:
+					array_1 = numpy.array([[1,2,3],[0,0,0]])
+					array_2 = numpy.array([[0,0,0],[7,8,9]])
+					print(numpy.concatenate((array_1, array_2), axis=1))	
+														#zwroci:[ [1 2 3 0 0 0]  [0 0 0 7 8 9] ] 
+														
+  *FUNKCJE ZWRACAJĄCE DWUWYMIAROWE TABLICE ZER I JEDYNEK:
+	**numpy.zeros((int, int)) / numpy.ones((int, int))	#nawiasy są podwójne
+		*funkcja zeros() zwróci Tobie tablice dwuwymiarową wypełnioną zerami a ones() zwróci też tablice 
+		 dwuwymiarową wypełnioną jedynkami 
+					arr=numpy.zeros((2,3))		  		#zwroci [[0. 0. 0.] [0. 0. 0.]]
+					arr=numpy.ones((2,3))				#zwroci [[1. 1. 1.] [1. 1. 1.]]
+		*domyślnym typem tych tablic będzie typ float ale można go zmienić wpisując dodatkowy parametr 
+		 w pierwszym nawiasie dytype=int
+					arr=numpy.zeros((2,3),dtype=int)	#zwroci [[0 0 0] [0 0 0]]
+					arr=numpy.ones((2,3),dtype=int)		#zwroci [[1 1 1] [1 1 1]]
+	**numpy.identity(intA)
+		*funkcja zwraca tablicę kwadratowej macierzy intA x intA wypełnionej zerami opróćz przekątnej 
+		 z lewego górnego rogu do lewgo dolnego która jest wypełniona jedynkami
+		*domyślny typ danych w tablicy to float
+					numpy.identity(intA)				#zwróci:[[ 1.  0.  0.]
+																 [ 0.  1.  0.]
+																 [ 0.  0.  1.]]
+	**numpy.eye(intA, intB, k=intZ)	
+		*funkcja zwraca macierz o wymiarach intA x intB (gdzie intA to wiersze a intB to kolumny) wypełenioną
+		 zerami i na przekątnej wypełnionej jedynkami. Przekątną wyznacza parametr k. Jeżeli k>0 wtedy 
+		 k wskazuję na numer kolumny od któego zaczyna się ta przekątna jedynek, jeżeli k<0 wtedy wskazuję 
+		 na numer wiersza od któego będzie zaczynać się przekątna jedynek. Jeśli k=0 wtedy przekątna
+		 zaczyna się od zerowej kolumny i jednocześnie zerowego wiersza
+		*domyślny typ danych tablicy to flot
+					numpy.eye(5,7,k=1)					#zwróci:[[ 0.  1.  0.  0.  0.  0.  0.]
+																 [ 0.  0.  1.  0.  0.  0.  0.]
+																 [ 0.  0.  0.  1.  0.  0.  0.]
+																 [ 0.  0.  0.  0.  1.  0.  0.]
+																 [ 0.  0.  0.  0.  0.  1.  0.]]
+																 
+					numpy.eye(5,7,k=-2)					#zwróci:[[ 0.  0.  0.  0.  0.  0.  0.]
+																 [ 0.  0.  0.  0.  0.  0.  0.]
+																 [ 1.  0.  0.  0.  0.  0.  0.]
+																 [ 0.  1.  0.  0.  0.  0.  0.]
+																 [ 0.  0.  1.  0.  0.  0.  0.]]
+  *FUNKCJE MATEMATYCZNE:
+	*domyślnym tyoem danych jest float
+	**PODSTAWOWE:	
+						a = numpy.array([1,2,3,4], float)
+						b = numpy.array([5,6,7,8], float)
+		**dodawanie
+						a + b                     #[  6.   8.  10.  12.]
+						numpy.add(a, b)           #[  6.   8.  10.  12.]
+		**odejmowanie
+						a - b                     #[-4. -4. -4. -4.]
+						numpy.subtract(a, b)      #[-4. -4. -4. -4.]
+		**mnożenie
+						a * b                     #[  5.  12.  21.  32.]
+						numpy.multiply(a, b)      #[  5.  12.  21.  32.]
+		**dzielenie
+						a / b                     #[ 0.2         0.33333333  0.42857143  0.5       ]
+						numpy.divide(a, b)        #[ 0.2         0.33333333  0.42857143  0.5       ]
+						numpy.floor_divide(a,b) #jednocześnie dziEi i zaokrągla w dół   [0 0 0 0]
+		**MODULO
+						a % b                     #[ 1.  2.  3.  4.]
+						numpy.mod(a, b)           #[ 1.  2.  3.  4.]
+		**potęgowanie
+						a**b              #[1.00000000e+00 6.40000000e+01 2.18700000e+03 6.55360000e+04]
+						numpy.power(a, b) #[1.00000000e+00 6.40000000e+01 2.18700000e+03 6.55360000e+04]
+	**ZAOKRĄGLANIE - numpy.floor(arr) ; numpy.ceil(arr) ; numpy.rint(arr) gdzie arr==numpy.array(list)
+		**numpy.floor(arr) - zaokrąglanie w dół
+			my_array = numpy.array([1.1, 2.2, 3.3, 4.4, 5.5, 6.6, 7.7, 8.8, 9.9])
+			numpy.floor(my_array)        			 #zwroci: [1. 2. 3. 4. 5. 6. 7. 8. 9.     ]
+		**numpy.ceil(arr) - zaokrąglanie w górę
+			my_array = numpy.array([1.1, 2.2, 3.3, 4.4, 5.5, 6.6, 7.7, 8.8, 9.9])
+			numpy.ceil(my_array)         			 #zwroci: [    2. 3. 4. 5. 6. 7. 8. 9. 10.]
+		**numpy.rint(arr) - odpowiednik funkcji round() - zaokrąglanie w dół poniżej 0.5 i w górę powyżęj 0.5:
+			my_array = numpy.array([1.1, 2.2, 3.3, 4.4, 5.5, 6.6, 7.7, 8.8, 9.9])
+			numpy.rint(my_array)					 #zwroci: [1. 2. 3. 4.     6. 7. 8. 9. 10.]
+	**FUNKCJE zwracające odpowiednie wartości w zależności od ułożenia OSI (axis); zwracające tablice;
+	    **SĄ 2 OSIE(axis) i 3 opcje:
+		  *oś 0 czyli oś y (oś pionowa)- bierze po kazdym odpowiadajacym elemencie- pierwszy z pierwszym, itd
+			my_array = numpy.array([ [1, 2], [3, 4] ])
+			my_array2= numpy.array([ [2, 5], [3, 7], [1, 3], [4, 0]])
+							|				 	  |
+						[ [1|2] 			  [ [2|5]
+							|					[3|7]
+						  [3|4] ]				[1|3]
+							|					[4|0] ]
+							|				  	  |
+		  *oś 1 czyli oś x (oś pozioma)- bierze po każdym elemencie z wewnętrznej tablicy 
+											  [ [2 5]
+										   ---------------
+						[ [1 2] 				[3 7]
+					-------------------    ---------------
+						  [3 4] ]				[1 3]
+										   ---------------
+												[4 0] ]
+		  *brak osi - None (czyli domyślnie) - bierze po każdym elemencie ze wszystkich wewnętrznych tablic 
+						[ [1 2] 		  	  [ [2 5] 
+						  [3 4] ]			    [3 7]
+												[1 3]
+												[4 0] ]
+		**SUMOWANIE TABLIC - numpy.sum(arr, axis=intNumber)
+				my_array = numpy.array([ [1, 2], [3, 4] ])
+				numpy.sum(my_array, axis = None)     	    #Output : 10 
+				numpy.sum(my_array)                  	    #Output : 10	
+				numpy.sum(my_array, axis = 0)            	#Output : [4 6]
+				numpy.sum(my_array, axis = 1)           	#Output : [3 7]
+		**MNOŻENIE TABLIC - numpy.product(arr, axis=intNumber)
+				my_array = numpy.array([ [1, 2], [3, 4] ])
+				numpy.prod(my_array, axis = None)           #Output : 24
+				numpy.prod(my_array)                        #Output : 24
+				numpy.prod(my_array, axis = 0)              #Output : [3 8]
+				numpy.prod(my_array, axis = 1)              #Output : [ 2 12]
+		**MINIMUM - numpy.min(arr, axis=intNumber)
+				my_array = numpy.array([[2, 5], [3, 7], [1, 3], [4, 0]])
+				numpy.min(my_array, axis = None)      		#Output : 0
+				numpy.min(my_array)                   		#Output : 0
+				numpy.min(my_array, axis = 0)               #Output : [1 0]
+				numpy.min(my_array, axis = 1)       	    #Output : [2 3 1 0]
+		**MAXIMUM - numpy.max(arr, axis=intNumber)
+				my_array = numpy.array([[2, 5], [3, 7], [1, 3], [4, 0]])
+				numpy.max(my_array, axis = None)      		#Output : 7
+				numpy.max(my_array)                   		#Output : 7
+				numpy.max(my_array, axis = 0)               #Output : [4 7]
+				numpy.max(my_array, axis = 1)       	    #Output : [5 7 3 4]
+		**ŚREDNIA ARYTMETYCZNA (MEAN) - numpy.mean(arr, axis=intNumber)
+				my_array = numpy.array([ [1, 2], [3, 4] ])
+				numpy.mean(my_array, axis = None)     		#Output : 2.5
+				numpy.mean(my_array)                  		#Output : 2.5
+				numpy.mean(my_array, axis = 0)        		#Output : [ 2.  3.]
+				numpy.mean(my_array, axis = 1)        		#Output : [ 1.5  3.5]
+		**WARIANCJA/variance (VAR) - numpy.var(arr, axis=intNumber). 
+			*Wariancja liczona jako suma kwadratów (różnic między średnią arytmetyczną a elementem)
+		     dzieloną przez ilośc elementów
+				my_array = numpy.array([ [1, 2], [3, 4] ])
+				numpy.var(my_array, axis = None)      		#Output : 1.25
+				numpy.var(my_array)                   		#Output : 1.25
+				numpy.var(my_array, axis = 0)         		#Output : [ 1.  1.]
+				numpy.var(my_array, axis = 1)         		#Output : [ 0.25  0.25]
+		**ODCHYLENIE STANDARDOWE/standard deviation (STD) - numpy.std(arr, axis=intNumber)
+			*Odchylenie standardowe liczone jako pierwiastek z wariancji
+				my_array = numpy.array([ [1, 2], [3, 4] ])
+				numpy.std(my_array, axis = None)      		#Output : 1.11803398875
+				numpy.std(my_array)                   		#Output : 1.11803398875
+				numpy.std(my_array, axis = 0)         		#Output : [ 1.  1.]
+				numpy.std(my_array, axis = 1)         		#Output : [ 0.5  0.5]
+	**FUNKCJE ZWIĄZANE Z MACIERZAMI:	
+				A = numpy.array([ 6, 2 ])
+				B = numpy.array([ 1, 4 ])
+				C = numpy.array([ 1, 8 ])
+				D = numpy.array([ 1, 4 ])
+		**numpy.dot(A,B) - zwraca liczbę w postaci dodawania (mnożeń liczb w pionowej osi tablic):
+		**numpy.inner(A,B) - działa PRAWIE dokładnie tak samo jak dot (inaczej zachowuję się w przyapadku 
+							 tablic zagnieżdżonych czyli wielowymiarowych)
+				print(numpy.dot(A, B))						#zwroci: 14
+				print(numpy.dot(C, D))						#zwroci: 33		
+				print(numpy.inner(A, B))					#zwroci: 14
+				print(numpy.inner(C, D))					#zwroci: 33		
+		**numpy.cross(A,B) - zwraca liczbę w postaci odejmowania (mnożeń cyfr leżacych na przekątnych):
+				print(numpy.cross(A, B))					#zwroci: 22	
+				print(numpy.cross(C, D))					#zwroci: -4
+		**numpy.outer(A,B) - zwraca tablicę w postaci wymnożeń każdego elemtnu z pierwszej tablicy przez 
+			każdy element drugiej tablicy:
+				print(numpy.outer(A, B))					#zwroci: [[6 24] [2 8]]
+				print(numpy.outer(C, D))					#zwroci: [[1 4] [8 32]]				
+	    //PRZEROBIĆ TO RAZ JESZCZE:
+		  MACIERZE:
+			https://www.hackerrank.com/challenges/np-dot-and-cross/problem
+			https://www.hackerrank.com/challenges/np-inner-and-outer/problem
+		  WIELOMIANY:
+			https://www.hackerrank.com/challenges/np-polynomials/problem?h_r=next-challenge&h_v=zen
+		  ALGEBRA:
+			https://www.hackerrank.com/challenges/np-linear-algebra/problem
+			
+################################# MODULE MATH/CMATH/STATISTICS #################################
+MODUŁ MATH: 			https://www.w3schools.com/python/module_math.asp
+	  CMATH:			https://www.w3schools.com/python/module_cmath.asp
+	  STATISTICS:		https://www.w3schools.com/python/module_statistics.asp
+
+1* MODUŁ MATH / CMATH:
+https://www.w3schools.com/python/module_math.asp
+https://www.w3schools.com/python/module_cmath.asp
+https://www.w3schools.com/python/module_statistics.asp
+
+	*MODUŁ CMATH wykorzystuję sie do obliczeń na liczba zespolonych (complex) 
+	 oraz na obiektach z nimi związanymi
+	*MODUŁ STATISTICS wykorzystuję się do obliczeń matematycznych w statystyce 
+	*FUNKCJE do pobrania z modułem MATH / CMATH:
+			import math
+			import cmath 
+			import statistics
+		*math.sqrt() - pierwiastkowanie
+			x = math.sqrt(64)
+		*math.ceil(x) - zaokrąglenie w dół
+			x = math.ceil(1.4)
+		*math.floor(x) - zaokrąglenie w górę
+			y = math.floor(1.4)
+		+ inne funkcje na: https://www.w3schools.com/python/module_math.asp
+						   https://www.w3schools.com/python/module_cmath.asp
+	*STAŁE do pobrania z modułem MATH / CMATH:
+		*math.pi
+		*math.e
+		+ inne stałe na: https://www.w3schools.com/python/module_math.asp
+						 https://www.w3schools.com/python/module_cmath.asp
+	* klasa Fraction:
+		https://www.geeksforgeeks.org/fraction-module-python/
+		*trzeba pobrać moduł fractions
+			from fractions import Fraction
+		*poprzez Fraction(int1,int2) tworzysz ulamek int1/int2
+		*możesz podać stringa jako dzielenie liczb do argumentu a Fraction zamini ci to na obiekt klasy Fraction 
+			Fraction('8/12') 		#zwroci Fraction(8,12) czyli zwroci 8/12
+	* moduł Decimal:
+		https://www.programiz.com/python-programming/numbers
+		*używa się przy operacjach finansowych gdyż ta klasa jest bardziej dokłądna niż typ danych float.
+			from decimal import Decimal as D
+			print(D('1.1') + D('2.2'))
+
+##################################### PODSTAWY NA LICZBACH #####################################
+	*PODSTAWY:
+		*liczby w Pythonie możesz dla ułatwienia zapisywać z podkreślnikami tj:
+				num1=10_000_000_000
+				num2=100_000_000
+		*modyfikacja na konkretny rodzaj liczby przy printowaniu:
+			*z przecinkiem zamiast podkreślnika:
+				print(f'{10_000_000:,}')					#zwróci: 10,000,000
+			*z zaokrąglenie do dwóch miejsc po przecinku: 
+				print(f'{10_000_000.49494:.2f}')			#zwróci: 10000000.49
+				print(f'{10_000_000.49494:,.2f}')			#zwróci: 10,000,000.49
+		*typ INT w pythonie może być tak duży jak pamieć w danym komputerze - nie ma ograniczeń jak
+ 		 w c++ ; int = (2**31)-1 lub c++long long int =(2**63)-1 (9223372036854775807) - spokojnie 
+		 jestesmy w stanie operować na większych wartościach tj 2**1000 i wiecej
+	*FUNKCJE wbudowanee w PYTHONA: 
+		*min() & max() - znajdowanie najjmniejszej i najwiekszej wartosci w danej kolekcji
+				x = min(5,6,22,65)
+				x = max(5,6,22,65)
+		*abs() - wartośc bezwzględna
+				x = abs(-7.25)
+		*pow(x,y) - potęgowanie do wartosci y ;; może przyjąc nie tylko 2 argumenty ale też 3ci ktory 
+		 będzie dzielnikiem do modulo
+				pow(2,3)		#zwróci 8
+				pow(2,3,5)		#zwróci 3 gdyż reszta z dzielenia 8 przez 5 tyle wynosi ( 8%5=3 )
+		*funkcja round(liczba, ilosc_przecinków) - do zaokraglania liczby przy podanej ilosci przecinków
+				round(3.735474,2) 			#zwroci: 3.74
+		 możesz też zaokrąglić skrótem "%.2f" %nazwaZmiennej:
+				print("%.2f" %srednia)		#zaokrągli do 2 miejsc po przecinku.
+		*divmod() - przyjmuje 2 argumenty i zwraca krotke pary (wynik dzielenia bez reszty 1szego 
+		przez 2gi (a//b) oraz wynik modulo 1szego modulo 2gi (a%b)) 
+				divmod(177,10)	#zwróci (17,7)
+		*asin(), acos(), atan() - funkcje cyklometryczne czyli takie gdzie podajesz wartość funkcji 
+		 trygonometrycznych żęby otrzymać ilość stopni

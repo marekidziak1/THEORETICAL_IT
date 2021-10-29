@@ -1,0 +1,565 @@
+4* OBIEKTY
+   **Obiekty w JAVASCRIPT jesteśmy w stanie stworzyć bez tworzenia do nich klas poprzez wymienienie
+	 w nawiasach klamrowych jego properties (pól) - sam wymyślasz properties. Działa to tak jakbys wymyślał 
+	 przepis na klasę i tworzył obiekt jednocześnie. Jest to opcja korzystająca z kolekcji dictionaries
+	 Poprzez ten sposob powstanie obiekt klasy Object:
+						var obj = {name: "Marek", age: 24, height: 186}
+						console.log(obj)		//zwroci: Object
+		*jesteś w stanie dostać się do properties poprzez operator kropki '.' i jej nazwe pol albo poprzez 
+		 nawias kwadratowy i wymienienie tak jakby klucza do słownika (Dictionary):
+						console.log(obj.name;)
+						console.log(obj["name"]);
+		*w takim tworzeniu obiektu możesz dodać też metody z argumentami poprzez wymienienie ich po 
+		 przecinku jakby były kolejnymi polami. To co jest mega ważne to to żebyś takiej metody nie 
+		 kończył średnikiem! - TYLKO PRZECINKAMI!
+		*Są 2 sposoby tworzenia takich funkcji:
+			*podajesz nazwę, dwukropek i w dalszej części zamiast podania wartości to podajesz słowo 
+			 function ale bez nazwy (bo tę podałęś już wcześniej). 
+			*po nazwie nie podajesz dwukropka ani słowa function tylko nawiasy okrągłe:
+						var obj ={name: "Adam", age:25,
+							showName: function(){
+								return "Imie: "+this.name+"<br />";
+							},
+							showAge(inYear){
+								return "Wiek: "+this.age+" in "+inYear+"<br />";
+							}
+						};
+		*wywołanie takiech metod odbywa się normalnie po kropce:
+						var result=document.getElementById("result")		// zwróci:
+						result.innerHTML+= obj.name + "<br />"				// Adam
+						result.innerHTML+= obj['age']) + "<br />"			// 25 
+						result.innerHTML+=obj.showName()					// Imie: Adam
+						result.innerHTML+=obj.showAge(2021)					// Wiek: 25 in 2021
+						
+   **w JAVASCRIPT do 2016 nie było takiego czegoś jak tworzenie klasy tylko ewentualnie wzór klasy. Żeby 
+     stworzyć taki wzór klasy trzeba stworzyć funckję z nazwą zaczynającą się od dużej litery gdzie argumenty 
+	 do funkcji są jej polami które przypisuję się poprzez słowo kluczowe this.
+						function Person(name, age){
+							this.name=name;
+							this.age=age;
+						}
+		*Następnie by stworzyć obiekt takiej "klasy" to robisz to poprzez konstruktor i słowo new.
+						var bartek = new Person("Bartek",19);
+		*W takiej klasie możemy stworzyć też metody i robimy to poprzez wymienienie po średniku kolejnego
+		 pola któremu przypisujesz słowo kluczowe function, nawiasy okrągłę, argumenty i otwierasz ciało 
+		 funkcji. Wszystko kończysz średnikiem.
+						function Person(name, age){
+							this.name=name;
+							this.age=age;
+							this.showName=function(){
+								return "Imie: "+this.name+"<br />";
+							};
+							this.showAge=function(inYear){
+								return "Wiek: "+this.age+" in "+inYear+"<br />";
+							};  
+						}
+						var ola = new Person("Ola",18);				//zwróci:
+						result.innerHTML+=ola.name +"<br />";		//Ola
+						result.innerHTML+=ola['age'] +"<br />";		//18
+						result.innerHTML+=ola.showName();			//Imie: Ola
+						result.innerHTML+=ola.showAge(2021);		//Wiek: 18
+	
+3* FUNKCJE i TABLICE
+	*TABLICE:
+		*TWORZENIE:	
+			*poprzez stworzenie obiektu klasy Array gdzie w argumencie podajesz elementy tej tablicy:
+						var tab = new Array("Poniedziałek", "Wtorek", "Środa");
+			*możesz stworzyć pustą tablicę o odpowiedniej ilości elementów lub bez sprecyzowanej ilośći 
+			 elementów
+						var tab1 = new Array()
+						var tab2 = new Array(3);
+			*poprzez nawiasy kwadratowe i wypisanie argumentów :
+						var tab3 = ["Wiosna", Lato", "Jesien","Zima")
+		*długośc tablicy sprawdzasz poprzez length:
+						var tab = new Array("Poniedziałek", "Wtorek", "Środa");
+						console.log(tab.length);
+		*żeby przejść po całej tablicy w pętli for
+			*to skorzystaj z atrybutu length:
+						for(var i=0; i<tab.length; i++){
+							...
+						}
+			*albo z pętli forEach - wywołujesz ją na obiekcie tablicy i w argumencie podajesz labmde
+			 gdzie dla każdego argumentu z tablicy wywołujesz daną funkcje:
+						tab.forEach(x => console.log(x));
+		*tablice indeksowane są od zera; jeżeli odwołasz się do komórki w tablicy która nie istniej to 
+		 zwróci Tobie undefined zamiast błędu.
+		*tablica w JAVASCRIPT'cie jest dynamiczna jak lista czyli nie ma określonej stałej wielkośći;
+		*przypisanie nowej wartośći do istniejącej już tablicy odbywa się poprzez zwykłe przypisanie:
+						var tab = new Array("Poniedziałek", "Wtorek", "Środa");
+						tab[2] = "wednesday"
+			*chcąc dodać nową wartość robisz to poprzez przypisanie:
+						tab[3]="Czwartek"
+			*jeżeli pominiesz kilka indeksów między długością istniejącej tablicy a wskaanym indeksem
+			 to indeksy pomiędzy zostaną uzupełnione wartościami undefined;
+						var tab = new Array("Poniedziałek", "Wtorek", "Środa");
+						tab[6] = "Sunday";		
+		*możesz połączyć ze sobą wiele tablic poprzez funkcję concat(), którą możesz wywoływać na innym 
+			concat'cie
+						tab4=tab4.concat(tab2);
+						tab4=tab4.concat(tab2).concat(tab3);
+	*FUNKCJE:
+	   **deklarujesz funkcje poprzez słowo kluczowe function
+	   **możesz zadeklarować funkcje zarówno przed jej wywołaniem jak i po 
+						nameFunction();
+						function nameFunction(){  
+							... 
+						}
+	   **w JAVASCRIPT'cie argumenty w funkcji są tak na prawdę tablicą o wielkości (ilości argumentów)
+		 i nazwie arguments[] Poprzez arguments[nrIndeksu] jesteś w stanie się do nich odwołać:
+						function add(a,b){
+							console.log(arguments[0] +arguments[1]);
+						}
+	   **jeżeli masz kilka argumentów w funkcji i podczas wywołania tej funkcji nie podasz wszystkich 
+		 jej argumentów to czy tak czy tak funkcja się wywoła i nie wyskoczy błąd. Ten argument którego 
+		 nie podasz przyjmie wartość undifined a jeżeli funkcja będzie zawierać jakieś operacje to 
+		 wynik ich będzie równy NaN (czyli NOT A NUMBER).
+						function nameFunction(a,b){
+							console.log(a" + "+b+" = "(a+b))
+						}
+						nameFunction(2)			// zwróci: 2 + undefined = NaN
+	   **w JAVASCRIPT'cie NIE ISTNIEJE PRZECIĄŻANIE FUNKCJI (jest tak jak w Pythonie). Jeżeli stworzysz 
+		 funkcje o tej samej nazwie ale ze zmienną liczbą argumentów to wywoła się ta druga funkcja NAWET 
+		 jeżeli podasz taką liczbę argumentów która pasowałaby do tej pierwszej funkcji.
+						function add(a,b){
+							console.log(a+b)
+						}
+						function add(a){
+							console.log(a++)
+						}
+						add(5,10)	//zamiast zwrócić liczbę 15 zwróci liczbę 6 (czyli 5+1) 
+		 żeby poradzić sobie z takimi sytuacjami musisz użyć operatora potrójnego porównania i funkcji 
+		 typeof() oraz użyć pola length w tablicy arguments (arguments.length) w celu odróżnienia 
+		 działania funkcji dla danej liczby argumentów:
+						function add(a,b){
+							if(b === "undefined"){
+								b=1;
+							}
+							console.log(a+b);
+						}
+	   **oczywiście w funkcjach oprócz (voidów) możesz użyć także funkcji która coś zwraca poprzez return.
+						function add(a,b){
+							return (a+b);
+						}
+	   **podając funkcje jako argument do innej funkcji to podajesz ją bez nawiasów:
+						setTime(){
+							var time=new Date();
+							return time.getHours();
+						}
+						setInterval(setTime, 1000)
+	   **REKURENCJA:
+			*jest szybsza i bardziej wydajna ale zabiera więcej RAMu.
+			*musisz rozważyć przypadek podstawowy gdzie wartość podstawową będzie zwracana gdy funkcja 
+			 przestanie wywoływać samą siebie tylko zwróci jakąś stałą.
+			*oraz w pozostałych przypadkach funkcja musi zwracać samą siebie z jakąs obniżoną wartośćią
+			*silnia:	function silnia(n){
+							if(n==1){
+								return 1;
+							}else{
+								return n*silnia(n-1) 
+							}
+						}
+						
+2* IF, SWITCH  +  ETYKIETY (bloki kodu)  +  PĘTLE FOR, WHILE, DO WHILE  +  INSTRUKCJE SKOKU BREAK, CONTINUE:
+	*INSTRUKCJE SKOKU:
+		*BREAK; - przerywa Tobie działanie pętli;
+			*poprzez 'break LABELname;' w pętlach zagnieżdżonych jesteś w stanie przerwać nie tylko działanie
+			 pętli wewnętrznej ale także pętli zewnętrznej:
+						loop1:
+						for(var i=0; i<4; i++){
+							loop2:
+							for(var k=1; k<5 k++){
+								if(i==2 && k>2){
+									break loop1;
+								}
+								console.log(i"-"k)		
+							}								
+						}
+			*poprzez break jesteś w stanie przerywać także bloki kodu zawarte w ETYKIETACH:
+						label1:{
+							alert("Warning")
+							break label1;
+							alert("alert2")
+						}
+		*CONTINUE; - nie kontynuuje dalszych instrukcji w pętli za instrukcją continue tylko przechodzi 
+			do kolejnej inkrementacji. 
+						for(var i=0; i<10; i++){
+							if(i%2==0){
+								continue;	//dalsze instrukcje się nie wykonają tylko
+							}				//przejdzie do kolejnej inkrementacji
+							if(i==5){
+								break;
+							} 
+							...
+						}
+			*poprzez 'continue LABELname;'  w pętlach zagnieżdżonych jesteś w stanie przerwać instrukcje
+			 w pętli wewnętrznej i przejśc od razu do pętli zewnętrznej;					
+						loop1:
+						for(var i=0; i<4; i++){
+							loop2:
+							for(var k=1; k<5 k++){
+								if(i==2 && k>2){
+									continue loop1;
+								}
+								console.log(i"-"k)		//zwroci: 0-1	1-1	  2-1	3-1
+							}									  0-2	1-2	  2-2	3-2
+						}										  0-3	1-3			3-3
+																  0-4	1-4			3-4
+	*PĘTLA FOR;
+		*BUDOWA:
+						for(var k=0; k<10; k++){
+							...
+						}
+		*możemy zadeklarować inkrementator przed forem oraz zrobić inkrementacje wewnątrz for'a:
+						var k=0;
+						for(;k<10;){
+							...
+							k++
+						}
+		*dodatkowo możemy nazwać naszą pętle FOR odpowiednim LABELEM - taki LABEL przydaję się przy 
+			 intrukcji CONTINUE oraz instrukcji BREAKl gdy masz zagnieżdżone pętle.
+						loop1:
+						for(var i=; i<10; i++){
+							loop2:
+							for(vark=0; k<10; k++){
+								...
+							}
+						}
+	*PĘTLA WHILE oraz DO WHILE:
+		*różnica między WHILE a DO WHILE jest taka że w DO WHILE ciało funkcji zostanie wykonane 
+		 zawsze chociaż raz. W przypadku WHILE jeżęli warunek kontynuacji pętli od poczatku nie 
+		 zostanie podany dobrze to WHILE nie zostanie wykonay ani razu;
+		*Budowa:	 
+			* WHILE(warunek kontynuacji pętli){  ....  }
+			* DO{  ....  }WHILE(warunek kontynuacji pętli)
+		*żeby stworzyć pętle nieskońćzoną użyj:	 while(true)
+		*pamiętaj o użyciu inkrementatora:
+						var i=0;			var i=0;
+						while(i<10){		do{
+							...					...
+							i++;				i++
+						}					}while(i<10);	 //w pętli do while koniecznie 
+															  pamiętaj o średniku na samym końcu.
+	*SWITCH:
+		*w switchu nie masz warunku tylko masz zmienną którą w zależności od wartośći dopasowuję dany case.
+		 zmienna nie musi być stringiem. Może jak najbardziej być liczbą.
+						zmienna="text" 
+						switch(zmienna){
+							case "text1":
+								...
+								break;
+							case "text2":
+								...
+								break;
+							default:
+								...		
+								break;
+						}
+		*bez wpisania instrukcji skoku czyli break to oprócz wybranego case'a zostaną zrelizowane 
+		 wszystkie inne case'y które są za tym naszym case'm.
+						var box = document.getElementById("result");
+						var color="blue";
+						switch(color){
+							case "red":
+								box.style.color="white";
+								box.style.backgroundColor="red";
+								break;
+							case "blue":
+								box.style.color="white";
+								box.style.backgroundColor="blue";
+								break;
+							default:
+								box.style.color="black";
+								box.style.backgroundColor="grey";
+								break;        
+						}
+	*ETYKIETY (BLOKI KODU):
+		*jesteś w stanie stworzyć bloki kodu któe nazwiesz daną etykietą i które normalnie zostaną wywołane 
+		 gdyż JAVASCRIPT jest jezykiem interpretowanym a nie kompilowanym. 
+						label1:{
+							alert("Warning")
+							alert("alert2")
+						}
+	*IF:
+		*w JAVASCRIPT nie są istotne wcięcia (indentation, tak jak w Pythonie) tylko wszystko zamykasz 
+		 w nawiasach klamrowych:
+						if(x<y){
+							...
+						}else if(x==y){
+							...
+						}else{
+							...
+						}
+		*jeżeli masz tylko jedną instrukcję wewnątrz if'a to możesz nie używać nawiasów klamrowych.  
+						if(x==y) console.log("text")
+		*SKRÓCONY IF:
+			*BUDOWA: warunek ? PRAWDA : FAŁSZ
+						x>=y ? console.log("PRAWDA") : console.log("FAŁSZ")
+1* DOM i SPECJALNE FUNKCJE:
+	1)DOM - DATA OBJECT MODEL; document - jest to cała struktura dokumentu HTML, która jest zbudowana
+ 	  jak drzewo, (widoczna przy wpisaniu console.log(document)) dzięki której można się dostać do 
+	  poszczególnych elementów w htmlu.
+		*POŁĄCZENIE / uchwyt z elementami HTML'a:
+			*odwołanie się do konkretnego elementu w div'ie:
+						var x=document.getElementById("id_Div")
+			*odwołanie się do elementów w divach zawierających daną klasę:
+						var x=document.getElementsByClassName("className");	//zwróci ci tablicę elementów
+			*odwołanie się do elementów będcych danym tagiem:
+						var x=document.getElementsByTagName("li");	//zwróci ci tablicę elementów tagów li
+			*odwołanie się do elemtów w formularzu zawierajacych atrybut NAME:
+						var x=document.getElementByName				//zwrói tylko jeden element
+			*możesz pobrać także element poprzez querySelection:
+						let x = document.querySelection("#box");
+			*tworzenie elementu HTML'a w JAVASCRIPT'cie odbywa się poprzez:
+						var li = document.createElement("li"); 	//w tym przypadku jest to list item
+						
+		*Działanie na elementach HTML'a w JAVASCRIPT'cie:
+			*zamiana tekstu w DIVie
+				**innerHTML - dodaje tekst między tagi i uwzględnia tagi HTML wpisane w cudzysłów
+						document.getElementById("id_Div").innerHTML="New_text"
+							//lub
+						x.innerHTML = "New_Text"
+							//lub możesz także dodać do już istniejącego tekstu poprzez += :
+						x.innerText += "New_additional_Text"
+				**innerText - dodaje tekst między tagi HTML i nie uwzględnia tagów HTML wpisanych w 
+				  cudzysłów:
+						x.innerText = "JavaScript"
+			*pobranie wartośći z danego elementu odbywa się poprzez pole value;
+						var zmienna = document.getElementById("id");
+						zmienna.value;
+						zmienna2.innerHTML=zmienna.value;
+			*zmiana stylów CSS z poziomu JAVASCRIPT:
+				**dostanie się do stylów CSS z poziomu JavaScript:
+						var x=document.getElementById("id_Div");
+						x.style.backgroundColor: #454;
+				**dostanie się do listy klas CSS'owych poprzez:
+						var zmienna = document.getElementById("answer");
+						zmienna.classList.add("nazwaKlasy")
+			*stworzenie elementu HTML w JAVASCRIPT'ciei operowanie na nim odbywa się poprzez:
+				*tworzenie elementu HTML'a:
+						var li = document.createElement("li"); 	//w tym przypadku jest to list item
+				*trzeba dodać mu jakąś wartość:
+						var text = document.createTextNode("Tekst 6");
+						li.appendChild(text)
+				*i nastęnie dołączyć go do dokumentu HTMLa poprzez metodę appendChild();
+						list=document.getElementById("lista);
+						list.appendChild("li");
+					*możemy dodać nie tylko na samym końcu ale także gdzieś w środku poprzez insertBefore()
+							list.insertBefore("li", document.getElementById("id_elementu_za");
+					*możemy też zastąpić naszym element jakiś inny który pobierzemy sobie:
+							var firstLi= list.firstElementChild;
+							var li3 = createElement("li");
+							var text3 = document.createTextNode("Naglowek");
+							li3.appendChild(text3);
+							list.replaceChild(li3, firstLi)
+				*następnie można jeszcze MODYFIKOWAĆ wartość w tym dodanym elemencie: 
+						list.lastElementChild.innerHTML=jakiesValue;
+			*możemy klonować konkretne elemnty HTML'a w liscie
+						list.appendChild(list.lastElementChild.cloneNode(true));
+			*możemy usunąć elementy HTML'a - żeby to zrobić musimy odwołaś się do rodzica w lisice:
+						list.removeChild(list.lastElementChild);	//LUB
+						list.lastElementChild.parentNode.removeChild(list.lastElementChild);
+						
+	2)SPECJALNE FUNKCJE:
+			*przeładowanie strony odbywa się poprzez instrukcje: 
+						location.reload();
+			*setInterval() jako funkcja która odświeża się co odpowiednią podaną ilość milisekund 
+			 (w tym przypadku co 10000). Warto zaznaczyć że funkcje podaną w argumencie która ma się 
+			 wyświetlać co te 1000 milisekund trzeba najpierw podać przed setInterval żeby była widoczna 
+			 od razu a nie dopiero po pierwszym odświeżeniu strony:
+						setTime()
+						setInterval(setTime, 1000);
+			*w przypadku przycisków i też innych tagów możesz dodać EVENTLISTENER'y czyli nasłuchiwacze 
+			 dzięki którym możesz obsługiwać pewne zdarzenia, np.: naciśnięcie buttona. 
+						button.addEventListener("click", funkcjaDoWywołania);  
+											//funkcjDoWywołania zostanie wywołana po wciśnieciu buttona
+				*w momencie gdybyś chciał zmienić tego Ev entListenera na jakąś inną funkcję to najpierw
+				 usuń starego EventListener'a a później dodaj nowego:
+						button.removeEventListener("click", funkcjaDoWywołania);
+						button.addEventListener("click", NOWAfunkcjDoWywołania);
+
+0* PODSTAWY oraz MATH, DATE, NUMBER:
+			
+	*NUMBER:
+		*klasa Number daje nam duże możliwości związane z konwersją jak i metodami sprawdzającymi 
+		 czy dana zmienna jest liczbą:
+		*KONWERSJA na liczbę:
+						var value=Number(value2);
+		*sprawdzenie czy liczba to Integer:
+						Number.isInteger(value);
+	*DATE:
+		*żeby wyświetlić aktualną datę to odwołaj się do Date(), zwróci ci datę w formacie:
+			*Fri Sep 03 2021 12:36:50 GMT+0200 (czas środkowoeuropejski letni)
+		*wpisując Date(1) - to obiekt odwoła się do czasu początkowego (pokaże 1 milisekunde
+		 od momentu rozpoczęcia liczenia milisekund przez systemy komputerowe. będzie to:
+			*Thu Jan 01 1970 01:00:00 GMT+0100 (czas środkowoeuropejski standardowy)
+		*możemy przeciążyć ten konstruktor i uzyskać inne formaty daty (ważne jest to żę miesiące 
+		 liczone są od 0 do 11)
+			*rok, miesiąc-1, dzień, godzina, minuta sekunda:
+						var date1 = new Date(19995, 2, 24, 1, 2, 3);	
+		*żeby wyciągnąć konkretne wartości z obiektu Date() to musisz użyć:
+			*rok		 - date1.getFullYear()
+			*miesiąc 	 - date1.getMonth()
+			*dzień 		 - date1.getDate()
+			*godzina	 - date1.getHours()
+			*minuta		 - date1.getMinutes()
+			*sekunda	 - date1.getSeconds()
+		*żeby stworzyć prosty licznik czasowy bez przeładowywania strony przy pierwszym razie i ogólnie 
+		 to stwórz funkcję i następnie podaj ją jako argument do funkcji setInterval():
+						function setTime(){
+							var time= new Date();
+							date.innerHTML = "Czas: "+ time.getHours()+":"+time.getMinutes()+":"+time.getSeconds();
+						}
+						setTime()
+						setInterval(setTime, 1000);		
+						
+	*MATH:
+		*Wartość bezwzględna:
+			*Math.abs(liczba)
+		*zaokrąglanie:
+			*Math.round(liczba)	- zaokrąglenie do wartości całkowitej (w dół poniżej 0.5 i w górę od 0.5)
+			*Math.ceil(liczba)	- zaokrąglenie do wartości całkowitej w górę.
+			*Math.floor(liczba)	- zaokrąglenie do wartości całkowitej w dół.
+		*potęgowanie i pierwiastkowanie:
+			*Math.pow(liczba, 3)- potęgowanie liczba do potęgi 3 
+			*Math.sqrt(liczba)  - pierwiastkowanie liczby
+		*liczba PI:
+			*Math.PI
+		*losowanie wartośći:
+			*Math.random() - domyślnie losuję wartośći od 0 do 1,
+			*Math.floor(Math.random()*10)+4 - żeby wylosować liczby z jakiegoś innego przedziału - w tym 
+				przypadku będzie to od 4 do 14;
+
+	*KOMUNIKACJA pliku HTML z plikiem JAVASCRIPT:
+		*WYPISYwANIE TEKSTU:
+			**żeby wypisać coś w konsoli trzeba odwołać się do console i wywołać metodę log() 
+						console.log("Hello World")
+			**Żeby wypisać coś w przeglądarce trzeba odwołać się do document i wywołąć na 
+			  nim metodę write()
+						document.write("Hello World")
+			  wewnątrz cudzysłowów jak najbardziej jesteś w stanie wykorzystywać znaczniki 
+			  html które będą uwzględniane
+						document.write("<h1>Hello world<h1>")
+			**możesz też wypisać tekst poprzez wyskakujące okienko alertowe:
+						alert("Hello World")
+		*WPISYWANIE TEKSTU:
+			**żeby wpisać tekst to musisz to zrobić poprzez rodzaj pewnego alerta nazwanego prompt()
+			  gdzie pierwszy argument to napis który będzie się wyświetlał nad miejscem do wpisania, 
+			  a drugi argument to domyślny napis wyświetlający w miejscuwpisywania. Dobrze jest go 
+			  także przypisać do pewnej liczby.
+						var liczba = prompt("Podaj liczbę", "0")
+		*ALERTY - możesz tam wpisać stringa lub wartość zwróconą z jakieś funkcji
+						alert("twój alert");
+						alert(add(5,3));			
+	*PODSTAWY:
+		*inną nazwą (nazwą początkową języka JAVASCRIPT jest ECMAscript)
+		*JAVASCRIPT nie jest jeżykiem kompilowanym (kompilowanym do innego języka) tylko jest językiem
+		 interpretowanym
+		*JAVASCRIPT jest wrażliwy na wielkość liter jak Python. 
+		*DOM czyli DOCUMENT OBJECT MODEL to inaczej hierarchia/warstwy zagnieżdżeń w HTMLu.
+		*żeby sprawdzić czy interpreter poleceń JAVASCRIPT jest zainstalowany na przeglądarce (prawie 
+		 w 100% jest) to musisz sprawdzić to poprzez kliknięcie prawym klawiszem na stronie i "zbadaj"
+		 i wejśc w zakładkę Console --> tam znajdziesz interpreter poleceń JAVASCRIPT
+		*PODSTAWOWA BUDOWA:
+			*komentarze:
+				*jednolinijkowe: // ...
+				*wielolinijkowe: /* ... */
+			*pojedyńcze instrukcje możesz ale nie musisz kończyć średnikiem - jest to zalecane.
+			*znaki specjalne tak jak w Pythonie są związane z backslashem czyli np.:  \" ; \n
+		*DEKLARACJA ZMIENNYCH:	
+			*Żeby stworzyć zmienną to używasz słowa var która jest undifined
+			*Przypisywanie zmiennych odbywa się w sposób dynamiczny czyli możesz przypisać do jednej 
+			zmiennej różne typy danych; Tak jak w Pythonie. 
+						var x="tekst";
+						x=5;
+						x=5.4;
+			*W nazwie zmiennych na początku nie możesz używać LICZB ->tylko małe/duże litery, 
+			 Oprócz tego w nazwie zmiennych nnie możesz używać znaków specjalnych - tylko:
+				*znak dolara $
+				*podkreślenie _
+		*TYPY ZMIENNYCH:
+			*typeof() - do sprawzenia jakiego operatora jest zmienna:
+							typeof(x);
+			*int 		var x=1;
+			*float		var x=1.1;
+			*String		var x="string";
+			*boolean: 	var x=true; | var x=false;
+			*null		var x=null;
+			*DODATKOWE:
+				*undefined - niezdefiniowany;	var x =undefined
+				*NaN - NOT a NUMBER; jako wynik nieudanej operacji matematycznej.		
+			
+		*OPERATORY LOGICZNE:
+			*przypisania - poprzez znak równa się '=' 
+				*przypisywanie wielu zmiennych w jednej instrukcji:
+							var x=5, y=10;
+			*porównania i negacji:
+				*znak podwójnego równa się '==' i '!=' sprawdza czy wartośći się zgadzają. NIE ZWRACA 
+				 uwagi na typy zmiennych.
+							console.log( 5 == "5" ) 			//zwroci true
+							console.log( 5 != "5" ) 			//zwroci false						
+				*znak potrójnego równa się '===' i '!==' sprawdza nie tylko czy wartosci się zgadzają 
+				 ale także czy typy zmiennych się zgadzają:
+							console.log( 5 === "5" ) 			//zwroci false
+							console.log( 5 !== "5" ) 			//zwroci true
+				*przypisanie zawsze wywoła się przed porównaniem
+							var x=5 == 5 			
+							console.log(x)						//zwroci true 
+			*AND, OR, NOT - '&&' ; '||'  ; '!' 
+							console.log(true && false);			//zwroci: false
+							console.log(true || false);			//zwroci: true
+							console.log(!true|| false);			//zwroci: false
+				*kolejność wykonywania to:	 NOT, AND, OR :
+							console.log(true || true && false ) //zwroci: true    zamiast false
+		*OPERATORY ARYTMETYCZNE:
+			*konkatenacja - w przypadku liczb i tekstu łączy je w jeden tekst (nie występuję błąd tak 
+			 jak w pythonie)
+							console.log(5 + "2") - 		   		// zwroci: 52
+							console.log("5" + "2") - 		    // zwroci: 52
+							console.log("tekst " + "tekst") 	// zwroci: tekst tekst
+							
+			*dodawanie:  	console.log(5+2) 		// 7	
+							console.log("5"+2)		// 52  - konkatenacja
+							console.log("abc"+2)	// abc2- konkatenacja
+				*skrót +=
+			*odejmowanie:	console.log(5-2) 		// 3	
+							console.log("5"-2) 		// 3   - wywołanie matematyczne dla stringa
+							console.log("abc"-2)	// NaN - zwroci NaN
+				*skrót -=
+			*mnożenie:		console.log(5*2) 		// 10
+							console.log("5"*2) 		// 10  - wywołanie matematyczne dla stringa
+							console.log("abc"*2) 	// NaN - zwroci NaN
+				*skrót *=
+			*dzielenie: 	console.log(5/2) 		// 2.5
+							console.log("5"/2) 		// 2.5 - wywołanie matematyczne dla stringa
+							console.log("abc""/2)	// NaN - zwroci NaN
+				*skrót /=
+			*modulo:		console.log(5%2) 		// 1
+							console.log("5"%2) 		// 1   - wywołanie matematyczne dla stringa
+							console.log("abc"%2)	// NaN - zwroci NaN
+				*skrót %=
+			*inkrementacja i dekrementacja normalnie występuję.(Nie tak jak w Pythonie)
+				*preinkrementacja, predekrementacja - zachodzi przed wykonywanymi instrukcjami
+					x=2
+					y = ++x + 10   //13 	 |  	y = 10 - --x    //9
+				*postinkrementacja, postdekrementacja - zachodzi po wykonywanych instrukcjach
+					x=2
+					y = x++ + 10   //12 	 |		y = 10 - x--    //8
+		*ZAPISYWANE języka JAVASCRIPT::
+			**w osobnym tagu script w HTMLU -> Jest niezalecany.
+						<body>
+							<script>
+								console.log("Hello World");				
+							</script>
+						</body>
+			**w osobnym pliku javascript z rozszerzeniem .js -> Jest zalecany, tworzysz nowy plik i 
+			    linkujesz go w tagu script w HTMLU poprzez atrybut src.
+						<body>
+							...
+							<script src="script.js"></script>
+						</body>
+			  żeby plik JAVASCRIPT wykonał się tak jak należy to musi być umieszczony na samym końcu
+			  tak żeby najpierw załadował się plik HTML a dopiero później plik JAVASCRIPT.
+					
+		 
+		
+		

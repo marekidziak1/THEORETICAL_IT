@@ -1,0 +1,636 @@
+
+101* ŁĄCZENIE SIĘ Z BAZĄ DANYCH:
+	1*PYTHON:
+		*musisz pobrać moduł związany z bazą danych, nastepnie połączyć się z konkretną bazą danych,
+		 przy pomocy metody connect() - jeżeli plik podany w argumencie nie istnieje to zostanie utworzony
+		 wywołać na niej metedoę cursor() i na tym kursorze wykonywac operacje sql poprzez metode 
+		 execute(). Po zakonczeniu wszytskich operacji musisz zakończyć połączenie z bazą danych poprzez
+		 metode close():
+				import sqlite3
+				conn = sqlite3.connect('music.sqlite')
+				cur = conn.cursor()
+				cur.execute('DROP TABLE IF EXISTS Tracks')
+				cur.execute('CREATE TABLE Tracks (title TEXT, plays INTEGER)')
+				conn.close()
+		*schemat dzialania dal pliku SQL jest taki że zawsze najpierw usuwasz całą bazę danych po to żeby
+		 stworzyć ją na nowo i wypełnić danymi - a wszystko po to żęby nie wyskoczył błąd
+		 		cur.execute('DROP TABLE IF EXISTS Tracks')
+				cur.execute('CREATE TABLE Tracks (title TEXT, plays INTEGER)')
+		*jeżeli chcemy odwołać się do PYTHONOWYCH zmiennych w zapytaniu SQL to zapisujesz je jako znaki 
+		 zapytania i po zapytaniu, po przecinku dajesz krotkę z tą samą ilością zmiennych co ilość znaków 
+		 zapytania żeby podmienic te znaki zapytania na te zmienne w krotce:
+				cur.execute('INSERT INTO Tracks (title, plays) VALUES (?, ?)', ('My Way', 15))
+		*jeżeli chcesz wywołać operację SQLowa DELETE to dodatkowo zeby zmusic program do zrobienia 
+		 tej operacji to musisz dodac jeszcze commita NA obiekcie connection 
+				conn = sqlite3.connect('music.sqlite')
+				...
+				cur.execute('DELETE FROM Tracks WHERE plays < 100')
+				conn.commit()
+				
+100* SILNIKI BAZODANOWE:
+	1*MySQL:
+		*pakiet XAMPP:
+			*służy do postawienia bazy danych na lokalnym serwerze zamiast na zewnętrznym  
+			*XAMPP uruchomi silnik MySQL
+			*domyślnie ma zainstalowane narzędzie PHPMyAdmin, które odpalisz przy pomocy komendy: 
+					127.0.0.1/phpmyadmin/
+			***instalacja pasjaInformatyki windows 5:30-7:30 ==> https://www.youtube.com/watch?v=WSeKPbVZBoo 
+		*przy tworzeniu bazy danych użyj kodowania utf8_polish_ci 
+		*przy tworzeniu kolumn ustaw metodę porównywania napisów utf8_polish_ci 
+		*TYPY DANYCH:
+			*INT, FLOAT
+			*TEXT (65 535 znaków), LONGTEXT (4.294.967.295 znaków)
+			*DATE (RRRR-MM-DD), TIME (GG:MM:SS)
+		*w razie czego backup bazy możesz wykonać poprzez IMPORT a jej pobranie zrobisz poprzez EKSPORT
+		*żeby zrobić IMPORT DUŻEJ BAZY DANYCH to nie można tego zrobić poprzez interfejs w przeglądarce
+		 (czyli phpMyAdmin) tylko trzeba to zrobić w konsoli MySQL
+			*żeby dostać się do tej konsoli MYSQL to musisz przez konsolę w windowsie CMD dostać się 
+			 przejśc do odpowiedniej ścieżki w XAMPP'ie poprzez komende: cd C:\xampp\mysql\bin
+			*komendą dir wylistujesz sobie wszystkie pliki i następnie wejdziesz do pliku MYSQL.EXE przez:
+				mysql.exe -u root (normalnie musiałbyś dodać jeszcze -p czyli password ale w XAMPPie nie 
+				musisz)
+			*następnie wejdziesz w daną bazę danych używając konedy USE nametable
+			*i ZAIMPORTUJESZ PLIK SQL zawierający wszystkie potrzebne instrukcje, czyli tabele poprzez 
+			 komende:
+				source ŚcieżkaWzglednaNazwaPliku 
+			 (najlepiej umieścić już sobie ten plik w katoalogu bin to wystarczy że wpiszesz tylko nazwę 
+			 pliku)
+			
+	2* ORACLE - SQL SERVER (PL/SQL):
+		1* SQLDEVELOPER - program do zarządzania bazami danych w ORACLE (do pobrania w folderze matejewski)
+		2* RÓŻNICE W STOSUNKU DO INNYCH SILNIKÓW:
+			A) ALIASY:
+				*przy alaiasach nie używa się 'AS'
+				*NIE da się i nie można stosować ALIASÓW deklarowanych przed KLAUZULĄ FROM za nią:
+						SELECT g.Imie im FROM Gosc g WHERE im LIKE '_a%'		//tak nie można tylko
+						SELECT g.Imie FROM Gosc g WHERE g.Imie LIKE '_a%'		//powinno się to tak robic 
+			B) APOSTROFY:	
+				*nie stosuję się podwójnych apostrofów TYLKO pojedyńcze  
+				*podwójne można stosować tylko przy nadawaniu aliasów
+			C) KONKATENACJA (znak: '||' ):
+				*możemy łączyć stały tekst z wybraną tręścią:
+						SELECT ‘nazwisko: ’ || ename FROM emp
+				*możemy łączyć tekst z liczbami bez ich konwersji na tekst:
+						SELECT ename || sal FROM emp
+		3* FUNKCJE SPECYFICZNE:
+			1) NVL(wartość, zamienić_na) 
+				*zamiana null'a na dowolną wartość			
+				*zamiast ISNULL(wartość, zamienić_na) to ma być NVL(wartość, zamienić_na)
+						SELECT SAL+NVL(COMM,0) FROM EMP
+			2) LIMIT/FETCH FIRST:
+				*zamiast klauzuli LIMIT lub TOP masz 'FETCH FIRST number ROWS ONLY;'
+			3) SYSDATE - zwraca aktualną datę systemową
+						
+						
+
+			
+	3* MSSQL: 
+		1* MANAGEMENT STUDIO - program do zarządzania bazami danych w Mssql.
+		2* RÓŻNICE W STOSUNKU DO INNYCH SILNIKÓW:
+			A) KONKATENACJA (znak: '+' ):
+				*możemy łączyć stały tekst z wybraną tręścią:
+					SELECT ‘nazwisko: ’ + ename FROM emp
+				*możemy łączyć tekst z liczbami ale trzeba je przekonwertować na tekst:
+					SELECT ename +  CONVERT(VARCHAR,sal)  FROM emp
+			B) zamiast LENGTH funkcja LEN 
+		3* FUNKCJE SPECYFICZNE:
+			1) ISNULL(wartość, zamienić_na) :
+				*zamiana null'a na dowolną wartość	
+			2) DATEDIFF(DATE, data1, data2) – 
+				*oblicza różnicę między datami:
+				*Przykład: różnica w czasie (wskaż gościa który miał najdłuższą rezerwacje):
+					SELECT g.* FROM Gosc AS g 
+					INNER JOIN Rezerwacja AS r ON g.IdGosc = r.IdGosc
+					ORDER BY DATEDIFF(Date, DataOd, DataDo) DESC
+					LIMIT 1;
+			3) DATEPART(datepart, date)
+				*zwraca część daty date (year, month, day itd.) wyspecyfikowaną w pierwszym argumencie
+			4) LIMIT/TOP:
+				*zamiast klauzuli LIMIT lub FETCH FIRST masz 'TOP numbers;'
+			
+
+			
+-----------------------------------------------------------------------------------------------------------
+-------------------------------------------------- SELECT -------------------------------------------------
+ZADANIA DO POWTÓRZENIA I UTRWALENIA SQL'a:
+	https://pja.mykhi.org/0sem/SBD/edux/zapytania.html
+3* SELECT (wszystkie podpunkty są w kolejności tego jak powinny występować): 
+  --------------------------------------------------------------------------
+  I.PODSTAWY:
+	1.BASICS  *  DISTINCT  AS  IS  columnName.*  DATEDIFF :
+				SELECT * FROM tableName
+				SELECT coumnName1, columnName2 FROM tableName
+		*IS
+				SELECT columnName1 FROM tableName WHERE columnName2 IS NULL
+		*AS
+				SELECT columnName1 AS name1, columnName2 AS name2 FROM tableName
+		  *aliasów
+		*DISTINCT		//jeżeli chcesz wybrać wszystkie wartości BEZ POWTARZANIA SIĘ z jednej kolumny albo 
+						  kilku ale wiesz że będą się powtarzać to użyj zaraz za SELECTEM slowa DISTINCT
+				SELECT DISTINCT columnName FROM tableName
+				SELECT DISTINCT columnName1, columnName2 FROM tableName	//DISTINCT dotyczy całej pary
+																		  columnName1 i columnName2	
+		*columnName.* 	//jezeli JOINujesz wiele kolumn (tworzy ci się iloczyn kartezjański) a chcesz 
+						  danych tylko z jednej kolumny:
+				SELECT columnName.* FROM column1 AS c1
+				INNER JOIN column2 AS c2 ON c1.PrimaryKey = c2.ForeignKey
+				INNER JOIN column2 AS c3 ON c2.PrimaryKey = c3.ForeignKey
+		
+				
+	2.WHERE  =  <  <=  >  >=
+		*przed klauzulą WHERE stawiamy przecinki a po klauzuli WHERE stawiamy spójniki logiczne AND, OR
+				SELECT * FROM tableName WHERE columnName='textValue'
+				SELECT * FROM tableName WHERE columnName>NumberValue
+		*w klauzuli WHERE nie możesz używać ALIASOW do kolumn --> musisz używać pełnych nazw kolumn
+		 jednakże skróty możęsz używać normalnie w innych klauzulach np ORDER BY
+				SELECT columnName AS k FROM tableName WHERE coulmnName LIKE 'a%' ORDER BY k
+		*w klauzuli WHERE nie można użyć funkcji agregujących --> żeby ich użyć musisz stworzyć klauzulę
+		 GROUP BY ORAZ HAVING i właśnie za nią użyć funkcji agregującej.
+		2.0.IS							//dla nulla nie używamy znaku porównania tylko instrukcji IS
+				SELECT columnName1 WHERE columnName2 IS null
+		2.1.OR  AND  <>  !=		znak <> ORAZ != oznacza 'JEST RÓŻNE' 
+				SELECT * FROM tableName WHERE columnName='value' OR columnName='value'
+				SELECT * FROM tableName WHERE columnName1='value' AND columnName2='value'
+				SELECT * FROM tableName WHERE columnName <> 'value' 	//columnName ma być RÓŻNE od value
+				SELECT * FROM tableName WHERE columnName != 'value' 
+		2.2.IN 			podajesz dla jakiegoś zbioru
+				SELECT * FROM tableName WHERE columnName IN(v1, v2, v3)	   //jest w zbiorze (v1, v2, v3)
+				SELECT * FROM tableName WHERE columnName IN('textv1', 'textv2', 'textv3')	
+		2.3. BEETWEN ... AND ...
+				SELECT * FROM tableName WHERE columnName BETWEEN intValue AND intValue;
+		2.4.LIKE  OR  _  % 
+		  *w SQLU nie istnieje klauzula NOT LIKE jak już to zaraz po WHERE możesz wpisać NOT 
+				SELECT * FROM tableName WHERE columnName LIKE 'textValue'
+				SELECT * FROM tableName WHERE columnName LIKE 'to%' OR LIKE 'po%'
+		  *znak podłogi daje możliowść zastąpienia jakimkolwiek znakiem w podanym ciągu znaków	
+				SELECT * FROM tableName WHERE columnName LIKE 'text_alue'  	
+		  *znak procenta pozwala na jakikolwiek ciąg znaków za pierwszymi literami 'te'
+				SELECT * FROM tableName WHERE columnName LIKE 'te%' 	   
+		  *można łączyć % z _
+				SELECT * FROM tableName WHERE columnName LIKE '_ex%' 	
+		2.5.REGEXP 
+	      *PODAJESZ REGEXA jeżeli masz jakiś skomplikowany warunek (działa tak jak LIKE):
+				SELECT columnName FORM tableName WHERE columnName REGEXP 'regularExpresion';
+		  *przykłady:
+		   *nie moze sie zaczynac od samogłosek:
+				SELECT DISTINCT(city) FROM station WHERE city REGEXP '^[^aeiou]' ;
+		2.6.LEFT(columnName1, 1) NOT IN(v1,v2,v3)    RIGHT(columnName1, 1) NOT IN(v1,v2,v3) 		
+		  *ilość liter z lewej/ilość liter z prawej nie zawiera się w podanym zbiorze
+		   *zwróć słowa gdzie 3 ostatni litery nie zawierają się w zbiorze (v1,v2)
+				SELECT columnName FROM tableName WHERE RIGHT(columnName1, 3) NOT IN(v1,v2)
+		  *można wykorzystać nie tylko w warunku ale także w innych klauzulach jak np ORDER BY 
+		   *uporządkuj zwrocony zbior po 4 ostatnich literach:
+				SELECT columnName FROM tableName ORDER BY RIGTH(columnName,4);
+		  *przykłady:
+		   *nie może zaczynać się z litery AEIOU albo końćzyć na literze aeiou
+				SELECT DISTINCT(CITY) FROM STATION WHERE LEFT(CITY, 1) NOT IN ('A', 'E', 'I', 'O', 'U') 
+				OR RIGHT(CITY, 1) NOT IN ('a', 'e', 'i', 'o', 'u');
+			
+	3.GROUP BY 
+	https://www.youtube.com/watch?v=lyE03M2GLA0 - opisane funkcje agregujące i klauzula GROUP BY
+	  *służy do grupowania wyników wyszukiwania dla podanej kolumny (np ilość pańśtw dla każdego kontynentu)
+ 	   WYmaga użycia jakieś funkcjigrupującej/agregującej. Jeżeli masz użyć GROUP BY to najlepiej jakbyś 
+	   zaczął od WYOBRAŻENIA SOBIE wynikó takiej instrukcji:
+				SELECT columnName, SUM(colName2) FROM tableName GROUP BY columnName
+	  *posorutuję względem (unikalnych wartości/kategorii) z colName1 i dla każdej takiej kategorii 
+	   wyznaczy średnią 
+				SELECT colName1, AVG(colName2) FROM tableName GROUP BY colName1 ORDER BY colName1
+	  *można pogrupować nie tylko względem jednej kolumny ale względem unikalnych par/trójek/czwórek itd
+	   z wielu kolumn jeżeli takie występują inaczej nie dojdzie do grupowania:
+				SELECT columnName1, columnName2, AVG(columName3) 
+				FROM tableName GROUP BY columnName1, columnName2
+	  *jeżeli nie użyjesz zadnej funkcji grupującej dla drugiej kolumny to weżmie pod uwagę pierwszą 
+	   wartość DLATEGO przy GROUP BY przy innych kolumnach MUSISZ użyc FUNKCJI GRUPUJĄCYCH
+				SELECT columnName1, columnName2 FROM tableName GROUP BY columnName1 
+	  *wystepuję zawsze przed ORDER BY (ale po FROM i WHERE)
+				SELECT colName1, AVG(colName2) AS av FROM tableName GROUP BY colName1 ORDER BY av DESC
+	3.5.HAVING 		
+	  *DO CZEGO SIĘ UŻYWA:
+	    **TAKI WARUNEK where SPECJALNIE DLA group by.
+		**W przypadku gdy musisz użyć funkcji agregującej JAKO WARUNEK to nie mogąc użyć jej za klauzulą
+		  WHERE mozesz użyć ją za klauzulą HAVING (któa może powstać tylko przy GROUP BY):
+				SELECT columnName1 FROM tableName GROUP BY columnName1 HAVING COUNT(columnName2)>1
+		  NP.: 'Wybierz tylko te stanowiska, na których średni zarobek wynosi 3000 lub więcej.'
+				SELECT job FROM emp GROUP BY job HAVING AVG(sal)>=3000
+		**LUB GDY chcesz dodatkowo PRZEFILTROWAĆ jakoś FUNKCJE AGREGUJĄCĄ za SELECTEM
+				SELECT columnName1
+				FROM tableName GROUP BY columnName1 
+				HAVING COUNT(columnName2)>5;
+			*np: pokaz imiona nazwiska klientów którzy zrobili Dokladnie 1 rezerwacje:
+				SELECT g.Imie, g.Nazwisko FROM Gosc g
+				INNER JOIN Rezerwacja r ON r.IdGosc=g.IdGosc
+				GROUP BY g.Imie, g.Nazwisko Having COUNT(r.IdRezerwacja)=1
+				
+	  *DZIAŁANIE:
+		**za klauzulą HAVING wpisujesz tylko funkcje GRUPUJĄCE jak AVG, SUM, itd. 
+		**działa jak WHERE ale działa na przefiltrowanych danych a nie na każdym rekordzie
+		**HAVING występuję tylko za GROUP BY a WHERE przed GROUP BY
+				SELECT colName1, AVG(colName2) AS avg FROM tableName GROUP BY colName1 HAVING avg>number
+	  *poniżej trzy przykłady. W pierwszym wybierasz unikalne kategorie i dokładasz średnią z cen z tej
+	   kategorii. W drugim przykładzie wybierasz unikalne kategorie ale tylko te gdzie producentem jest
+	   nr 1 lub 2. W trzecim przypadku na samym końcu jeszcze dodatkowo filtrujesz to i wyświetlasz tylko
+	   te średnie ceny gdzie są większe niż 2500. Jeżeli są jakieś mniejsze to tych nie wyświetlasz.	   
+				SELECT kategoria, AVG(cena) AS av FROM produkty 
+					GROUP BY kategoria;
+				SELECT kategoria, AVG(cena) AS av FROM produkty 
+					WHERE producent=1 OR producent=2 GROUP BY kategoria;
+				SELECT kategoria, AVG(cena) AS av FROM produkty 
+					WHERE producent=1 OR producent=2 GROUP BY kategoria HAVING av>2500;
+				
+	4.ORDER BY //wystepuję zawsze za GROUP BY
+		*ASC
+				SELECT * FROM tableName ORDER BY columnName 
+				SELECT * FROM tableName ORDER BY columnName ASC
+				SELECT * FROM tableName WHERE columnName='textValue' ORDER BY columnName1, columnName2
+				SELECT * FROM tableName WHERE columnName='textValue' ORDER BY columnName1 ASC, columnName2
+		*DESC (malejąco)
+				SELECT * FROM tableName ORDER BY columnName DESC 
+				
+	5.LIMIT 	//ogranicza wyniki do podanej ilosci w LIMITcie //będzie zawsze na samym końcu 
+				SELECT * FROM tableName WHERE columnName='textValue' 
+				ORDER BY columnName1 DESC, columnName2 LIMIT 5
+				
+  --------------------------------------------------------------------------	
+  II. ROZSZERZONE ELEMENTY ale występujące w zaraz po klauzuli SELECT:
+	1* FUNKCJE:
+		A)FUNKCE AGREGUJĄCE/GRUPUJĄCE dla GROUP BY:
+		  *https://www.youtube.com/watch?v=lyE03M2GLA0 - opisane funkcje agregujące i klauzuka GROUP BY
+		  *stosowane przy klauzuli GROUP BY gdzie funkcje agregujące są celem dla klauzuli GROUP BY
+		  *funkcje agregujące mogą istnieć bez klauzuli GROUP BY ale to głównie dla niej są wykorzystywane
+			AVG() - liczy średnią dla wszystkich wyników wyszukiwania
+				SELECT AVG(columnName) FROM tableName
+			SUM() - liczy sumę dla wszystkich wyników wyszukiwania
+				SELECT SUM(columnName) FROM tableName
+			MIN() - wybiera wartość o najmniejszej wielkości ze zwróconych wyników wyszukiwania
+				SELECT MIN(columnName) FROM tableName		
+			MAX() - wybiera wartość o największej wielkości ze zwróconych wyników wyszukiwania
+				SELECT MAX(columnName) FROM tableName
+			COUNT() - liczy ilosc wystąpień wszystkich zwróconych wyników
+				SELECT COUNT(columnName) FROM tableName
+				SELECT COUNT(*) FROM tableName			// zwróci ilośc wierszy
+		  *jeżeli stosujesz funkcje grupujące bez koniecznośći użycia kolumny po której miałbyś grupować
+		   to zamiast używać klauzuli 'GROUP BY' lepiej użyj zwyczajnego WHERE:
+				SELECT SUM(p.Liczba_miejsc) FROM Pokoj p
+				INNER JOIN Kategoria k ON p.IdKategoria=k.IdKategoria
+				WHERE k.Nazwa = 'Luksusowy';
+				
+		B)FUNKCJE WIZUALIZUJĄCE:
+			*CONCAT()			//łączy w jedną kolumne kilka podanych w argumencie oraz jakiś string 
+								//np ':'
+				SELECT CONCAT(columnName1, ':',columnName2) AS name, columnName3 FROM tableName
+			*UPPER()   LOWER()	//zwrocone wartośći mają powiekszone litery albo pomniejszone
+				SELECT CONCAT(upper(columnName1, ':',columnName2)) AS name, columnName3 FROM tableName
+			*REPLACE()			//zamienia podaną wartość 1wszą na drugą,
+				SELECT REPLACE(columntext, 'a','b') FROM  tableName
+			  *działa także na liczbach nie zmieniających ich na string tj TEXT. Zamienia wszystkie 0 na ''
+				SELECT AVG(REPLACE(numberColumn, 0, '')) FROM tableName
+			*TRUNCATE()			//zamiast zaokrąglc to przycina do podanej ilości przecinków
+				SELECT TRUNCATE(AVG(columnName),4) FROM tableName;
+					
+		C)FUNKCJE MATEMATYCZNE:
+			*MOD(number,modulonumber)	//pozwala użyć funkcji modulo na danych kolumnach 
+				SELECT MOD(columnName, number) FROM tableName
+			*ROUND(number,decimalPlaces)	//zaokrągla do n miejsc po przecinku w góre i w dół.
+											//Dla 0 miejsc po przecinku to zaokrągla do l. całkowitej
+				SELECT ROUND(AVG(columnName),0) FROM tableName
+			*FLOOR(number)		CEILING(number)		 //zaokrągla do pełnej liczby w dół i w górę
+				SELECT CEILING(AVG(columnNmae)) FROM tableName
+				
+		D) FUNKCJE TEKSTOWE:
+			*LENGTH(textfield)		//pozwala zmieżyć długość napisu w rekordzie 
+				SELECT LENGTH(yourtextfield) AS alias FROM tablename ORDER BY alias 
+			*LEFT(napis, ile_znaków) 		//zwraca określoną ilość znaków tekstu rozpoczynając od lewej
+			 RIGHT(napis, ile_znaków) 		//od prawej
+				SELECT LEFT(colName, 3) FROM tableName 
+			*REPLACE(string, napis_szukany, napis_do_zamiany) 		//wyszukuje i zamienia fragment tekstu
+				SELECT REPLACE(colName, 'szukaj', 'lukaj' FROM tableName
+			*SUBSTRING(napis, od, ile_znaków)				//zwraca określoną część tekstu	
+				SELECT SUBSTRING(colName, 3, 'exdff' FROM tableName
+			*LTRIM(string) 					//obcina spacje z lewej strony tekstu 
+			 RTRIM(string) 					//zobcina z prawej strony tekstu
+			 TRIM(string)					//z obydwu stron tekst
+				SELECT LTRIM(colName) FROM tableName
+				
+	2* INSTRUKCJE WARUNKOWE (CASE) w SELECT'cie:
+	  *pamiętaj o odpowiedniej kolejności warunków i że jak jeden będzie dopasowany to reszta będzie 
+	   ominięta:
+			SELECT columnName1, columnName2, 
+			CASE												 //konstrukcja to WHEN... THEN...
+				WHEN columnName3 < integer1 THEN 'etykietaName1' //można podać swoją etykietę
+				WHEN columnName3 = integer2 THEN columnName3	 //można zwrocic kolumne oprócz etykiety
+				ELSE 'etykietaName2'							 //ELSE używane jak w zwykłym ifie 
+			END AS caseName, 									 //zakończone END i musi być do tego ALIAS
+			columnName4 								//dalej jak w normalnym SELECT'cie
+			FROM tableNameWHERE columnName1>10 			
+			ORDER BY caseName							//mozesz takze sortowac po ALIASIE instrukcji CASE
+	  *PRZYKŁADY:	
+	   *wybór rodzaju trójkąta:
+			SELECT
+			CASE
+				WHEN A=B AND B=C AND C=A THEN 'Equilateral'
+				WHEN A+B<=C OR C+B<=A OR A+C<=B THEN 'Not A Triangle'
+				WHEN A=B OR B=C OR C=A THEN 'Isosceles'
+				ELSE 'Scalene'
+			END AS triangle FROM triangles
+	
+	3* JOIN ON (AND) - podczas SELECTa łaczy tabele przy pomocy kluczy obcych i glownych tworząc jedną 
+	   główną z której możesz wybierać konkretne dane
+		*szukanie z wielu tabel mógłbyć zrobić przez klauzulę WHERE:
+					SELECT Table1.columnX, Table2.columnZ
+						FROM Table1, Table2 
+						WHERE Table1.foreignKey=Table2.primaryKey
+		*ale o wiele lepszą opcją jest klauzula JOIN która łączy wskazane tabele w jedną krótkoterminową
+		 tabelę z której będziesz pobierał dane przyrónując PRIMARY KEY z FOREIGN KEY:
+					SELECT Table1.columnName, Table2.columnName 
+						FROM Table1 JOIN Table2 
+						ON Table1.foreignKey=TableName.primaryKey	
+					SELECT Table1.columnName, Table2.columnName 
+						FROM Table1 AS t1 INNER JOIN Table2 AS t2
+						ON t1.foreignKey = t2.primaryKey	
+		*JOIN łączący wiele tabel:
+					SELECT Table1.columnName, Table2.columnName, Table3.columnName
+						FROM Table1 AS t1 FULL JOIN Table2 AS t2 RIGHT JOIN Table3 AS t3
+						ON t1.foreignKey=t2.primaryKey AND t2.foreignKey=t3.primaryKey
+		  LUB		SELECT Table1.columnName, Table2.columnName, Table3.columnName
+						FROM Table1 AS t1 
+						FULL JOIN Table2 AS t2 ON t1.foreignKey=t2.primaryKey 
+						RIGHT JOIN Table3 AS t3 Ont2.foreignKey=t3.primaryKey
+			*Pamietaj że JOINując tę samą tabele musisz wziąć pod uwagę w ONie kolejnosc porówanania
+			 klucza obcego i głównego (klucz obcy ędzie zawsze pierwszy). 
+				np Sprawdź ilu podwładnych ma każdy kierownik.
+					SELECT e2.empno, e2.ename, COUNT(e1.empno) FROM emp e1
+						INNER JOIN emp e2 ON e1.mgr = e2.empno
+						GROUP BY e2.empno, e2.ename
+		*BETWEEN - może się zdarzyć tak że PRIMARY KEY z jednej tabeli ZMIAST BYĆ RÓWNYM FOREIGN KEY z 
+		 drugiej tabeli to ZNAJDUJĘ SIĘ MIĘDZY 2 KOMÓRKAMI tej drugiej tabeli. Wtedy musisz połączyć te 2 
+		 tabele (za ON w klauzuli JOIN) poprzez klauzulę BETWEEN zamiast znak = 
+			**np masz tabele studentów i ocen:
+						STUDENT:				 				OCENY:
+					 id | nazwisko | punktacja 					stopien | min_punktacja | max_punktacja
+				    -------------------------					---------------------------------------
+					  1	| Glowacki |   98						   5    |      90		|	   100
+					  2 | Maruszak |   75						   4 	|	   75		|		89	
+			  punktacja w tabeli studenci jest wartością którą musisz przyrównać do wartości między 
+			  min_punktacjąi max_punktacją i robisz to poprzez BETWEEN za ON'em:
+					SELECT s.nazwisko, o.stopien, s.punktacja
+					FROM student AS s INNER JOIN oceny AS o
+					ON s.punktacja BETWEEN o.min_punktacja AND o.max_punktacja
+					
+		*są różne rodzaję JOINÓW:
+		  *INNER JOIN 
+			**INNER znaczy "szukaj tylko częsci wspólnych" dla 2 lub więcej tabel które są łączone w jedną
+			  tabele krótkoterminową stworzoną na potrzeby i za pomocą JOINa
+			**INNER JOIN jest domyślnie wykorzystywany przy samym JOINIE (jeżeli nie sprecyzujesz dokładnie 
+			  co to ma być za JOIN to będzie to INNER JOIN)
+			**POMINIE NULLE Z DWÓCH STRON czyli jeżeli po którejkolwiek ze stron (czyli albo w jednej 
+			  tabeli albo w drugiej tabeli) wystąpi wartość null ALBO jakaś niezgodność czyli: FOREIGN KEY 
+			  z jednej tabeli nie będzie pasował do PRIMARY KEY z drugiej tabeli, co spowoduję przy łączeniu
+			  tabel przypisanie wartości null, to INNER JOIN pominie te wartości z NULLem w połączonej tabeli
+			**DZIAŁA JAK MNOŻENIE ZBIORÓW - czyli wybierasz tylko częśc wspólną.				
+		  *FULL JOIN 
+			**NIE pominie NULLów 
+			**przy łączeniu tabel nie pominie żadnych wierszy które mogłyby zawierać wartość NULL lub 
+			  zawierać jakąś niezgodność przy łączeniu tabel (która skutkuje przypisaniem wartości NULL)
+			**DZIAŁA JAK DODAWANIE ZBIORÓW - czyli wybierasz wszystko co jest w dwóch zbiorach.		
+		  *LEFT JOIN 
+			**NIE pominie NULLów dla tabeli która znajduję się po PRAWEJ! stronie JOINa 
+			**zostaną wyświetlone wszystkie rekordy z tabeli stojącej po lewej stronie słowa JOIN wraz
+			  z tymi rekordami z prawej strony JOINA których klucze główne będą występować jako klucze
+			  obce w tabeli z lewej strony. 
+			**przy łączeniu tabel nie pominie żadnych wierszy które mogłyby zawierać wartość NULL lub 
+			  zawierać jakąś niezgodność przy łączeniu tabel (która skutkuje przypisaniem wartości NULL) 
+			  ALE tylko w tablicy która znajduję sie po lewej stronie LEFT JOINa.	
+			**DZIAŁA JAK MNOŻENIE ZBIORÓW WRAZ Z DODANIEM ZBIORU TEGO Z LEWEJ - czyli wybierasz wszystko
+			  to co wspólne wraz z tym co znajduję się w lewym zbiorze.
+		  *RIGHT JOIN 
+			**NIE pominie NULLów dla tabeli która znajduję się po LEWEJ! stronie JOINa 
+			**zostaną wyświetlone wszystkie rekordy z tabeli stojącej po prawej stronie słowa JOIN wraz
+			  z tymi rekordami z lewej strony JOINA których klucze główne będą występować jako klucze
+			  obce w tabeli z prawej strony. 
+			**przy łączeniu tabel nie pominie żadnych wierszy które mogłyby zawierać wartość NULL lub 
+			  zawierać jakąś niezgodność przy łączeniu tabel (która skutkuje przypisaniem wartości NULL)
+			  ALE tylko w tablicy która znajduję sie po prawej stronie RIGHT JOINa.
+			**DZIAŁA JAK MNOŻENIE ZBIORÓW WRAZ Z DODANIEM ZBIORU TEGO Z PRAWEJ - czyli wybierasz wszystko
+			  to co wspólne wraz z tym co znajduję się w prawym zbiorze.
+		  *NATURAL JOIN 						!!!!!!!!!!!!!!!!!
+			**działa tak samo jak INNER JOIN ale można użyć go tylko wtedy gdy na łączonych tabelach 
+			  FOREIGN KEY ma taką samą nazwę jak PRIMARY KEY. Wtedy NATURAL JOIN automatycznie wyszukuję 
+			  sobie JAk ma połączyć tabele i nie można zapisać jaka kolumna z pierwszej tabeli odpowiada 
+			  innej kolumnie w drugiej tabeli (czyli nie wskazuję się gdzie jest FOREIGN KEY = PRIMARY KEY)
+					SELECT Table1.columnName, Table2.columnName 
+						FROM Table1 NATURAL JOIN Table2 	
+			**warunkiem jest to żeby nazwy kolumn były takie same
+			
+	4* OPERATORY ALGEBRAICZNE - ponieważ JOINy działają jak operatory algebraiczne na ZBIORACH to możesz z 
+	   nich też korzystać zamiast samych JOINÓW. Tworzy się 2 selecty któe tworzą zbiory i następnie można 
+	   na nich pracować jak na zwykłych zbiorach. Najczęsciej występuję przy słowach UNION Operatory te to:
+			*UNION – sumowanie wyników obu zapytań z usunięciem duplikatów
+					SELECT Ename + '*’ FROM Emp WHERE Deptno = 10
+					UNION
+					SELECT Ename FROM Emp WHERE Deptno <> 10
+			*UNION ALL – sumowanie bez usuwania duplikatów
+			*EXCEPT – różnica - wiersze zwracane przez pierwsze zapytanie, a nie zwracane przez drugie
+			 (w ORACLE MINUS) 
+					SELECT Deptno FROM Dept
+					EXCEPT
+					SELECT Deptno FROM Emp
+			*INTERSECT – część wspólna (wiersze zwracane w obu zapytaniach) (w zdaniach występuje jako 
+			 ZAROWNO)
+
+		
+						
+	5* PODZAPYTANIA SQL (SUBQUERIES):
+		*za WHERE to podzapytanie musi zwrócić dokładnie jedną wartość więc musisz użyć funkcji grupujących
+ 		 np AVG() lub w klauzuli WHERE przefiltrować wyniki wyszukiwania do jednej zwracanej wartości:
+				SELECT * FROM tableName WHERE columnName1 > (SELECT AVG(columnName1) FROM tableName)
+				SELECT * FROM tableName WHERE columnName1 > (SELECT columnName1 FROM tableName WHERE id=1)
+			*ALL + SOME I ANY - możęsz określić czy wyszukane wartości w podzapytaniu mają być większe od 
+			 wszystkich czy od jakiejkolwik wartości (SOME i ANY oznaczają to samo czyli od jakiejkolwiek):
+				SELECT * FROM emp WHERE sal >= ALL (SELECT Sal FROM Emp WHERE Deptno=10)
+										#wybierzesz wszystkich pracowników których pensje są większe niż
+										#pensje WSZYSTKICH pracowników z działu 10
+				SELECT * FROM emp WHERE sal >= ANY (SELECT Sal FROM Emp WHERE Deptno=10)
+										#wybierzesz wszystkich pracowników których pensje są większe niż
+										#pensje JAKIEGOKOLWIEK pracownika z działu 10
+			*IN i NOT IN:
+				SELECT Dname FROM Dept WHERE Deptno IN (SELECT	Deptno FROM	Emp WHERE Job = 'CLERK');
+			*EXISTS + NOT EXISTS - Sprawdzają czy podzapytanie daje pusty zbiór wyników czy nie
+				SELECT DISTINCT	Dname FROM Dept WHERE 
+				NOT EXISTS (SELECT 'x' FROM Emp WHERE Emp.Deptno = Dept.Deptno);
+			*w przypadku konieczności użycia DWÓCH WARNUKÓW w jednym podzapytaniu musisz drugi warunek 
+			 sprawdzić w WHERE w drugim podzapytaniu:
+				SELECT * FROM emp a WHERE sal = (SELECT MIN(sal) FROM emp b WHERE a.deptno = b.deptno);
+										#Znajdź pracowników o najniższych zarobkach w ich departamentach.
+			*możesz też użyć kilka SUBQUERIES w jednym zapytaniu:
+				SELECT Ename, Job FROM Emp 
+				WHERE Job = (SELECT Job FROM Emp WHERE Empno = 7369) 
+				AND Sal > (SELECT Sal FROM Emp WHERE Empno = 7876); 
+		*za FROM - możesz też użyć SUBQUERIES do zbioru za klauzulą FROM z którego będzie szukał ALE wtedy
+ 		 tenże zbiór MUSISZ OKREŚLIĆ ALIASEM za klauzulą AS (bez ALIASU nie będzie ci to działać:
+				SELECT colName1 FROM (SELECT * FROM tableName WHERE colName2>integerValue) AS aliasName
+				
+  --------------------------------------------------------------------------			
+  III.CIEKAWE SELECTY:
+		*różnica między ilośćią rekordów/obiektów miast w tabeli a unikalnymi miastami w tabeli:
+				SELECT COUNT(city)-COUNT(DISTINCT(city)) FROM station;
+
+-----------------------------------------------------------------------------------------------------------
+-------------------------------------------- PODSTAWOWE OPERACJE ------------------------------------------
+			
+2* PODSTAWOWE OPERACJE:
+	1.Tworzenie tabeli
+	 * w panelu administracyjnym np phpMyAdmin wybierz dla klucza głównego PRIMARY i A_I
+	 *Składnia:
+				CREATE TABLE "tableName" (
+					"textColumn"	TEXT,
+					"integerColumn"	INTEGER);
+					
+	 *PRIMARY KEY   AUTOINCREMENT   NOT NULL   UNIQUE:
+				CREATE TABLE "tableName" (
+					"id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+					"anotherColumn" TEXT
+					);
+				CREATE TABLE "tableName" (
+					"id" INTEGER NOT NULL UNIQUE,
+					"anotherColumn" TEXT,
+					PRIMARY KEY("id" AUTOINCREMENT)
+					);
+	2.INSERT:
+		*Składnia:
+				INSERT INTO tablename(firstColumn, secondColumn) 
+				VALUES ('firstValueText', secondValueInteger);
+		*podczas INSERTow nie musisz dodawać kolumny id (PRIMARY KEY) gdyz klucz glowny jest 
+		 AUTOINKREMENTOWANY. Jednakże jeżeli dodasz to w miejsce klucza głównego to w VALUES podajesz 
+		 wartość NULL:
+				INSERT INTO tablename(idColumn, columnName1, columnName2)
+				VALUES(null,'firstValueText', secondValueInteger);  
+		*po nazwie tabeli nie musisz wpisywać nazw kolumn ale wtedy musisz podać wszystkie wartości w 
+		 sekcji VALUES wraz z wartością null dla autoinkrementowanego klucza głównego:
+				INSERT INTO tableName VALUES(null, 'firstValueText', secondValueInteger); 
+		*możesz podać wiele wierszy/obiektów jednocześnie:
+				INSERT INTO tableName(firstColumn, secondColumn) 
+				VALUES ('firstValueText', secondValueInteger),('firstValueText', secondValueInteger),
+				('firstValueText', secondValueInteger);
+		*Podczas operacji INSERTOWANIA nazwy kolumn w nawiasie mozesz podac w dowolnej kolejnosci
+		*Inna składnia dla INSERT to:
+				INSERT INTO tableName SET columnName1=value, columnName2=value, columnName3=value
+	3.UPDATE:
+		*Składnia bez klauzuli WHERE wszystkie rekordy zostaną zmodyfikowane DLATEGO PAMIĘTAJ O TYM! :
+				UPDATE tablename 
+				SET columnName1='textValue',columnName2=numberValue  
+				WHERE columnName='textValuFromTable'
+		*W klauzuli SET możesz działać dynamicznie (czyli dodawać, mnożyć itp) a w klauzuli WHERE 
+		 filtrować wyniki tak samo jak w SELECT'cie (do zaokrąglania użyj funkcji ROUND(int, 2)) np:
+				UPDATE produkty
+				SET cena=ROUND(cena*0.9)
+				WHERE id_produktu IN(19,20)
+		*Podczas operacji UPDATOWANIA nazwy kolumn w nawiasie mozesz podac w dowolnej kolejnosci
+	4. USUWANIE:
+	  *UPDATE:
+		*SŁUŻY do usunięcia pojedyńczego pola poprzez modyfikowanie go przypisując mu pustą wartość
+				UPDATE tabelName
+				SET columnName=''
+				WHERE columnName=Value
+	  *DELETE:
+		*SŁUŻY do usunięcia POSZCZEGÓLNYCH REKORDÓW
+	    *Składnia, przy klauzuli WHERE mozesz filtrować wyniki w taki sam sposób jak w SELECT'cie
+				DELETE FROM tablename WHERE columnName='valueName'
+	    *Uwazaj zeby nie zrobić DELETE bez klauzuli WHERE bo usunie ci całą tabele (co prawda powinno 
+		 wyskoczyć zabezpieczenie ALE nie musi się tak stać)
+		*Po usunięciu danego rekordu kluczu głowny czyli id POZOSTANIE TAKI SAM a nie się przesunie
+		*klauzule które mogą się przydać przy DELETE to ORDER BY (ustala kolejność w jakiej rekordy 
+		 zostaną usunięte) i LIMIT (ograniczenie ilosci usuwanych rekordów przydatne w podzieleniu 
+		 usuwanych danych
+				DELETE FROM tableName ORDER BY columnName DESC LIMIT intValue
+	  *TRUNCATE:
+		*SŁUŻY do usunięcia WSZYSTKICH REKORDÓW w tabeli. Jest bardzo szybki i używa się tylko gdy
+		 chcesz usunąc wszystkie rekordy.
+				TRUNCATE TABLE tableName;
+	  *DROP:
+		*SŁUŻY do usunięcia danych STRUKTUR np tabeli
+				DROP TABLE nameTable ;
+				DROP DATABASE ksiegarnia;
+		*uzuywa się jeszcze klauzuli IF EXISTS
+				DROP TABLE IF EXISTS nameTable ;
+	5.ALTER TABLE:
+		*służy do zmian nazw w tabeli np kolumn.
+				ALTER TABLE table1 CHANGE COLUMN columnOldName columnNewName intTypeColumn;
+		
+-----------------------------------------------------------------------------------------------------------
+----------------------------------------------- TYPY DANYCH -----------------------------------------------
+
+1*TYPY DANYCH:
+	1. TYPY NAPISOWE:
+		*Char(n) - napis stałej długości
+		*Varchar(n) - napis znakowy zmiennej długości
+			**w Oracle:	Varchar2(n)
+			**w MsSql:	Text
+		*Stałe - napisy zapisane w pojedyńczych apostrofach
+	2. TYPY LICZBOWE:
+		*Integer – typ całkowity 
+			**w MsSql:	
+				Bigint 			<-2^63;  2^63 -1>	(8 bajtów)
+				Int 			<-2^31;  2^31 -1>	(4 bajty)
+				Smallint 		<-32 768;  32 767>	(2 bajty)
+				Tinyint 		<0; 255>			(1 bajt)
+				Bit				0, 1 albo Null
+		*Numeric, Decimal, Numeric(p,s) – liczby zmiennoprzecinkowe. 
+		 [p- całkowita liczba cyfr do zpaisania liczby, s - liczba cyfr po przecinku]
+			**w Oracle:	Number(p,s).
+		*Float(n) – typ zmiennopozycyjny.
+		*Real – typ zmiennopozycyjny.
+	3. DATA I CZAS:
+		*Date – data
+			**w MsSql:	Datetime [Zakres obsługiwanych dat: 1753 - 9999]
+			**w MsSql:	Smalldatetime - [Zakres obsługiwanych dat:  1900 - 2079]
+		*Time – godzina
+		*Timestamp - data i godzina
+	4. TYPY WALUTOWE:
+			**w MsSql:	Money(8 bajtów)
+			**w MsSql:	Money(4 bajty)
+			
+-----------------------------------------------------------------------------------------------------------
+------------------------------------------------- POJĘCIA -------------------------------------------------
+			
+0*POJĘCIA:
+	0.PAMIETAJ ŻE INSTRUKCJE MUSISZ KONCZYC SREDNIKIEM a ilośc spacji w zapytaniu nie ma znaczenia.
+	1.Podstawowe pojęcia:
+		*POLE (atrybut) - część tabeli przechowująca jednostkowe dane
+		*REKORD (krotka) - pojedyńczy wiersz w tabeli czyli zestaw pól w niej występujących
+		*KWERENDA - instrukcja SQLowa np SELECT, UPDATE, INSERT, DELETE itd
+	2.KEYS: 
+	 *PRIMARY KEY - autoincremented field in a table. Klucz podstawowy/glówny ktory jest unikatowy.
+				  - kluczem glownym moga byc takze 2 kolumny
+	 *FOREIGN KEY - klucz obcy ktory wskazuję na wartość klucza glownego (w wierszu) w innej tabeli
+				  - przy tworzeniu tabeli w Sqlite nie trzeba przypisywać kolumnie żę jest FOREIGN KEY
+				    ale w bazie ORACLE już musisz
+	3. MODELE DANYCH:
+		*MODEL DANYCH -integralny zbiór zasad, opisujący dane i powiązania pomiędzy nimi. OKreśla 
+			ograniczenia nakładane na dane jak i operacje na nie nakładane. 
+		*Role modelu danych:
+			*rola strukturalna - określenie sposobu przechowywania danych (w sposób uporządkowany)
+			*rola integralna - zagwarantowanie stabilnośći systemu przechowywania danych 
+			*rola manipulacyjna - zapewnienie możliwość bezpiecznej modyfikacji danych oraz ewentualnych 
+				zmian struktury danych 
+		*Rodzaje modelu danych:
+			*model jednorodny 
+					*dane zgromadzone względem jednego zbioru np kartoteka ksiązek
+					*cechuje go nadmiarowość i mnóstwo redundacji gdyż każdy zbiór ma swoj DBMS
+			*model hierarchiczny 
+					*oparty na drzewiastych strukturach - związki nadrzędno-podrzędne 
+					*jeden ojciec ma wiele dzieci a jedno dziecko jednego ojca
+					*usunięcie rodzica powoduję usunięcie wszystkich dzieci 
+			*model obiektowy
+					*OQL - object query language - używany w modelu obiektowym
+					*obiekty rozumiemy przez instancje klas i w OQLu nazywa się to INSTANCJA (REKORD)
+					*klasa zaś rozumiemy jako zestaw atrybutów i metod. w OQLu to ENCJA (obis obiektu)
+			*model sieciowy 
+					*modyfikacja modelu hierarchicznego, oparta na typach kolekcji oraz typach rekordów
+					*reprezentacja powiązań przyjmowała postać grafu zoorientowanego który nazwano siecią
+			*model relacyjno-obiektowy 
+					*model mieszany w którym mechanizm przechowywania danych jest relacyjny, jednak w
+					 operowaniu na danych możemy użyć interfejsu metod wykorzystujących mechanizmy 
+					 obiektowe
+			*MODEL RELACYJNY!
+					*wystęują powiązania logiczne między tabelami realizowane przy pomocy klucza głównego 
+					 i obcego 
