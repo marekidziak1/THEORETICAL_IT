@@ -842,7 +842,7 @@ https://www.youtube.com/watch?v=9qrgY2Dw30g  -UWIERZYTELNIENIE KOMPUTERA Z GITHU
 									#(ustawiasz nano gdyz przy komendzie git commit (bez -m) 
 									#gdybyś pozostawil domyslny edytor czyli VIM to nie da się
 									#z tego wyjść => jedyna opcja to ESC + :q! Przy nano 
-									#wytarczy ctrl+X
+									#wytarczy ctrl+X 
 					git config --global user.name Twoje_imie_i_nazwisko
 					git config --global user.email twoj_mail
 1.1* DO POBRANIA/SKOPIOWANIA ISTNIEJĄCEGO PROJEKTU ZE ZDALNEGO REPOZYTORIUM (szybsza opcja):
