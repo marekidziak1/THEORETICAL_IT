@@ -1,6 +1,6 @@
 PLAN NAUKI:
 *Główne założenie - perfekcyjnie nauczyć się podstaw bo potem nie będzię na nie czasu, 
- będzie czas tylko na rozwijanie się w Django. 
+ będzie czas tylko na rozwijanie się w Django. !!!
  
 dokcer:
 2|12*Docker Tutorial for Beginer - youtube tutorial with mosh
