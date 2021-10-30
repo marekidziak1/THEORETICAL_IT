@@ -9,7 +9,7 @@ linux:
 1|10*bash tutorial
 1|14*windows cmd commands
 
-git:
+git: 
 5|	*git intermediate freecode camp - https://www.youtube.com/watch?v=e2IbNHi4uCI&t=1s
 5|	*git advanced freecodecamp - https://www.youtube.com/watch?v=Uszj_k0DGsg&t=1s
 	

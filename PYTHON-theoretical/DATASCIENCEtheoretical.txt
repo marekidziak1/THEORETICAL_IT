@@ -1,4 +1,4 @@
-POZOSTAŁE:   
+POZOSTAŁE:    
 	MATPLOTLIB: 		https://www.w3schools.com/python/matplotlib_intro.asp
 	NUMPY:				https://www.w3schools.com/python/numpy/default.asp
 	SCIPY:				https://www.w3schools.com/python/scipy/index.php
