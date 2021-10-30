@@ -883,7 +883,11 @@ https://www.youtube.com/watch?v=9qrgY2Dw30g  -UWIERZYTELNIENIE KOMPUTERA Z GITHU
 		*za każdym kolejnym razem (niezależnie od tego czy po drodze poprzełączasz się na inne 
 		 branche) zwyczajnie, poprzez:
 					git push
-					
+	  *jeżeli podczas pushowania pojawi ci się błąd typu:! 
+					[remote rejected] master -> master (permission denied)
+	   to udaj sie pod tę stronę: https://stackoverflow.com/questions/40069344/remote-rejected-master-master-permission-denied
+	   i zamień w link do aliasów w repozytoriach zdalnych z typu HTTP na SSH tj:
+					git remote set-url origin git@github.com:username/your-repository.git
 3* SPRAWDZENIE RÓŻNIC (git diff) - pokazuję róźnice na drugim podanym branchu w stosunku do 
    pierwszego podanego co oznacza że widać jakie linie odjęto(na czerwono) i jakie linie 
    dodano (na zielono) na drugim podanym branchu:
