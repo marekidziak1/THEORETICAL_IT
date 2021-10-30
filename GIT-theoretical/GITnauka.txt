@@ -1,6 +1,6 @@
 GIT:
-KRÓTKI SPIS KOMEND GITa:	https://rogerdudler.github.io/git-guide/index.pl.html
-CAŁY KURS GITa:				https://www.youtube.com/watch?v=D6EI7EbEN4Q&list=PLjHmWifVUNMKIGHmaGPVqSD-L6i1Zw-MH&index=2
+KRÓTKI SPIS KOMEND GIT:	https://rogerdudler.github.io/git-guide/index.pl.html
+CAŁY KURS GIT:				https://www.youtube.com/watch?v=D6EI7EbEN4Q&list=PLjHmWifVUNMKIGHmaGPVqSD-L6i1Zw-MH&index=2
 ====================================================================================================================================================
 ====================================================================================================================================================
 ====================================================================================================================================================
