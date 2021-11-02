@@ -69,6 +69,8 @@ PIERWSZE WYSŁANIE DANEGO BRANCHA lub TAGA i KOLEJNE WYSYŁANIA BRANCHA lub TAGA
 UKAZANIE RÓŹNIC W BRANCHU2 W STOSUNKU DO BRANCHA1
 	git diff branch1 branch2			
 POBRANIE WSZYSTKICH ZMIAN Z REPOZYTORIUM ZDALNEGO
+    git fetch --prune 					  pobiera zmiany łącznie z usunięciem zdalnych branchy 
+										  które zostały susunięte zewnętrznie 
 	git fetch							
 		+git log --graph --decorate 	  + następnie zmergowanie jednego brancha ze zdalnym
 				 --all --oneline   		  repozytorium + następnie wypushowanie tychże zmian
@@ -415,6 +417,8 @@ odc0. PODSTAWY i DODATKI
 		git checkout -b newBranchName 				- zapis na nowej gałęzi	
 		git switch -c newBranchName					- 	--||--
 		git push origin -d branchName				- usunięcie brancha na zdalnym repozytorium
+			/ git fetch --prune						  jeżeli branch zdalny nie istnieje to zostanie 
+													  pobrana zmiana (łącznie z usunięciem zdalnego brancha)
   //............//
 		git tag										- wylistowanie wszystkich tagów
 		git tag v1.0.0								- utworzenie tagu na aktualnym commitcie
@@ -438,7 +442,7 @@ odc0. PODSTAWY i DODATKI
 					serwerem testowym
 		*FEATURE branch - gałęzie na której produkuję się nowe funkcje
 		*USER branch - służy indywidualnej pracy członka zespołu
-		***TEST / BUGFIX branch / HTO FIX - wykorzystywane w szczegolnych przypadkach gdy 
+		***TEST / BUGFIX branch / HOT FIX - wykorzystywane w szczegolnych przypadkach gdy 
 					pojawi się nieprzewidziany błąd. Wykorzystuję się tylko na jeden commit. 
 	*schemat budowania branchy [od 5:30]:
 	 https://www.youtube.com/watch?v=I8lQK0NK0lY&list=PLjHmWifVUNMKIGHmaGPVqSD-L6i1Zw-MH&index=8
@@ -458,6 +462,10 @@ odc0. PODSTAWY i DODATKI
 						git switch -c newBranchName	
 	E. Usuwanie brancha (nie powoduję usunięcie ściezki w grafie):
 						git branch -D branchName
+	F. Usuwanie brancha na zdalnym repozytorium 
+						git push -d origin branchName
+	   jeżeli branch nie istnieje to pobierz zmiany z flagą usuwającą usunięte wcześniej branche:
+						git fetch --prune
 3.TAGI:
 	A)Tagi to rodzaj zakładek który pozwala nam odnaleźć ważny commit i wrócić do nieg poprzez 
 	  jego Hash. Tagi wykorzystuję się najcześciej przy zakończonych kolejnych wersjach naszego 
@@ -901,7 +909,9 @@ https://www.youtube.com/watch?v=9qrgY2Dw30g  -UWIERZYTELNIENIE KOMPUTERA Z GITHU
 		*git fetch - tylko POBIERA ZMIANY na WSZYSTKIE branche typu REMOTE (bez ich 
 			jednoczesnego zmergowania) po czym nastepnie (będąc na branchach typu local (o tych 
 			samych nazwach co remote)) musisz zrobić merge i rozwiązać MERGE CONFLICTy:
-					git fetch
+			[Najlepiej zamiast git fetch korzystaj z git fetch --prune która aktualizuję również
+			usunięte wczesniej branche na zewnętrznych repozytoriach]
+					git fetch		//		git fetch --prune  	
 					git log --graph --decorate --all --oneline  
 					git merge origin/nazwaREMOTEbrancha
 			Po pobraniu zmian (git fetch) zanim je zmergujesz możesz sprawdzić czym różnią się 

@@ -454,11 +454,14 @@ ZADANIA DO POWTÓRZENIA I UTRWALENIA SQL'a:
 										#pensje JAKIEGOKOLWIEK pracownika z działu 10
 			*IN i NOT IN:
 				SELECT Dname FROM Dept WHERE Deptno IN (SELECT	Deptno FROM	Emp WHERE Job = 'CLERK');
-			*EXISTS + NOT EXISTS - Sprawdzają czy podzapytanie daje pusty zbiór wyników czy nie
+			*EXISTS + NOT EXISTS - Sprawdza główne zapytanie dla tych wynikó podzapytan które istnieją albo 
+			 nie istnieją. np:
 				SELECT DISTINCT	Dname FROM Dept WHERE 
 				NOT EXISTS (SELECT 'x' FROM Emp WHERE Emp.Deptno = Dept.Deptno);
-			*w przypadku konieczności użycia DWÓCH WARNUKÓW w jednym podzapytaniu musisz drugi warunek 
-			 sprawdzić w WHERE w drugim podzapytaniu:
+			 Inny przykład: zwróc pracownikó posiadających podwładnych:
+				SELECT * FROM emp e1 WHERE EXISTS (SELECT * FROM emp e2 WHERE e2.mgr = e1.empno)
+			*WIĘCEJ NIZ JEDEN WARUNEK - w przypadku konieczności użycia DWÓCH WARNUKÓW w jednym podzapytaniu
+			 musisz drugi warunek sprawdzić w WHERE w drugim podzapytaniu:
 				SELECT * FROM emp a WHERE sal = (SELECT MIN(sal) FROM emp b WHERE a.deptno = b.deptno);
 										#Znajdź pracowników o najniższych zarobkach w ich departamentach.
 			*możesz też użyć kilka SUBQUERIES w jednym zapytaniu:
