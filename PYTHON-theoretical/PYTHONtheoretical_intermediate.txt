@@ -1174,6 +1174,7 @@ https://docs.python.org/3/library/xml.etree.elementtree.html
 
 1. CSV - Comma Seperated Values:
 CSV:		https://www.youtube.com/watch?v=Xi52tx6phRU
+			https://www.youtube.com/watch?v=q5uM4VKywbA
 	*w skrócie:
 		*ODCZYT:
 					import csv
@@ -1207,10 +1208,10 @@ CSV:		https://www.youtube.com/watch?v=Xi52tx6phRU
 
 	*są to pliki excelowskie które można odczytać dzięki specjalnemu modułowi csv. Składają się one 
 		*z pierwszego wiersza - który jest nazwami kolumn wymienionymi po przecinku albo średniku
-		*z pozostałyh wierszy - które są wartościami dla każdej z kolumn wymienionymi po przecinku
-			(rzadziej średniku, domyślnie jednak po przecinku). Jeżeli są pod rząd dwa przecinki lub
-			średniki ze spacją po środku to oznacza to że dane pole jest puste.
-	*module csv zawiera specjalne metody:
+		*z pozostałych wierszy - które są wartościami dla każdej z kolumn wymienionymi po przecinku
+			(rzadziej średniku, domyślnie jednak po przecinku). Jeżeli są pod rząd dwa przecinki (lub
+			średniki) ze spacją po środku to oznacza to że dane pole jest puste.
+	*module csv zawiera specjalne METODY (które zwracają obiekt strumieniowy):
 		*csv.reader(plikCSV):
 			*służy do odczytu wszystkich linii w pliku csv. Normalnie do tego celu użyłbyś metody 
 			 readlines() jednakże ona zwróci Tobie listę wszystkich linijek w postaci stringów które
@@ -1219,7 +1220,7 @@ CSV:		https://www.youtube.com/watch?v=Xi52tx6phRU
 					file=open(path)
 					lines=[line.strip().split(',') for line in file]
 					file.close()
-			 to czy tak czy tak tworzy wiele problemó jak choćby to że na początku linijki możesz miec
+			 to czy tak czy tak tworzy wiele problemów jak choćby to że na początku linijki możesz miec
 			 cudzysłów który będzie odcięcty poprzez metodę strip. Dlatego lepiej użyć MODUŁU CSV
 			*READER - csv.reader(plikCSV) zwróci Tobie listę list stringów pod warunkiem że domyślnym 
 			 separatorem dla każdego wiersz (czyli parametr delimiter będzie ustawiony na przecinek).
@@ -1245,11 +1246,13 @@ CSV:		https://www.youtube.com/watch?v=Xi52tx6phRU
 			 przypisywania pozostałych elementów. Tylko ta pojedyńcza linijka będzie spieprzona.
 		*csv.writer(plikCSV)
 			*służy do zapisu danych w pliku csv. Wykorzystuję się do tego metodę writerow()
-			*pamiętaj by najpierw zapisać header (czyli nzawy kolumn) a potem zapisuj wszystkie dane
+			*pamiętaj by najpierw zapisać header (czyli nazwy kolumn) a potem zapisuj wszystkie dane
 			 według nazw tych kolumn
+			*pamiętaj żeby w metodzie open() użyć paramteru   newline=''  dzięki któremu nie będzie 
+			 ci zapisywać enterów jako dodatkowej listy/linii
 					import csv
-					file=open(path,'w')
-					writer=csv.writer(file)
+					file=open(path,'w')							#w cudzysłowach nazwa pliku albo ścieżki
+					writer=csv.writer(file) 
 					writer.writerow(["columnName1","columnName2"])		#zapisujesz header
 					writer.writerow(["data1.1", "data1.2"])				#zapisujesz dane
 					writer.writerow(["data2.1", "data2.2"])				 	
@@ -1259,7 +1262,7 @@ CSV:		https://www.youtube.com/watch?v=Xi52tx6phRU
 						csv_reader=csv.DictReader(csv_file)
 						for line in csv_reader:
 							print(line)				
-						#zwróci: {'first_name': 'Johnm', 'last_name': 'Doe', 'email': 'johindoe@gmail.com'}
+						#zwróci: {'first_name': 'John', 'last_name': 'Doe', 'email': 'johndoe@gmail.com'}
 								{'first_name': 'Sophie Elie', 'last_name': 'Don', 'email': 'bax@gmail.com'}
 		*csv.DictWriter(csv_file)
 			*poprzez specjalną słownikową składnię zapiszę nam plik csv

@@ -16,7 +16,7 @@ MODULE CALENDAR:					https://www.geeksforgeeks.org/python-calendar-module/
 MODULE, if__name__ == '__main__':	https://www.youtube.com/watch?v=sugvnHA7ElY
 
 
-################# LOGGING | UNIT TESTS | PYTEST | PYDOC | PIP | VENV | PIPENV ############################
+############ LOGGING | UNIT TESTS | PYTEST | PYDOC | PIP | VENV + VIRTUALENV | PIPENV ####################
 PIPENV:								https://www.youtube.com/watch?v=6Qmnh5C4Pmo
 PIP MANAGING: 						https://www.w3schools.com/python/python_pip.asp
 PYDOC:								https://www.youtube.com/watch?v=URBSvqib0xw
@@ -145,7 +145,7 @@ https://www.geeksforgeeks.org/python-shutil-copytree-method/
 
 3*OS MODULE - moduł do działania na ścieżkach, gdy masz wiele plików:
   https://www.programiz.com/python-programming/directory
-  https://www.youtube.com/watch?v=tJxcKyFMTGo&list=PL-osiE80TeTskrapNbzXhwoFUiLCjGgY7&index=10
+  https://www.youtube.com/watch?v=tJxcKyFMTGo&list=PL-osiE80TeTskrapNbzXhwoFUiLCjGgY7&index=10 
 	*musisz pobrać moduł os:
 					import os
 	*PODSTAWY cz1 - NAJCZĘŚCIEJ UŻYWANE:
@@ -172,7 +172,7 @@ https://www.geeksforgeeks.org/python-shutil-copytree-method/
 		 (teoretycznie mógłbyś to zrobić zwyczjanie podając to w Stringu ale w Macu i Windowsie różnią 
 		 się slashe przy ścieżkach. W Windowsie jest backslach '\' a w Macu slash '/')
 						path='templates/email.txt'		#nie robimy tak tylko używamy moduł os
-			*WZGLĘDNEJ:
+			*WZGLĘDNEJ: 
 						quasi_path=os.path.join("templates","email.txt")
 			*BEZWZGLĘDNEJ:
 					*najpierw trzeba dostać się do katalogu poprzez absolutną scieżkę:
@@ -185,7 +185,7 @@ https://www.geeksforgeeks.org/python-shutil-copytree-method/
 		*STWORZENIE NOWEGO KATALOGU (tylko katalogu, nie pliku)
 			*stworzenie pojedyńczego katalogu
 						os.mkdir('nowyKatalog');
-			*stworzenie całego łańcuszka katalogów (na początku mogą być te już istniejące)
+			*stworzenie całego łańcuszka katalogów (na początku mogą być te nieistniejące i te istniejące )
 						os.makedirs('nowyKatalog1/nowyKatalog2/nowyKatalog3')
 						os.makedirs(path, exist_ok=True) 	#nie stworzy jeśli istnieje folder. W ten
 															#sposób działa parametr exist_ok ustawiony 
@@ -263,6 +263,8 @@ https://www.geeksforgeeks.org/python-shutil-copytree-method/
 
 2* LICZBY LOSOWE - MODULE RANDOM:
 	*METODY dla random: https://www.w3schools.com/python/module_random.asp
+	*JEŚLI CHESZ UŻYĆ liczb losowych DO KWESTI BEZPIECZEŃŚTWA to nie używaj modułu RANDOM tylko MODUŁ
+	 OS.URANDOM() albo SystemRandom 
 	*losowanie liczb pseudolosowych 
 		*random.random() - zwróci liczbę z zakresu [0 - 1)
 				import random
@@ -276,34 +278,43 @@ https://www.geeksforgeeks.org/python-shutil-copytree-method/
 			*random.randrange(1,10) - ze zaimportuj zbior random   +   funkcja: randrange(1,10)    [1-9]
 					import random	
 					print(random.randrange(1,10))
-			*random.uniform(3,7)
+			*random.uniform(3,7) - używaj przy rzeczywistym podejściu losowości 
 					import random
 					print(random.uniform(1,10))	
 			*random.normalvariate(0,9)	
-				*pobranie wartośći losowej z odchylenia standardowego ggdzie pierwszy parametr to 
+				*pobranie wartośći losowej z odchylenia standardowego gdzie pierwszy parametr to 
 				 środek odchylenia standardowego a drugi parametr to szerokość odchlenia standardowego
 					import random
 					print(random.nomralvariate(4,5) 	#liczby będą wybierane z zakresu -1 do 9
-		*random.choice(list) - ktora z danej sekwencji (np. listy) wybierze losowo jedną wartość:
+		*losowy wybór kilku wartośći z listy:
+			*random.sample(lista, k=ilosc_elementów_do_wyboru):
+					import random
+					deck = list(range(1,25)
+					sample = random.sample(deck, k=3)						#wybierze 3 wartośći
+					print(sample)											#zwróci np: [23,7,12] 
+		*losowe pomieszanie kolejności w liście:
+			*random shuffle(lista):
+					import random
+					deck =list(range(1,10))
+					random.shuffle(deck)	#nie przypisujesz tego niczemu
+					print(deck)				#zwróci pomieszaną kolejność np: [8, 1, 4, 6, 5, 3, 7, 2, 9]
+		*wybór losowy z danej listy:
+			*random.choice(list) - ktora z danej sekwencji (np. listy) wybierze losowo jedną wartość:
 					import random
 					lst=['rock' 'paper', 'scizzors']
 					obj=random.choice(lst
-			*żeby zrobić losowanie z dictionary to zamień je wczesniej na listę:
+				*żeby zrobić losowanie z dictionary to zamień je wczesniej na listę:
 					import random 
 					dictionary={'north':[1,0],'east':[0,1],'south':[-1,0],'west':[0,-1]}
 					direction=random.choice(list(dictionary.keys()))
-			 mozesz też to skrócić:
-					
-		*random.choices(list, k=number) - ktora wybierze z sekwencji tyle losowo wybranych liczb ile 
-		 wskazuję parametr k. 
-			*można tez dodać pomiędzy tymi argumentami parametr weight=[list] ktory wskazuję na wagę 
-			 danego argumentu w liście tzn = że dla czegoś takiego: [2,1,1] pierwszy element listy 
-			 będzie 2 razy częściej wybierany niż pozostałe
-			*nie zalecane jest uzywanie metody choices - zdecydowanie lepiej jest użyć metody choice 
-			 w pętli (nie zalecane głównie dlatego że może dojść do sytuacji że w metodzie choices 
-			 wylosuję nawet więcej elementów niż podane jest w parametrze k)
-	*JEŚLI CHESZ UŻYĆ liczb losowych DO KWESTI BEZPIECZEŃŚTWA to nie używaj modułu RANDOM tylko MODUŁ
-	 OS.URANDOM() albo SystemRandom 
+			*random.choices(list, k=number) - ktora wybierze z sekwencji tyle losowo wybranych liczb 
+			 ile wskazuję parametr k. 
+				*można tez dodać pomiędzy tymi argumentami parametr weight=[list] ktory wskazuję na 
+				 wagę danego argumentu w liście tzn = że dla czegoś takiego: [2,1,1] pierwszy element 
+				 listy będzie 2 razy częściej wybierany niż pozostałe
+				*nie zalecane jest uzywanie metody choices - zdecydowanie lepiej jest użyć metody 
+				 choice w pętli (nie zalecane głównie dlatego że może dojść do sytuacji że w metodzie 
+				 choices wylosuję nawet więcej elementów niż podane jest w parametrze k)
 				
 1* MODUŁ TIME i TIMEIT oraz MODUŁ DATETIME i CALENDAR:
 https://www.w3schools.com/python/python_datetime.asp
@@ -632,7 +643,7 @@ https://www.youtube.com/watch?v=eirjjyP2qcQ
 						variables -> NEW: np.: PYTHONPATH, C:/users/corey/Desktop/my_folder_module
 
 			
-################# LOGGING | UNIT TESTS | PYTEST | PYDOC | PIP | VENV | PIPENV ####################
+############## LOGGING | UNIT TESTS | PYTEST | PYDOC | PIP | VENV + VIRTUALENV | PIPENV ##################
 PIPENV:					https://www.youtube.com/watch?v=6Qmnh5C4Pmo
 PIP MANAGING: 			https://www.w3schools.com/python/python_pip.asp
 PYDOC:					https://www.youtube.com/watch?v=URBSvqib0xw
@@ -747,9 +758,27 @@ LOGGING INTERMEDIATE:	https://www.youtube.com/watch?v=p0A4CV4MWd0
 		 pythona ze swojej wirtualki.
 		*ten plik należy wpisac na listę pliku .gitignore żeby nie był wysyłany na repozytorium
 		
-6* VENV
-	WINDOWS: 		https://www.youtube.com/watch?v=APOPm01BVrk
-	LINUX + MAC: 	https://www.youtube.com/watch?v=Kg1Yvry_Ydk
+6* VENV + VIRTUALENV
+	VENV WINDOWS: 		https://www.youtube.com/watch?v=APOPm01BVrk
+	VENV LINUX + MAC: 	https://www.youtube.com/watch?v=Kg1Yvry_Ydk
+	VIRTUALENV:
+		0* INSTALACJA:
+					pip install virtualvenv
+		1* UTWORZENIE:
+					virtualenv name_project
+			** -p - instalacja z konkretną wersją pythona:
+					virtualvenv -p /scieżk_do_pythona_zainstalowanego_lokalnie nazwa_projektu
+		2* AKTYWACJA - musisz aktywować za każdym razem gdy chcesz działać na pythonie/pipie/bibliotekach 
+		   znajdujących się w wirtualce (najlepiej poprzez konsole UNIXową (czyli linuxową) bo w windowsowej 
+		   coś nie działa) i deaktywować po zakończonej pracy)
+					source path_project_ven/Scripts/activate
+					deactivate
+		   Możesz sprawdzić która wersja pythona lub pipa (i gdzie się znajdująca) jest wykorzystywana:
+					which python				#pokaże Tobie scieżkę do miejsca gdzie używany jest python
+		   (Odpalona wirtualka będzie widoczna przede wszystkim poprzez nazwę projektu w nawiasach):		
+		3* ZAPISANIE paczek w pipie znajdujących się w wirtualce i wgranie ich do nowej wirtualki:
+					pip freeze --local > requirements.txt
+					pip install -r requirements.txt
 
 5* PYPI.ORG oraz PIP:
   PYPI:
@@ -757,29 +786,41 @@ LOGGING INTERMEDIATE:	https://www.youtube.com/watch?v=p0A4CV4MWd0
   PIP MANAGING: 	https://www.w3schools.com/python/python_pip.asp
 	*jest to module/package manager - jest to program do zarządzania modułami
 	*od wersji 3.4 Pythona is included by default -> sprawdz w konsoli: commend(pip --version)
-	*SĄ 2 OPCJE INSTALOWANIA MODUŁÓW:
-		**pierwsza to wpisanie w kodzie import 'jakismodul' i najechanie na napis i klikniecie
-		  instalowania tego modulu
-		**drugi to wejscie w konsole/terminal (ALE W PYCHARMIE) gdzie jesteś wewnątrz projektu 
-		  (najlepiej na wirtualce (w pycharmie domyslnie tworzy ci wirtualke) bo inaczej nawet
-		  będąc we folderze programu na zwyklej ogolnej konosli to zainstaluje ci w głównym 
-		  katalogu zainstalowania programu i przy wiekszej liczbie projektow bedzie ci się mylic 
-		  do ktorego projektu jest ktory moduł potrzebny) (wtedy obojętnie w jakim katalogu 
-		  projektu bedziesz gdyż pip i tak będzie wiedział żeby poinstalować moduł w katalogu 
-		  site-packages) i tam poprzez windowsową komende:
-					pip install 'jakismodul'	
-		  lub będąc w konsoli w windowsie:
-					python3 -m pip install 'jakismodul'
-		  zostanie zainstalowany jakis modul. W ten sam sposob mozesz odinstalowac 'jakismodul'
-					pip uninstall 'jakismodul'. 
-	*pip list - będąc w konsoli (i znajdując się w katalogu projektu) poprzez tę komende 
-	 wyswietla ci się wszystkie zainstalowane moduly
-					pip list
 	*przy zarządzaniu modułami musisz znajdować się w folderze projektu a nie w folderze 
 	 gdzie jest zainstalowany python (poradnik jest pokazany tak jakbyś nie pracował na 
 	 wirtualce)
 	*TWORZENIE SWOICH WŁASNYCH MODUŁÓW I PACKAGES wraz z ICH ZARZĄDZANIEM znajdziesz w:
 			https://www.programiz.com/python-programming/package
+	*KOMENDY:
+		*pip list - będąc w konsoli (znajdując się w katalogu projektu) wyswietlenie wszystkich 
+		 zainstalowanych modulów
+					pip list
+			** --outdated / -o  - wyświetla wszystkie moduły które nie mają najnowszej wersji 
+					pip list --outdated
+		*pip freeze / pip freeze > requirements.txt - robi zrzut wszystkich poinstalowanych 
+		 paczek w specjalnym formacie. Można zapisać tenże zrzut to poprzez znak '>' w pliku
+		 requirements.txt dzięki któremu na innym komputerze w łatwy sposób można odtworzyć 
+		 instalację tychże paczek (poprzez: pip install -r requirements.txt)
+					pip freeze
+					pip freeze > requirements.txt
+		*pip install / pip uninstall - najlepiej używać na wirtualce (w pycharmie domyslnie 
+		 tworzy ci wirtualke) bo inaczej będąc we folderze programu na zwyklej ogolnej konosli 
+		 to zainstaluje ci w głównym katalogu zainstalowania programu i przy wiekszej liczbie 
+		 projektow bedzie ci się mylic do ktorego projektu jest ktory moduł potrzebny) (wtedy 
+		 obojętnie w jakim katalogu projektu bedziesz gdyż pip i tak będzie wiedział żeby 
+		 poinstalować moduł w katalogu site-packages) i tam zostanie zainstalowany jakis modul:
+					pip install 'jakismodul'		//lub 
+					python3 -m pip install 'jakismodul'
+			** --upgrade / -U  - upgrade do najnowszej wersji zainstalowanego wcześniej modułu
+					pip install -U 'jakisModul'
+			** --requirement / -r - instalacja wszystkich bibliotek z pliku requirements.txt 
+			   (zawierającego zrzut paczek w odpowiednim formacie)
+					pip install -r requirements.txt					
+		*pip help / pip help komenda - wyswietla wszystki komendy używane w pipie albo flagi do 
+		 tychże komend.
+					pip help
+					pip help install
+		*pip search 'jakisModul' - wyswietla ci informacje o tym do czego służy dany moduł.
 4* PYDOC:
    https://www.youtube.com/watch?v=URBSvqib0xw
 	*przy tworzeniu klas i metod zawsze po zadeklarowaniu warto w trójcudzysłowiu umieścić 
@@ -1684,7 +1725,10 @@ https://www.youtube.com/watch?v=VMJK9JhNxEM
 				r = reader("test19.txt")
 				for i in r:
 					print(i)
-					
+	*możesz stworzyć generator comprehension expresion (tak samo jak w listach tyle że nawiasy okrągłe):
+				nums = list(range(10))
+				my_gen = (n*n for n in nums)
+				
 2*PROGRAMOWANIE FUNKCYJNE: FUNKCJA MAPA czyli mapowanie listy podana funkcja:
 	*jest Iteratorem i ma jego cechy tj.: jest strumieniem więc można tylko raz po nim przejść, gdyz
 	 jest WYCZERPOWALNY (exhausted). 
@@ -2510,6 +2554,10 @@ https://www.geeksforgeeks.org/python-collections-module/#deque
 				emp2=('Kamil',29)
 				from operator import itemgetter
 				print(sorted(x,key=attrgetter('age')))	#posortuję względem wieku pracownika
+			**do key możesz też podać referencje do danej funkcji np abs (absolute):
+				li = [5,-3,-2,8,-9,72,-1,0]
+				s_li = sorted(li, key=abs)
+				print(s_li)
 				
   *FUNKCJE CZĘSTO UŻYWANE PRZY ZAMIANIE LIST NA ARGUMENTY:
     *ARBITRARY ARGUMENTS *ARGS **KWARGS --> patrz ARGUMENTY *args, **kwargs (poniżej)
@@ -3234,8 +3282,13 @@ DICTIONARY METODY:		https://www.w3schools.com/python/python_dictionaries_methods
 						listaKrotek = sorted(tuple, key= lambda x: x[1], reverse=True)
 						listaKrotek = sorted(dictionary.items(), key= lambda x: x[1], reverse=True)
 			  #(WIĘCEJ w dziale BUILT-INS)
-		
-		
+3* DICTIONARY COMPREHENSIONS:
+				numbers = list(range(10))
+				liters = ['a','b','c','d','e','f','g','h','i','j','k','l']
+				myDict = {l:n for l,n in zip(numbers, liters)}
+												#zwróci:{0: 'a', 1: 'b', 2: 'c', 3: 'd', 4: 'e', 
+														 5: 'f', 6: 'g', 7: 'h', 8: 'i', 9: 'j'}
+		 
 ####################### LEKCJA 24 KOLEKCJA SET | OPERATORY NA ZBIORACH #########################
 SET INFORMACJE:			https://www.w3schools.com/python/python_sets.asp
 SET METODY:				https://www.w3schools.com/python/python_sets_methods.asp
@@ -4482,20 +4535,38 @@ https://www.w3schools.com/python/python_string_formatting.asp
 				txt = 'Name: {name} ,Email: {email}'.format(**data)
 						#lub
 				"{0} {1} {2['hello']}".format("Hello", "World", {'hello': 'sup'})
-	*w nawiasach wąsowych jesteś w stanie tak formatować tekst że możesz uzyskać rózne typy danych np"
-		poprzez{liczba:b} - typ binarny
-		poprzez{liczba:b} - z liczbą e -'1.566345e+03'
-		poprzez{liczba:b} - typ float
-		z wcięciami: '<'-przed ; '^'-przed i po; '>'-za ;
-				"Binary of {0} is {0:b}".format(12)	#'Binary of 12 is 1100'
-				"Exponent: {0:e}".format(1566.345)	#'Exponent: 1.566345e+03'
-				"One third is: {0:.3f}".format(1/3) #'One third is: 0.333'
+	*w nawiasach wąsowych może poformatować stringa na:
+		*otrzymując różnie sformatowane liczby:
+			*liczby o danej liczbie cyfr po przecinku {:.2f}
+				pi = 3.14159265
+				print('pi is {:.3f}'.format(pi)							#zwroci: 3.142
+			*liczby z wcięciami co 3 cifrę:
+				print('my number is {:,}'.format(10000000000))			#zwróci: 10,000,000,000
+			*wpisując 0 przed liczbami do momentu osiągniecia iluś-cyfrowej liczby {:02} ,{:04}
+				for i in range(1,13):
+					sentence = '{:02}'.format(i)
+					print(sentence)					#zwroci: 01,02,03,04,05,06,07,08,09,10,11,12,13
+		*otrzymując różnie sformatowane napisy np z wcięciami: '<'-przed ; '^'-przed i po; '>'-za ;
 				"|{:<10}|{:^10}|{:>10}|".format('butter','bread','ham')
-													# '|butter    |  bread   |       ham|'			
+															# '|butter    |  bread   |       ham|'		
+		*możesz uzyskać rózne typy danych np"
+			*poprzez{liczba:b} - typ binarny
+				"Binary of {0} is {0:b}".format(12)						#'Binary of 12 is 1100'
+			*poprzez{liczba:e} - z liczbą e -'1.566345e+03'
+				"Exponent: {0:e}".format(1566.345)						#'Exponent: 1.566345e+03'
+		*daty odpowiednio sformatowane wg kodów: https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes
+				import datetime
+				my_date=datetime.datetime(2016,9,24,12,01,01)
+				print({:%B %d,%Y}.format(my_date))						#zwróci September 24,2016
 	*oprocz metody format() uzywanej na danym tekscie mozesz tez formatowac tekst poprzez 
 	 literke 'f' przed tekstem i w nawiasach wasowych wpisac wczesniej zdefiniowane zmienne:
 				name = "Marek"
 				print(f"Nazwa uzytkownika: {name}")
+		*możęsz tak samo jak w metodzie format nie tylko korzystać z listy ale także z dictionary:
+				my_dict = {'name':'Jennifer', 'surname':'Magican'}
+				print(f'My name is {my_dict['name']} and my surname is {my_dict['surname']}')
+		8w nawiasah wąsowych możesz dokonywać nawet obliczeń:
+				print(f'The result is {4*11}')					#zwróci: The result is 44
 	*oprócz opcji wykorzystania nawiasów wąsowych {} jest jeszcze możliwośc formatowania tekstu w 
 	 Stringu poprzez starsze opcje czyli: %s, %d tj: wewnątrz Stringa dla stringów podajesz %s a
 	 dla liczb %d, za Stringiem znak % i w nawiasach okrągłych argumenty ktore będą pod 
