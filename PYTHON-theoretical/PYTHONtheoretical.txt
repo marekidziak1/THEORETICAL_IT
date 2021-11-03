@@ -2908,6 +2908,7 @@ https://www.geeksforgeeks.org/python-collections-module/#deque
 						  https://www.geeksforgeeks.org/namedtuple-in-python/
 		*namedtule jest idealny jeżeli msz jakiś plik csv (excelowski) i chcesz stworzyć proste obiekty 
 		 na ktorych dokonasz jakiś działań
+		*Obiekty NAMEDTUPLE są IMMUTABLE
 		*musisz pobrać wcześniej moduł collections:
 					from collections import namedtuple
 		*poprzez swoją specjalną składnię pozwala tworzyć podręczne obiekty do prostych zadan. Obiekty te
@@ -2916,14 +2917,21 @@ https://www.geeksforgeeks.org/python-collections-module/#deque
 		 nazw argumentów tego obieku lub nazwy argumentów podane jako string, wymienione po spacji albo
 		 po przecinku.
 			**przykład 1:
-					Point = namedtuple('Point','x,y')
-					pt1 = Point(1,3)
-					pt2 = Point(5,9)
+					point = namedtuple('Point','x,y')
+					pt1 = point(1,3)
+					pt2 = point(x=5, y=9)
 					sum = pt1.x + pt2.x 				#zwroci 6	
 			**przyklad 2:
 					Car = namedtuple('Car','Price Mileage Colour Class')
 					xyz = Car(Price = 100000, Mileage = 30, Colour = 'Cyan', Class = 'Y')
 										#zwroci: Car(Price=100000, Mileage=30, Colour='Cyan', Class='Y')
+		*Do poszczególnych pól obiektu namedtuple można się dostać poprzez odwołanie się do numeru pola lub
+		 jego nazwy(bez cudzysłowiów):
+					from collections import namedtuple
+					color = namedtuple("Color",'r g b')
+					c1=color(55,155,255)
+					print(c1[0])						#zwróci: 55
+					print(c1.r)							#zwróci: 55
 		*METODY:
 			* ._fields() - zwraca krotke wszystkich kluczy takiego obiektu:
 					from collections import namedtuple
@@ -2990,8 +2998,8 @@ https://www.geeksforgeeks.org/python-collections-module/#deque
 									podać stringa i wezmie każdą literę osobno i appenduję ją na początku
 									ale odwracjąc kolejność
 				de = collections.deque([1, 2, 3,])
-				de.extendleft([7,8,9])						#zwroci: deque([9, 8, 7, 1, 2, 3])
-				d.extendleft('234')							#zwróći: deque(['4', '3', '2', 9, 8, 7, 1, 2, 3])
+				de.extendleft([7,8,9])					#zwroci: deque([9, 8, 7, 1, 2, 3])
+				de.extendleft('234')					#zwróći: deque(['4', '3', '2', 9, 8, 7, 1, 2, 3])
 			**rotate(int) - rotuje w zaleznosci od tego jaką liczbę poda się w argumencie 
 				de = collections.deque([1, 2, 3, 4, 5 ])
 				de.rotate() - domyślnie rotuję o 1 miejsce z prawej strony  #zwroci: deque([5, 1, 2, 3, 4])
@@ -3713,6 +3721,7 @@ LISTA:
 https://www.w3schools.com/python/python_regex.asp
 NAJLEPSZY PORADNIK I ZBIÓR WIEDZY O REGEXACH:
 			*https://www3.ntu.edu.sg/home/ehchua/programming/howto/Regexe.html
+			*https://www.youtube.com/watch?v=K8L6KVGG-7o
 HOW TO CHECK A VALID REGEX PATTERN:	
 			*regex101.com
 			*https://www.geeksforgeeks.org/how-to-check-a-valid-regex-string-using-python/
@@ -3724,12 +3733,15 @@ LEKCJA 32 WYRAŻENIA REGULARNE:
 	*jeżeli chcesz sprawdzić czy dany regex cos zwrócił (coś zmatchował) to możesz to sprawdzić 
 	 poprzez przekonwertowanie wyniku funkcji regexowej na listę albo Stringa i sprawdzenie poprzez ifa 
 	 (jeżeli lista labo String będą puste to zwróci fałsz)
-			allMatches = findAll(r'pattern' String)
+			allMatches = findAll(r'pattern', String)
 			if bool(allMatches)==True:
 				print(allMatches)
 			else:
 				print((-1,-1))   
-	*znacznik 'r' przed stringiem (row) - sprawia ze znaki specjalne wyswietlaja sie jak zwykly tekst
+	*żeby wyświetlić treść/stringa z dopasowanego MatchObjectu (z funkcji match, search, finditer) 
+	 musisz użyć na obiekcie MatchObject funkcji group() (więćej w Pkt3 funkcje):
+			print(re.match("ko.","kotttttt").group())							#zwroci: 'kot'
+	*znacznik 'r' przed stringiem (raw) - sprawia ze znaki specjalne wyswietlaja sie jak zwykly tekst
 			wzor = 'banan\nbanan\tbanan'
 			print(wzor)
 			wzor = r'banan\nbanan\tbanan'
@@ -3787,11 +3799,11 @@ LEKCJA 32 WYRAŻENIA REGULARNE:
 											#zwroci: <re.Match object; span=(0, 2), match='Ma'>
 				print(re.match("[A-Z][a-z]?","adMarek"))
 											#zwroci: None
-	* SEKWENCJE ZNAKÓW - zamiast budoawać pewne schematy samemu poprzez klasy znaków albo grupy 
+	* SEKWENCJE ZNAKÓW - zamiast budować pewne schematy samemu poprzez klasy znaków albo grupy 
 	 znaków to można użyć specjalnych sekwencji:
 	 https://www.w3schools.com/python/python_regex.asp
 	 https://www.regular-expressions.info/backref.html
-		r przed patternem jest po to żeby potraktowac wzor jako surowwego stringa
+		r przed patternem jest po to żeby potraktowac wzor jako surowego stringa
 		\1 - (backreference) - służy wyszukiwaniu POWTÓRZEŃ (tylko w grupach), stawiasz za grupą a on 
 			znajduję ci pierwszą powtarzającą się grupę (jedynka odwołuję się do pierwszej zwróconej 
 			grupy z patternu, mogłbyś dać zamiast niej 2kę a wtedy backreference odwoływałby się do drugiej 
@@ -3838,7 +3850,7 @@ LEKCJA 32 WYRAŻENIA REGULARNE:
 		\S - zwroci tekst gdy string NIE zawiera spacji
 				print(e.findall("\S","The r"))						#zwroci: ['T','h','e','r']
 		\w - zwroci tekst gdy string bedzie zawieral znaki a-zA-Z0-9 (nie odpowiada to tylko
-			[a-zA-Z1-9] - bierze jeszcze dodatkowo znak '-')
+			[a-zA-Z1-9] - bierze jeszcze dodatkowo znak '_')
 				print(e.findall("\w","The r"))						#zwroci: ['T','h','e','r']				
 		\W - zwroci tekst gdy string nie bedzie zawieral znakow a-zA-Z0-9
 				print(e.findall("\W","The rain-in=S34pai5n"))			#zwroci: [' ','-','=']
@@ -3977,7 +3989,7 @@ LEKCJA 32 WYRAŻENIA REGULARNE:
 			 się znaków: (.).*\1. Dlatego jak masz wiele warunkó w jednym REGEXIE to o wiele lepiej jest
 			 zrobić kilka funkcji sprawdzających niż robić to wszystko w jednym REGEXIE:
 					s='B3C4d5efgh'
-					import re
+					import  
 					patterns=[r'(.*[A-Z]){2}',r'[a-zA-Z0-9]{10}', r'(.*\d)']
 					pattern2=r'(.).*\1'
 					boolean= all([re.search(p2,string) for p2 in patterns])and not re.search(pattern2,s)
@@ -4127,7 +4139,7 @@ LEKCJA 32 WYRAŻENIA REGULARNE:
 		*O wiele lepiej jest to zrobić przy użyciu powatórzenia się tej samej funkcji dla wielu róznych
 		 patternów niż użycia rozbudowanego połaczonego patternu dla jednej funkcji ale jeżeli już
 		 jest to konieczne to:
-		*W danym patternie musisz użyć nawiasów okrągłych któe zwrócą ci to czego chcesz a reszta musi 
+		*W danym patternie musisz użyć nawiasów okrągłych które zwrócą ci to czego chcesz a reszta musi 
 		 znajdować się poza nawiasami okrągłymi. Niestety ale LOOKBEHIND i LOOKAHEAD nie będą miały 
 		 tutaj zastosowania. Przykład. W tekście:
 				<h3><a href="/questions/80405/5v-regulator-power-dissipation" 
@@ -4155,7 +4167,7 @@ LEKCJA 32 WYRAŻENIA REGULARNE:
 					print("Dopasowano")
 				else:
 					print("Niedopasowano ")
-		*funkcja search() - szuka wzpru w jakimkolwiek miejscu tekstu (wyszukuję pierwszego wystąpienia)
+		*funkcja search() - szuka wzoru w jakimkolwiek miejscu tekstu (wyszukuję pierwszego wystąpienia)
 			Zwraca obiekt typu MatchObject na którym mozesz wywołać inne funkcje (span, start, end itp)
 				wzor = r'gruszka'
 				tekst =r"jagodabanangruszkajablkogruszkagruszka"
@@ -4226,7 +4238,7 @@ LEKCJA 32 WYRAŻENIA REGULARNE:
 					r'\d{16}|\d{4}-\d{4}-\d{4}-\d{4}'
 					)
 		 pamiętaj że te poszczególne warunki nie są traktowane jako każdy z osobna ale jeden pojedyńczy
-    print('Valid') if comp.search(x) else print('Invalid')
+				print('Valid') if comp.search(x) else print('Invalid')
 	*Na wyniku funkcji match(), search()(czyli obiekcie MatchObject) lub finditer() (czyli liscie obiektów 
 		MatchObject można dokonać operacji:
 		**jesli nie ma wyniku wyszukiwania to zamiast MatchObject masz None (możesz to wykorzystac w ifie):
