@@ -26,7 +26,8 @@ LOGGING INTERMEDIATE:				https://www.youtube.com/watch?v=p0A4CV4MWd0
 
 
 
-############## LEKCJA 22-24 |LAMBDA | DEKORATORY | ITERTOOLS - PRAWDOPODOBIEŃSTWO ########################
+################# LAMBDA | DEKORATORY | CONTEXT MANAGER | ITERTOOLS - PRAWDOPODOBIEŃSTWO #################
+CONTEXT MANAGER:					https://www.youtube.com/watch?v=-aKFBoZpiqA
 ITERTOOLS							https://docs.python.org/3/library/itertools.html
 ###### LEKCJA 20-22 ITERATORY: GENERATOR | MAPA | FILTER | FUNKCJE REDUCE() i ACCUMULATE() ####
 ITERATORY:							https://www.w3schools.com/python/python_iterators.asp
@@ -353,12 +354,6 @@ https://www.youtube.com/watch?v=eirjjyP2qcQ
 												#miesiąc, dzień a reszta: godziny, minuty, sekundy, 
 												#mikrosekundy, tzinfo (strefa czasowa) są opcjonalne. 
 		  B)DATY dotyczące AKTUALNEGO CZASU:
-				**today() - pokazywanie aktualnej daty lub czasu lub daty z czasem (jak now()
-					tylko że w funkcji today() nie można wprowadzić argumentu tz (timezone)):
-						import datetime
-						print(datetime.date.today()				#zwroci: 2021-06-22 
-						print(datetime.time.today()				#zwroci: 07:35:34.073176
-						print(datetime.datetime.today()			#zwroci: 2021-06-22 07:35:34.073176
 				**now() - pokazywanie aktualnej daty lub czasu lub daty z czasem (jak today() tylko że 
 					w funkcji now() możesz wprowadzić argument tz (timezone). Domyślnie ustawiony 
 					jest na None. funkcja now() jest zalecana zamiast stosowania today() i utcnow():
@@ -366,12 +361,18 @@ https://www.youtube.com/watch?v=eirjjyP2qcQ
 						print(datetime.date.now())				#zwroci: 2021-06-22 
 						print(datetime.time.now())				#zwroci: 07:35:34.073176
 						print(datetime.datetime.now())			#zwroci: 2021-06-22 07:35:34.073176
+				**today() - pokazywanie aktualnej daty lub czasu lub daty z czasem (jak now()
+					tylko że w funkcji today() nie można wprowadzić argumentu tz (timezone)):
+						import datetime
+						print(datetime.date.today()				#zwroci: 2021-06-22 
+						print(datetime.time.today()				#zwroci: 07:35:34.073176
+						print(datetime.datetime.today()			#zwroci: 2021-06-22 07:35:34.073176
 				**utcnow() - pokazywanie aktualnej daty lub czasu lub daty z czasem w strefie UTC0
 					Mimo że nie możesz wprowadzić argumentu tz to możesz użyć metody replace podmienić
 					parametr tzinfo.
-						print(datetime.date.now())				#zwroci: 2021-06-22 
-						print(datetime.time.now())				#zwroci: 07:35:34.073176
-						print(datetime.datetime.now())			#zwroci: 2021-06-22 07:35:34.073176
+						print(datetime.date.utcnow())			#zwroci: 2021-06-22 
+						print(datetime.time.utcnow())			#zwroci: 07:35:34.073176
+						print(datetime.datetime.utcnow())		#zwroci: 2021-06-22 07:35:34.073176
 
 		1)STREFY CZASOWE:
 			*Podstawy:
@@ -380,7 +381,7 @@ https://www.youtube.com/watch?v=eirjjyP2qcQ
 				 *Obiekty NAIVE są wtedy kiedy nie sprecyzujesz parameru strefy czasowej. Na nich nie
  				  mozesz zmieniać strefy czasowej (nawet tej domyślnej). 
 				 *Do precyzowania strefy czasowej używasz specjalnego modułu - PYTZ. Najpierw musisz 
-				  zainstalować pipem poprzez komenede w terminalu (pip install pytz) a póxniej w 
+				  zainstalować pipem poprzez komenede w terminalu (pip install pytz) a pózniej w 
 				  programie zaimportowac moduł pytz poprzez import pytz. 
 				 *By zobaczyć wszystkie strefy czasowe użyj pola all_timezones :
 						import pytz
@@ -446,12 +447,12 @@ https://www.youtube.com/watch?v=eirjjyP2qcQ
 						dt=datetime.date.now().year				#zwróci: 2016
 						dt=datetime.time.now().hour				#zwróci: 07
 						dt=datetime.datetime.now().day			#zwróci: 22
-			*Na obiektach klasy datetime (now(), datetime()) możesz odwołać się do metod jak:
+			*Na obiektach klasy datetime.datetime (now(), datetime(),utcnow()) możesz odwołać się do metod:
 				*date() - zwraca całą datę dla obiektu datetime:
 						import datetime
 						print(datetime.datetime(2016,7,9,14,0,0).date())	#zwróci: 2016-07-09
 						print(datetime.datetime.now().date())				#zwroci: 2021-06-22
-				*time() - zwraca całą datę dla obiektu datetime:
+				*time() - zwraca cały czas dla obiektu datetime:
 						import datetime
 						print(datetime.datetime(2016,7,9,14,0,0).time()		#zwroci: 14:00:00:000
 						print(datetime.datetime.now().time())				#zwróci: 10:48:04.930
@@ -479,7 +480,8 @@ https://www.youtube.com/watch?v=eirjjyP2qcQ
 						
 		3)KLASA DATETIME ma też FUNKCJE NIEWYWOŁYWANE NA OBIEKTACH jak:
 			   !**datetime.strptime(string, regex)- (string parse date) zamiana stringa na obiekt datetime:
-					https://www.programiz.com/python-programming/datetime/strptime  import datetime
+					https://www.programiz.com/python-programming/datetime/strptime  
+						import datetime
 						dateString = 'Sun 10 May 2015 13:54:36 -0700'
 						date_Object= datetime.datetime.strptime(dateString, '%a %d %b %Y %H:%M:%S %z')
 						print(date_Object)							#zwróci: 2015-05-10 13:54:36-07:00
@@ -491,7 +493,7 @@ https://www.youtube.com/watch?v=eirjjyP2qcQ
 					*w argumencie możesz też przypisać inne wartości niż dni jak:
 					 year, month, day, hour, minute, second, microsecond			
 						import datetime
-						dt=datetime.timedelta(minutes=10)		#deklarujesz zmienną o wielkości 100 dni
+						dt=datetime.timedelta(minutes=10)		#deklarujesz zmienną o wielkości 10 minut
 						myD=datetime.datetime(2000, 1, 31,14,4,23) + dt 	#zwroci 2000-01-31 14:14:23
 				**fromtimestamp(mod_time) - przeliczenie sekund od momentu utworzeniu/modyfikacji pliku 
 				  na datę i godzinę:
@@ -544,6 +546,12 @@ https://www.youtube.com/watch?v=eirjjyP2qcQ
 				day, month, year=input().split()
 				name=calendar.weekday(int(year),int(month),int(day))
 				print(calendar.day_name[name].upper())
+		*sprawdzenie od jakiego dnia tygodnia zaczyna się miesiąc w danym roku (0=Monday, 1=Tuesday ...)
+ 		 oraz ile dni ma dany miesiąc w danym roku:		calendar.monthrange(year, month)
+				import calendar
+				import datetime
+				today=datetime.datetime.today()
+				weekdayName_of_start_of_month, days_in_month = calendar.monthrange(today.year, today.month)
 		*sprawdzenie czy rok jest przestępny (ma 29 dni):
 				import calendar
 				isLeap = calendar.isleap(2020)						#zwróci: True
@@ -1290,10 +1298,11 @@ ASSERTS in UNITTESTS:	https://www.mattcrampton.com/blog/a_list_of_all_python_ass
 			  https://github.com/madzak/python-json-logger#integrating-with-pythons-logging-framework
 			
 			
-############## LEKCJA 22-24 |LAMBDA | DEKORATORY | ITERTOOLS - PRAWDOPODOBIEŃSTWO #######################
+################# LAMBDA | DEKORATORY | CONTEXT MANAGER | ITERTOOLS - PRAWDOPODOBIEŃSTWO ####################
+CONTEXT MANAGER:				https://www.youtube.com/watch?v=-aKFBoZpiqA
 ITERTOOLS - PRAWDOPODOBIEŃŚTWO	https://docs.python.org/3/library/itertools.html
 
-1*PROGRAMOWANIE FUNKCYJNE: LAMBDA 
+4*PROGRAMOWANIE FUNKCYJNE: LAMBDA 
 	*w innych jezykach programowania takie wyrazenia mozemy utozsamiac z funkcjami anonimowymi
 	*sa to zazywyczaj krotkie funkcje mieszczace sie w jednej linijce
 	*zaczynamy ja od slowa lambda gdyz jest to funkcja ktora nie ma swojej nazwy
@@ -1314,6 +1323,89 @@ ITERTOOLS - PRAWDOPODOBIEŃŚTWO	https://docs.python.org/3/library/itertools.htm
 				def myfunc(n):
 					return lambda a : a * n
 				print(myfun(2)(3))									#zwroci Tobie liczbe 6
+
+3* CONTEXT MANAGER:
+	1. PODSTAWY - normalnie chąc otworzyć jakiś plik (w celu wczytania go lub zapisania go) musisz pamiętać 
+	   o tym by po wszystkim go zamknąć (co jest bardzo ważne).
+					f=open('sample.txt','w')
+					f.write('cos tam')
+					f.close()
+	   Jednakże powyższy sposób nie jest rekomendowany - choćby ze względu na to że można zapomnieć o tym
+	   by zamknąć tenże plik lub dlatego że gdy pojawi się gdzieś błąd po drodze to nie będzie można 
+	   zamknąć tego pliku właściwie. Dlatego powinno korzystać się z context managera:
+					with open('sample.txt','w')as f:
+						f.write('cos tam')
+	2. PRZYDATNOŚĆ - Z context managera możesz korzystać nie tylko przy odczycie i zapisie różnego rodzaju 
+	   plików. Przydaję się to przy operacjach takich jak: 
+			*otwarcie i zamknięcie połączenia z bązą danych
+			*zmiany ścieżek, załatwienia czegoś w danym folderze i cofnięcia sie do poprzedniej ścieżki
+			*do pozyskiwania i publikacji logów
+	   Wtedy zamiast korzystać z wbudowanej funkcji open() musisz:
+			*ALBO stworzyć klasę która będzie dostarczała metody które POPRZEZ SŁOWO KLUCZOWE 'WITH' będą
+			 AUTOMATYCZNIE WYWOŁYWANE i automatycznie realizowały odpowiednie funkcje jak inicjalizacje,
+			 otwarcie pliku oraz jego zamknięcie:
+					class OpenSample:
+						def __init__(self, filename, mode):
+							self.filename=filename
+							self.mode = mode
+						def __enter__(self):
+							self.file = open(self.filename, self.mode)
+							return self.file
+						def __exit__(self, exc_type, exc_val, traceback):
+							self.file.close()
+					with OpenSample('sample.txt', 'w') as f:
+						f.write('Testing')					
+			*ALBO użyć dekoratora contextmanager który musisz pobrac z modułu contextlib. Tenże dekorator 
+			 powinien zostać przypisany do funkcji w której musisz zaimplementować odpowiednie działania.
+			 DODATKOWYM KONIECZNYM warunkiem jest użycie generatora (czyli opcji zwracającej yield):
+					from contextlib import contextmanager
+					@contextmanager
+					def open_file(file, mode):
+						f=open(file,mode)
+						yield f
+						f.close()
+					with open_file('sample.txt','w') as f:
+						f.write('Testing2')
+	   WIĘCEJ W FILMIE:
+	   https://www.youtube.com/watch?v=-aKFBoZpiqA&list=PL-osiE80TeTt2d9bfVyTiXJA-UTHn6WwU&index=49
+	3. PRZYKŁAD PRAKTYCZNY - zlokalizowanie aktualnej ścieżki, zmiana tejże ścieżki, <odpowiednie 
+	   działanie w tejże ścieżce--> tutaj: wylistowanie katalogów>, i powrót do ścieżki początkowej:
+			A) opcja zwykła - za każdym razem musisz zmieniać ścieżke poprzez powtarzanie kodu
+					import os
+					cwd = os.getcwd()
+					os.chdir("1stAnotherCATALOG")
+					os.chdir(cwd)
+
+					import os
+					cwd = os.getcwd()
+					os.chdir("2ndAnotherCATALOG")
+					os.chdir(cwd)
+			B) opcja z context managerem - możesz to zapisać poprzez dekorator @contextmanager który da
+			   Tobie możliwośc zmiany ścieżek poprzez słowo kluczowe 'with'. Jeżeli chodzi o słowo kluczowe 
+			   'yield' to za jego pomocą będziesz mógł wykonać jakieś operacje wewnątrz bloku 'with':
+					import os 
+					from contextlib import contextmanager
+					@contextmanager
+					def change_dir(destination):
+						try:
+							cwd = os.getcwd()
+							os.chdir(destination)
+							yield 
+						finally:
+							os.chdir(cwd)
+					with change_dir('1stAnotherCATALOG'):
+						print(os.listdir())
+					with change_dir('2ndAnotherCATALOG'):
+						print(os.listdir())
+	4*Słówko YIELD 
+			*Użycie generatora (słówko 'yield' wewnątrz dekoratora contextmanager ma za zadanie dać 
+			 możliwość robienia jakiś operacji wewnątrz bloku 'with'.
+			*użycie samego słówka yield oznacza brak możliwość przypisania w bloku with do jakięś 
+			 zmiennej (czyli nie ma tam  'as f' w 'with open('file.txt','r') as f:' (Jest tylko:
+			 'with open('file.txt','r').
+			*użycie słówka yield ze zwracaną jakąś wartością daję możliwośc przypisania do jakieś 
+			 zmiennej (czyli  'as f' występuję w 'with open('file.txt','r') as f:'
+
 
 2*DEKORATORY:
 	*Dekorator to funkcja ktora przyjmuje inną funkcje jako argument. 
@@ -1381,7 +1473,7 @@ ITERTOOLS - PRAWDOPODOBIEŃŚTWO	https://docs.python.org/3/library/itertools.htm
 				def name_format(person):
 					return ("Mr. " if person[3] == "M" else "Ms. ") + person[0] + " " + person[1]
 
-3* MODULE ITERTOOLS - KOMBINATORYKA - MODUŁ DO LICZENIA PRAWDOPODOBIEŃSTWA  
+0* MODULE ITERTOOLS - KOMBINATORYKA - MODUŁ DO LICZENIA PRAWDOPODOBIEŃSTWA  
 	https://docs.python.org/3/library/itertools.html
 	*funkcje tworzące iteratory do lepszego chodzenia po pętli
 	*są Iteratorami i ma jego cechy tj.: jest strumieniem więc można tylko raz po nim przejść, gdyz
@@ -1466,7 +1558,7 @@ ITERTOOLS - PRAWDOPODOBIEŃŚTWO	https://docs.python.org/3/library/itertools.htm
 				 - najlepszym przykładem jest - losujesz 2 cyfry z 4 - po pojedyńczym losowaniu 
 				   wrzucasz kule z powrotem
 
-1.FUNKCJE:
+  1.FUNKCJE:
 	*itertools.product:
 		*działa tak jak zagnieżdzone pętle - zwraca listę krotek PAR każdego elementu z jednej listy 
 		 z każdym elementem innej listy czyli MACIERZ LIST (elementy mogą się powtarzać
@@ -1528,12 +1620,12 @@ ITERTOOLS - PRAWDOPODOBIEŃŚTWO	https://docs.python.org/3/library/itertools.htm
 
 
 
-MODULE ITERTOOLS - funkcje tworzące iteratory do lepszego chodzenia po pętli:
-https://docs.python.org/2/library/itertools.html
-https://www.geeksforgeeks.org/itertools-groupby-in-python/
-https://docs.python.org/2/library/itertools.html#itertools.groupby
+  MODULE ITERTOOLS - funkcje tworzące iteratory do lepszego chodzenia po pętli:
+  https://docs.python.org/2/library/itertools.html
+  https://www.geeksforgeeks.org/itertools-groupby-in-python/
+  https://docs.python.org/2/library/itertools.html#itertools.groupby
 
-1. Inne funkcje itertools:
+  2. Inne funkcje itertools:
 	*groupby(collection, key_func) - GRUPUJĘ WZGLĘDEM ZADANEJ WARTOŚCI AŻ DO NASTEPNEGO KLUCZA
 		https://docs.python.org/2/library/itertools.html#itertools.groupby
 		https://www.geeksforgeeks.org/itertools-groupby-in-python/
@@ -1817,7 +1909,7 @@ https://www.youtube.com/watch?v=VMJK9JhNxEM
 			acum=accumulate(a,func=operator.mul)
 			print(list(acum))
 		
-################################## DESTRUKTOR | HERMETYZACJA | Gettery i Settery ###########################
+################################## DESTRUKTOR | HERMETYZACJA | Gettery i Settery ############################
 
 1* CYKL ŻYCIA OBIEKTU I DESTRUKTOR
 	*destrukktor dziala w momencie konca zycia obiektu i wykonuje sie zawsze pod koniec 
@@ -1867,6 +1959,7 @@ https://www.youtube.com/watch?v=VMJK9JhNxEM
 								#tak, dobrze jest to zapisane ==> obj._Hermetyzacja__listy
 								
 3*Gettery i Settery	i Deletery
+	https://www.youtube.com/watch?v=jCzT9XFZ5bw
 	*Róźnice w stosunku do JAVY:
 		*Gettery i Settery w Pythonie zdecydowanie się różnią od tych w Javie. W javie gettery i
 		 settery mają za zadanie zwrocenie lub ustawienie pojedyńczych prywatnych pól. W pythonie
@@ -1908,13 +2001,11 @@ https://www.youtube.com/watch?v=VMJK9JhNxEM
 					@property
 					def fullname(self):
 						return f'{self.first} {self.last}'
-			##tworzysz settera poprzez dekorator o nazwie fullname.setter, przyjmująćy tylko jedną 
-			 #wartość
+			##tworzysz settera poprzez dekorator o nazwie fullname.setter, przyjmujący tylko jedną wartość:
 					@fullname.setter
 					def fullname(self, name):
 						self.first, self.last = name.split(" ")
-			##teraz możesz mofyfikować zmienną fullname jednocześnie aktualizuąc pola z których się 
-			 #składa	
+			##teraz możesz mofyfikować zmienną fullname jednocześnie aktualizuąc pola z których się składa:
 				emp_1 = Employee('Marek', 'Kucharek') 
 				print(emp_1.fullname)						#zwróci 'Marek Kucharek'
 				print(emp_1.first, emp_1.last)				#zwróci 'Marek' 'Kucharek'

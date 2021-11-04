@@ -758,7 +758,7 @@ METODY JSON:	https://www.w3schools.com/python/python_json.asp
 				print("Attribute",i['x'])
 	*FUNKCJE W PYTHONIE -  wszystkie funkcje automatycznie parsują dane ze składni Pythona na JSON'a
 	 i na odwrót, np.: None na null albo True na true.
-	  *Zamiana JSON na Python:
+	  *ZAMIANA JSON na Python:
 		*json.loads(string) - ładuję dane json ze stringa:
 			import json
 			x =  '{ "name":"John", "age":30, "city":"New York"}'	#STRING 
@@ -769,13 +769,14 @@ METODY JSON:	https://www.w3schools.com/python/python_json.asp
 			json_file=open('path/nameFile.json', 'r', encoding='utf-8') 	/  	 #'path/nameFile.txt'
 			x=json.load(json_file)
 			print(y["age"])
-	  *Zamiana Python na JSON:
+	  *ZAMIANA Python na JSON:
 		*json.dumps(string) - zamienia obiekt python'a na stringa o składni json:
 			import json
 			x = {"name": "John", "age": 30, "city": "New York"}		#kolekcja Dictionary
 			y = json.dumps(x)										#zamiana na STRINGA
 			print(y)
-		*json.dumps(string,file) - zamienia obiekt python'a na plik json/txt o składni json'a:
+		*json.dumps(string,file) - zamienia obiekt python'a na plik .json (da się otworzyć jak zwykły txt)
+		 o składni json'a:
 			import json
 			x = {"name": "John", "age": 30, "city": "New York"}		#kolekcja Dictionary
 			with open('data.json', 'w', encoding='utf-8') as f:
@@ -799,7 +800,7 @@ METODY JSON:	https://www.w3schools.com/python/python_json.asp
 		*Żeby pliki JSON były ładniej zapisane (ze wcieciami zamiast w jednym wierszu) to użyj
 		 przy zamianie pythona na JSONa parametru indent=4: 	
 			json.dumps(x, indent=4)
-		*możesz także zdefiniować separatory - domyślmnie są to przecinek i dwukropek:
+		*możesz także zdefiniować separatory - domyślnie są to przecinek i dwukropek:
 		 default value is (", ", ": ") ;; 
 			json.dumps(x, indent=4, separators=(". ", " = "))
 		*możesz także wszystkie klucze w JSON'ie uporzadkowac alfabetycznie poprzez parametr
