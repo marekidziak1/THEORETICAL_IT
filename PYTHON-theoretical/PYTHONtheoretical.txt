@@ -1315,7 +1315,28 @@ ITERTOOLS - PRAWDOPODOBIEŃŚTWO	https://docs.python.org/3/library/itertools.htm
 					return lambda a : a * n
 				print(myfun(2)(3))									#zwroci Tobie liczbe 6
 
-2*DEKORATORY:
+2*DEKORATORY:         
+
+
+	*przekazywanie argumentu poprzez dekorator
+	*w argumencie dekoratora nie trzeba przekazywac funkcji tylko można argument
+	*dekorator zwraca referencje do funkcji wewnętrznej a nie ją wywołuje 
+	*mimo że przekazujesz referencje do funkcji wewnętrznej przy wywołaniu dekoratora to 
+	 argumenty w funkcji opakowującej/zewnętrznej są pamiętane przez funkcje wewnętrzną
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
 	*Dekorator to funkcja ktora przyjmuje inną funkcje jako argument. 
 	*Wewnatrz dekoratora jest funkcja wewnetrzna wrapper() ktora wykorzystuje funkcje podana 
 	 w argumencie  dekoratora i dodaje do niej jakies dodatkowego dane albo przerabia te 
@@ -1691,16 +1712,31 @@ https://www.youtube.com/watch?v=VMJK9JhNxEM
 					print(x[i])							[w tym przypadku zapcha ci sie pamiec]
 	*dlatego lepiej posluzyc sie generatorem ktory wykorzysta sie jako iterator do funkcji 
 	 for ORAZ ktory bedzie zwracal wartosci "NA BIEZĄCO" i pauzowal swoje dzialanie do kolejnego 
-	 momentu gdy go poprosimy o jego kolejna wartosc
+	 momentu gdy go poprosimy o jego kolejna wartosc:
+			Przyklad 1:
+				x=[]
 				def gen2(n):
 					for i in range(n):
 						yield i**2
-				for i in gen2(99999999999999999999):
-					print(i)
-	*gdybys w ten sposob chcial uzyc slowa kluczowego return to funkcja skonczylaby dzialanie
-	 dlatego korzystamy ze slowa kluczowego yield | po wywolaniu generatora zostanie ci zwrocony
-	 obiekt generatora i musialbys go ewentualnie zamienic na liste w celu wyswietlenia
-				print(gen2(10))	 
+				for a in gen2(99999999999999999999):
+					print(a)
+					x.append(a)
+			Przyklad 2:
+				x=[]
+				def gen(lst):
+					for x in lst:
+						yield x*x
+				for a in gen([1,2,3,4,5]):
+					print(a)
+					x.append(a)
+	*możesz stworzyć generator comprehension expresion POPRZEZ NAWIASY OKRĄGŁE - tak samo jak w 
+	 listach tyle że nawiasy okrągłe:
+			Przyklad 1:
+				nums = 10
+				my_gen = (n*n for i in range(nums))
+			Przyklad 2:
+				lst= list(range(10))
+				my_gen = (n*n for n in lst)
 	*mozemy tez wywolac generatora i za pomoca metody next(arg) ktora przyjmuje obiekt generatora
 	 jako argument wyswietlic kolejne wartosci z funkcji/generatora
 				g = gen2(999999999999)
@@ -1725,9 +1761,6 @@ https://www.youtube.com/watch?v=VMJK9JhNxEM
 				r = reader("test19.txt")
 				for i in r:
 					print(i)
-	*możesz stworzyć generator comprehension expresion (tak samo jak w listach tyle że nawiasy okrągłe):
-				nums = list(range(10))
-				my_gen = (n*n for n in nums)
 				
 2*PROGRAMOWANIE FUNKCYJNE: FUNKCJA MAPA czyli mapowanie listy podana funkcja:
 	*jest Iteratorem i ma jego cechy tj.: jest strumieniem więc można tylko raz po nim przejść, gdyz
@@ -2839,8 +2872,8 @@ https://www.geeksforgeeks.org/python-collections-module/#deque
 					dct[lst[i]].append(i)
 				print(dct)				#zwroci: defaultdict(<class 'list'>, {'b': [0, 3, 5], 'a': [1, 2, 4]})
 		 
-  **KOLEKCJA Counter - DE FACTO JEST TAKA SAMA JAK SLOWNIK TYLKO PORZĄDKUJE ELEMENTY POD WZGLĘDEM 
-    WARTOŚCI MALEJĄCO czyli: Counter({2: 4, 3: 4, 1: 3, 4: 2, 5: 1})
+  **KOLEKCJA Counter - DE FACTO JEST TAKA SAMA JAK SLOWNIK TYLKO PORZĄDKUJE ELEMENTY LISTY POD WZGLĘDEM 
+    ILOŚCI MALEJĄCO czyli: Counter({2: 4, 3: 4, 1: 3, 4: 2, 5: 1})
 	https://www.geeksforgeeks.org/counters-in-python-set-1/
 		*jest to kontener ktory przechowuje elementy jako klucze w słowniku a ich liczebność jako wartość do 
 		 klucza w tymże słowniku. 
