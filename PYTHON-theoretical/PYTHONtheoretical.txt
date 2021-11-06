@@ -1298,7 +1298,7 @@ ASSERTS in UNITTESTS:	https://www.mattcrampton.com/blog/a_list_of_all_python_ass
 			  https://github.com/madzak/python-json-logger#integrating-with-pythons-logging-framework
 			
 			
-################# LAMBDA | DEKORATORY | CONTEXT MANAGER | ITERTOOLS - PRAWDOPODOBIEŃSTWO ####################
+################# LAMBDA | CONTEXT MANAGER | DEKORATORY | ITERTOOLS - PRAWDOPODOBIEŃSTWO ####################
 CONTEXT MANAGER:				https://www.youtube.com/watch?v=-aKFBoZpiqA
 ITERTOOLS - PRAWDOPODOBIEŃŚTWO	https://docs.python.org/3/library/itertools.html
 
@@ -1406,21 +1406,11 @@ ITERTOOLS - PRAWDOPODOBIEŃŚTWO	https://docs.python.org/3/library/itertools.htm
 			*użycie słówka yield ze zwracaną jakąś wartością daję możliwośc przypisania do jakieś 
 			 zmiennej (czyli  'as f' występuję w 'with open('file.txt','r') as f:'
 
-2*DEKORATORY:         
-
-
-	*przekazywanie argumentu poprzez dekorator
-	*w argumencie dekoratora nie trzeba przekazywac funkcji tylko można argument
-	*dekorator zwraca referencje do funkcji wewnętrznej a nie ją wywołuje 
-	*mimo że przekazujesz referencje do funkcji wewnętrznej przy wywołaniu dekoratora to 
-	 argumenty w funkcji opakowującej/zewnętrznej są pamiętane przez funkcje wewnętrzną
-	
-
 2*DEKORATORY:
-	*PODSTAWY:
-		*Dekorator to funkcja ktora wewnątrz siebie ma definicję innej funkcji (funkcji wewnętrznej 
+  A) PODSTAWY:
+	   1*Dekorator to funkcja ktora wewnątrz siebie ma definicję innej funkcji (funkcji wewnętrznej 
 		 zwanej wrapperem) i która zwraca referencje (nie wywołanie!) tejże funkcji wewnętrznej. 
-		*Dekorator przyjmuje inną funkcje jako argument. Funkcje przyjumuję jako REFERENCJE a nie 
+	   2*Dekorator przyjmuje inną funkcje jako argument. Funkcje przyjumuję jako REFERENCJE a nie 
 		 jako wywołanie funkcji.
 				def decorator(func):
 					def wrapper():      							#wewnętrzma funkcja
@@ -1431,42 +1421,49 @@ ITERTOOLS - PRAWDOPODOBIEŃŚTWO	https://docs.python.org/3/library/itertools.htm
 				def hello():
 					print("hello world")
 				decorator(hello)()
-		*Działanie dekoratora polega na tym że wykorzystuje funkcje podaną w argumencie funkcji 
-		 zewnętrznej. Najpierw wykonuję jakieś operacje w funkcji zewnętrznej i następnie wewnątrz
-		 wrappera uruchamia podaną w argumencie funkcje. Najlepsze w dekoratorach jest to że do tegoż
-		 argumentu można podać różne funkcje i zadziała on dla każdej.  
+	   3*Działanie dekoratora polega na tym że wykorzystuje funkcje podaną w argumencie funkcji 
+		 zewnętrznej. Najpierw wykonuję jakieś operacje wewewnątrz wrappera i pózniej uruchamia podaną 
+		 w argumencie funkcje. Najlepsze w dekoratorach jest to że do tegoż argumentu można podać 
+		 różne funkcje i zadziała on dla każdej. Njczęstsze przykłady użycia dekoratorów:
+			*PRZY LOGGINGU:	
 				def logger(func):
-					def log_func(*args):
-						print('Running {} with arguments {}'.format(func.__name__, args))
-					return log_func
+					import logging
+					logging.basicConfig(filename='{}.log'.format(func.__name__), level = logging.INFO)
+					def wrapper(*args, **kwargs):
+						logging.info('Running {} with arguments {}'.format(func.__name__, args))
+						return func(*args, **kwargs)
+					return wrapper
 				def add(x,y):
 					return x+y
 				def sub(x,y):
 					return x+y
 				add_logger = logger(add)(3,4)			#zwróci: Running add with arguments 3,4
 				add_logger = logger(add)(5,2)			#zwróci: Running sub with arguments 5,2
-		*Dekorator może przyjąc nie tylko funkcje jako argument ale także zmienną. 
-			  *przyklad 1:
-				def dec1(zmienna):
-					def wrapper():
-						print(zmienna)
-				def dec2(zmienna):
-					def wrapper(tag):
-						print(f'<{tag}>{zmienna}</{tag}>')
-				dec1("moj message")()							#zwróci moj message
-				dec2("moj message")("h1")						#zwróci <h1>moj message</h1>		
-			  *przyklad 2:
-		*PRZY ZWROCIE WRAPPERA (a konkretnie jego referencji), wartości ze zmiennych które powstaną 
-		 w funkcji zewnętrznej ZOSTANĄ ZAPAMIĘTANE PRZEZ funkcję wewnętrzną. 
-				def decorator(msg)
-					message = msg
-					def wrapper():
-						print(message)
+			*PRZY MIERZENIU CZASU DZIAŁANIA JAKIES FUNKCJI:
+				def my_time(origin_func):
+					import time
+					def wrapper(*args, **kwargs):
+						t1=time.time()
+						result = origin_func(*args, **kwargs)
+						t2 = time.time()
+						tSub= t2-t1
+						print('{} ran in: {} sec'.format(origin_func.__name__, tSub)
+						return result
+	   4*ARGUMENTY OPCJONALNE WE WRAPPERZE - chcąc wywołac dekoratora dla jakies funkcji z argumentami 
+		 (lub dla wielu różnych funkcji ze zmienną liczbą argumentów) musisz pamiętac żeby we wraperze
+		 użyć *args, **kwargs (tj niezaleznie czy podasz argumenty czy nie to funkcja nie wywali bledu). 
+		 [argumenty dla funkcji dekorowanej podajesz w drugim nawiasie]
+				def decorator2(func):
+					def wrapper(*args,**kwargs):
+						return func(*args,**kwargs).upper()
 					return wrapper
-				dec_1 = decorator('HI')			#mimo tego że zwróciłem tylko referencje do wrappera  
-				dec_1()	  	   #zwróci 'HI' 	#który teoretycznie nie powininen przetrzymywac 
-												#wartości zmiennej message to jednak to robi.
-	*SPOSOBY WYWOLANIA DEKORATORA:
+				def foo():
+					return 'Marek'
+				def foo2(zmienna):
+					return zmienna
+				print(decorator2(foo)())
+				print(decorator2(foo2)('Darel'))
+  B) SPOSOBY WYWOLANIA DEKORATORA:
 		** 1 sposob wywolywania dekoratora poprzez dodanie nawiasu okraglego na samym koncu, 
 			 wywolujacego funkcje wrapper
 				decorator(hello)()
@@ -1492,26 +1489,105 @@ ITERTOOLS - PRAWDOPODOBIEŃŚTWO	https://docs.python.org/3/library/itertools.htm
 		  *jeżeli zdecydujesz się na tę trzecią opcję to wywołanie funkcji witaj(argument) odpowiada
 		   decor(witaj)(argument), czyli w wywołaniu witaj(argument) częśc nawiasowa czyli (argument) 
 		   część przeznaczona dla wywołania wrappera i przekazania mu argumentu. 
-	*ARGUMENTY OPCJONALNE WE WRAPPERZE:
-		*w dekoratorze zawsze zwracasz funkcje wrapper ktorej nie wywolujesz ale w ktorej mozesz 
-		 podac argumenty OPCJONALNE (tj niezaleznie czy podasz argumenty czy nie to funkcja  
-		 nie wywali bledu). Wszystko dzieki wpisaniu w miejsce argumentow: '*args,**kwargs'
-		 przy wywolaniu dekoratora argumenty dla funkcji dekorowanej podajesz w drugim nawiasie]
-				def decorator2(func):
-					def wrapper(*args,**kwargs):
-						return func(*args,**kwargs).upper()
+  C) ROZSZERZENIE:	
+       0*DLA JEDNEJ FUNKCJI MOŻESZ UŻYĆ KILKU DEKORATORÓW - wtedy ten zmajdujący się najwyżej będzie 
+	     wywoływany jako ostatni: 			https://www.youtube.com/watch?v=FsAPt_9Bf3U [od 23min]
+				def logger(func):
+					import logging
+					logging.basicConfig(filename='{}.log'.format(func.__name__), level = logging.INFO)
+					def wrapper(*args, **kwargs):
+						logging.info('Running {} with arguments {}'.format(func.__name__, args))
+						return func(*args, **kwargs)
 					return wrapper
-				def foo():
-					return 'Marek'
-				def foo2(zmienna):
-					return zmienna
-				print(decorator2(foo)())
-				print(decorator2(foo2)('Darel'))
-	*OPCJA UŻYCIA GENERATORA:
-		*wewnatrz dekoratora tj wewnątrz wrappera zamiast słowa return można uzyc generatora (słowo 
-		 'yield') wywołując funkcje podaną do argumentu dekoratora (tutaj jest to f). Robi sie to 
-		 w sytuacjach gdy zamiast konieczności pojedyńczego zwrotu wywołania funkcji z argumentu 
-		 dekoratora) musisz (np w petli for) zwracać wiele wywołań funkcji (z argumentu dekoratora).
+				def my_time(origin_func):
+					import time
+					def wrapper(*args, **kwargs):
+						t1=time.time()
+						result = origin_func(*args, **kwargs)
+						t2 = time.time()
+						tSub= t2-t1
+						print('{} ran in: {} sec'.format(origin_func.__name__, tSub)
+						return result			
+				@my_logger					#najpierw zostanie wywołany @my_timer a pózniej @my_logger
+				@my_timer
+				def display_info(name, age):
+					print('DISPLAY_INFO run with arguments: {} {}'.format(name,age))
+				display_info('Marek', 24)			Zwróci: DISPLAY_INFO run with arguments: Marek 24
+															display_info ran in: 0.0018 sec
+															Running wrapper with arguments 
+		 Odpowiada to wywołaniu:
+				zmienna = my_logger(my_timer(display_info('Marek', 24)))
+		 Dlatego żeby NIE BYŁO  RZADNEJ KOLEJNOŚCI w wyoływaniu dekoratorów tylko wszystkie uruchomiły 
+		 się w tym samym czasie używaj w każdym wrapperze w kazdym dekoratorze dekoratora wraps z modułu 
+		 functools i podaj w nim swoją orginlną funkcję:
+				from functools import wraps										
+				def logger(func):
+					import logging
+					logging.basicConfig(filename='{}.log'.format(func.__name__), level = logging.INFO)
+					
+					@wraps(func)
+					def wrapper(*args, **kwargs):
+						logging.info('Running {} with arguments {}'.format(func.__name__, args))
+						return func(*args, **kwargs)
+					return wrapper
+				def my_time(origin_func):
+					import time
+					
+					@wraps(origin_func)
+					def wrapper(*args, **kwargs):
+						t1=time.time()
+						result = origin_func(*args, **kwargs)
+						t2 = time.time()
+						tSub= t2-t1
+						print('{} ran in: {} sec'.format(origin_func.__name__, tSub)
+						return result			
+				@my_logger					#najpierw zostanie wywołany @my_timer a pózniej @my_logger
+				@my_timer
+				def display_info(name, age):
+					print('DISPLAY_INFO run with arguments: {} {}'.format(name,age))
+				display_info('Marek', 24)			Zwróci: DISPLAY_INFO run with arguments: Marek 24
+															display_info ran in: 0.0018 sec
+															Running display_info with arguments 
+	   1*ZMIENNA JAKO ARGUMENT ZAMIAST FUNKCJI - Dekorator może przyjąc nie tylko funkcje jako argument 
+		 ale także zmienną:							https://www.youtube.com/watch?v=KlBPCzcQNU8
+			  *przyklad 1:
+				def dec1(zmienna):
+					def wrapper():
+						print(zmienna)
+				def dec2(zmienna):
+					def wrapper(tag):
+						print(f'<{tag}>{zmienna}</{tag}>')
+				dec1("moj message")()							#zwróci moj message
+				dec2("moj message")("h1")						#zwróci <h1>moj message</h1>		
+			  *przyklad 2:
+	   2*PRZY ZWROCIE WRAPPERA (a konkretnie jego referencji), wartości ze zmiennych które powstaną 
+		 w funkcji zewnętrznej ZOSTANĄ ZAPAMIĘTANE PRZEZ funkcję wewnętrzną. 
+				def decorator(msg)
+					message = msg
+					def wrapper():
+						print(message)
+					return wrapper
+				dec_1 = decorator('HI')			#mimo tego że zwróciłem tylko referencje do wrappera  
+				dec_1()	  	   #zwróci 'HI' 	#który teoretycznie nie powininen przetrzymywac 
+												#wartości zmiennej message to jednak to robi.
+	   3*DEKORATOR JAKO KLASA - oprócz klasycznego użycia dekoratora może go także utworzyć poprzez 
+		 klasę. Wtedy podczas wywołania funkcji (z przypisanym dekoratorem) masz automatyczne 
+		 wywołanie funkcji call():
+				class decorator_class(object):
+					def __init__(slef, original_func):
+						self.original_func = original_func
+					def __call__(self, *args, **kwargs):
+						print("to co normalnie byłoby we wrapperze")
+						return self.original_func(*args, **kwargs)
+				@decorator_class
+					def display(name):
+						print(name)
+				display('Marek')  			  #zwróci: to co normalnie byłoby we wrapperze /n Marek
+	   4*OPCJA UŻYCIA GENERATORA - wewnatrz dekoratora tj wewnątrz wrappera zamiast słowa return 
+		 można uzyc generatora (słowo 'yield') wywołując funkcje podaną do argumentu dekoratora   
+		 (tutaj jest to f). Robi sie to w sytuacjach gdy zamiast konieczności pojedyńczego zwrotu 
+		 wywołania funkcji z argumentu dekoratora) musisz (np w petli for) zwracać wiele wywołań 
+		 funkcji (z argumentu dekoratora).
 				from operator import itemgetter
 				def person_lister(f):
 					def wrapper(people):
