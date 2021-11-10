@@ -1,12 +1,12 @@
 										SPIS TREŚCI:
-##########################################################################################################
-##########################################################################################################
-##########################################################################################################
-##########################################################################################################
-##########################################################################################################
+############################################################################################################
+############################################################################################################
+############################################################################################################
+############################################################################################################
+############################################################################################################
 
-############################# OS ; FUNCTOOLS ; SYS ; SHUTIL ##############################################
-################ MODULE | MODULE: DATETIME i CALENDAR; TIME i TIMEIT ; RANDOM ############################
+############################# OS ; FUNCTOOLS ; SYS ; SHUTIL ################################################
+################ MODULE | MODULE: DATETIME i CALENDAR; TIME i TIMEIT ; RANDOM ##############################
 SHUTIL MODULE:						https://www.geeksforgeeks.org/python-shutil-copytree-method/
 OS MODULE:							https://www.programiz.com/python-programming/directory
 METODY dla random:  				https://www.w3schools.com/python/module_random.asp
@@ -16,7 +16,7 @@ MODULE CALENDAR:					https://www.geeksforgeeks.org/python-calendar-module/
 MODULE, if__name__ == '__main__':	https://www.youtube.com/watch?v=sugvnHA7ElY
 
 
-############ LOGGING | UNIT TESTS | PYTEST | PYDOC | PIP | VENV + VIRTUALENV | PIPENV ####################
+############ LOGGING | UNIT TESTS | PYTEST | PYDOC | PIP | VENV + VIRTUALENV | PIPENV ######################
 PIPENV:								https://www.youtube.com/watch?v=6Qmnh5C4Pmo
 PIP MANAGING: 						https://www.w3schools.com/python/python_pip.asp
 PYDOC:								https://www.youtube.com/watch?v=URBSvqib0xw
@@ -26,7 +26,7 @@ LOGGING INTERMEDIATE:				https://www.youtube.com/watch?v=p0A4CV4MWd0
 
 
 
-################# LAMBDA | DEKORATORY | CONTEXT MANAGER | ITERTOOLS - PRAWDOPODOBIEŃSTWO #################
+################# LAMBDA | DEKORATORY | CONTEXT MANAGER | ITERTOOLS - PRAWDOPODOBIEŃSTWO ###################
 CONTEXT MANAGER:					https://www.youtube.com/watch?v=-aKFBoZpiqA
 ITERTOOLS							https://docs.python.org/3/library/itertools.html
 ###### LEKCJA 20-22 ITERATORY: GENERATOR | MAPA | FILTER | FUNKCJE REDUCE() i ACCUMULATE() ####
@@ -37,69 +37,69 @@ REDUCE():							https://www.geeksforgeeks.org/reduce-in-python/
 ACCUMULATE():						https://www.geeksforgeeks.org/python-itertools-accumulate/
 
 
-#################### LEKCJA 28 i 29 i 30 i 31 | DESTRUKTOR | HERMETYZACJA ################################
-###################### METODY KLAS I METODY STATYCZNE | Gettery i Settery ################################
-########## LEKCJA 25 i 26 i 27 KLASY I OBIEKTY OOP | DZIEDZICZENIE | METODY MAGICZNE #####################
+#################### LEKCJA 28 i 29 i 30 i 31 | DESTRUKTOR | HERMETYZACJA ##################################
+###################### METODY KLAS I METODY STATYCZNE | Gettery i Settery ##################################
+########## LEKCJA 25 i 26 i 27 KLASY I OBIEKTY OOP | DZIEDZICZENIE | METODY MAGICZNE #######################
 OOP:								https://www.programiz.com/python-programming/object-oriented-programming
 METODY MAGICZNE: 					https://www.youtube.com/watch?v=IkWrlRei0uA
 
 
-######### LEKCJA 16 i 37 PODSUMOWANIE KOLEKCJI | WYCINKI KOLEKCJI | UNBOXING KOLEKCJI ####################
+######### LEKCJA 16 i 37 PODSUMOWANIE KOLEKCJI | WYCINKI KOLEKCJI | UNBOXING KOLEKCJI ######################
 UNBOXING KOLEKCJI: 					https://www.w3schools.com/python/python_tuples_unpack.asp
-########## BUILT-INS | *ARGS **KWARGS | KOPIOWANIE W PYTHONIE | MODULE COLLECTIONS #######################
+########## BUILT-INS | *ARGS **KWARGS | KOPIOWANIE W PYTHONIE | MODULE COLLECTIONS #########################
 SQUENCES:							https://docs.python.org/3/library/stdtypes.html#mutable-sequence-types
 BUILT-IN:							https://www.programiz.com/python-programming/methods/built-in
 COLLECTIONS MODULE:					https://www.geeksforgeeks.org/python-collections-module/
 MODULE COPY: 						https://www.geeksforgeeks.org/copy-python-deep-copy-shallow-copy/
-###########################  LEKCJA 15 KOLEKCJA DICTIONARY  ##############################################
+###########################  LEKCJA 15 KOLEKCJA DICTIONARY  ################################################
 DICTIONARY INFORMACJE:				https://www.w3schools.com/python/python_dictionaries.asp
 DICTIONARY METODY:					https://www.w3schools.com/python/python_dictionaries_methods.asp
-####################### LEKCJA 24 KOLEKCJA SET | OPERATORY NA ZBIORACH ###################################
+####################### LEKCJA 24 KOLEKCJA SET | OPERATORY NA ZBIORACH #####################################
 SET INFORMACJE:						https://www.w3schools.com/python/python_sets.asp
 SET METODY:							https://www.w3schools.com/python/python_sets_methods.asp
 SET METODY USUNIECIA: 				https://www.w3schools.com/python/python_sets_remove.asp
 SET METODY ŁACZENIA:				https://www.w3schools.com/python/python_sets_join.asp
-####################### LEKCJA 16 KOLEKCJA TUPLE - KROTKA i SEKWENCJE ####################################
+####################### LEKCJA 16 KOLEKCJA TUPLE - KROTKA i SEKWENCJE ######################################
 https://docs.python.org/3/library/stdtypes.html#mutable-sequence-types
 KROTKA INFORMACJE:					https://www.w3schools.com/python/python_tuples.asp
 KROTKA METODY:						https://www.w3schools.com/python/python_tuples_methods.asp
-####################### LEKCJA 7 i 17 | KOLEKCJA: LISTA | LIST COMPREHENSION #############################
+####################### LEKCJA 7 i 17 | KOLEKCJA: LISTA | LIST COMPREHENSION ###############################
 METODY LISTA: 						https://www.w3schools.com/python/python_ref_list.asp
 LISTY INFORMACJE:					https://www.w3schools.com/python/python_lists.asp
 LIST COMPREHENSIONS: 				https://www.w3schools.com/python/python_lists_comprehension.asp
 
 
-############################# LEKCJA 32 - 35 | WYRAZENIE REGULARNE #######################################
+############################# LEKCJA 32 - 35 | WYRAZENIE REGULARNE #########################################
 https://www.w3schools.com/python/python_regex.asp
-########################## LEKCJA 18 i 19 | STRING | STRING FORMATTER ####################################
+########################## LEKCJA 18 i 19 | STRING | STRING FORMATTER ######################################
 FUNKCJE Stringow: 					https://www.w3schools.com/python/python_strings_methods.asp
 					   			   (https://www.w3schools.com/python/python_ref_string.asp)[to samo]
 STRING FORMATTER:					https://www.w3schools.com/python/python_string_formatting.asp
-###########################  LEKCJA 14 OPERACJE NA PLIKACH (.txt) ########################################
+###########################  LEKCJA 14 OPERACJE NA PLIKACH (.txt) ##########################################
 FILE METHODS: 						https://www.w3schools.com/python/python_ref_file.asp
 FILE OPERATIONS:   					https://www.w3schools.com/python/python_file_handling.asp
 
 
-############################################## WYJATKI ###################################################
+############################################## WYJATKI #####################################################
 TYPY WYJĄTKÓW:						https://www.w3schools.com/python/python_ref_exceptions.asp
 									https://www.programiz.com/python-programming/user-defined-exception	
-################################## PETLA FOR | FUNKCJE | REKURSJA ########################################
-######################################### IF | PETLA WHILE ###############################################
-############################################# PODSTAWY ###################################################
+################################## PETLA FOR | FUNKCJE | REKURSJA ##########################################
+######################################### IF | PETLA WHILE #################################################
+############################################# PODSTAWY #####################################################
 PODSTAWOWE FUNKCJE:					https://www.w3schools.com/python/python_ref_functions.asp
 SŁOWA KLUCZOWE:						https://www.w3schools.com/python/python_ref_keywords.asp
 SŁOWNICZEK:							https://www.w3schools.com/python/python_ref_glossary.asp
 
 
-##########################################################################################################
-##########################################################################################################
-##########################################################################################################
-##########################################################################################################
-##########################################################################################################
-##########################################################################################################
+############################################################################################################
+############################################################################################################
+############################################################################################################
+############################################################################################################
+############################################################################################################
+############################################################################################################
 					
-############################# OS ; FUNCTOOLS ; SYS ; SHUTIL ; GETPASS ####################################
-################ MODULE | MODULE: DATETIME i CALENDAR; TIME i TIMEIT ; RANDOM ############################
+############################# OS ; FUNCTOOLS ; SYS ; SHUTIL ; GETPASS ######################################
+################ MODULE | MODULE: DATETIME i CALENDAR; TIME i TIMEIT ; RANDOM ##############################
 SHUTIL MODULE:						https://www.geeksforgeeks.org/python-shutil-copytree-method/
 OS MODULE:							https://www.programiz.com/python-programming/directory
 METODY dla random:  				https://www.w3schools.com/python/module_random.asp
@@ -651,7 +651,7 @@ https://www.youtube.com/watch?v=eirjjyP2qcQ
 						variables -> NEW: np.: PYTHONPATH, C:/users/corey/Desktop/my_folder_module
 
 			
-############## LOGGING | UNIT TESTS | PYTEST | PYDOC | PIP | VENV + VIRTUALENV | PIPENV ##################
+############## LOGGING | UNIT TESTS | PYTEST | PYDOC | PIP | VENV + VIRTUALENV | PIPENV ####################
 PIPENV:					https://www.youtube.com/watch?v=6Qmnh5C4Pmo
 PIP MANAGING: 			https://www.w3schools.com/python/python_pip.asp
 PYDOC:					https://www.youtube.com/watch?v=URBSvqib0xw
@@ -662,11 +662,11 @@ LOGGING INTERMEDIATE:	https://www.youtube.com/watch?v=p0A4CV4MWd0
 7* PIPENV:
    https://www.youtube.com/watch?v=6Qmnh5C4Pmo
 	*to rekomendowany sposób do instalacji paczek/modułów oraz jednoczesnego działania na wirtualce. 
-	 Nie tylko służy do automatycznego zainstalowania wirtualki ale również zarządzania nią. Tak samo
-	 z paczkami - nie tylko instalacja ale też zarządzanie.
-	*W przypadku korzystania z samego pipa wszystkie paczki instalowane są globalnie (w miejscu gdzie 
-	 masz zainstalowanego pythona w katalogu \Lib\site-packages) a w przypadku pipenv'a każdy osobny 
-	 projekt będzie miał instalowane paczki na osobnej wirtualce.
+	 Nie tylko służy do automatycznego zainstalowania wirtualki ale również zarządzania nią. Tak samo z 
+	 paczkami - nie tylko instalacja ale też zarządzanie.
+	*W przypadku korzystania z samego pipa wszystkie paczki instalowane są globalnie (w miejscu gdzie masz 
+	 zainstalowanego pythona w katalogu \Lib\site-packages) a w przypadku pipenv'a każdy osobny projekt 
+	 będzie miał instalowane paczki na osobnej wirtualce.
 	*KOMENDY PIP'a rozpoczynające pracę z pipenvem:
 		*instalacja pipenv'a:		 
 						pip install pipenv		|		pip3 install pipenv

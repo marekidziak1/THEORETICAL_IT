@@ -1,31 +1,4 @@
 
-101* ŁĄCZENIE SIĘ Z BAZĄ DANYCH:
-	1*PYTHON:
-		*musisz pobrać moduł związany z bazą danych, nastepnie połączyć się z konkretną bazą danych,
-		 przy pomocy metody connect() - jeżeli plik podany w argumencie nie istnieje to zostanie utworzony
-		 wywołać na niej metedoę cursor() i na tym kursorze wykonywac operacje sql poprzez metode 
-		 execute(). Po zakonczeniu wszytskich operacji musisz zakończyć połączenie z bazą danych poprzez
-		 metode close():
-				import sqlite3
-				conn = sqlite3.connect('music.sqlite')
-				cur = conn.cursor()
-				cur.execute('DROP TABLE IF EXISTS Tracks')
-				cur.execute('CREATE TABLE Tracks (title TEXT, plays INTEGER)')
-				conn.close()
-		*schemat dzialania dal pliku SQL jest taki że zawsze najpierw usuwasz całą bazę danych po to żeby
-		 stworzyć ją na nowo i wypełnić danymi - a wszystko po to żęby nie wyskoczył błąd
-		 		cur.execute('DROP TABLE IF EXISTS Tracks')
-				cur.execute('CREATE TABLE Tracks (title TEXT, plays INTEGER)')
-		*jeżeli chcemy odwołać się do PYTHONOWYCH zmiennych w zapytaniu SQL to zapisujesz je jako znaki 
-		 zapytania i po zapytaniu, po przecinku dajesz krotkę z tą samą ilością zmiennych co ilość znaków 
-		 zapytania żeby podmienic te znaki zapytania na te zmienne w krotce:
-				cur.execute('INSERT INTO Tracks (title, plays) VALUES (?, ?)', ('My Way', 15))
-		*jeżeli chcesz wywołać operację SQLowa DELETE to dodatkowo zeby zmusic program do zrobienia 
-		 tej operacji to musisz dodac jeszcze commita NA obiekcie connection 
-				conn = sqlite3.connect('music.sqlite')
-				...
-				cur.execute('DELETE FROM Tracks WHERE plays < 100')
-				conn.commit()
 				
 100* SILNIKI BAZODANOWE:
 	1*MySQL:
@@ -112,8 +85,7 @@
 			
 -----------------------------------------------------------------------------------------------------------
 -------------------------------------------------- SELECT -------------------------------------------------
-ZADANIA DO POWTÓRZENIA I UTRWALENIA SQL'a:
-	https://pja.mykhi.org/0sem/SBD/edux/zapytania.html
+ZADANIA DO POWTÓRZENIA I UTRWALENIA SQL'a:			https://pja.mykhi.org/0sem/SBD/edux/zapytania.html
 3* SELECT (wszystkie podpunkty są w kolejności tego jak powinny występować): 
   --------------------------------------------------------------------------
   I.PODSTAWY:

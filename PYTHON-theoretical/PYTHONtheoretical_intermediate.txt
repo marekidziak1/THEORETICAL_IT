@@ -1,5 +1,5 @@
 											SPIS TREŚCI:
-########################################################################################################
+############################################################################################################
 POSTGRESQL PYTHON:		https://www.tutorialspoint.com/python_postgresql/python_postgresql_limit.htm
 MYSQL:					https://www.w3schools.com/python/python_mysql_getstarted.asp
 MONOGDB:				https://www.w3schools.com/python/python_mongodb_getstarted.asp
@@ -10,36 +10,39 @@ python beautiful SOUP:	https://www.tutorialspoint.com/beautiful_soup/index.htm
 python WEB_SCRAPING:	https://www.tutorialspoint.com/python_web_scraping/index.htm
 PYTHON BLOCKCHAIN:		https://www.tutorialspoint.com/python_blockchain/index.htm
 python web development:	https://www.tutorialspoint.com/python_web_development_libraries/index.htm
-########################################################################################################
-########################################################################################################
-########################################################################################################
-########################################################################################################
-########################################################################################################
+############################################################################################################
+############################################################################################################
+############################################################################################################
+############################################################################################################
+############################################################################################################
 
-################################### BEAUIFUL SOUP | HTMLPARSER #########################################
-########################################## BEAUIFUL SOUP ###############################################
+
+
+
+################################### BEAUIFUL SOUP | HTMLPARSER #############################################
+########################################## BEAUIFUL SOUP ###################################################
 https://www.py4e.com/code3/urllink2.py?PHPSESSID=d163255a18b681c23d5f6c01094fc6a0
-########################################### HTML PARSER ################################################	
+########################################### HTML PARSER ####################################################	
 https://www.askpython.com/python-modules/htmlparser-in-python
 
 
-############################### NETWORKING: SOCKETY, URLLIB, REQUESTS ##################################
-######################################## URLLIB | REQUEST ##############################################
+############################### NETWORKING: SOCKETY, URLLIB, REQUESTS ######################################
+######################################## URLLIB | REQUEST ##################################################
 REQUEST MODULE:						https://www.w3schools.com/python/module_requests.asp
-##################################### NETWORKING: SOCKETY ##############################################
+##################################### NETWORKING: SOCKETY ##################################################
 WYMIANA DANYCH MIEDZY KLIENTEM A SERWEREM:
 									https://www.youtube.com/watch?v=yUZpSQhds3M
 									https://www.youtube.com/watch?v=sETW3WhxG0o
 
 
-############# SENDING EMAIL (SENDGRID): MODULE smtplib | RECIVING EMAIL: MODULE imap ###################
+############# SENDING EMAIL (SENDGRID): MODULE smtplib | RECIVING EMAIL: MODULE imap #######################
 KOD IMAP (w pliku inbox.py): 		https://github.com/codingforentrepreneurs/30-Days-of-Python/commit/8b09ed860dc5d36b1f90c54987c541e2a9317782#diff-07a5d8e5d735aa27245df73d8956d60ce43ccdbd21a672f1f45f39047f959410
 									https://www.tutorialspoint.com/python_network_programming/python_imap.htm
 KOD SMTP (w pliku send_mail.py): 	https://github.com/codingforentrepreneurs/30-Days-of-Python/commit/8b09ed860dc5d36b1f90c54987c541e2a9317782#diff-0068d3b04d9889c399f27998909e2adca26494b4c823a2adcbb5edaaf73f856b
 									https://www.tutorialspoint.com/python_network_programming/python_smtp.htm
 									
 									
-####################### API | JSON | XML | CSV | DATABASE | BAZY DANYCH ################################
+####################### API | JSON | XML | CSV | DATABASE | BAZY DANYCH ####################################
 API JSON example:					https://www.py4e.com/code3/geojson.py
 API XML example:					https://www.py4e.com/code3/geoxml.py
 JSON MODULE:						https://www.w3schools.com/python/python_json.asp
@@ -47,19 +50,17 @@ XML:								https://www.py4e.com/html3/13-web
 									https://nowaker.net/post/xml-instance-xml-schema.html
 CSV:								https://www.youtube.com/watch?v=Xi52tx6phRU  
 						
-########################################################################################################
-########################################################################################################
-########################################################################################################
-########################################################################################################
-########################################################################################################
+############################################################################################################
+############################################################################################################
+############################################################################################################
+############################################################################################################
+############################################################################################################
+############################################################################################################
 
 
 
-
-
- 
-########################################################################################################
-########################################### BEAUIFUL SOUP ##############################################
+############################################################################################################
+######################################## BEAUIFUL SOUP #####################################################
 https://www.py4e.com/code3/urllink2.py?PHPSESSID=d163255a18b681c23d5f6c01094fc6a0
 1* BIBLIOTEKA BEAUTIFUL SOUP - WSTĘP:
   *https://www.py4e.com/code3/urllink2.py?PHPSESSID=d163255a18b681c23d5f6c01094fc6a0
@@ -85,27 +86,27 @@ https://www.py4e.com/code3/urllink2.py?PHPSESSID=d163255a18b681c23d5f6c01094fc6a
 				print 'Contents:',tag.contents[0]
 				print 'Attrs:',tag.attrs
 
-########################################### HTML PARSER ###############################################	
+######################################### HTML PARSER ######################################################	
 https://www.askpython.com/python-modules/htmlparser-in-python
 https://www.journaldev.com/19931/python-html-parser
 
 1. HTMLPARSER:
 	*klasa która jest wykorzystywana w krókich i prostych zadaniach do scrapowania kodu html
 	*pobierasz klasę HTMLParser z modułu html.parser lub sam moduł html.parser
-	*Żeby móc skorzystać z jego funkcji to najpierw musisz stworzyc klasę która będzie dziedziczyć
-	 od modułu HTMLParser i przesłonić te funkcje któe zwróćą te dane których potrzebujesz
-	*Te funkcje któe przesłonisz zostaną automatycznie odpalone poprzez funkcje feed() wywołanej
-	 na obiekcie stworzonej przez Ciebie klasy dziedziczącej po HTMLParser'ze
-	*funkcje które automatycznie zostaną odpalone po wywołaniu funkcji feed(txt) (gdzie w 
-	 argumencie podajesz stringa z htmlem) i które trzeba wcześniej przesłonić:
+	*Żeby móc skorzystać z jego funkcji to najpierw musisz stworzyc klasę która będzie dziedziczyć od modułu
+ 	 HTMLParser i przesłonić te funkcje któe zwróćą te dane których potrzebujesz
+	*Te funkcje któe przesłonisz zostaną automatycznie odpalone poprzez funkcje feed() wywołanej na obiekcie
+	 stworzonej przez Ciebie klasy dziedziczącej po HTMLParser'ze
+	*funkcje które automatycznie zostaną odpalone po wywołaniu funkcji feed(txt) (gdzie w argumencie 
+	 podajesz stringa z htmlem) i które trzeba wcześniej przesłonić:
 		*handle_starttag(tag, attrs) - zwraca wszystkie tagi otwierające  <tag> 
 		*handle_endtag(tag) - zwraca wszystkie tagi zamykające </tag>
 		*handle_startendtag(tag, attrs) - zwraca tagi otwierająco-zamykające <tag />
 		*handle_data(data) - zwraca treści między tagami
 		*handle_comment(data) - zwraca komentarze w tekscie html
 		+inne metody
-	*możesz przesłonic w niej wszystkie funkcje (decydując się na printy albo na returny) i 
-	 następnie wywołac metodę feed na nowy obiekcie która uruchomi wszystkie metody 
+	*możesz przesłonic w niej wszystkie funkcje (decydując się na printy albo na returny) i następnie 
+	 wywołac metodę feed na nowy obiekcie która uruchomi wszystkie metody 
 			from html.parser import HTMLParser
 			class MyHTMLParser(HTMLParser):
 				def __init__(self):
@@ -125,8 +126,8 @@ https://www.journaldev.com/19931/python-html-parser
 			parser.feed(txt)		#zwroci: Start : title ;; -> name > tytul ;; End   : title
 
 
-########################################################################################################
-################################ NETWORKING: SOCKETY, URLLIB, REQUEST ##################################
+############################################################################################################
+############################ NETWORKING: SOCKETY, URLLIB, REQUEST ##########################################
 https://www.w3schools.com/python/module_requests.asp
 
 0* ODPALENIE SERWERA I KLIENTA POWININES ZROBIĆ W DWÓCH KONSOLACH
@@ -141,22 +142,20 @@ https://www.w3schools.com/python/module_requests.asp
 	*POP(109/110) - email retrival
 	*DNS(53) - Domain
 	*FTP(21) - Files
-  KODOWANIE - najwcześniejszym formatem znakow byla tablica ASCII (znakow lacinskich) ale pozniej
-			  doszlo wiele jezykow i ich znakow diakrytycznych -> stąd pojawił się format UNICODE
-			  Tyle że on zajmował bardzo dużo miejsca bo az 4 Bajty (UTF-32) [dla porownania 
-			  tablica ASCII zajmuje 1 BAJT] -> stąd pojawił się pomysł żeby spakować ten format 
-			  UTF-32 na mniejszy. Powstał UTF-16 (zajmujący 2 Bajty) a pózniej UTF-8 który pozwala
-			  dynamicznie ustalac wielkość (zajmuję od 1-4 Bajtów)(Gdy zajmuję 1 Bajt to jest 
-			  w pełni kompatybilny z tablicą ASCII
+  KODOWANIE - najwcześniejszym formatem znakow byla tablica ASCII (znakow lacinskich) ale pozniej doszlo 
+		wiele jezykow i ich znakow diakrytycznych -> stąd pojawił się format UNICODE Tyle że on zajmował 
+		bardzo dużo miejsca bo az 4 Bajty (UTF-32) [dla porownania tablica ASCII zajmuje 1 BAJT] -> stąd 
+		pojawił się pomysł żeby spakować ten format UTF-32 na mniejszy. Powstał UTF-16 (zajmujący 2 Bajty) 
+		a pózniej UTF-8 który pozwala dynamicznie ustalac wielkość (zajmuję od 1-4 Bajtów)(Gdy zajmuję 1 
+		Bajt to jest w pełni kompatybilny z tablicą ASCII
 			- NAPISY można reprezentować za pomocą 2 typów danych 
 					*String
 					*Byte
-			  W Pythonie 2.0 Stringi były reprezentowane przez Byte'y (w formacie tablicy ASCII)
-			  a jezeli chciało się żeby były reprezentowane w formacie UNICODE to był na to 
-			  specjalnie tworzony obiekt. W Pythonie 3.0 Stringi są reprezentowane w formacie
-			  UNICODE. Ponieważ dane wysyłasz poprzez Byte'y to musisz je jeszcze zakodować 
-			  według odpowiedniego formatu (98% wybiera format UTF-8). Robisz to poprzez metode
-			  encode() która zaminia dane na Byte'y.
+		W Pythonie 2.0 Stringi były reprezentowane przez Byte'y (w formacie tablicy ASCII) a jezeli chciało 
+		się żeby były reprezentowane w formacie UNICODE to był na to specjalnie tworzony obiekt. W Pythonie 
+		3.0 Stringi są reprezentowane w formacie UNICODE. Ponieważ dane wysyłasz poprzez Byte'y to musisz 
+		je jeszcze zakodować według odpowiedniego formatu (98% wybiera format UTF-8). Robisz to poprzez 
+		metode encode() która zaminia dane na Byte'y.
 
 ####DO WSZYSTKICH 3 MODUŁÓW PONIŻEJ
 ####STATUS KODY DO STRON HTML:
@@ -180,11 +179,11 @@ https://www.w3schools.com/python/module_requests.asp
    *https://www.py4e.com/code3/socket1.py
 	*tworzysz OBIEKT socketa (klienta)
 	*poprzez metodę connect() łączysz sie z adresem(HOST+PORT) serwera
-	*tworzysz w srtingu rządanie GET według specjalnego PROTOKOŁU i je kodujesz (metoda encode()):
+	*tworzysz w stringu rządanie GET wg specjalnego PROTOKOŁU i je kodujesz (metoda encode()):
 			'GET http://data.pr4e.org.romeo.txt HTTP/1.0\r\n\r\n'
 	*wysyłasz rządanie poprzez metode send()
-	*odbierasz dane w pętli for ustalając sobie maksymalny rozmar przyjomwanych paczek poprzez
-	 metode recv('rozmiar_max_paczek') oraz dekodujesz te paczki
+	*odbierasz dane w pętli for ustalając sobie maksymalny rozmar przyjomwanych paczek poprzez metode 
+	 recv('rozmiar_max_paczek') oraz dekodujesz te paczki
 	*zamykasz połączenie socketu poprzez metodę close()
 			import socket
 			client_socket=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
@@ -215,9 +214,8 @@ https://www.w3schools.com/python/module_requests.asp
 		*czytasz pobrane dane poprzez przejscie kazdej linijki i zdekodowanie jej
 					for line in file:
 						print(line.decode().strip())
-		 możesz też użyć metody read() do czytania z pliku (tylko raz możesz użyć metody 
-		 read() później python zamyka połączenie) a póżniej decode gdzie jako argument 
-		 podajesz kodowanie np.: 'utf-8':
+		 możesz też użyć metody read() do czytania z pliku (tylko raz możesz użyć metody read() później 
+		 python zamyka połączenie) a póżniej decode gdzie jako argument podajesz kodowanie np.: 'utf-8':
 					data=file.read()				#zwróci obiekt typu <class 'bytes'>
 					html=data.decode("UTF-8")		#zwróći stringa
 		*zwraca dla nas skrpyt HTML wraz z tym co znajduje sie na stronie
@@ -226,16 +224,16 @@ https://www.w3schools.com/python/module_requests.asp
 		  <class 'http.client.HTTPResponse'>
 		*możesz sprawdzić czy połączenie cały czas jest otwarte (zwróci True or False)
 					file.isclosed()
-		*zaraz po metodzie urllopen możesz użyc metody peek() do sprawdzenia kilku pierwszych 
-		 linijek co pobrałeś. (To co zwróci nie będzie stringiem tylko obiektem typu BYTE)
+		*zaraz po metodzie urllopen możesz użyc metody peek() do sprawdzenia kilku pierwszych linijek co 
+		 pobrałeś. (To co zwróci nie będzie stringiem tylko obiektem typu BYTE)
 		  <class 'bytes'>
 					print(file.peek())
 		*możesz sprawdzić jaki HTTP STATUS CODE otrzymałeś. 
 					print(file.code)
 		*możesz sprawdzić długość pliku w Byte'ach (length)
 					print(file.length)
-		*TWORZENIE LINKÓW - możesz odpowiednio zakodować link poprzez metodę urlencode() 
-		 gdzie podasz słownik w którym będą odpowiednie paramtery np:
+		*TWORZENIE LINKÓW - możesz odpowiednio zakodować link poprzez metodę urlencode() gdzie podasz 
+		 słownik w którym będą odpowiednie paramtery np:
 					params={'v':'EuC-yVzHhMI', 't':'5m56s'}
 					querystring=urllib.parse.urlencode(params)
 					url='http://www.youtube.com/watch'+'?'+querystring
@@ -251,58 +249,58 @@ https://www.w3schools.com/python/module_requests.asp
 			*możliwość wysyłania authentication information dla podstawowego logowania i formularzy
 			*możliwość śledzenia przekierowań 
 		*zwraca Response Object with the response data(content, encoding, status, etc)
-		*jest to biblioteka świetna do pobierania danych ale nie ich przetwarzania( od tego jest
- 		 Beautiful Soup)
+		*jest to biblioteka świetna do pobierania danych ale nie ich przetwarzania( od tego 
+		 jest Beautiful Soup)
 		*https://httpbin.org - strona do testowania funkcji z biblioteki requests:
 			*są tam zapisane różne metody jak get, post, put, delete 
-			*oraz zakończenie linka też w postaci /get, /post, /delete, /put itp - te zakońzenia
-			 nie są wymagane przy innych stronach internetowych i są to takie podstrony strony 
-			 httpbin.org
+			*oraz zakończenie linka też w postaci /get, /post, /delete, /put itp - te zakońzenia nie są 
+			 wymagane przy innych stronach internetowych i są to takie podstrony strony httpbin.org
 			*na razie nie rozumiem do czego służą te wszystkie przykłady na stronce ale się dowiem...
+			
+			
 	*METODY REQUESTS: 	https://www.w3schools.com/python/module_requests.asp
 	  *post(...) - służy do wysyłania danych do np formularza:
 					import requests
 					dictionary={'username':'corey', 'password': 'testing'}
 					r=requests.post('https://httpbin.org/post', data=dictionary)
 	  *get(...) 
-			**params - przy metodzie get możesz dodać paramtery w postaci słownika i te paramtery 
-			  zostaną opowiednio skonfigurowane tak by stworzyć link:
+			**params - przy metodzie get możesz dodać paramtery w postaci słownika i te paramtery zostaną 
+			  odpowiednio skonfigurowane tak by stworzyć link:
 					import requests
 					payload={'page': 2, 'count':25}
 					r=requests.get('https://httpbin.org/get', params=payload)
-									#zwróci: https://httpbin.org/get?page=2&count=25
-									#to get w linku nie jest wymagane tylko jest to część adresu strony
+							#zwróci: https://httpbin.org/get?page=2&count=25
+							#to get w linku nie jest wymagane tylko jest to część adresu strony
 			**auth - przy metodzie get mozesz dodać parametr auth do prostego authentication:
 					import requests
 					r=requests.get('https://httpbin.org/basic-auth/corey/my_password' 
 															, auth=('corey', 'my_password')
 					print(r.text)
 		 *url - zwraca podany url
-					print(r.url)	#zwróci: https://httpbin.org/get?page=2&count=25
+					print(r.url)						#zwróci: https://httpbin.org/get?page=2&count=25
 		 *text - zwraca content of te response czyli HTML'a:
 			*get('adresStrony') - zwraca skrpyt html
 					import requests
 					r=requests.get("http://httpbin.org")		
-					print(r.text)								#zwróci htmla
+					print(r.text)													#zwróci htmla
 		 *json() - zwraca format jsona:
 			*get('adresStrony/json') - zwraca słownik JSON'a
 					import requests
 					r=requests.get("http://httpbin.org/json")	
-					print(r.json())								#zwróci JSON'a
+					print(r.json())													#zwróci JSON'a
 		 *content - zwraca content of the response w bajtach (bytes)
-			*get(url='adresStrony', stream=True) - zwraca strumień wykorzystywany do 
-			 większych plików jak zdjęcia. Mimo wszystko da się to wykorzystać TYLKO 
-			 DO MNIEJSZYCH zdjęć/plików.
-				*content - pozwala zobaczyć cały plik który otrzymano drogą strumieniową 
-				 dzięki get(url='adres'strony,stream=True)
+			*get(url='adresStrony', stream=True) - zwraca strumień wykorzystywany do większych plików jak 
+			 zdjęcia. Mimo wszystko da się to wykorzystać TYLKO DO MNIEJSZYCH zdjęć/plików.
+				*content - pozwala zobaczyć cały plik który otrzymano drogą strumieniową dzięki 
+				 get(url='adres'strony,stream=True)
 					import requests
 					r=requests.get("https://static.wikia.nocookie.net/lotr/images/e/e3/
 									Lonely_Mountain_-_DoS.jpg/revision/latest?cb=202003
 									17224945", stream=True)
 					file=open("filename", 'wb')
 					file.write(r.content)
-				*raw - możńa ten argument wykorzystąc do funkcji modułu shutil (shell util)
-				 o nazwie shutil.copyfileobj() i pobierać BARDZO DUŻE PLIKI jak ogromne zdjęcia.
+				*raw - możńa ten argument wykorzystąc do funkcji modułu shutil (shell util) o nazwie 
+				 shutil.copyfileobj() i pobierać BARDZO DUŻE PLIKI jak ogromne zdjęcia.
 					import requests
 					import shutil
 					with requests.get("https://static.wikia.nocookie.net/lotr/images/e/e3/
@@ -310,7 +308,8 @@ https://www.w3schools.com/python/module_requests.asp
 									  17224945", stream=True) as r:
 						with(open("filename", "wb")) as file:
 							shutil.copyfileobj(r.raw, file)		#pozwala zonbaczyć DUŻE zdjęcia
-		 *headers - zwraca wszystkie ważne informacje dotyczące storny/obrazka/jsona w formie słownika
+		 *headers - zwraca wszystkie ważne informacje dotyczące storny/obrazka/jsona w formie
+			słownika
 					import requests
 					r=requests.get("https://imgs.xkcd.com")
 					print(r.headers)
@@ -334,7 +333,7 @@ https://www.w3schools.com/python/module_requests.asp
 					print(r.cookies)
 		 
 	
-########################## WYMIANA DANYCH MIĘDZY SERWEREM A KLIENTEM:##################################
+########################## WYMIANA DANYCH MIĘDZY SERWEREM A KLIENTEM:#######################################
   https://www.youtube.com/watch?v=yUZpSQhds3M
   https://www.youtube.com/watch?v=sETW3WhxG0o
   *SERWER:
@@ -348,10 +347,10 @@ https://www.w3schools.com/python/module_requests.asp
 			PORT = 33000
 			server_socket = s.socket(s.AF_INET, s.SOCK_STREAM)
     *OTWARCIE POŁĄCZENIA DLA KLIENTA:
-		*poprzez bind() wiążasz ze sobą HOST I PORT tworzac adres SERWERA 
-		 (w argumencie podajesz krotke: (HOST,PORT))
-		*poprzez metode listen(2) włączasz nasluchiwanie polączeń (w argumencie jest kolejka 
-		 klientow ktorzy beda mogli sie połaczyć (to nie stala, mozesz wpisac tam dowolna liczbe)
+		*poprzez bind() wiążasz ze sobą HOST I PORT tworzac adres SERWERA (w argumencie podajesz krotke: 
+		 (HOST,PORT))
+		*poprzez metode listen(2) włączasz nasluchiwanie polączeń (w argumencie jest kolejka klientow ktorzy
+		 beda mogli sie połaczyć (to nie stala, mozesz wpisac tam dowolna liczbe)
 		*w nieskończonej pętli while true pobierasz socket klienta i adres klienta
 		*żeby coś wysłać albo odebrac to operujesz na obiekcie klienta -> client_socket
 			server_socket.bind((HOST, PORT))
@@ -383,14 +382,14 @@ https://www.w3schools.com/python/module_requests.asp
 
   *KLIENT:
 	*TWORZYSZ OBIEKT KLIENTA I nastepnie TWORZYSZ POŁĄCZENIE Z KLIENTEM
-	*wysyłanie i odbieranie robisz poprzez operowanie na obiekcie klienta (czyli samego siebie)
-	 czyli client_socket
+	*wysyłanie i odbieranie robisz poprzez operowanie na obiekcie klienta (czyli samego siebie) czyli 
+	 client_socket
 			import socket as s     
 			HOST = s.gethostname() 			#wpisujesz nazwe HOSTA SERWERA na sztywno ALBO 
 											#poprzez gethostname() (swojego komputera)
 			PORT = 33000
 			client_socket = s.socket(s.AF_INET, s.SOCK_STREAM)
-			client_socket.connect((HOST, PORT))	  #to jest jak wybranie numeru telefonu do serwera
+			client_socket.connect((HOST, PORT))	#to jest jak wybranie numeru telefonu do serwera
 						#STRONA WYSYŁAJĄCA
 			name=input("Twoje imie: ").encode("utf8")
 			client_socket.send(name)
@@ -409,20 +408,19 @@ https://www.w3schools.com/python/module_requests.asp
 			msg2=client_socket.recv(int(msg2_header)).decode()
 			print(msg2)
 
-  *METODY W SOCKETACH - niezależnie czy jestes w serwerze czy w kliencie zawsze uzywasz metod na
-   obiekcie klienta (w kliencie na obiekcie klienta stworzonym przez konstruktor a w serwerze na
-   obiekcie klienta zwróconym dzięki server_socket.accept()):
-		*METODA send() -wysylasz jakies dane podane w argumencie ktore wczesniej musisz 
-						zakodować poprzez metodę encode("utf8")
-		*METODE recv() -otrzymujesz jakies dane do ktorych musisz okreslic ilosc zarezerwowanego
-						miejsca na te dane (argument BUFFER,ktory deklarujesz wcześniej) i ktore
-						musisz takze zdekodowac poprzez metode decode("utf8")
+  *METODY W SOCKETACH - niezależnie czy jestes w serwerze czy w kliencie zawsze uzywasz metod na obiekcie 
+   klienta (w kliencie na obiekcie klienta stworzonym przez konstruktor a w serwerze na obiekcie klienta 
+   zwróconym dzięki server_socket.accept()):
+		*METODA send() -wysylasz jakies dane podane w argumencie ktore wczesniej musisz zakodować poprzez 
+						metodę encode("utf8")
+		*METODE recv() -otrzymujesz jakies dane do ktorych musisz okreslic ilosc zarezerwowanego miejsca na 
+						te dane (argument BUFFER,ktory deklarujesz wcześniej) i ktore musisz takze 
+						zdekodowac poprzez metode decode("utf8")
 						
-	*Jeżeli masz bardzo duży plik to zamiast rezerwować miejsce (BUFFER) na sztywno (czyli 
-	 zarezerwowanego miejsca na plik) to czekasz na wiadomość od drugiej strony ktora będac 
-	 podzielona na 2 cześci: daje nam (pierwsza cześć - NAGŁÓWEK:) rozmiar pliku oraz (druga 
-	 cześć:) dany plik. Dzięki temu strona odbierająca dokladnie wie ile BUFFERA ma sobie 
-	 przygotować na dany plik:
+	*Jeżeli masz bardzo duży plik to zamiast rezerwować miejsce (BUFFER) na sztywno (czyli zarezerwowanego 
+	 miejsca na plik) to czekasz na wiadomość od drugiej strony ktora będac podzielona na 2 cześci: daje 
+	 nam (pierwsza cześć - NAGŁÓWEK:) rozmiar pliku oraz (druga cześć:) dany plik. Dzięki temu strona 
+	 odbierająca dokladnie wie ile BUFFERA ma sobie przygotować na dany plik:
 		*PO STRONIE WYSYŁĄJĄCEJ musisz stworzyć:
             *zmienną - plik ktory zakodujesz
             *zmienna_header - czyli rozmiar wysyłanego pliku ktoremu przypiszesz poprzez HEADER 
@@ -431,32 +429,30 @@ https://www.w3schools.com/python/module_requests.asp
 					zmienna_header= f"{len(surname):<{HEADER}}".encode()
 			 Taki zapis stworzy nam iles-bajtowy odstep(HEADER) ktory musi byc taki sam po stronie 
 			 otrzymujacej 
-			*metoda send() ktorej w argumencie dasz zmienna_header+zmienna czyli danych o 
-			 rozmiarze pliku i sam plik
+			*metoda send() ktorej w argumencie dasz zmienna_header+zmienna czyli danych o rozmiarze pliku i 
+			 sam plik
 
         *PO STRONIE OTRZYMUJĄCEJ musisz stworzyc:
-            *HEADER - czyli ile miejsca rezerwujesz na wiadomosc o wielkosc pliku ktory zostanie
-			 nadesłany w metodzie receive
+            *HEADER - czyli ile miejsca rezerwujesz na wiadomosc o wielkosc pliku ktory zostanie nadesłany 
+			 w metodzie receive
             *header_len - zmienna ktora przechowa wielkosc pliku ktory nadejdzie
-            *zmienną - której przekazesz nadesłany plik za pomocą metody recv() ktorej w 
-			 argumencie przekazesz header_len (normalnie byłby BUFFER) czyli wielkość nadesłanego
-			 pliku zamiast na sztywno ustalac BUFFER
+            *zmienną - której przekazesz nadesłany plik za pomocą metody recv() ktorej w argumencie 
+			 przekazesz header_len (normalnie byłby BUFFER) czyli wielkość nadesłanego pliku zamiast na 
+			 sztywno ustalac BUFFER
 
     *HEADER a BUFFER:
-		*HEADER to zarezerwowany obszar miejsca na nagłówek (czyli rozmiar rozmiaru nadeslanego 
-		 pliku -on musi byc taki sam zarowno po stronie odbierającej jak i po stronie wysyłającej) 
-		 np jezeli zarezerwuje 8 bajtow miejsca na dane o wielkosci pliku po stronie wysyłającej 
-		 i dodam do tego sam plik to po stronie odbierajacej muszę najpierw odczytac te 8 bajtow
-		 a dopiero potem kolejny plik. Jeżeli odczytałbym np tylko 2 bajty rozmiaru rozmiaru pliku 
-		 to pozostałe 6 bajtów już by program pobrał sobie z mojego pliku co spowodowałoby błąd 
-		 krytyczny gdyż po stronie odbierającej wczytałyby błedne dane o wielkosci pliku (przez 
-		 te 6 dodatkowych bajtów) jak i błedne dane o samym pliku (przez te 6 brakujących 
-		 początkowych bajtów dla pliku)
-		*BUFFER to zarezerwowany obszar dla pliku. Jest on ustalany na sztywno. Wczesniej nie 
-		 trzeba przesylac mu informacji o wielkosci przesyłanego pliku. Minus jest taki że jezeli
-		 plik jest mały to niepotrzebnie mozesz rezerwowac duży obszar dla pliku a gdy z kolei 
-		 plik jest ogromny to plik zostanie ucięty po osiagnieciu maksymalnej liczby ustalonej
-		 wczesniej w BUFFER'ZE
+		*HEADER to zarezerwowany obszar miejsca na nagłówek (czyli rozmiar rozmiaru nadeslanego pliku -on 
+		 musi byc taki sam zarowno po stronie odbierającej i po stronie wysyłającej) np jezeli zarezerwuje 
+		 8 bajtow miejsca na dane o wielkosci pliku po stronie wysyłającej i dodam do tego sam plik to po 
+		 stronie odbierajacej muszę najpierw odczytac te 8 bajtow a dopiero potem kolejny plik. Jeżeli 
+		 odczytałbym tylko 2 bajty rozmiaru rozmiaru pliku to pozostałe 6 bajtów już by program pobrał sobie
+		 z mojego pliku co spowodowałoby błąd krytyczny gdyż po stronie odbierającej wczytałyby błedne dane 
+		 o wielkosci pliku (przez te 6 dodatkowych bajtów) jak i błedne dane o samym pliku (przez te 6 
+		 brakujących początkowych bajtów dla pliku)
+		*BUFFER to zarezerwowany obszar dla pliku. Jest on ustalany na sztywno. Wczesniej nie trzeba 
+		 przesylac mu informacji o wielkosci przesyłanego pliku. Minus jest że jezeli plik jest mały to 
+		 niepotrzebnie mozesz rezerwowac duży obszar dla pliku a gdy z kolei plik jest ogromny to plik 
+		 zostanie ucięty po osiagnieciu maksymalnej liczby ustalonej wczesniej w BUFFER'ZE
 		 
 3* WYJĄTKI w SOCKETACH:
 	*SPRAWDZANIE: IF URL IS VALID:
@@ -468,8 +464,8 @@ https://www.w3schools.com/python/module_requests.asp
 	*https://www.networkcomputing.com/data-centers/python-network-programming-handling-socket-errors
 	
 
-########################################################################################################
-############# SENDING EMAIL (SENDGRID): MODULE smtplib | RECIVING EMAIL: MODULE imap ###################
+############################################################################################################
+############# SENDING EMAIL (SENDGRID): MODULE smtplib | RECIVING EMAIL: MODULE imap #######################
 KOD IMAP (w pliku inbox.py): 		https://github.com/codingforentrepreneurs/30-Days-of-Python/commit/8b09ed860dc5d36b1f90c54987c541e2a9317782#diff-07a5d8e5d735aa27245df73d8956d60ce43ccdbd21a672f1f45f39047f959410
 									https://www.tutorialspoint.com/python_network_programming/python_imap.htm
 KOD SMTP (w pliku send_mail.py): 	https://github.com/codingforentrepreneurs/30-Days-of-Python/commit/8b09ed860dc5d36b1f90c54987c541e2a9317782#diff-0068d3b04d9889c399f27998909e2adca26494b4c823a2adcbb5edaaf73f856b
@@ -479,9 +475,9 @@ KOD SMTP (w pliku send_mail.py): 	https://github.com/codingforentrepreneurs/30-D
  ** Cały potrzebny kod w pliku inbox.py: 	https://github.com/codingforentrepreneurs/30-Days-of-Python/commit/8b09ed860dc5d36b1f90c54987c541e2a9317782#diff-07a5d8e5d735aa27245df73d8956d60ce43ccdbd21a672f1f45f39047f959410
  O) PROTOKÓŁ IMAP:
 		*odpowiada za synchronizację oraz odbieranie wiadomości e-mail.
-		*jego główną zaletą jest możliwość synchronizacji wszystkich folderów wiadomości,
-		 między różnymi programami pocztowymi oraz urządzeniami mobilnymi. Oznacza to, że
-		 wiadomość e-mail pobierana z serwera nie jest automatycznie z niego usuwana.
+		*jego główną zaletą jest możliwość synchronizacji wszystkich folderów wiadomości, między różnymi 
+		 programami pocztowymi oraz urządzeniami mobilnymi. Oznacza to, że wiadomość e-mail pobierana z 
+		 serwera nie jest automatycznie z niego usuwana.
  A) MODUŁ IMAP:
 		*pobranie odpoweidenich modułów:
 				import imaplib
@@ -511,8 +507,8 @@ KOD SMTP (w pliku send_mail.py): 	https://github.com/codingforentrepreneurs/30-D
 						downloading_info, data = mail.fetch(num, '(RFC822)')
 											#downloading_info zwróci OK (nie interesuję nas to)
 											#data zwróci wiadomość z danymi z nią związaną 
-		*kontynuacja pobieranie wiadomośći i wszystkich danych z nią związanych poprzez 
-		 odwołanie się do pierwszej komórki listy data:
+		*kontynuacja pobieranie wiadomośći i wszystkich danych z nią związanych poprzez odwołanie się do 
+		 pierwszej komórki listy data:
 						number_email, b= data[0]	#downloading info zwróci: b'3 (RFC822 {538}'
 													#zmienna b stanowi całą wiadomość z innymi
 													#ważnymi rzeczami z nią związanymi
@@ -524,8 +520,8 @@ KOD SMTP (w pliku send_mail.py): 	https://github.com/codingforentrepreneurs/30-D
 						for header in ['subject', 'to', 'from', 'date']:
 							print("{}: {}".format(header, email_message[header]))
 							email_data[header] = email_message[header]
-		*przejście po treści wiadomości przez metody: walk(), get_content_type() i get_payload()
-		 wraz ze sprawdzeniem czy do czynienia mamy z tekstem czy z tekstem HTML:
+		*przejście po treści wiadomości przez metody: walk(), get_content_type() i get_payload() wraz ze
+		 sprawdzeniem czy do czynienia mamy z tekstem czy z tekstem HTML:
 					    for part in email_message.walk():
 							if part.get_content_type() == "text/plain":
 								body = part.get_payload(decode=True)
@@ -533,8 +529,8 @@ KOD SMTP (w pliku send_mail.py): 	https://github.com/codingforentrepreneurs/30-D
 							elif part.get_content_type() == "text/html":
 								html_body = part.get_payload(decode=True)
 								email_data['html_body'] = html_body.decode()
-        *przypisanie konkretnej wiadomosci do kontenera wiadomości, zakończenie pracy serwera oraz
- 		 zwrot wszystkich wadomośći po zakończeniu działania funkcji:
+        *przypisanie konkretnej wiadomosci do kontenera wiadomości, zakończenie pracy serwera oraz zwrot
+ 		 wszystkich wadomośći po zakończeniu działania funkcji:
 						my_message.append(email_data)
 						mail.close()
 					return mymessage
@@ -546,17 +542,17 @@ KOD SMTP (w pliku send_mail.py): 	https://github.com/codingforentrepreneurs/30-D
 1* SENDING EMAIL by SMTP:(MODULE smtplib & MODULE email.mime.text & MODULE email.mime.multipart)
  ** Cały potrzebny kod w pliku send_mail.py: 	https://github.com/codingforentrepreneurs/30-Days-of-Python/commit/8b09ed860dc5d36b1f90c54987c541e2a9317782#diff-0068d3b04d9889c399f27998909e2adca26494b4c823a2adcbb5edaaf73f856b
  O* PROTOKÓŁ SMTP wraz ze wsparciem standartu MIME:
-		*protokół SMTP - pozwala tylko na wysyłanie wiadomości a nie na synchronizacje folderów
-			pocztowych. (pobierania wiadomości ze skrzynki e-mail serwera). Protokół SMTP nie 
-			ma swojego następcy ani odpowiednika w innych protokołach. Wykorzystuję się go m.in
-			w formularzach kontaktowych na stronach internetowych. 
+		*protokół SMTP - pozwala tylko na wysyłanie wiadomości a nie na synchronizacje folderów pocztowych. 
+			(pobierania wiadomości ze skrzynki e-mail serwera). Protokół SMTP nie ma swojego następcy ani 
+			odpowiednika w innych protokołach. Wykorzystuję się go m.in w formularzach kontaktowych na 
+			stronach internetowych. 
 		*standart MIME - definiuję budowę maili w protokole SMTP oraz pozwala je formatować 	
- A) Na początku musisz mieć odpowiednio skonfigurowanego swojego maila któy pozwoli ci na 
-    dostępnośc przez pliki pythona np.: w gmailu musisz:
+ A) Na początku musisz mieć odpowiednio skonfigurowanego swojego maila któy pozwoli ci na dostępnośc przez 
+    pliki pythona np.: w gmailu musisz:
 	  *w sekcji security odznaczyć "Less Secure apps/dostęp do mniej bezpiecznych aplikacji"
-	  *musisz wejść w link: https://accounts.google.com/DisplayUnlockCaptcha tak żeby pojawił 
-	   ci się tekst: "Account access enabled" po to żeby twój plik.py mógł się logować.
-	w przypadku gdybyś chciał wysyłać tysiące takich maili to o wiele lepiej jest skorzytać z
+	  *musisz wejść w link: https://accounts.google.com/DisplayUnlockCaptcha tak żeby pojawił ci się tekst: 
+	   "Account access enabled" po to żeby twój plik.py mógł się logować.
+	w przypadku gdybyś chciał wysyłać tysiące takich maili to o wiele lepiej jest skorzytać z 
 	maila/aplikacji sendgrid  która pozwoli wysyłać ci tysiące maili bez ograniczeń.
  B) MODUŁ smtplib - wykorzystuję się go do:
 		*ustanowienia połączenia z podanym serwerem w argumencie i podanym domyślnym portem 587:
@@ -575,18 +571,18 @@ KOD SMTP (w pliku send_mail.py): 	https://github.com/codingforentrepreneurs/30-D
 					server.login(username, password)
 		*wysłanie maila:
 					server.sendmail(from_addr="",to_addrs="antekmarek555@gmail.com",msg="Czesc")
-			*argument from_addr="..." - nie musi zawierać naszego maila, może być nawet puste 
-				pole gdyż i tak to zostanie pobrane z nazwy loginu 
-			*argument to_addr - trzeba wpisać albo pojedyńczego maila w postaci stringa albo
-				maile w postaci listy stringów
+			*argument from_addr="..." - nie musi zawierać naszego maila, może być nawet puste pole gdyż i 
+			 tak to zostanie pobrane z nazwy loginu 
+			*argument to_addr - trzeba wpisać albo pojedyńczego maila w postaci stringa albo maile w postaci
+ 			 listy stringów
 			*argument msg - przyjumuję wartość w postaci stringa
 		*zakończenia połączenia:
 					server.quit()
- C) MODULE email.mime.text & MODULE email.mime.multipart -wykorzystuję się do formatowania maila
-	  który będzie wysłany. Formatowane są: Subject, From (od kogo - oprócz maila zapisywane 
-	  jest imie w sekwencji "Od Antka <antekmarek555@gmail.com"), To (do kogo zostały wysłane 
-	  maila, wymienione po przecinku) oraz tekst który może przybrać formę zwykłą lub HTML'a
-	  (te 2 moduły i funkcje z nimi związane są PRZED MODUŁEM SMTP):
+ C) MODULE email.mime.text & MODULE email.mime.multipart -wykorzystuję się do formatowania maila który 
+      będzie wysłany. Formatowane są: Subject, From (od kogo - oprócz maila zapisywane jest imie w 
+	  sekwencji "Od Antka <antekmarek555@gmail.com"), To (do kogo zostały wysłane maila, wymienione po 
+	  przecinku) oraz tekst który może przybrać formę zwykłą lub HTML'a (te 2 moduły i funkcje z nimi 
+	  związane są PRZED MODUŁEM SMTP):
 		*trzeba najepierw pobrać moduły:
 					from email.mime.text import MIMEText			#formatowanie tekstu maila
 					from email.mime.multipart import MIMEMultipart	#formatow. From, To, Subject
@@ -609,8 +605,9 @@ KOD SMTP (w pliku send_mail.py): 	https://github.com/codingforentrepreneurs/30-D
 													#zostanie nadpisane przez tego htmla
 											
 
-########################################################################################################
-######################## API | JSON | XML | CSV | DATABASE | BAZY DANYCH ###############################
+############################################################################################################
+########################## CSV | XML | JSON | API | BAZY DANYCH:  SQLite ###################################
+SQLite:				https://www.youtube.com/watch?v=pd-0G0MigUA
 API JSON example:	https://www.py4e.com/code3/geojson.py
 API XML example:	https://www.py4e.com/code3/geoxml.py
 JSON MODULE:		https://www.w3schools.com/python/python_json.asp
@@ -618,90 +615,210 @@ XML:				https://www.py4e.com/html3/13-web
 					https://nowaker.net/post/xml-instance-xml-schema.html
 CSV:				https://www.youtube.com/watch?v=Xi52tx6phRU  
 
-5. BAZY DANYCH
-	*ŁĄCZENIE SIĘ Z BAZĄ DANYCH SQLITE:
-		*musisz pobrać moduł związany z bazą danych, nastepnie połączyć się z konkretną bazą danych,
-		 przy pomocy metody connect() - jeżeli plik podany w argumencie nie istnieje to zostanie utworzony
-		 wywołać na niej metedoę cursor() i na tym kursorze wykonywac operacje sql poprzez metode 
-		 execute(). Po zakonczeniu wszytskich operacji musisz zakończyć połączenie z bazą danych poprzez
-		 metode close():
-				import sqlite3
-				conn = sqlite3.connect('music.sqlite')
-				cur = conn.cursor()
-				cur.execute('DROP TABLE IF EXISTS Tracks')
-				conn.close()
-		*WIĘCEJ W PLIKU Z BAZAMI DANYCH
+5* BAZA DANYCH SQLITE:
+   https://www.youtube.com/watch?v=pd-0G0MigUA
+	*PODSTAWY:
+		*używa się głównie w sytuacjach gdy potrzebujesz funkcjonalności sql'owej bazy danych ale nie 
+		 chcesz ogarniać tego przez w pełni sql-ową bazę danych typu Postgres albo MySql
+		*SQLite jest IDEALNE do małych lub średnich aplikacji w któych działasz na małej utworzonej bazie
+		 danych lub do prototypowania gdzie baza danych istnieje tylko w podręcznej pamięci i jest usuwana 
+		 wraz z zakończeniem pracy programu 
+		*przy chęci zmiany na inną bazę danych np Postgresa da się łatwo to zrobić (tzw SQL ALCHEMY)
+		*TYPY DANYCH:
+			*NULL - NULL value
+			*INTEGER - signed integer
+			*REAL - floating point value
+			*TEXT - text string value
+			*BLOB - The value is a blob of data, stored exactly as it was input
+	*POŁĄCZENIE I FUNKCJE PYTHONOWE w SQLITE:	
+		0*jest w bibliotece standardowej więc nie trzeba go nawet instalować wystarczy tylko zaimportowanie:
+					import sqlite3
+		1*musisz połączyć się z bazą danych przy pomocy metody connect(), wybierając czy chcesz stworzyć 
+		  plik sql'owy czy mieć utworzoną bazę w pamięci RAM (nie powstanie plik sqlowy i baza zostanie 
+		  usunięta po zakończeniu pracy programu):
+			  *wybierając konkretną bazę danych (wpisujesz nazwę pliku) - jeżeli plik podany w argumencie 
+			   nie istnieje to zostanie utworzony:
+					conn = sqlite3.connect('music.db')
+			  *wybierając pamięc podręczną RAM (przy każdym uruchomienieu programu powinineś tworzyć bazę 
+			   danych i dodawać do niej rekordy gdyż po zakończeniu programu baza zostanie usunięta):
+					conn = sqlite3.connect(':memory:')
+		  oraz wywołać na tej bazie danych metodę cursor() 
+					cur = conn.cursor()
+		2* Na tym kursorze wykonywac operacje sql poprzez metode execute() i albo je scommitować albo 
+		   wszystko zawrzeć w bloku context managera:
+			  *po wszystkich takich operacjach musisz scommitować je by mieć pewność że zostaną one 
+			   wywołane (poprzez metode commit() na obiekcie connection):
+					cur.execute('DROP TABLE IF EXISTS Tracks')
+					cur.execute('CREATE TABLE Tracks (title TEXT, plays INTEGER)')
+					cur.execute("INSERT INTO Tracks VALUES('tytuł', 20)")
+					...
+					conn.commit()
+					conn.close()
+			  *możesz też nie commitować oraz nie zakańczać połączenia ale wtedy musisz zawrzeć wszystko w
+			   bloku context managera:
+					conn = sqlite3.connect('music.db')
+					cur = conn.cursor()
+					with conn:
+						cur.execute('DROP TABLE IF EXISTS Tracks')
+						cur.execute('CREATE TABLE Tracks (title TEXT, plays INTEGER)')
+						cur.execute("INSERT INTO Tracks VALUES('tytuł', 20)")
+						...
+		3* W przypadku SELECTÓW - by dostac się do zwracanych wartości musisz odwołać się na obiekcie 
+		   cursora do metod:
+			*fetchone() - zwraca jako krotkę, każdy kolejny wierz z wyniku funkcji SELECT (tak jak iterator):
+					cur.execute("""SELECT * FROM music""")
+					print(cur.fetchone())
+					print(cur.fetchone())
+			*fetchall() - zwraca jako listę krotek wszystkie wiersze wyniku funkcji SELECT:
+					cur.execute("""SELECT * FROM music""")
+					print(cur.fetchall())
+	***PRZYKŁADOWE KODY SQLite:
+			A)
+					import sqlite3
+					conn = sqlite3.connect('music.db')
+					cur = conn.cursor()
+					cur.execute('DROP TABLE IF EXISTS Tracks')
+					cur.execute('CREATE TABLE Tracks (title TEXT, plays INTEGER)')
+					cur.execute("INSERT INTO Tracks VALUES('tytuł', 20)")
+					cur.execute("INSERT INTO Tracks VALUES('tytuł2', 20)")
+					cur.execute("""SELECT * FROM Tracks""")
+					print(cur.fetchone())
+					print(cur.fetchone())						#najpierw zwróci jeden a później drugi
+					print(cur.fetchall())
+					conn.commit()
+					conn.close()
+			B)
+					import sqlite3
+					conn = sqlite3.connect('music.db')
+					cur = conn.cursor()
+					with conn:
+						cur.execute('DROP TABLE IF EXISTS Tracks')
+						cur.execute('CREATE TABLE Tracks (title TEXT, plays INTEGER)')
+						cur.execute("INSERT INTO Tracks VALUES('tytuł', 20)")
+						cur.execute("INSERT INTO Tracks VALUES('tytuł1', 20)")
+						cur.execute("""SELECT * FROM Tracks""")
+						print(cur.fetchone())
+						print(cur.fetchone())					#najpierw zwróci jeden a później drugi
+						print(cur.fetchall())
+					conn.close()
+	*DZIAŁANIA SQL'owe w PYTHONIE w SQLITE:
+		**schemat dzialania dla pliku SQL jest taki że zawsze najpierw usuwasz całą bazę danych po to żeby 
+		  stworzyć ją na nowo i wypełnić danymi - a wszystko po to żeby nie wyskoczył błąd
+					cur.execute('DROP TABLE IF EXISTS Tracks')
+					cur.execute('CREATE TABLE Tracks (title TEXT, plays INTEGER)')
+		**jeżeli chcemy odwołać się do PYTHONOWYCH zmiennych w zapytaniu SQL to: 
+			*NIE WOLNO używać do tego operacji F'string lub metody format (tak jak poniżej) ze względu na
+  			 atak hakerski SQL INJECTION:
+					cur.execute("INSERT INTO Tracks VALUES ('{}', {})".format('Tytuł', 20) 	#tak nie wolno
+			*odwołanie do zmiennych pythonowych robisz poprzez zapisywanie znaków zapytania w instrukcji 
+			 sqla i po zapytaniu po przecinku dajesz krotkę z tą samą ilością zmiennych co ilość znaków 
+			 zapytania. W ten sposób podmieniasz te znaki zapytania na te zmienne w krotce:
+					title, long ='My Way', 15
+					cur.execute('INSERT INTO Tracks (title, plays) VALUES (?, ?)', (title, long))
+			 tak samo możesz odwołać się do zmiennych w instrukcji SELECT np: w warunku WHERE (pamiętaj o 
+			 tym że jeżeli wypisujesz w krotce pojedyńczą zmienną to musisz ją zakończyć przecinkiem):
+					cur.execute('SELECT * FROM Tracks WHERE title = ?', (' Tytuł',))					
+			*zamiast znaków zapytania możesz też użyć kluczy do Słownika (Dictionary) których nazwy będą 
+			 odpowiadać nazwom kolumn sql'owych utworzonych wcześniej przez instrukcje CREATE TABLE.
+			 Wartości (przypisane do kluczy) będą odpowiadać wcześniej utworzonym zmiennym (wypiszesz
+			 je tak jak w poprzednim przypadku, po przecinku (zamiast w krotce to w kolekcji Dictionary)
+			 za instrukcją sqlową wg schematu: {'klucz': wartosc, 'klucz': wartosc)}
+					title, long ='My Way', 15
+					cur.execute('INSERT INTO Tracks (title, plays) 
+						VALUES (:title, :plays)', {'title': title, 'plays':long})
+			tak samo możesz odwołać się do zmiennych w instrukcji SELECT np w warunku WHERE :
+					cur.execute('SELECT * FROM Tracks WHERE title = :title', {'title': 'Tytuł'})
+		**w przypadku gdybś chciał stworzyć osobne funkcje w których chiałbyś zawrzeć wykonywanie instrukcji
+		  sqlowych to musisz wczesniej stworzyć obiekt connection i cursor a w funkcji zawrzeć instrukcje
+		  sql'ową w bloku contexta managera odwołującego się właśnie do tego obiektu connection:
+					conn = sqlite3.connect('music.db')
+					cur = conn.cursor()
+					def insert_track(track):
+						with conn:
+							cur.execute("INSERT INTO Track VALUES (?,?)",(track.title, track.long))
+					...
+					conn.close()
+		  w takim bloku nie musisz wpisywać instrukcji sqlowych które nie potrzebują zacommitowania takich 
+		  jak SELECT:
+					conn = sqlite3.connect('music.db')
+					cur = conn.cursor()
+					def get_track_title(track):
+						cur.execute('SELECT * FROM Track WHERE title=?',(track.title,))
+						return cur.fetchall()
+					...
+					conn.close()
 
 4*API - pobranie danych:
 	*pobierasz bilbioteki jsona i do sparsowania oraz otwarcia URLa (urllib)
-			import urllib.request, urllib.parse, urllib.error
-			import json
-	*przy pomocy funkcji urllib.parse.urlencode({'address': zmiennaAddress,'key':zmiennaKey}) 
-	 parsujesz zmienne na odpowiedni kod który pózniej przyłączysz do bazowego linku (w tym 
-	 linku '+' będzie oznaczał spacje a '%2C' będzie oznaczał kropkę 
-			url = serviceurl + urllib.parse.urlencode({'address': parameters['address'], 'key': parameters['key']})
+				import urllib.request, urllib.parse, urllib.error
+				import json
+	*przy pomocy funkcji urllib.parse.urlencode({'address': zmiennaAddress,'key':zmiennaKey}) parsujesz 
+	 zmienne na odpowiedni kod który pózniej przyłączysz do bazowego linku (w tym linku '+' będzie oznaczał 
+	 spacje a '%2C' będzie oznaczał kropkę 
+				url = serviceurl + urllib.parse.urlencode({'address': parameters['address'], 
+														   'key': parameters['key']})
 	*przy pomocy funkcji urllib.request.urlopen(url) pobierasz dane z linku
-	*nastepnie je czytasz (read()) odkodowujesz (decode()) i zapisujesz w zmiennej która 
-	 będzie miała STRINGA JSONa
+	*nastepnie je czytasz (read()) odkodowujesz (decode()) i zapisujesz w zmiennej która będzie miała 
+	 STRINGA JSONa
 	*ładujesz dane ze stringa JSONa do danej kolekcji w Pythonie 
-			html=urllib.request.urlopen(url)
-			jsonData=html.read().decode()
-			jsonPython=json.loads(jsonData)
-	*przypisujesz do zmiennych poszczegolne elementy z tejze kolekcji, po czym je wyswietlasz
-	
-	*PRZYKŁAD GEOCODE GOOGLE MAPS API:      	https://www.py4e.com/code3/geojson.py
-			import urllib.request, urllib.parse, urllib.error
-			import json
-			import ssl
-			
-			api_key=False
-			# If you have a Google Places API key, enter it here
-			# api_key = 'AIzaSy___IDByT70'
-			# https://developers.google.com/maps/documentation/geocoding/intro
-			
-			if api_key == False:
-			    api_key = 42
-				serviceurl = 'http://py4e-data.dr-chuck.net/json?'
-			else:
-				serviceurl = 'https://maps.googleapis.com/maps/api/geocode/json?'
-			
-			# Ignore SSL certificate errors
-			ctx = ssl.create_default_context()
-			ctx.check_hostname = False
-			ctx.verify_mode = ssl.CERT_NONE
-
-			while True:
-				location = input('Enter location: ')
-				location = "Ann Arbor, MI"
-				if len(location)<1: break
-				
-				parameters=dict()
-				parameters['address'] = location
-				parameters['key'] = api_key
-				url = serviceurl + urllib.parse.urlencode({'address': parameters['address'],'key':parameters['key']})
-				print('Uzyskano url =: ',url)
-
-				html = urllib.request.urlopen(url)
+				html=urllib.request.urlopen(url)
 				jsonData=html.read().decode()
-				print('JSONdata length:',len(jsonData),'characters')
-				print(jsonData)
-
-				try:
-					jsonPython= json.loads(jsonData)
-					print('JSONloads:', jsonPython)
-				except:
-					jsonPython=None
-				if not jsonPython or jsonPython['status'] !='OK' or 'status' not in jsonPython :
-					print("=============FAILURE TO RETRIVE============")
-					print(jsonData)
-					continue
-
-				lat = jsonPython["results"][0]["geometry"]["location"]["lat"]
-				lng = jsonPython["results"][0]["geometry"]["location"]["lng"]
-				loc = jsonPython["results"][0]["formatted_address"]
-				print('lat:',lat,'lng:',lng)
-				print('EnteredLocation:',location,', GoogleLocalization:',loc)
+				jsonPython=json.loads(jsonData)
+	*przypisujesz do zmiennych poszczegolne elementy z tejze kolekcji, po czym je wyswietlasz
+	*PRZYKŁAD GEOCODE GOOGLE MAPS API:      	https://www.py4e.com/code3/geojson.py
+				import urllib.request, urllib.parse, urllib.error
+				import json
+				import ssl
 				
+				api_key=False
+				# If you have a Google Places API key, enter it here
+				# api_key = 'AIzaSy___IDByT70'
+				# https://developers.google.com/maps/documentation/geocoding/intro
+				
+				if api_key == False:
+					api_key = 42
+					serviceurl = 'http://py4e-data.dr-chuck.net/json?'
+				else:
+					serviceurl = 'https://maps.googleapis.com/maps/api/geocode/json?'
+				
+				# Ignore SSL certificate errors
+				ctx = ssl.create_default_context()
+				ctx.check_hostname = False
+				ctx.verify_mode = ssl.CERT_NONE
+
+				while True:
+					location = input('Enter location: ')
+					location = "Ann Arbor, MI"
+					if len(location)<1: break
+					
+					parameters=dict()
+					parameters['address'] = location
+					parameters['key'] = api_key
+					url = serviceurl + urllib.parse.urlencode({'address': parameters['address'],
+															   'key':parameters['key']})
+					print('Uzyskano url =: ',url)
+
+					html = urllib.request.urlopen(url)
+					jsonData=html.read().decode()
+					print('JSONdata length:',len(jsonData),'characters')
+					print(jsonData)
+
+					try:
+						jsonPython= json.loads(jsonData)
+						print('JSONloads:', jsonPython)
+					except:
+						jsonPython=None
+					if not jsonPython or jsonPython['status'] !='OK' or 'status' not in jsonPython :
+						print("=============FAILURE TO RETRIVE============")
+						print(jsonData)
+						continue
+
+					lat = jsonPython["results"][0]["geometry"]["location"]["lat"]
+					lng = jsonPython["results"][0]["geometry"]["location"]["lng"]
+					loc = jsonPython["results"][0]["formatted_address"]
+					print('lat:',lat,'lng:',lng)
+					print('EnteredLocation:',location,', GoogleLocalization:',loc)
+					
 
 3* JSON MODULE:
 METODY JSON:	https://www.w3schools.com/python/python_json.asp
@@ -732,11 +849,11 @@ METODY JSON:	https://www.w3schools.com/python/python_json.asp
 							"hide" : "yes"
 						   }
 				}'''
-			zmienna = json.loads(data)					#zmienna to teraz DICTIONARY   #ZWRÓCI:
-			print('Name:',zmienna["name"])				Name: Chuck
-			print('Phone:',zmienna["phone"]) 			Phone: {'type': 'init1', 'number': '+1 734 303 4456'}
-			print('Email:',zmienna["email"])			Email: {'hide': 'yes'}
-			print('Hide:',zmienna["email"]["hide"])		Hide: yes
+			zmienna = json.loads(data)				   #zmienna to teraz DICTIONARY   #ZWRÓCI:
+			print('Name:',zmienna["name"])			   Name: Chuck
+			print('Phone:',zmienna["phone"]) 		   Phone: {'type': 'init1', 'number': '+1 734 303 4456'}
+			print('Email:',zmienna["email"])		   Email: {'hide': 'yes'}
+			print('Hide:',zmienna["email"]["hide"])	   Hide: yes
 		
 	  *zagnieżdzone Dictionary w liście:
 			import json
@@ -756,8 +873,8 @@ METODY JSON:	https://www.w3schools.com/python/python_json.asp
 				print("Id",i['id'])						Id 001  \n  Name Chuck  \n  Attribute 2
 				print("Name",i['name'])					Id 009  \n  Name Buck  \n  Attribute 7
 				print("Attribute",i['x'])
-	*FUNKCJE W PYTHONIE -  wszystkie funkcje automatycznie parsują dane ze składni Pythona na JSON'a
-	 i na odwrót, np.: None na null albo True na true.
+	*FUNKCJE W PYTHONIE -  wszystkie funkcje automatycznie parsują dane ze składni Pythona na JSON'a i na 
+	 odwrót, np.: None na null albo True na true.
 	  *ZAMIANA JSON na Python:
 		*json.loads(string) - ładuję dane json ze stringa:
 			import json
@@ -797,14 +914,12 @@ METODY JSON:	https://www.w3schools.com/python/python_json.asp
 		  True  ->  true
 		  False ->  false
 		  None  ->  null
-		*Żeby pliki JSON były ładniej zapisane (ze wcieciami zamiast w jednym wierszu) to użyj
-		 przy zamianie pythona na JSONa parametru indent=4: 	
+		*Żeby pliki JSON były ładniej zapisane (ze wcieciami zamiast w jednym wierszu) to użyj przy zamianie
+ 		 pythona na JSONa parametru indent=4: 	
 			json.dumps(x, indent=4)
-		*możesz także zdefiniować separatory - domyślnie są to przecinek i dwukropek:
-		 default value is (", ", ": ") ;; 
+		*możesz zdefiniować separatory - domyślnie są to przecinek i dwukropek: default value is (", ", ": ")
 			json.dumps(x, indent=4, separators=(". ", " = "))
-		*możesz także wszystkie klucze w JSON'ie uporzadkowac alfabetycznie poprzez parametr
-		 sort_keys=True:		
+		*możesz także wszystkie klucze w JSON'ie uporzadkowac alfabetycznie poprzez parametr sort_keys=True:		
 			json.dumps(x, indent=4, sort_keys=True)
 			
 2* XML - język do przesyłu danych bez konkretnego jezyka:
@@ -816,9 +931,9 @@ https://docs.python.org/3/library/xml.etree.elementtree.html
 		*PRZEJDŹ OD RAZU DO DZIAŁU --> XML W PYTHONIE
 	*BUDOWA:
 		*spacje entery i taby nie mają znaczenia w XMLu tylko to: wewnatrz jakich innych tagów jest dany tag
-		*The first element in every xml document is called the root element. An xml document
-		 can only have one root element.  xml documents can contain character encoding 
-		 information on the first line, before the root element
+		*The first element in every xml document is called the root element. An xml document can only have 
+		 one root element.  xml documents can contain character encoding information on the first line, 
+		 before the root element
 				<?xml version='1.0' encoding='utf-8'?>
 				<feed xmlns='http://www.w3.org/2005/Atom'> 
 				  <title>dive into mark</title>           
@@ -835,22 +950,22 @@ https://docs.python.org/3/library/xml.etree.elementtree.html
 				*end TAG							</person>
 			*Atrybuty:
 				*Elements can have attributes: <bar lang='fr'>content</bar>
-				*mozesz miec w jednej parze TAGow tylko jeden text content ale za to wiele 
-				 atrybutów ktore mozesz definiowac jak chcesz
-		*Elementy XMLa mogą byc zadeklarowane w różnych przestrzeniach nazw (namespaces). 
-		 Namespace wygląda jak atrybut elementu w postaci linku URL, używający znacznika
-		 xmlns (np: xmlns='http://www.w3.org/2005/Atom') i ma za zadanie oznaczyć element w 
-		 którym został zadeklarowany i wszystkie jego węzły dzieci (The namespace declaration 
-		 affects the element where it’s declared, plus all child elements.)
-			*Jeżeli dokument XML będzie korzystal z przestrzeni nazw http://www.w3.org/2005/Atom'
-			 to znaczy że jego elementy będą miały nazwy według standardu 'Atom' i dzięki temu 
-			 będziesz mógł korzystać z pewnych bibliotek w Pythonie które pozwolą ci wyszukiwać
-			 dane nazwy tagów (według ustandaryzowanej przestrzeni nazw Atom)
-				*W takim ustandaryzowaniu głównym tagiem/rootem jest tag feed w którym oprócz 
-				 atrybutu przestrzeni nazw Atom xmlns='http://www.w3.org/2005/Atom' możesz dodać 
-				 atrybut xml:lang='en' 
-				*inne tagi to: title, subtitle, id, updated, link (z atrybutami rel, type, href),
-				 author, category, summary i inne:
+				*mozesz miec w jednej parze TAGow tylko jeden text content ale za to wiele atrybutów ktore 
+				 mozesz definiowac jak chcesz
+		*Elementy XMLa mogą byc zadeklarowane w różnych przestrzeniach nazw (namespaces). Namespace wygląda 
+		 jak atrybut elementu w postaci linku URL, używający znacznika xmlns 
+		 (np: xmlns='http://www.w3.org/2005/Atom') i ma za zadanie oznaczyć element w którym został 
+		 zadeklarowany i wszystkie jego węzły dzieci (The namespace declaration affects the element where 
+		 it’s declared, plus all child elements.)
+			*Jeżeli dokument XML będzie korzystal z przestrzeni nazw http://www.w3.org/2005/Atom' to znaczy 
+			 że jego elementy będą miały nazwy według standardu 'Atom' i dzięki temu będziesz mógł korzystać
+			 z pewnych bibliotek w Pythonie które pozwolą ci wyszukiwać dane nazwy tagów (według 
+			 ustandaryzowanej przestrzeni nazw Atom)
+				*W takim ustandaryzowaniu głównym tagiem/rootem jest tag feed w którym oprócz atrybutu
+				  przestrzeni nazw Atom xmlns='http://www.w3.org/2005/Atom' możesz dodać atrybut 
+				  xml:lang='en' 
+				*inne tagi to: title, subtitle, id, updated, link (z atrybutami rel, type, href), author, 
+				 category, summary i inne:
 						<?xml version='1.0' encoding='utf-8'?>
 						<feed xmlns='http://www.w3.org/2005/Atom' xml:lang='en'>
 						  <title>dive into mark</title>
@@ -1069,8 +1184,8 @@ https://docs.python.org/3/library/xml.etree.elementtree.html
 				*przypisanie contentu do taga: text='contentTag':
 					root.text='contentTag'
 					tree.find('name').text='contentTag'
-			i następnie zapisujesz poprzez metode write('xmlpath') gdzie podajesz ścieżke do pliku xml
-			w przypadku gdy operajuesz na pliku xml(jeżeli taki nie istnieje to zostanie stworzony):
+			i następnie zapisujesz poprzez metode write('xmlpath') gdzie podajesz ścieżke do pliku xml w 
+			przypadku gdy operajuesz na pliku xml(jeżeli taki nie istnieje to zostanie stworzony):
 					tree.write('hodlers.xml')
 		  *to ustawienie możesz też zrobić dla wielu tagów jednocześnie:
 					data='''<crypto coin="Money!!!">INWESTORZY:
@@ -1094,9 +1209,9 @@ https://docs.python.org/3/library/xml.etree.elementtree.html
 	   *METODY FIND() i FINDALL()
 		   *Na zmiennej root lub na zmiennej tree korzystasz z metod find() oraz findall() gdzie w 
 		    argumencie podajesz tagi.
-		   *domyślnie szuka tylko w pierwszej linii dzieci dlatego gdy chcesz żeby przeszukało Tobie 
-			całe drzewo to możesz tez wpisać ścieżkę względna w funkcji findall() dzięki czemu przejdzie  
-			ci po całym pliku XML i znajdzie dany tag np: findall('.//count')
+		   *domyślnie szuka tylko w pierwszej linii dzieci dlatego gdy chcesz żeby przeszukało Tobie całe 
+		    drzewo to możesz tez wpisać ścieżkę względna w funkcji findall() dzięki czemu przejdzie  ci po 
+			całym pliku XML i znajdzie dany tag np: findall('.//count')
 		   *Jeżeli chcesz się dostać do każdego tagu to wystarczy podać symbol .// 
 			  #PRZYKŁAD 2 oparty na TREE:
 				import xml.etree.ElementTree as ET
@@ -1127,7 +1242,7 @@ https://docs.python.org/3/library/xml.etree.elementtree.html
 					print(item) 		#zwroci referencje do wszystkich userów (do ich miejsca w RAMie)
 				allIds = tree.findall('.//id')	#zwroci Tobie wszystkie tagi id		
 				alltags = tree.findall('.//')	#zwroci Tobie wszystkie tagi oprócz root'a
-			  #############################################################################
+			  #############################################################################################
 			  #PRZYKŁAD 3 wywołanie na ROOTcie:
 				import xml.etree.ElementTree as ET
 				data ='''<feed xmlns='http://www.w3.org/2005/Atom' xml:lang='en'>
@@ -1154,7 +1269,7 @@ https://docs.python.org/3/library/xml.etree.elementtree.html
 									{'x': '2'}
 									{}
 									{}
-			  #############################################################################
+			  #############################################################################################
 			  #PRZYKŁAD 4 -wywołanie na ROOTcie bez przestrzeni nazw (bez xmlns='http://www.w3.org/2005/Atom')
 			    import xml.etree.ElementTree as ET
 				data ='''<stuff>
