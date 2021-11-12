@@ -5569,7 +5569,7 @@ SŁOWNICZEK:				https://www.w3schools.com/python/python_ref_glossary.asp
 			* Binary Types:		bytes, bytearray, memoryview
 			* Collections:		(range), list, tuple, dict, set, frozenset
 			* None:				używa się dla pól które nie zostały jeszcze stworzone 
-		**Zamiana integera na inne typy zmiennych:
+		**Zamiana integera na pochodne typy zmiennych:
 			a = int(3)
 			oct(a) - osemkowy
 			hex(a) - szesnastkowy

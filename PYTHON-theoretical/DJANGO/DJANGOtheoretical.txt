@@ -1,25 +1,16 @@
-
+4. PANEL ADMINISTRACYJNY:
+	
 	
 
 3. MODUŁY i FOLDERY w APLIKACJACH/pojedyńczych_funkcjonalnościach:
-	*katalog TEMPLATES (musi być tak nazwany)
-		*w inncyh frameworkach byłoby to nazwane views ale w Django odpowiada to za coś innego
-		*są tam m.in dokumenty html które możesz przekazywać poprzez metodę render w module views.py 
-		*pliki html możesz edytować wpisując w nie:
-			*w podwójne nawiasy wąsowe możesz wpisywać klucze ze słownika z metody render
-				<h1>Hello {{name}}</h1>
-			*w nawisy wąsowe ze znakiem procenta możesz wpisywać IF statement wg takiej składni:
-				{% if name %}
-				<h1>Hello {{name}}</h1>
-				{% else %}
-				<h1>Hello World</h1>
-				{% endif %}
 	*module VIEWS.PY:
 		*funkcje w views.py sa 'request handlerami' i przyjmują 'request' a zwracają 'response'
-		*w inncyh frameworkach module view.py miałby imię action 
-		*wewnątrz tych funkcji we view.py mógłbyś:
+		*w inncyh frameworkach module view.py miałby imię ACTIONS
+		*wewnątrz tych funkcji we view.py możesz:
+			*wpisać logikę działania danej aplikacji czyli co ma się stac gdy użytkownik wejdzie w daną 
+			 ścieżkę/link.
 			*wysyłać dane z bazy danych do innej bazy danych 
-			*przetwarzać dane i je modyfikować
+			*przetwarzać dane i je modyfikować 
 			*wysyłać maile, itp.
 		*zwrócenie obiektu typu response: 
 			*przy pomocy funkcji HttpResponse z modułu django.http (zwraca podany tekst w obiekcie 
@@ -28,28 +19,42 @@
 					def say_hello(request):
 						return HttpResponse('Hello World')
 			*przy pomocy rendera z django.shortcuts który jako argumenty przyjmuję requesta (pierwszy 
-			 argument funkcji we views.py) oraz nazwę pliku html znajdującego się w katalogu templates oraz 
-			 jakikolwiek mapping object np.: dictionary którego później będziesz używał w dokumencie html'a:
+			 argument funkcji we views.py), ścieżkę wewnątrz katalogu templates składającą się na 
+			 nazwę katalogu projektu wraz z nazwą pliku html (te pliki musżą znajdować się w katalogu 
+			 templates) oraz jakikolwiek mapping object np.: dictionary (którego później będziesz używał w 
+			 dokumencie html'a znajdującego się w katalogu templates)
 					from django.shortcuts import render
 					def say_hello(request):
-						return render(request, 'helloHTML.html',{'name':'Mosh'})
+						return render(request, 'playground/helloHTML.html',{'name':'Mosh'})
 	*module URLS.PY
 		*ten moduł nie powstanie automatycznie w naszych modułach w aplikacji i trzeba go stworzyć samemu
 		*musisz zaimportować module django.urls oraz module views(ten powyżej) 
 		*musisz stworzyć URLconf tworząc listę 'urlpatterns' (koniecznie tak nazwaną bo django będzie tego
 		 szukał) i wpisać w nią obiekty typu 'URLpattern' za pomocą funkcji path(), którą zaimportowałeś z 
 		 django.urls:
+					#aplikacja/funkcjonalonośc o nazwie playground
 					from django.urls import path
 					from . import views		#kropka oznacza: 'z folderu rodzica' 
 											#(czyli tego samego w którym się znajduję) 
 					#URLConf:				#każda aplikacja/pojedyńcza funkcjonalność 
 					urlpatterns = [			#ma swoje URLConf (URL configuration)
-						path('hello/', views.says_hello)
-					]					#path() zwraca obiekt typu URLpattern
-										#przyjmuję w argumencie ścieżkę względną pod którą będzie wyświetlać 
-										#się funkcja podana w 2gim argumencie. Ścieżka ta nie ma zawierać
-										#nazwy folderu/aplikacji gdyż ten podamy w urlpatterns w urls.py
-										#w głównym katalogu projektu.
+						path('hello/', views.says_hello, name='playground-hello')
+					]			#path() zwraca obiekt typu URLpattern. Przyjmuję w argumencie ścieżkę 
+								#względną pod którą będzie wyświetlać się funkcja podana w 2gim argumencie
+								#pochodząca z katalogu views. Ścieżka ta nie ma zawierać nazwy 
+								#folderu/aplikacji gdyż ten podamy w urlpatterns w urls.py w głównym
+								#katalogu projektu.
+										#trzeci argument (w postaci name) jest dodatkowy ale specjalnie go 
+										#podajesz gdyż w templates w plikach html w linkach (<a hre="...">)
+										#zamiast podawania konkretnego linka podasz wartość tego argumentu
+										#dzieki czemu gdybyś chiał zmienić tenże link to robisz to w 
+										#pierwszym argumencie metody path zamiast w dwóch miejscach na raz
+										#czyli w metodzie path i w pliku HTML. (-->patrz linki w templates)
+					  ##path('', views.says_hello)	#say_hello z modułu views mógłbyś też wywołać dla pustej
+													#2giej cześci linka tj wyświetlałoby się dla linka z
+													#nazwą aplikacji/funkcjonalności tj:
+													#http://127.0.0.1:8000/playground zamiast powyższego 
+													#http://127.0.0.1:8000/playground/hello
 		*następnie musisz zaimportować cały ten moduł do głównego URLConf (URL configuration który znajduję 
 		 się w głównym folderze projektu w module URLS.PY. 
 			*Wenwnątrz tego moduły urls.py z głównego katalogu projektu musisz zaimportować metody include 
@@ -63,8 +68,102 @@
 						... ,
 						path('playground/', include('playground.urls'))
 					]
-		
-2.2. DEBUGOWANIE CAŁEGO PROJEKTU:
+		 od teraz pod ścieżką: http://127.0.0.1:8000/playground/hello będzie wyświetlać się twoja podstrona.
+	*katalog TEMPLATES (którego tworzymy sami (musi być tak nazwany))
+	   A*PODSTAWY:
+			*w innych frameworkach byłoby to nazwane views ale w Django viev.py odpowiada za coś innego
+			*są tam m.in dokumenty html które możesz przekazywać poprzez metodę render w module views.py 
+			*praktyka jest taka że wewnątrz folderu templates musisz stworzyć jeszcze folder o nazwie 
+			 aplikacji/funkcjonalności i to właśnie w nim umieszczasz pliki HTML --> Django domyślnie szuka 
+			 ścieżki templates w danej aplikacji/funkcjonalnosci oraz przeszukuję w sekcji INSTALED_APPS
+			 w pliku settings w głównym projekcie wskazane aplikacje/funkcjonalnosci.
+			*żeby dokumenty HTMLa w folderze 'templates/nazwaAplikacji' działały to w pliku settings.py w
+			 głównym katalogu projektu w sekcji INSTALED_APPS musisz umieścić nazwę klasy, która dziedziczy
+			 po AppConfig z pliku apps.py z katalogu danej aplikacji/funkcjonalności (zapisane w cudzysłowiu)
+			 np: 'mojBlog.apps.mojBlogConfig' (ALBO tylko nazwę aplikacji/funkcjonalności np 'mojBlog') 
+	   B*MOŻLIWOŚC EDYTOWANIA PLIKÓW HTML:
+			*możesz edytować pliki HTML dla różnych zmiennych poprzez przekazanie w metodzie render 
+			 (w pliku views.py) słownika(dictionary). 
+			*do wartości tego słownika odwołujesz się poprzez wypisanie kluczy bez cudzysłowiów. Jeżeli 
+			 wartości słownika odpowiadają listom albo innym słownikom to odowłujesz się do ich elementów
+			 NIE poprzez NAWIASY KWADRATOWE (wypisanie numeru elementu (dla list) lub nazwy klucza (dla 
+			 słownika)) tylko poprzez wypisanie kolejnych elementów PO KROPCE (numer elementu po kropce 
+			 (dla list) lub nazwa klucza po kropce (dla słownika)).
+			*EDYTUJĄC HTMLa możesz uzyskać konstrukcje:
+				*zmienne - zawierasz w podwójnych nawiasach wąsowych:
+						<h1>Hello {{name}}</h1>
+					###(we views.py) dla danej funkcji zwracającej: 
+					###render(request, 'playground/hello.html',{'name':'Mosh'}) 		
+															#zwróci: <h1>Hello Mosh</h1>
+				*konstrukcje IF - zawierasz w nawiasach wąsowych ze znakiem procenta wg składni:
+						{% if name %}				#jeśli klucz 'name' istnieje
+						<h1>Hello {{name.0}}</h1>	#zwróc pierwszy element listy
+						{% else %}
+						<h1>Hello World</h1>
+						{% endif %}
+					###(we views.py) dla danej funkcji zwracającej rendera w którym przekazujesz słownik  
+					###z kluczem któremu odpowiada wartość w postaci listy zawierającej imona). 
+					###render(request, 'playground/hello.html',{'name':['Mosh','Gosh'}) 
+															#zwróci: <h1>Hello Mosh</h1>
+				*konstrukcje FOR - zawierasz w nawiasach wąsowych ze znakiem procenta wg składni:
+						{% for p in posts %}	#przejdz przez liste ktora jest wartością dla klucza posts
+							<h1>{{p.title}}</h1>
+						{% endfor %}
+					###(we views.py) dla danej funkcji zwracającej rendera w którym przekazujesz słownik 
+					###z kluczem z odpowiadającą wartością w postaci listy zawierającej słowniki:
+					###render(request, 'playground/hello.html',{'posts':'[{'title':'one'}{'title':'two'}]})
+															#zwróci: <h1>one</h1>	  \n     <h1>two</h1>
+			*SZABLONY w HTMLu:
+				*tworzysz gdy wiele stron ma powtarzające się fragmenty.Miejsca te zastąpisz 1 szablonem
+				*możesz go uzyskać poprzez stworzenie szablonowego pliku htmla i umieszczenie w nim w 
+				 odpowiednich miejscach bloków {block content} gdzie treśc w zależności od linku/plikuHTML 
+				 będzie się zmieniać. Te bloki oznaczasz w sposób: {% block blockName %}{% endblock %}
+					#plik base.html który jest szablonem podstawowym dla innych plików html
+						<!DOCKTYPE html>
+						<html>
+							<head>
+								<meta charset="utf-8">
+								<meta name="viewport" content="width=device-width, initial-scale=1">
+								<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+								<title>Hello, world!</title>
+							</head>
+							<body>
+								{% block blockName %}{% endblock %}
+							</body>
+						</html>
+				**w odpowiednich plikachHTML/linkach wykorzystujesz ten szablon (ładując go na początku 
+				 pliku poprzez podanie w cudzysłowiu ścieżki do szablonu (pliku HTML) zaraz za słowem 
+				 extends. Szablon ten znajduję się w katalogu templates {% extends "blog/base.html %}) 
+				 i nastęnie tworzysz wnętrze bloku który ma być podmieniony w szablonie, okalając go wg 
+				 schematu:  {% block blockName %}...{% block blokName %}:
+					#plik home.html (który będzie wykorzystywał szablon base.html):
+						{% extends  "blog/base.html" %}
+						{% block content %}
+							{% for p in posts %}
+								<h1>{{p.title}}</h1>
+							{% endfor %}
+						{% endblock content %}
+			*LINKI W HTMLU: 
+				*zamiast wpisywać ścieżki w linkach to podawaj zmienne których nazwy będą odwoływać się do 
+				 argumentu name w pliku urls.py w zmiennej urlpatterns w tej samej aplikacji/funkcjonalności 
+				*dzięki temu gdybyś chciał zmienić link to będziesz mógł to zrobić w jednym miejscu czyli
+				 w liście urlpatterns w metodzie path w pliku urls.py w naszej aplikacji/funkcjonalności
+				 zamiast w dwóch miejscach czyli w metodzie path oraz pliku html.
+					#w pliku urls.py w naszej aplikacji/funkcjonalności:
+						urlpattrens =[path('home/', views.say_hello, name='playground-hello')]	
+					#od teraz w plikach html zamiast używać /home wpisujesz {% url 'plaground-hello' %}
+						...<a href={% url 'plaground-hello' %}>...</a>...
+	   C*PLIKI CSS, javascript, MEDIA:
+			*w katalogu templates musisz stworzyć specjalny katalog 'static' a w nim katalog o nazwie 
+			 aplikacji/funkcjonalności w którym będziesz przechowywał pliki które się nie zmieniają przy 
+			 przechodzeniu na inne podstrony (takie jak css, zdjęcia, javascript)
+			*by załadować te pliki musisz w swoich szablonach html (NIE w plikach html które są na bazie 
+			 szablonu) na samej górze umieścić ich załadowanie poprzez:
+					{% load static %}
+			 oraz w sekcji head umieścić do nich link css poprzez:
+					<link rel="stylesheet" type="text/css" href="{% static 'playground/main.css' %}">
+					
+2.3. DEBUGOWANIE CAŁEGO PROJEKTU:
   *UTWORZENIE PLIKU potrzebnego DO DEBUGOWANIA
 	*znajdując się wewnątrz jakiegokolwiek pliku z rozszerzeniem .py przechodzisz w panelu bocznym na ikonę 
 	 "play z żuczkiem" i klikasz na napis: "create a launch.json file" i z dostępnych opcji wybierasz opcje 
@@ -119,21 +218,43 @@
 					'127.0.0.1',
 					# ...
 				]
+
+2.2 STRONA ADMINISTRATORA: -/admiN   
+	*admin site daje możliwość przeglądania wszystkich baz danych wraz z tworzeniem, updatowaniem i 
+	 usuwaniem tychże danych. 
+	*ponadto masz tam bazę użytkowników (na których również możesz dokonywać powyższych operacji) wraz z 
+	 hasłami które są domyślnie zahashowane i posolone. Użytkownicy ci składają się na 3 grupy w zależności 
+	 od statusu dostępu: administratorzy (superuser), ci co mogą się zalogować do admin-site ale nie mają 
+	 praw administratora (staff user) oraz ci o najwęższych prawach (active). 
+	*znajduję się tam też panel boczny gdzie masz wyswietlone wszystkie historie wszystkich dokonanych 
+	 operacji.
+	*stworzenie i pierwsze użycie - najpierw trzeba stworzyć domyślne bazy danych (komenda migrate 
+	 pozwala na zatwierdzenie zmian w bazie danych, ale jeżeli te bazy jeszcze nie istnieją to są tworzone 
+	 takie domyślne jak auth_user). Następnie możesz utworzy pierwszego superusera (administratora).
+					python manage.py migrate					#utworzenie domyślnych baz danych
+					python manage.py createsuperuser			#utworzenie 1wszego administratora
+					#jeżeli nie działa to przed komedą wpisz winpty: winpty python manage.py createsuperuser
+			
 	
 2.1. KOMENDY które warto opisać do 'django-admin' a raczej do 'python manage.py' który jest wrapperem do 
      django-admin (specjalnie używamy python manage.py _____ zamiast django-admin _______ gdyz ta pierwsza 
 	 komenda bierze pod uwage plik settings.py a druga już nie):
 		*runserver - URUCHOMIENIE SERWERA gdzie domyślnym portem jest 8000 ale można podać swój port jak
 			kolejny argument - w tym przypadku jest to 8000.
-						python manage.py runserver    ||   python manage.py runserver 9000  
+					python manage.py runserver    ||   python manage.py runserver 9000  
 				*Po tej komendzie pokażę się adres strony który będzie działał na lokalnym serwerze i będzie
 				 odzwierciedleniem tego co zrobiłeś. Wklej go do przeglądarki.
 				*jeżeli pojawi się Tobie błąd invalid syntax to oznacza to że nie została aktywowana 
 				 wirtualka (pipenv shell) 
 				*żeby zakończyć wciśnij CTRL + C
 		*startapp - tworzy nową pojedyńczą funkcjonalność zwaną aplikacją. 
-						python manage.py startapp nameapp
-				
+					python manage.py startapp nameapp
+		*createsuperuser - tworzy użytkownika (administratora) w celu pierwszego uruchomienia/zalogowania
+			do strony administrowania gdzie możesz zarządzać bazami danych oraz użytkownikami o różnych 
+			polach dostępu. Żeby móc stworzyć pierwszego administratora (który pozwoli ci się zalogować
+			do strony administratora musisz najpierw stworzyć domyślne bazy danych poprzez migrate):
+					python manage.py migrate
+					python manage.py createsuperuser
 				
 1. INSTALACJA, URUCHOMIENIE oraz STRUKTURA PROJEKTU:
 	1) Stworzenie WIRTUALKI i pobranie django:
@@ -158,12 +279,13 @@
 	
 	3)URUCHOMIENIE PROJEKTU W TERMINALU:
 				pipenv shell
-				python manage.py runserver
-				
+				python manage.py runserver	-->  http://127.0.0.1:8000   /  http://localhost/8000   
+												 CTRL + C (żeby przerwać)
+												 
 	4)STRUKTURA Twojego PROJEKTU (powstała ona poprzez komende django-admin startproject nameproject) a 
 	  wewnątrz jej znajdują się pliki:
 		A* folder nameproject:
-			*__init__.py - odpowiada za definiowanie ścieżki jako modułu. 
+			*__init__.py - mówi interpreterowi Pythona że jest to paczka Pythonowa
 			*settings.py - odpowiada z austawienia naszej aplikacji - składa się z sekcji:
 				**INSTALLED_APPS składa sie z:
 						*wbudowanych aplikacji w Django zaczynających się od django.contrib:
@@ -178,7 +300,7 @@
 			*urls.py - tutaj definiujemy linki url naszej aplikacji
 			*asgi.py oraz wsgi.py - odpowiadają za deployment
 		B* manage.py - to jest wrapper naszej komendy django-admin, który powinniśmy uruchamiać z komendami 
-		    dajngo-admin zamiast djagno-admin z komendami. Wszystko dlatego że manage.py bierzez pod uwagę 
+		    dajngo-admin (zamiast djagno-admin + komenda). Wszystko dlatego że manage.py bierzez pod uwagę 
 			również plik settings.py a komenda django-admin już nie.
 					*zamiast używać: django-admin runserver 	
 							#spowoduję Tobie to błąd django.core.excpetionsImproperlyConfigured
@@ -188,7 +310,7 @@
 			*(pojedyńczą funkcjonalnością a nie całym projektem)
 			*pojedyńczy folder/APLIKACJA tworzy się w terminalu poprzez: 	  
 							python manage.py startapp nameApp
-			 i następnie trzeba go zarejestrować w
+			 i następnie trzeba go zarejestrować poprzez wpisanie jego nazwy w apostrofach w:
 							folderZprojektem --> settings.py --> INSTALLED_APPS
 			 *STRUKTURA APLIKACJI/pojedyńczego folderu:	
 						*folder migrations - do generowania baz danych 
@@ -201,9 +323,11 @@
 						*views module - request handler, używa się przy wymianie danych między użytkownikiem
 						    (który wysyła rządanie (request)) a serwerem który odsyła odpowiedź (response).
 	*) Aktywując wirtualkę (pipenv shell) automatycznie zostanie wybrany interpreter pythona z wirtualki ale
- 	   możesz to zrboić ręcznie Visual Studio wybierz View --> Command Palette i tam wklej ścieżkę do 
-	   wirtualki (będąc wcześniej w terminalu w ścieżce projektu + pipenv --venv) i dodać do tej ścieżki 
-	   '\bin\python'.
+ 	   możesz to zrboić ręcznie Visual Studio wybierz View --> Command Palette --> Select Intepreter
+	   i tam wklej ścieżkę do wirtualki (będąc wcześniej w terminalu w ścieżce projektu uzyskasz ścieżkę 
+	   do interpretera poprzez komendę pipenv --venv oraz dodając do uzyskanej ścieżki '\bin\python' ALBO 
+	   '\Scripts\python') lub względem ścieżki którą udało ci się uzyskać poprzez komendę pipenv --venv 
+	   możesz samemu wybrać interpreter Pythona klikając w opcję FIND.
 	   
 0. PODSTAWY:
 	*Backend in Webdevelopment - "how you're going to respond to clients":

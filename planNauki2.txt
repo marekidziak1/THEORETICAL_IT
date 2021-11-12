@@ -3,8 +3,8 @@ PLAN NAUKI:
  będzie czas tylko na rozwijanie się w Django oraz Scraping!!!
  
 dokcer:
-2|15*Docker Tutorial for Beginer - youtube tutorial with mosh
-2|20*Kubernetes Tutorial for Beginer
+2|  *Docker Tutorial for Beginer - youtube tutorial with mosh
+2|  *Kubernetes Tutorial for Beginer
 
 linux:
 1|4 *bash tutorial
@@ -36,9 +36,11 @@ Django:
 2|2 *Corey Shaffer - DJANGO
 1|6 *Traversy media - Django Crash Course
 3|10*freecodecamp--> django web framework
-3|14*dr chuck--> django
-4|16*codingentrepreneurs --> django
-4|18*https://www.youtube.com/watch?v=Kg1Yvry_Ydk --> django projects (clever programming)
+  14*techwithtim-->django webdevelopment tutorial
+  15*techwithtim-->django & react integration
+3|  *dr chuck--> django
+4|  *codingentrepreneurs --> django
+4|  *https://www.youtube.com/watch?v=Kg1Yvry_Ydk --> django projects (clever programming)
 
 Zrobione:
 1.Kanał o wszystkim - python
