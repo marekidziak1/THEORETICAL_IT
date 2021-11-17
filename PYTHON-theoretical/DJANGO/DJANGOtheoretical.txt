@@ -1,33 +1,457 @@
-4. PANEL ADMINISTRACYJNY:
-	
-	
+============================================================================================================
+=======II.PRZYKŁADY RÓŻNYCH APLIKACJI WYTWORZONYCH WE VIEWS.PY W KONKRETNYCH APP/FUNKCJONALNOŚCIACH=========
+============================================================================================================
+	1)FORMULARZ DO REJESTRACJI:
+		A) OPCJA PODSTAWOWA:
+			1*Tworzysz nową aplikację users i wykonujesz wszystkie czynności związane z jej utworzeniem:
+					python manage.py startapp users
+				*dla głównej app/funkcjonalności w settings.py w INSTALLED_APPS dodajesz:
+						'users.apps.UsersConfig',
+				*w głównej app/funkcjonalności w pliku urls.py w urlpatterns dodajesz ścieżkę ('register') 
+				 która będzie wskazywać na moduł vievs w app/funkcjonalności users. (ze względu na to że 
+				 ścieżka register nie będzie miała żadnych innych podstron to nie musisz tworzyć dodatkowego
+				 modułu urls.py w app/funkcjonalności users. Wystarczy zawrzeć przekierowanie w urls.py w 
+				 głównej app/funkcjonalności)
+						#plik urls.py w app/funkcjonalności django-project
+						from users import views
+						urlpatterns = [							#poniżej odwołanie do metody register w 
+							...									#module views w app/funkcjonalności users
+							path('register/', views.register, name = 'register'),
+						]
+			2*Tworzysz plik html w templates'ach (register.html):
+				*Tworzysz katalog templates i podkatalog o nazwie app/funkcjonalności users i 
+				 wewnątrz tworzysz plik html: register.html:
+				*odwołujesz się do szablonu umieszczonego w templates'ach innej app/funkcjonalności 
+				 (w tym przypadku aplikacji/funkcjonalnośći blog)(nie musisz wpisywać specjalnej ścieżki 
+				 żaby iśc w górę by przejśc do katalogu innej app/funkcjonalności. Ze względu na to
+				 że strukture plików tworzysz tak że oprócz katalogu templates zawsze tworzysz katalog o 
+				 nazwie app/funkcjonalności to wystarczy że odwołasz się do nazwy tej aplikacji i 
+				 nazwy szablonu w niej zawartego):
+						{% extends "blog/base.html" %}				#odwołujesz się do szablonu base.html 
+																	#w app/funkcjonalności blog
+				*tworysz strukturę formularza html która będzie podmieniana w szablonie html'a (base.html).
+				 Ponieważ to formularz to dodajesz atrybut method ='POST' do tagu <form> żeby móc wysyłąć
+				 treści znajdujące się w polach formularza:
+						{% block content %}	
+							<div class="content-section">
+								<form method='POST'>
+								...
+								</form>
+							</div>
+						{% endblock %}
+				*wewnąrz formularza by działał właściwie musisz dodać w pojedyńczych nawiasach wąsowych 
+				 (ukryty_tag/token) csrf_token oraz w podwójnych nawiasach wąsowych zmienną form która
+				 bedzie wyrenderowana poprzez pole as_p (nazwa_pola i pole_formularza będą zaczynać się
+				 od nowej linii)). W ten sposób powstanie nam domyślny formularz, który trzeba jeszcze 
+				 uzupełnić o button typu submit żeby móc wysyłać dany formularz (jest to możliwe dzięki 
+				 przypisaniu 'POST' do atrybutu method w tagu form):
+						{% block content %}	
+							<div class="content-section">
+								<form method='POST'>
+									% csrf_token %}
+									{{ form.as_p }}
+								</form>
+							</div>
+							<div class="form-group">
+								<button type="submit">Sign Up</button>
+							</div>
+						{% endblock %}		
+			3*Tworzysz logikę działania w pliku views.py:
+				*korzystasz z gotowego modułu UserCreationForm, do tworzenia schematycznych formularzy 
+				 składających się z: 'username', 'password1', 'password2' (do zatwierdzenia password1).
+				 moduł ten musisz zaimportować:
+							from django.contrib.auth.forms import UserCreationForm
+				*tworzysz funkcję odpowiedzialną przy rejestracji:
+					*za utworzenie formularza, zwalidowanie go, zapisania i przesłania danych z niego.
+					*za przekierowanie na inną stronę po udanej operacji lub w przypadku niuedanej operacji
+					 za ponowne otworzenie otworzenie strony register wraz z danymi przekazynymi w 
+					 poprzednim formularzu:
+							def register(request):
+								if request.method == 'POST':				# czy w pliku html w tagu form
+																			##atrybut method=='POST'
+									form = UserCreationForm(request.POST)	# utworzenie formularza z
+																			##przekaznymi danymi z 'POST'
+																			##z poprzedniego formularza
+																			##(jeżeli był) (nieudanego)
+									if form.is_valid():						# walidacja formularza
+										form.save()							# zapisanie danych z formularza
+										return redirect('blog-home')		# przekierowanie na stronę 
+																			##podaną w zmiennej name w 
+																			##urls.py app/funkcjonalności
+									else:									##blog
+										return render(request,'users/register.html', {'form':form})
+								else:
+									form = UserCreationForm()								
+									return render(request, 'users/register.html', {'form':form})
+				*możesz rozszerzyć tę funkcję o wiadomość o udanej operacji zapisania  i przesłania danych 
+				 z formularza:
+					*W PLIKU VIEWS.PY musisz zaimportować moduł messages z pakietu django.contrib oraz 
+					 utworzyć wiadomość która zostanie automatycznie przesłana na podaną stronę przy
+					 metodzie redirect()(przekierowaniu na inną stronę) lub metodzie render()(przezaniu 
+					 obiektu typu Response):
+							from django.contrib import messages
+									...
+									if form.is_valid():
+										form.save()
+										username = form.cleaned_data.get('username')
+														#tworzy zmienną pobierającą 'username' z formularza
+										messages.success(request, f'Account created for {username}!')
+														#tworzysz wiadomość która będzie automatycznie
+														#przesłana wraz z metodą redirect() lub render()
+										return redirect('blog-home')
+					*W PLIKU SZABLONU (base.html w app/funkcjonalności blog) umieszczasz zmienną messages
+					 w warunku że musi istnieć by ją pokazać:
+							{% if messages %}
+								{% for message in messages %}
+									<div class="alert alert-{{ message.tags }}">
+																		#wystylizowanie poprzez bootstrapa 
+																		#wg pola tags ze zmiennej messages
+										{{ message }}					#wiadomość przekazana w formularzu
+									</div>
+								{% endfor %}
+							{% endif %}
+		B)OPCJA ROZSZERZONA (rozszerzająca opcję podstawową):
+			1*Czynności przy tworzeniu aplikacji pozostają takie same jak w pkt 1 OPCJI PODSTAWOWEJ.
+			2*W pliku html w templates'ach twojej app/funkcjonalności zmieniasz formę renderowania i 
+			  przedstawienia błędów przy walidacji danych w formularzu z form.as_p na form|crispy:
+				*instalujesz django-crispy-forms w konsoli poprzez:
+							pipenv install django-crispy-forms	  LUB    pip install django-crispy-forms
+				*dodajesz w głównej app/funkcjonalności w sekcji INSTALLED_APPS informacje o nowej 
+				 crispy_forms (nie wiem czy to jest nowa app/funkcjonalność ale trzeba to tam umieścić)
+							INSTALLED_APPS = [
+								...
+								'crispy_forms',
+							]
+			     oraz dodajesz w tym samym pliku zmienną CRISPY_TEMPLATE_PACK = 'bootstrap4'
+							CRISPY_TEMPLATE_PACK = 'bootstrap4'
+				*w pliku html (register.html) odwołujesz się do szablonu html, ładujesz tagi związane z 
+				 cripsy_forms. Umieszczasz w sekcji block kod który będzie podmieniony w szablonie w danym
+				 blocku. W zmiennej form dodajesz renderowanie (czyli modyfikacje przy wyświetleniu) na 
+				 form|crispy zamiast form.as_p:
+							{% extends "blog/base.html" %}
+							{% load crispy_forms_tags %}
+							{% block content %}
+								<div class="content-section">
+									<form method ='POST'>
+										{% csrf_token %}
+											{{ form|crispy }}
+										<div class="form-group">
+											<button type="submit">Sign Up</button>
+										</div>
+									</form
+								</div>
+							{% endblock content %}									
+				*możesz rozszerzyć plik register.html o wystylizowanie stylów poprzez bootstrapa
+					**w pliku register.html:
+							{% extends "blog/base.html" %}
+							{% load crispy_forms_tags %}
+							{% block content %}
+								<div class="content-section">
+									<form method ='POST'>
+										{% csrf_token %}
+										<fieldset class="form-group">
+											<legend class ="border-bottom mb-4">Join Today</legend>
+												{{ form|crispy }}
+										</fieldset>
+										<div class="form-group">
+											<button class="btn btn-outline-info" type="submit">Sign Up</button>
+										</div>
+									</form>
+									<div class="border-top pt-3">
+										<small class="text-muted">
+											Already Have An Account? <a class="ml-2" href=#>Sign In</a>
+										</small>
+									</div>
+								</div>
+							{% endblock content %}
+					**w szablonie base.html w app/funkcjonalności blog, w sekcji head ładujesz Bootstrapa:
+							<head>
+								<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+								<link rel="stylesheet" type="text/css" href="{% static 'blog/main.css' %}">
+			3*W pliku views.py tworzysz swój własny typ formularza który nie będzie oparty o zaimportowany
+			  UserCreationForm tylko o własną klasę która będzie dziedziczyć po UserCreationForm i która 
+			  będzie rozszerzone o dodatkowe pola w formularzu.
+				*PLIK FORMS.PY wraz z UserRegisterForm  który dziedziczy po UserCreationForm. 
+					*wewnątrz swojej app/funkcjonalności users tworzysz moduł forms.py w którym tworzysz 
+					 klasę UserRegisterForm dziedziaczącą po UserCreationForm. 
+					*W tej klasie importujesz odpowiednie moduły, tworzysz dodatkowe pola w formularzu, 
+					 wskazujesz bazę danych z modeli ze swojej app/funkcjonalności oraz wypisujesz kolejność 
+					 swoich pól w liście fields:
+							from django import forms		
+										#do pobierania róznych typów pól dla formularzy, tutaj EmialField()
+							from django.contrib.auth.forms import UserCreationForm
+															#do możliwości dziedziczenia w swojej klasie
+							from django.contrib.auth.models import User
+															#do wskazania modelu Bazy danych w zmiennej model
+							class UserRegisterForm(UserCreationForm):
+								email=forms.EmailField()	#wpisujesz dodatkowe pola
+								class Meta:
+									model=User				#określasz bazę danych gdzie mają być zapisane 
+															#dane z formualrza
+									fields = [ 'username', 'email','password1','password2']
+															#lista fields gdzie określasz wszystkie pola
+				*PLIK VIEWS.PY:
+					*ponieważ klasa UserRegisterForm dziedziczy po UserCreactionFrom to tylko je podmieniasz,
+					 wcześniej importując UserRegisterForm z modułu forms znajdującego się w tym samym 
+					 katalogu:
+							from django.shortcuts import render, redirect
+							from django.contrib import messages	
+							from . forms import UserRegisterForm
+							def register(request):
+								if request.method == 'POST':
+									form = UserRegisterForm(request.POST)
+									if form.is_valid():
+										form.save()
+										username = form.cleaned_data.get('username')
+										messages.success(request, f'Account created for {username}!')
+										return redirect('blog-home')
+									else:
+										return render(request,'users/register.html', {'form':form})
+								else:
+									form = UserRegisterForm()
+									return render(request, 'users/register.html', {'form':form})
 
+============================================================================================================
+====================================================PODSTAWY================================================
+============================================================================================================
+5. DEBUGOWANIE CAŁEGO PROJEKTU:
+  *UTWORZENIE PLIKU potrzebnego DO DEBUGOWANIA
+	*znajdując się wewnątrz jakiegokolwiek pliku z rozszerzeniem .py przechodzisz w panelu bocznym na ikonę 
+	 "play z żuczkiem" i klikasz na napis: "create a launch.json file" i z dostępnych opcji wybierasz opcje 
+	 z DJANGO.
+	*Tworzy ci się plik launch.json w folderze .vscode. Ten plik służy tylko do debugowania więc jeżeli np 
+	 zmienisz port w "args" dodając do listy w cudzysłowiu nowy nr portu to podczas odpalania projektu 
+	 poprzez wpisywanie ręcznie komend w terminalu, nie będzie to miało znaczenia tylko podczas jego 
+	 debugowania (chyba że odpalisz projekt przez CTRL + F5 (czyli Run without debugging))
+	*launch.json - składa się z par kluczy i wartości dających "launch profile"
+  *DEBUGOWANIE:	
+	*żeby rozpocząć debugowanie to (już po zaznaczeniu breakpoint'ów), przechodzisz na ikonę "play z 
+	 żuczkiem" i u góry wciskasz play. Uruchomi się Tobie projekt w taki sam sosób jakbyś uruchamiał go w 
+	 terminalu (pipenv shell ;; python manage.py runserver) tylko w miejscach breakpointów się zatrzyma 
+	 (otworzy ci się nowy teminal) 
+	*KOLEJNE FUNKCJE wyświetlone w panelu:
+		*STEP OVER f10- przejdź przez kolejną linijkę
+			*panel boczny - wraz z przechodzeniem przez kolejne linijki panel będzie (inspect) sprawdzał 
+			 wartości w tych linijkach 
+		*STEP INTO f11 - jeżeli natrafisz w linijce na funkcje to możesz wejśc wewnątrz jej ciała i zobaczyć
+		 czy tam nie ma jakiegoś buga
+		*STEP OUT SHIFT +f11 - następnie możesz wyjśc z takiej funkcji 
+		*RESTART - załączasz debugowanie od nowa
+		*STOP - kończysz debugowanie
+	*żeby włączyć projekt bez debugowania to robisz:
+			CTRL + f5 (RUN --> Run without debugging)
+  *DEBUGOWANIE poprzez DJANGO-DEBUG-TOOLBAR:
+   https://django-debug-toolbar.readthedocs.io/en/latest/installation.html
+    *ZALETY: 
+		*mając odpowiednio przygotowany plik html (czyli conajmniej zawierający tagi html 
+		 oraz body) mozesz w przeglądarce po wcześniejszym odpaleniu pliku (CTRL + f5 / F5) korzystać z 
+		 panelu do debugowaniu gdzie masz wszystkie potrzebne opcje i informacje.
+	*INSTALACJA:	
+		*instalacja w wirtualce:
+				pipenv install django-debug-toolbar
+		*dodanie do settings.py w głównym katalogu projektu do sekcji INSTALLED_APPS:
+				... ,
+				'debug_toolbar 
+		*dodanie do urls.py w głównym katalogu projektu do urlpatterns (+ dodanie biliotek):
+				import debug_toolbar
+				from django.conf import settings
+				from django.urls import include, path
+				urlpatterns = [
+					...
+					path('__debug__/', include(debug_toolbar.urls)),
+				]
+		*dodanie do settings.py w głównym katalogu projektu do sekcji MIDDLEWARE:
+				... ,
+				'debug_toolbar.middleware.DebugToolbarMiddleware',
+		*dodanie do settings.py w głównym katalogu projektu całej sekcji INTERNAL_IPS wraz ze swoim ip:
+				INTERNAL_IPS = [
+					# ...
+					'127.0.0.1',
+					# ...
+				]
+				
+4. STRONA ADMINISTRATORA: [<sciezka_do_nazwyStrony_z_serwerem>/admin np 127.0.0.1/8000/admin]
+	*PODSTAWY:
+		*admin site daje możliwość przeglądania wszystkich baz danych wraz z tworzeniem, updatowaniem i 
+		 usuwaniem tychże danych. 
+		*ponadto masz tam bazę użytkowników (na których również możesz dokonywać powyższych operacji) wraz 
+		 z hasłami które są domyślnie zahashowane i posolone. Użytkownicy ci składają się na 3 grupy w 
+		 zależności od statusu dostępu: administratorzy (superuser), ci co mogą się zalogować do admin-site 
+		 ale nie mają praw administratora (staff user) oraz ci o najwęższych prawach (active). 
+		*znajduję się tam też panel boczny gdzie masz wyswietlone wszystkie historie wszystkich dokonanych 
+		 operacji.
+	*STWORZENIE I PIERWSZE UŻYCIE - najpierw trzeba stworzyć domyślne bazy danych (komenda migrate 
+	 pozwala na zatwierdzenie zmian w bazie danych, ale jeżeli te bazy jeszcze nie istnieją to są tworzone 
+	 takie domyślne jak auth_user). Następnie możesz utworzy pierwszego superusera (administratora).
+					python manage.py migrate					#utworzenie domyślnych baz danych
+					python manage.py createsuperuser			#utworzenie 1wszego administratora
+				#jeżeli nie działa to przed komedą wpisz winpty: winpty python manage.py createsuperuser
+	*AUTOMATYCZNE WYGENEROWANIE TABEL z pliku MODELS.PY - w pliku admin.py musisz pobrać daną tabelę z
+	 pliku models.py i następnie ja zarejestrować. Dzięki temu będziesz mógł ją modyfikować z pozycji 
+	 administratora będąc zalogowanym na stronę administracyjną:
+					#w admin.py danej app/funkcjonalności
+					from . models import Post
+					admin.site.register(Post)
+			
 3. MODUŁY i FOLDERY w APLIKACJACH/pojedyńczych_funkcjonalnościach:
 	*module VIEWS.PY:
-		*funkcje w views.py sa 'request handlerami' i przyjmują 'request' a zwracają 'response'
-		*w inncyh frameworkach module view.py miałby imię ACTIONS
-		*wewnątrz tych funkcji we view.py możesz:
-			*wpisać logikę działania danej aplikacji czyli co ma się stac gdy użytkownik wejdzie w daną 
-			 ścieżkę/link.
-			*wysyłać dane z bazy danych do innej bazy danych 
-			*przetwarzać dane i je modyfikować 
-			*wysyłać maile, itp.
-		*zwrócenie obiektu typu response: 
-			*przy pomocy funkcji HttpResponse z modułu django.http (zwraca podany tekst w obiekcie 
-			 HttpResponse):
-					from django.http import HttpResponse
-					def say_hello(request):
-						return HttpResponse('Hello World')
-			*przy pomocy rendera z django.shortcuts który jako argumenty przyjmuję requesta (pierwszy 
-			 argument funkcji we views.py), ścieżkę wewnątrz katalogu templates składającą się na 
-			 nazwę katalogu projektu wraz z nazwą pliku html (te pliki musżą znajdować się w katalogu 
-			 templates) oraz jakikolwiek mapping object np.: dictionary (którego później będziesz używał w 
-			 dokumencie html'a znajdującego się w katalogu templates)
-					from django.shortcuts import render
-					def say_hello(request):
-						return render(request, 'playground/helloHTML.html',{'name':'Mosh'})
+		*PODSTAWY:
+			*funkcje w views.py sa 'request handlerami' i przyjmują 'request' a zwracają 'response'
+			*w inncyh frameworkach module view.py miałby imię ACTIONS
+			*wewnątrz tych funkcji we view.py możesz:
+				*wpisać logikę działania danej aplikacji czyli co ma się stac gdy użytkownik wejdzie w daną 
+				 ścieżkę/link.
+				*wysyłać dane z bazy danych do innej bazy danych 
+				*przetwarzać dane i je modyfikować 
+				*wysyłać maile, itp.
+		*ZWRÓCENIE OBIEKTU TYPU RESPONSE: 
+			*metoda HttpResponse z modułu django.http (zwraca podany tekst w obiekcie HttpResponse):
+							from django.http import HttpResponse
+							def say_hello(request):
+								return HttpResponse('Hello World')
+			*metoda render() z django.shortcuts która jako argumenty przyjmuję:
+				**requesta (pierwszy argument funkcji we views.py), 
+				**ścieżkę wewnątrz katalogu templates składającą się na nazwę katalogu projektu wraz z 
+				  nazwą pliku html (te pliki musżą znajdować się w katalogu templates) 
+				**mapping object np.: dictionary (którego później będziesz używał do przesłania danych do 
+				  dokumentu html'a znajdującego się w katalogu templates)(drugi argument rendera)
+							from django.shortcuts import render
+							def say_hello(request):
+								return render(request, 'playground/helloHTML.html',{'name':'Mosh'})
+			*metoda redirect() z django shortcuts która jako argument przyjmuję zmienną name która jest 
+			 3cim argumentem metody path() z urlpatterns z pliku URLS.PY zamiast ścieżki do pliku html z 
+			 katalogu templates (jak ma to miejsce w metodzie render(). Ponadto funkcja redirect() nie 
+			 przyjmuję argumentu w postaci słownika któym mógłbyś przekazać dane do kolejnej strony(jak w 
+			 render):
+							from django.shortcuts import redirect
+							def say_hello(request):
+								return redirect(request, 'playground/helloHTML.html',{'name':'Mosh'})
+		*ZESTAWY DANYCH PRZESYŁANE PRZY ZWRACANIU OBIEKTÓW response z powyższych 3 metod:
+			*W METODACH REDIRECT() I RENDER() MESSAGES: 
+				*messages nie trzeba ich zwracać w słowniku w 3cim argumencie metody render(). Messages są 
+				 przesyłane automatycznie przy zwracaniu obiektu typu response tj: przy metodzie redirect()
+				 oraz przy metodzie render()). 
+				*Trzeba zaimporotwać klasę messages z modułu django.contrib:
+							from django.contrib import messages
+							from django.shortcuts import redirect, render
+					1)		def say_hello(request):
+								messages.success(request, f'Text sended')
+								return redirect('blog-home')
+					2)		def say_hello(request):
+								messages.success(request, f'Text sended')
+								return redirect(request, 'playground/helloHTML.html',{'name':'Mosh'})
+				*jest 5 rodzajów messages tóre możesz wysyłać w ten sposób:
+						**messages.debug
+						**messages.info
+						**messages.success
+						**messages.warning
+						**messages.error
+				*żeby ukazać messages w swoim pliku.html to musisz umieścić w szablonie html:
+							 {% if messages %}									 #jeżeli messages istnieje
+								{% for mess in messages %}
+									<div class="alert alert-{{ message.tags }}"> #w bootstrapie dodatkowo
+																				 #dobiera kolor do message'a
+										{{ mess }}								 #pokazuję treść message'a
+									</div>
+								{% endfor %}
+							{% endif %}
+						    {% block content %}{% endblock %}				#message bedzie sie wyświetlał	
+																			#nad podminianym block contentem
+			*W METODZIE RENDER() SŁOWNIK JAKO 3CI ARGUMENT:
+			   **W metodzie render jako 3ci argument możesz podać w konkretny zestaw danych wyciągnięty 
+				 przez ORM Django JEDNAKŻE MUSI ON BYĆ PRZYPISANY JAKO KLUCZ DO SŁOWNIKA !!! :
+							from django.shortcuts import render
+							from blog.models import Post
+							from django.contrib.auth.models import User					#baza uzytkowników
+							def say_hello(request):
+								return render(request, 'blog/home.html',{'user': User.objects.first()})
+													#User.objects.first() jest przypisany do klucza 'user'
+			   **DANE Z FORMULARZA które podajesz jako wartości do klucza w słowniku. Klucz ten może zostać 
+			     wykorzystany jako zmienna w pliku html w celu przekazania danych z nieudanego formularza
+				 (jeżeli pojawi sie jakiś błąd w formularzu i nie zostanie on zaakceptowany to zamiast 
+				 wpisywać wszystkie pola od początku to zostaną one uzupełnione tymi z poprzedniego 
+				 formularza:
+								return render(request,'users/register.html', {'form':form})
+					**formularz REJESTRACYJNY tworzy się poprzez klasę UserCreationForm() 
+							from django.contrib.auth.forms import UserCreationForm
+							form = UserCreationForm(request.POST)		#request.POST oznacza że przekazuje
+																		#dane z poprzedniego formularza
+					**form.is_valid() pozwala sprawdzić czy formularz jest poprawnie zwalidowany
+							form.is_valid():
+					**form.save() pozwala zapisać dane z formularza (dla UserCreationForm() baza danych jest
+					  domyślnie ustawiona na USER i nie trzeba jej wskazywać jak w dziedziczącej klasie 
+					  UserRegisterForm():
+							form.save()
+					**FORMULARZ REJSTRACYJNY JEST OMÓWIONY W  DZIALE IIGIM CZYLI 
+					  PRZYKŁADY RÓŻNYCH APLIKACJI WYTWORZONYCH WE VIEWS.PY
+			   **METODY które zwracają zestaw danych w postaci obiektów których możesz uzyć jako KLUCZ 
+				 SŁOWNIKA (na przykładzie tabeli User pobranej z django.contrib.auth.models).
+										##Możesz nie tylko to wywołać ale też przypisać jakieś zmiennej
+										##poniższych komend możesz użyć też w konsoli shella w DJANGO-PYTHON
+								##PAMIĘTEJ żeby najpierw zaimportować bazy danych (znajdujące się w module
+								##models.py) oraz bazę użytkownikow która jest wbudowana w django:
+								from blog.models import Post
+								from django.contrib.auth.models import User				#baza uzytkowników
+					*wszystkie obiekty z danej tabeli:	
+								User.objects.all()	#zwróci: <QuerySet [<User: marek>, <User: testUser>]>
+					*pierwszy obiekt z danej tabeli:
+								User.objects.first()						#zwróci: <User: marek>
+					*ostatni obiekt z danej tabeli:		
+								User.objects.last()							#zwróci: <User: testUser>					
+					*wybrany zbior obiektów ODFILTROWANY przez filter np: username:
+								User.objects.filter(username='marek')	#zwróci: <QuerySet [<User: marek>]>
+								User.objects.filter(username='marek').first()	    #zwróci:  <User: marek>
+					*zwrócenie użytkownika na bazie jakiegoś pola np id:
+								User.objects.get(id=1)								#zwróci:  <User: marek>
+					*zwrócenie pola konkretnego rekordu odbywa się po kropce:
+							**Primary KEY / id
+								User.objects.filter(username='marek').first().pk   /LUB   
+								User.objects.filter(username='marek').first().id			
+							**pozostałe:
+								User.objects.filter(username='marek').first().content
+					*zwrócenie pól z tabeli klucza obcego w naszej tabeli (author jest FOREGIN KEY i ma 
+					 swoją tabele w postaci User):
+								p1 = Post.objects.get(id=1)
+								p1.author.id									#zwróci: 1
+								p1.author.email									#zwróci: 'marek@gmail.com'
+					*jeżeli odwołujesz się do obiektu w tabeli który jest kluczem obcym dla innej tabeli to
+ 					 możesz zobaczyc zbiór wszystkich wystąpień tego obiektu w tej tabeli dla której obiekt
+					 jest kluczem obcym poprzez odwołanie się do tejże tabeli wraz z '_set'.all() (czyli 
+					 możesz zobaczyć wszystkie obiekty związane z obiektem klucza obcego na jego bazie):
+								u1=User.objects.filter=(username='marek').first()
+								u1.post_set.all()		#zwróci wszystkie posty danego usera
+														#zwróci <QuerySet [<Post: Blog 1>, <Post: Blog 2>]>
+			   **METODY TWORZĄCE takie obiekty KTÓRE można przekazać jako KLUCZ SŁOWNIKA  (na przykładzie 
+				 tabeli User pobranej z django.contrib.auth.models):
+					*UTWORZENIE oraz późniejsze ZAPISANIE konkretnego rekordu dla danej tabeli (musisz 
+					 wcześniej pobrać tę tabele) wg: schematu jej pól:
+						  **tworzenie
+								from blog.models import Post
+								from django.contrib.auth.models import User
+								post_1 = Post(title='Blog 1', content='First Post Content'/
+											  ,author=User.objects.filter(username='marek').first())
+													#w kluczu obcym nie podajesz tylko id klucza obcego ale 
+													#podajesz cały obiekt. Gdybyś chciał przypisać id to w
+													#argumencie obieku tabeli obcej dodajesz podkreślnik
+													#a w przypisywanym obiekcie dodajesz kropkę:
+											##,author_id=User.objects.filter(username='marek').first().id)
+						  **zapisywanie:
+								post_1.save()		#teraz mozesz zobaczyć że masz post_1 zapisany we 
+													#wszystkich Postach: Post.objects.all()
+													#które zwróci: <QuerySet [<Post: Post object (1)>]>
+					*jeżeli odwołujesz się do obiektu w tabeli który jest kluczem obcym dla innej tabeli to
+					 możesz UTWORZYĆ obiekt tejże tabeli w której obiekt jest kluczem obcym (czyli możesz 
+					 utworzyć obiekt na bazie obiektu klucza obcego) (poprzez odwołanie się do jego
+					 wszystkich wystąpień i metody create)
+								u1=User.objects.filter(username='marek').first()
+								u1.post_set.create(title='Blog 3', content='Blog content 3')
+														#autorowi tworzysz dany post, nie musisz w tymże 
+														#konstruktorze dodawać autora na samym końcu 							
 	*module URLS.PY
-		*ten moduł nie powstanie automatycznie w naszych modułach w aplikacji i trzeba go stworzyć samemu
+	 **OPCJA 1:
+		*JEZELI WIESZ ŻE TWOJA STRONA BĘDZIE MIAŁA PODSTRONY DLA DANEJ APP/FUNKCJONALNOŚCI to tworzysz moduł
+		 urls.py w swojej app/funkcjonalności (moduł urls.py nie powstaje automatycznie przy tworzeniu nowej
+		 app/funkcjonalnośći - trzeba go stworzyć samemu)
 		*musisz zaimportować module django.urls oraz module views(ten powyżej) 
 		*musisz stworzyć URLconf tworząc listę 'urlpatterns' (koniecznie tak nazwaną bo django będzie tego
 		 szukał) i wpisać w nią obiekty typu 'URLpattern' za pomocą funkcji path(), którą zaimportowałeś z 
@@ -52,7 +476,7 @@
 										#czyli w metodzie path i w pliku HTML. (-->patrz linki w templates)
 					  ##path('', views.says_hello)	#say_hello z modułu views mógłbyś też wywołać dla pustej
 													#2giej cześci linka tj wyświetlałoby się dla linka z
-													#nazwą aplikacji/funkcjonalności tj:
+													#nazwą app/funkcjonalności tj:
 													#http://127.0.0.1:8000/playground zamiast powyższego 
 													#http://127.0.0.1:8000/playground/hello
 		*następnie musisz zaimportować cały ten moduł do głównego URLConf (URL configuration który znajduję 
@@ -69,18 +493,33 @@
 						path('playground/', include('playground.urls'))
 					]
 		 od teraz pod ścieżką: http://127.0.0.1:8000/playground/hello będzie wyświetlać się twoja podstrona.
+	 **OPCJA 2:
+		*JEŻELI WIESZ ŻE TWOJA STRONA NIE BĘDZIE MIAŁA ŻADNYCH PODSTRON DLA DANEJ APP/FUNKCJONALNOŚCI to nie
+		 musisz tworzyć wewnątrz app/funkcjonalności modułu urls.py. (np strona do rejestracji (patrz 
+		 formularz do rejestracji))
+		*Całe przekierowanie na plik views.py app/funkcjonalności zrobisz w głównej app/funkcjonalności w 
+		 pliku urls.py w liście urlpatterns.
+		*importujesz moduł views ze swojej app/funkcjonalności (w tym przypadku playground) i w liście 
+		 urlpatterns dodajesz ścieżkę ('hello/') która będzie wskazywać na moduł vievs w app/funkcjonalności
+		 playground:
+						#plik urls.py w app/funkcjonalności django-project
+						from playground import views
+						urlpatterns = [							
+							...
+							path('hello/', views.says_hello, name='playground-hello')
+						]
 	*katalog TEMPLATES (którego tworzymy sami (musi być tak nazwany))
 	   A*PODSTAWY:
 			*w innych frameworkach byłoby to nazwane views ale w Django viev.py odpowiada za coś innego
 			*są tam m.in dokumenty html które możesz przekazywać poprzez metodę render w module views.py 
 			*praktyka jest taka że wewnątrz folderu templates musisz stworzyć jeszcze folder o nazwie 
-			 aplikacji/funkcjonalności i to właśnie w nim umieszczasz pliki HTML --> Django domyślnie szuka 
+			 app/funkcjonalności i to właśnie w nim umieszczasz pliki HTML --> Django domyślnie szuka 
 			 ścieżki templates w danej aplikacji/funkcjonalnosci oraz przeszukuję w sekcji INSTALED_APPS
 			 w pliku settings w głównym projekcie wskazane aplikacje/funkcjonalnosci.
 			*żeby dokumenty HTMLa w folderze 'templates/nazwaAplikacji' działały to w pliku settings.py w
 			 głównym katalogu projektu w sekcji INSTALED_APPS musisz umieścić nazwę klasy, która dziedziczy
-			 po AppConfig z pliku apps.py z katalogu danej aplikacji/funkcjonalności (zapisane w cudzysłowiu)
-			 np: 'mojBlog.apps.mojBlogConfig' (ALBO tylko nazwę aplikacji/funkcjonalności np 'mojBlog') 
+			 po AppConfig z pliku apps.py z katalogu danej app/funkcjonalności (zapisane w cudzysłowiu)
+			 np: 'mojBlog.apps.mojBlogConfig' (ALBO tylko nazwę app/funkcjonalności np 'mojBlog') 
 	   B*MOŻLIWOŚC EDYTOWANIA PLIKÓW HTML:
 			*możesz edytować pliki HTML dla różnych zmiennych poprzez przekazanie w metodzie render 
 			 (w pliku views.py) słownika(dictionary). 
@@ -136,107 +575,140 @@
 				 extends. Szablon ten znajduję się w katalogu templates {% extends "blog/base.html %}) 
 				 i nastęnie tworzysz wnętrze bloku który ma być podmieniony w szablonie, okalając go wg 
 				 schematu:  {% block blockName %}...{% block blokName %}:
-					#plik home.html (który będzie wykorzystywał szablon base.html):
+						#plik home.html (który będzie wykorzystywał szablon base.html):
 						{% extends  "blog/base.html" %}
 						{% block content %}
 							{% for p in posts %}
 								<h1>{{p.title}}</h1>
 							{% endfor %}
 						{% endblock content %}
+				**jeżeli chciałbyś użyć szablonu z innej app/funkcjonalności to dzięki temu że Django
+				  w pierwszej kolejności przechodzi przez sekcję INSTALLED_APPS w settings.py w której 
+				  zapisujesz wszystkie aplikację/funkcjonalności i dzięki temu że w strukturze katalogu 
+				  templates oprócz szablonu HTML dodajesz (pomiędzy) jescze katalog o nazwie aplikacji/
+				  funkcjonalności to wystarczy że w swoim pliku html chcącym wykorzystać szablon z innej
+				  app/funkcjonalności podasz: nazwa_aplikacji/nazwe_szablonu.html
+						{% extends  "blog/base.html" %}		#plik register.html z app/funkcjonalności
+															#users będzie wykorzystywał szablon base.html
+															#z app/funkcjonalności blog 
+											#nie musisz wpisywać specjalnej ścieżki żaby iśc w górę by 
+											#przejś do katalogu innej app/funkcjonalności.
 			*LINKI W HTMLU: 
 				*zamiast wpisywać ścieżki w linkach to podawaj zmienne których nazwy będą odwoływać się do 
-				 argumentu name w pliku urls.py w zmiennej urlpatterns w tej samej aplikacji/funkcjonalności 
+				 argumentu name w pliku urls.py w zmiennej urlpatterns w tej samej app/funkcjonalności 
 				*dzięki temu gdybyś chciał zmienić link to będziesz mógł to zrobić w jednym miejscu czyli
-				 w liście urlpatterns w metodzie path w pliku urls.py w naszej aplikacji/funkcjonalności
+				 w liście urlpatterns w metodzie path w pliku urls.py w naszej app/funkcjonalności
 				 zamiast w dwóch miejscach czyli w metodzie path oraz pliku html.
-					#w pliku urls.py w naszej aplikacji/funkcjonalności:
+					#w pliku urls.py w naszej app/funkcjonalności:
 						urlpattrens =[path('home/', views.say_hello, name='playground-hello')]	
 					#od teraz w plikach html zamiast używać /home wpisujesz {% url 'plaground-hello' %}
 						...<a href={% url 'plaground-hello' %}>...</a>...
+			*FORMULARZ REJSETRACYJNY W HTMU:
+						{% extends "blog/base.html" %}	   # ładujesz szablon
+						{% block content %}				   # wpisujesz swoją wersję miejsca podmienianego
+							<form method ='POST'>		   # dla tagu form dodajesz argument POST który
+														   ##przesyła dane w formularzu
+								{% csrf_token %}		   # bez csrf_token formularz nie zadziała
+									{{ form|crispy }}	   # podajesz zmienną form wyrenderowaną CSSowo
+							</form>						   ##względem pobranych stylów crispy
+						{% endblock content %}				
+				**możesz dodatkowo wyrenderować formularz poprzez funkcjonalność CSSową CRISPY_FORMS 
+				  JEST TO DOKŁADNIE OMÓWIONE W OPCJI ROZSZERZONEJ FORMLARZA REJESTRACYJNEGO PKT2GIM
+				  w DZIALE IIgim CZYLI RZYKŁADY RÓŻNYCH APLIKACJI WYTWORZONYCH WE VIEWS.PY
 	   C*PLIKI CSS, javascript, MEDIA:
 			*w katalogu templates musisz stworzyć specjalny katalog 'static' a w nim katalog o nazwie 
-			 aplikacji/funkcjonalności w którym będziesz przechowywał pliki które się nie zmieniają przy 
+			 app/funkcjonalności w którym będziesz przechowywał pliki które się nie zmieniają przy 
 			 przechodzeniu na inne podstrony (takie jak css, zdjęcia, javascript)
 			*by załadować te pliki musisz w swoich szablonach html (NIE w plikach html które są na bazie 
 			 szablonu) na samej górze umieścić ich załadowanie poprzez:
 					{% load static %}
 			 oraz w sekcji head umieścić do nich link css poprzez:
 					<link rel="stylesheet" type="text/css" href="{% static 'playground/main.css' %}">
-					
-2.3. DEBUGOWANIE CAŁEGO PROJEKTU:
-  *UTWORZENIE PLIKU potrzebnego DO DEBUGOWANIA
-	*znajdując się wewnątrz jakiegokolwiek pliku z rozszerzeniem .py przechodzisz w panelu bocznym na ikonę 
-	 "play z żuczkiem" i klikasz na napis: "create a launch.json file" i z dostępnych opcji wybierasz opcje 
-	 z DJANGO.
-	*Tworzy ci się plik launch.json w folderze .vscode. Ten plik służy tylko do debugowania więc jeżeli np 
-	 zmienisz port w "args" dodając do listy w cudzysłowiu nowy nr portu to podczas odpalania projektu 
-	 poprzez wpisywanie ręcznie komend w terminalu, nie będzie to miało znaczenia tylko podczas jego 
-	 debugowania (chyba że odpalisz projekt przez CTRL + F5 (czyli Run without debugging))
-	*launch.json - składa się z par kluczy i wartości dających "launch profile"
-  *DEBUGOWANIE:	
-	*żeby rozpocząć debugowanie to (już po zaznaczeniu breakpoint'ów), przechodzisz na ikonę "play z 
-	 żuczkiem" i u góry wciskasz play. Uruchomi się Tobie projekt w taki sam sosób jakbyś uruchamiał go w 
-	 terminalu (pipenv shell ;; python manage.py runserver) tylko w miejscach breakpointów się zatrzyma 
-	 (otworzy ci się nowy teminal) 
-	*KOLEJNE FUNKCJE wyświetlone w panelu:
-		*STEP OVER f10- przejdź przez kolejną linijkę
-			*panel boczny - wraz z przechodzeniem przez kolejne linijki panel będzie (inspect) sprawdzał 
-			 wartości w tych linijkach 
-		*STEP INTO f11 - jeżeli natrafisz w linijce na funkcje to możesz wejśc wewnątrz jej ciała i zobaczyć
-		 czy tam nie ma jakiegoś buga
-		*STEP OUT SHIFT +f11 - następnie możesz wyjśc z takiej funkcji 
-		*RESTART - załączasz debugowanie od nowa
-		*STOP - kończysz debugowanie
-	*żeby włączyć projekt bez debugowania to robisz:
-			CTRL + f5 (RUN --> Run without debugging)
-  *DEBUGOWANIE poprzez DJANGO-DEBUG-TOOLBAR:
-   https://django-debug-toolbar.readthedocs.io/en/latest/installation.html
-    *ZALETY: 
-		*mając odpowiednio przygotowany plik html (czyli conajmniej zawierający tagi html 
-		 oraz body) mozesz w przeglądarce po wcześniejszym odpaleniu pliku (CTRL + f5 / F5) korzystać z 
-		 panelu do debugowaniu gdzie masz wszystkie potrzebne opcje i informacje.
-	*INSTALACJA:	
-		*instalacja w wirtualce:
-				pipenv install django-debug-toolbar
-		*dodanie do settings.py w głównym katalogu projektu do sekcji INSTALLED_APPS:
-				... ,
-				'debug_toolbar 
-		*dodanie do urls.py w głównym katalogu projektu do urlpatterns (+ dodanie biliotek):
-				import debug_toolbar
-				from django.conf import settings
-				from django.urls import include, path
-				urlpatterns = [
-					...
-					path('__debug__/', include(debug_toolbar.urls)),
-				]
-		*dodanie do settings.py w głównym katalogu projektu do sekcji MIDDLEWARE:
-				... ,
-				'debug_toolbar.middleware.DebugToolbarMiddleware',
-		*dodanie do settings.py w głównym katalogu projektu całej sekcji INTERNAL_IPS wraz ze swoim ip:
-				INTERNAL_IPS = [
-					# ...
-					'127.0.0.1',
-					# ...
-				]
-
-2.2 STRONA ADMINISTRATORA: -/admiN   
-	*admin site daje możliwość przeglądania wszystkich baz danych wraz z tworzeniem, updatowaniem i 
-	 usuwaniem tychże danych. 
-	*ponadto masz tam bazę użytkowników (na których również możesz dokonywać powyższych operacji) wraz z 
-	 hasłami które są domyślnie zahashowane i posolone. Użytkownicy ci składają się na 3 grupy w zależności 
-	 od statusu dostępu: administratorzy (superuser), ci co mogą się zalogować do admin-site ale nie mają 
-	 praw administratora (staff user) oraz ci o najwęższych prawach (active). 
-	*znajduję się tam też panel boczny gdzie masz wyswietlone wszystkie historie wszystkich dokonanych 
-	 operacji.
-	*stworzenie i pierwsze użycie - najpierw trzeba stworzyć domyślne bazy danych (komenda migrate 
-	 pozwala na zatwierdzenie zmian w bazie danych, ale jeżeli te bazy jeszcze nie istnieją to są tworzone 
-	 takie domyślne jak auth_user). Następnie możesz utworzy pierwszego superusera (administratora).
-					python manage.py migrate					#utworzenie domyślnych baz danych
-					python manage.py createsuperuser			#utworzenie 1wszego administratora
-					#jeżeli nie działa to przed komedą wpisz winpty: winpty python manage.py createsuperuser
-			
+	*module MODELS.PY 
+		*PODSTAWY:
+			*Django ma własny wbudowany ORM (Object-Relational Mapping), który zamienia utworzone obiekty na
+			 bazy danych (na konkretne encje/tabele) oraz pozwala na automatyczne generowanie instrukcji sql.
+			 Dzięki temu możesz używać różnych baz danych (SQLite, POSTGREsql) bez konieczności zmiany kodu. 
+			*Users (użytkownicy) mają osobną baze danych więc w models.py zamiast budowania jej możesz ją
+			 tylko modyfikować. Gdybyś chciał użyć tej tabeli użytkowników jako klucz obcy w innej tabeli
+			 to musisz ją zaimportować z django.contrib.auth.models:
+							from django.contrib.auth.models import User
+							from django.db import models
+							class Post(models.Model):
+								author = models.ForeignKey(User, on_delete = models.CASCADE)
+		*BUDOWA:
+			*nasze bazy danych/tabele (dzieki Django ORM) są reprezentowane poprzez klasy zwane 'models'
+			 a każdy atrybut reprezentuję pole w tabeli.
+			*nasze klasy/modele będą dziedziczyć klasę Model z modułu models (który jest importowany z 
+			 pakietu django.db)
+							from django.contrib.auth.models import User
+							from django.db import models
+							from django.utils import timezone
+							class Post(models.Model):
+								title=models.CharField(max_length=100)
+								content = models.TextField() 
+								date_posted = models.DateTimeField(default = timezone.now)
+								author= models.ForeignKey(User, on_delete=models.CASCADE)
+								def __str__(self):
+									return self.title								
+			*TYPY DANYCH konkretnych pól:
+				*models.ForeignKey(nazwaTabeli) - pole o kluczu w innym tabeli (czyli ForeignKey). Trzeba 
+				 zaimportować wpierw tę tabele a póżniej podać ją jako argument nazwaTabeli					
+							from django.contrib.auth.models import User
+								...
+								author = models.ForeignKey(User)
+					**on_delete=models.CASCADE - parametr który każe usunąć wszystkie obiekty powiązane z
+					    tą tabelą z klucza obcego gdy obiekt ztymże kluczem obcym zostanie usunięty. 
+							from django.contrib.auth.models import User
+								...
+								author = models.ForeignKey(User, on_delete =models.CASCADE)
+				*models.Charfield() - pole typu CHAR 
+					**max_length=100 - możesz dodać parametr ograniczający max długość
+								title = models.CharField(max_length=100)
+				*models.TextField() - pole typu text (bez ograniczenia w max długości)
+								content = models.TextField()
+				*models.DateTimeField() - pole typu data i czas
+					**auto_now=True - możesz dodać parametr który będzie generował automatycznie czas zawsze
+						podczas edycji obiektu.
+								date-posted = models.DateTimeField(auto_now=True)
+					**auto_now_add= True - możesz dodać parametr który będzie generował automatycznie czas
+						zawsze przy pierwszym tworzeniu obiektu. Nie daję to możliwości modyfikacji
+								date-posted = models.DateTimeField(auto_now_add=True)
+					**default=timezone.now - automatycznie generuję czas przy tworzeniu obiektu ORAZ daję
+						możliwośc modyfikacji czasu. 
+							from django.utils import timezone
+								...
+								date-posted = models.DateTimeField(default=timezone.now)	 
+															#nie dajesz nawiasów na końcu metody now, gdyż 
+															#nie chcesz jej wywoływać tylko jej referencje
+			*metoda __str__() - metoda magiczna która ma zwrócić tytuł posta w momencie gdy będzie 
+			 wywoływany z bazy danych w shellu (python manage.py shell) poprzez:
+							Post.objects.all()				#zwróci:  <QuerySet [<Post: Blog 1>]>
+															#zamiast: <QuerySet [<Post: Post object (1)>]>
+						#w models.py:
+							def __str__(self):
+								return self.title
+															
+	*katalog MIGRATIONS 
+		*PODSTAWY:
+			*w katalogu MIGRATIONS są przechowywane 'migracje' które są zrzutami historii wszystkich 
+			 operacji tworzenia i modyfikacji klas reprezentujących tabele w bazie danych od ostatniego 
+			 użycia komendy makemigrations. Klasy te znajdują się w pliku models.py.
+			*Wewnątrz pliku migracji zobaczysz że dana migracja zależy od poprzedniej (zmienna dependencies)
+			 dzięki czemu można zauważyć historyczne przejście do pierwszej migracji, widząc dokładnie co 
+			 się działo po drodze.
+		*KOMENDY związane z katalogiem MIGRATIONS:
+			*Migracja (która będzie wszystkimi zmianami na klasach w pliku models.py) tworzysz poprzez:
+							python manage.py makemigrations
+			*By podejrzeć jaka instrukcja sql zostaną wytworzone podczas komendy migrate w danej migracji 
+			 możesz podejrzeć poprzez komendę sqlmigrate podając za nią argumenty w postaci nazwy 
+			 aplikacji/funkcjonalnosci oraz numeru który jest na początku pliku danej migracji.
+							python manage.py sqlmigrate blog 0001
+			*By dokonać MIGRACJI z plików migracji (wszystkich plików migracji) do pliku danej bazy danych 
+			 (domyślnie dla sqlite db.sqlite3) użyj instrukcji:
+							python managey.py migrate 
 	
-2.1. KOMENDY które warto opisać do 'django-admin' a raczej do 'python manage.py' który jest wrapperem do 
+2. KOMENDY które warto opisać do 'django-admin' a raczej do 'python manage.py' który jest wrapperem do 
      django-admin (specjalnie używamy python manage.py _____ zamiast django-admin _______ gdyz ta pierwsza 
 	 komenda bierze pod uwage plik settings.py a druga już nie):
 		*runserver - URUCHOMIENIE SERWERA gdzie domyślnym portem jest 8000 ale można podać swój port jak
@@ -255,7 +727,24 @@
 			do strony administratora musisz najpierw stworzyć domyślne bazy danych poprzez migrate):
 					python manage.py migrate
 					python manage.py createsuperuser
-				
+		*makemigrations - tworzy 'migracje' czyli na podstawie utworzenia bądz zmiany klasy w pliku 
+			models.py tworzy plik migracji w katalogu migrations. Taki plik zawiera wszystkie zmiany jakie 
+			były dokonane od ostatniego użycia komendy makemigrations. 
+					python manage.py makemigrations
+		*sqlmigrate nameAplications numberOfMigration - daję możliwość podejrzenia jakie instrukcje sql
+			zostaną wytworzone na podstawie konkretnej 'migracji'
+					python manage.py blog 0001
+		*migrate - wykonuję instrukcje sql które są automatycznie wytworzone przez ORM na podstawie 
+			wszystkich migracji. Wynik tych instrukcji zostanie zapisany w plikach bazy danych (domyślnie 
+			dla sqlite db.sqlite3):
+					python manage.py migrate
+		*shell - pozwala na interaktywne działanie na modelach (klasach reprezentujących tabele w bazie
+			danych). Otwiera django-pythonową konsole shella (basha). Wewnątrz konsoli możesz odwoływać się 
+			do obiektów które są zestawami danych zwróconymi z tabel przez odpowiednie metody - metody te 
+			są wykorzystwane w module view.py jako wartośc do klucza słownika podawanego jako 3ci argument 
+			w metodzie render (patrz module view.py)
+					python manage.py shell
+					
 1. INSTALACJA, URUCHOMIENIE oraz STRUKTURA PROJEKTU:
 	1) Stworzenie WIRTUALKI i pobranie django:
 		*najważniejsze jest to że zanim stworzysz wirtualkę to najpierw zadbaj o to żeby być WEWNĄTRZ 
@@ -281,6 +770,7 @@
 				pipenv shell
 				python manage.py runserver	-->  http://127.0.0.1:8000   /  http://localhost/8000   
 												 CTRL + C (żeby przerwać)
+												 exit ( żeby wyjść z pipenva)
 												 
 	4)STRUKTURA Twojego PROJEKTU (powstała ona poprzez komende django-admin startproject nameproject) a 
 	  wewnątrz jej znajdują się pliki:
