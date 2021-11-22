@@ -1,0 +1,102 @@
+INSTALACJA VIRTUALBOX: 									https://www.youtube.com/watch?v=F_RsnnPk3Tk
+INSTALACJA JAKIEJKOLWIEK DYSTRYBUCJI 				 	https://www.youtube.com/watch?v=irGTD6jmYhc
+			  LINUXa NA VIRTUALBOXie:					https://www.youtube.com/watch?v=wX75Z-4MEoM
+############################################################################################################
+COMMANDS {with TAB, space & q}:			
+------------------------------------------------------------------------------------------------------------
+				BASICS				   |	CREATING, MOVING,REMOVING	  |				SHOWING
+------------------------------------------------------------------------------------------------------------
+whoami		[who am i]				   |   	-v		[verbose]			  |xdg-open     [open file or dir]	
+date		[show date]      		   |mkdrir		[make directory]	  |		.		   [open current dir]
+man			[manual help]			   |		-p		[parents]		  |head			[open first 10 lines]
+help		[shell help]			   |touch		[create files]		  |		-n		   [number of lines]
+clear		[clear]					   |rmdir		[remove EMPTY dirs]	  |tail			[open last 10lines]
+pwd			[print working directory]  |rm 	-r		[remove files and	  |		-n		   [number of lines]
+ls 			[list]					   |			 dirs recursively]	  |		-f		   [not kill process]
+   -a			[list all]			   |		-i  	[interactive]	  |cat 			[show all file or all
+   -l			[list long]			   |mv			[move or rename]	  |				 concatenated files]
+cd			[change directory]		   |cp			[copy file]			  |less			[show all files and
+	..			[back level]		   |		-r  	[copy files and	  |				 can search] 
+	/			[root]				   |				 dirs reursively] |echo 		[show typed words]
+	~			[home path]			   |>			[redirect]			  |
+									   |>>			[redirect + append]   |
+------------------------------------------------------------------------------------------------------------
+
+------------------------------------------------------------------------------------------------------------
+
+############################################################################################################
+I BASICS:
+	0* whoami 		[who am i]			--> show userid (username)
+	1* date			[current date]		--> show current date
+	2* man			[manual help]		--> show the description about command program, utility or function
+	3* help			[shell help]		--> the same as man but it is shell's version of command 
+	4* clear/ctrl+l [clear]				--> clean all commands in terminal from history forver
+		   -x								- only move up all commands without clearing them forever					
+	5* pwd			[print working 		--> show current location
+					 directory]
+	6* ls			[list]				--> list names of files (with extends), catalogs and shortcuts with 
+											different colors for files, catalogs and shortcuts.
+		   /dir/dir [directory]				- list files, catalogs and shortcuts for specific directory
+											  (relative or absolute directory)
+		   -l		[long]					- use long format (with file permissions, owner, group owner, 
+											  size, modification date, name)
+		   -a --all [all]					- include files which are hidden
+	7* cd   /dir	[change current 	--> change directory for the typed one (relative or absolute)
+					 directory]
+			~								- back to home directory (your username folder)
+			/								- back to "/" directory ("/" is commonly called root which is 
+											  deeper then home)(Every abs path start with "/")
+			..								- back 1 level (go to parent directory)
+			../../							- back 2 levels (you can back as many levels as you wish)
+
+II CREATING, MOVING, REMOVING:			--> every below command can be executed for multiple files or folder
+											like: (mkdir one two three) AND it can be executed by absolute
+											path like: (mkdir ~/one/first) AND
+			-v		[verbose]				- additional confirmation information about executed operation					
+	1* mkdrir		[make directory]	--> create one folder in current directory (by: mkdir one) 
+			-p		[parents]				- if directory doesn't exist (nested folder) it creates it (by: 
+											  mkdir one/two/three - 'two' is not existing, '-p' creates it)
+	2* touch		[create files]		-->	create one file in current directory (by: touch file.txt)
+											IF FILE EXISTS IT WILL ONLY CHANGE THE TIMESTAMPS.
+	3* rmdir		[remove EMPTY		--> remove a folder (it has to be an empty folder)
+					 directory]	
+	4* rm	-r 		[remove directory   --> remove folders and files ('-r' removes all files within folders,
+					 or file recursivly]    without '-r' it will not work) 
+			-i		[remove interactive]	- '-i' give you an option to decide in removing every case
+	5* mv			[move or rename]	--> it can change one dir to another (by: mv dir1/file1 dir2/)
+											or it can rename the file (by: mv file1 file2)
+	6* cp			[copy file]			--> copy file (by: cp file1 file2)
+					[copy dirs				 - copy directory recursively (all dirs and files) 
+					 recursively]			   (by: cp -r dir DIR2)
+	7* >			[redirect]			--> it redirects the output to the file as a text and clear 
+											everything what was before in a file (by: ls -l > a.txt)
+	8* >>			[redirect + append]	--> it redirect the output to the file as a text and append it to
+											everything what was before in a file (by: ls -l >> a.txt)
+					 
+III SHOWING:
+	1* xdg-open 	[open file or dir]	--> open file or folder in a editor or in file explorer
+			.		[open current dir]  	- open folder with files in current directory in file explorer
+	2* head 		[open first 		--> open 10 FIRST lines of the file (by: head file.txt) in terminal
+					 10 lines]
+			-n		[NUMBER of lines]		- open FIRST NUMBER of lines (by: head -n 15 file.txt) 
+	3* tail			[open first 		--> open 10 LAST lines of the file (by: tail file.txt) in terminal
+					 10 lines]
+			-n		[NUMBER of lines]		- open LAST NUMBER of lines (by: tail -n 15 file.txt)
+			-f 		[follow]				- after showing last 10 lines it is not kill the process. It 
+											  waits for new followed lines (usefull in logs) 
+	4* cat 			[show all file or 	--> show in terminal ALL lines form file (by: cat myfile.txt) or
+					 concatenate files]		show ALL given files concatenated (by: cat myf1.txt myf2.txt). 
+											(Also you can redirect this concatenate result to another file 
+											by: cat f1.txt f2.txt > f3.txt)
+			-n		[NUMBER of lines]		- open NUMBER of lines in a file (by: cat -n 15 file.txt)
+	5* less			[show all file and  --> show in terminal all file and because you can navigate by arrows 
+					 can search within]		it is designed for BIG files. Also you can search within by 
+											typing '/' and searching word (by: less f1.txt ==> '/word')
+	6* echo			[show typed words]	--> show typed words within/without quotes (preffered with quotation)
+											(Also you can redirect this typed words)
+		{expansions}
+		
+IV SEARCHING
+	
+	
+	
