@@ -1,78 +1,282 @@
-INSTALACJA VIRTUALBOX: 									https://www.youtube.com/watch?v=F_RsnnPk3Tk
-INSTALACJA JAKIEJKOLWIEK DYSTRYBUCJI 				 	https://www.youtube.com/watch?v=irGTD6jmYhc
-			  LINUXa NA VIRTUALBOXie:					https://www.youtube.com/watch?v=wX75Z-4MEoM
+INSTALACJA VIRTUALBOX: 						https://www.youtube.com/watch?v=F_RsnnPk3Tk
+INSTALACJA JAKIEJKOLWIEK DYSTRYBUCJI 		https://www.youtube.com/watch?v=irGTD6jmYhc
+			  LINUXa NA VIRTUALBOXie:		https://www.youtube.com/watch?v=wX75Z-4MEoM
+LINUX TERMINAL COMMANDS:					https://www.freecodecamp.org/news/the-linux-commands-handbook/
+ADVNACED LINUX INSTRUCTION:					https://bash.0x1fff.com/index.html#
 ############################################################################################################
 COMMANDS {with TAB, space & q}:			
-------------------------------------------------------------------------------------------------------------
-				BASICS				   |	CREATING, MOVING,REMOVING	  |				SHOWING
-------------------------------------------------------------------------------------------------------------
-whoami		[who am i]				   |   	-v		[verbose]			  |xdg-open     [open file or dir]	
-date		[show date]      		   |mkdrir		[make directory]	  |		.		   [open current dir]
-man			[manual help]			   |		-p		[parents]		  |head			[open first 10 lines]
-help		[shell help]			   |touch		[create files]		  |		-n		   [number of lines]
-clear		[clear]					   |rmdir		[remove EMPTY dirs]	  |tail			[open last 10lines]
-pwd			[print working directory]  |rm 	-r		[remove files and	  |		-n		   [number of lines]
-ls 			[list]					   |			 dirs recursively]	  |		-f		   [not kill process]
-   -a			[list all]			   |		-i  	[interactive]	  |cat 			[show all file or all
-   -l			[list long]			   |mv			[move or rename]	  |				 concatenated files]
-cd			[change directory]		   |cp			[copy file]			  |less			[show all files and
-	..			[back level]		   |		-r  	[copy files and	  |				 can search] 
-	/			[root]				   |				 dirs reursively] |echo 		[show typed words]
-	~			[home path]			   |>			[redirect]			  |
-									   |>>			[redirect + append]   |
-------------------------------------------------------------------------------------------------------------
-
-------------------------------------------------------------------------------------------------------------
-
+------------------------------------------------------------------------------------------------------------|
+------------------------------------------------------------------------------------------------------------|
+				I.BASICS			   |   II.CREATING, MOVING,REMOVING	  |			  III.SHOWING			|
+------------------------------------------------------------------------------------------------------------|
+whoami		[who am i]				   |   		-v		[verbose]		  |xdg-open     [open file or dir]	
+date		[show date]      		   |		cos{opt1, opt2}cos		  |		.		   [open current dir]
+man			[manual help]			   |		cos{num1..num2}cos		  |head			[open first 10 lines]
+help		[shell help]			   |mkdrir		[make directory]	  |		-n		   [number of lines]
+clear		[clear]					   |		-p		[parents]		  |tail			[open last 10lines]
+pwd			[print working directory]  |touch		[create files]		  |		-n		   [number of lines]
+ls 			[list]					   |rmdir		[remove EMPTY dirs]	  |		-f		   [not kill process]
+   -a			[list all]			   |rm 	-r		[remove files and	  |cat 			[show all file or all
+   -lh			[long - human format]  |			 dirs recursively]	  |				 concatenated files]
+   *.txt		[only txt files]	   |		-i  	[interactive]	  |less			[all files + arrow
+   *.???		[only files with 3 	   |mv			[move or rename]	  |				 navigation + search] 
+				 letters extension]	   |cp			[copy file]			  |echo 		[show typed words]
+cd			[change directory]		   |		-r  	[copy files and	  |		~		   [show home dir]
+	..			[back level]		   |				 dirs reursively] |		$PATH	   [PATH VARIABLE]
+	/			[root]				   |>			[redirect]			  |		*.txt	   [all txt files]
+	~			[home path]			   |>>			[redirect + append]   |diff			[difference]			   
+history		[show all commands history]|nano fname	[nano editor]		  |		-u		   [unified]		
+------------------------------------------------------------------------------------------------------------|
+------------------------------------------------------------------------------------------------------------|
+		  IV.SEARCHING PART I		   |		V.SEARCHING PART II		  |			VI.PROCESSESS			|
+------------------------------------------------------------------------------------------------------------|
+... | ...	[commands after pip]	   |find .		[find in current dir] |du 			[disk usage (file
+wc 			[lines, word, bytes count] |		-name	[by name pattern] |				 space usage)]
+	-l 		    [lines count]	 	   |		-type	[by type f or d]  |		-h		   [human format]
+	-w		    [words count]	 	   |		-size 	[greater or less  |		-m / -k	   [in Mb or kb]
+	-c 		    [bytes count]		   |				 type than typed] |df			[disk technicians]
+sort		[sort and print]		   |		-mtime	[greater or less  |		-h		   [human format] 
+	-n		    [sort numbers]		   |				 modified time    |ps			[process status]
+	-r		    [reverse sorting]	   |				 than typed]      | 	ax		   [all processess] 
+	-u		    [sort unique lines]    |		-exec 	[execute command  |top			[top 10 most cpu
+uniq		[show unique lines]	       |				 on find result]  |				 intense processess]
+	-d		    [duplicates]		   |grep		[global reular expr.] |		-o mem 	   [memory intense]
+			    (sort f.txt | uniq -d) |		-r		[recursively]	  |kill -9 <PID>[kill process]
+	-u	 	    [NON duplicated lines] |		-n		[number of line]  |killall -9 phrase [kill by phrase
+			    (sort f.txt | uniq -u) |		-C		[additional lines |				occur in programName]
+	-c	 	    [COUNT lines ] 		   |				 before and after |jobs			[running commands]	
+			    (sort f.txt | uniq -c) |				 matched words]   |
+------------------------------------------------------------------------------------------------------------|
+------------------------------------------------------------------------------------------------------------|
+	   VII.ARGS, LINKS, ALIASSESS	   |	  VIII.COMPRESSING FILES	  |			IX.ADMINISTRATE			|
+------------------------------------------------------------------------------------------------------------|
+cmd1 | xargs cmd2 					   |gzip    -k fname				  |who			[who]
+			[exchange to args]		   |			[zip without replace] |su - <user>	[switch user]
+ln <originalFile> <link>			   |		-d		[decompress]	  |sudo	<cmd>	[superuser do]
+			[links (shotcuts)]		   |gunzip		[decompress]		  |		apt install <cmd/packages>
+		-s 		[softlinks]			   |tar     -czf name.tar f1 f2 -C dir|					[install new
+alias		[define aliases]		   |			[take archive + zip]  |					  cmd/packages]
+			[cd ~  nano .bashrc + type |		-xf name.tar -C dir		  |passwd		[change password]
+			inside alias myA='command']|				[extract file]	  |		sudo passwd <username>				
+--------------------------------------------------------------------------|					[change sombody		   
+--------------------------------------------------------------------------|					 password]		   
+						  X.ADVANCED INSTRUCTIONS						  |sudo chown <owner> <file/dir>			
+--------------------------------------------------------------------------|				[change ownership]
+START EVERY INSTRUCTION: 	#!/bin/bash									  |		-R			[recursively]
+INSTRUCTION IF/ELSE:		if [   <warunek>   ]; then			  		  |		<owner>:<groupOwner> <f/dir>
+								polecenia1						  		  |					[ch. group owner]
+							else								 		  |chmod <(u,g,o,a)+/-(r,w,x)> f/dir
+								polecenie2						 		  |				[change mode file]
+							fi									  		  |_________________________________|
+INSTRUCTION CASE:			case "<zmienna>" in								
+							  "wzorzec1") polecenie1 ;;							
+							  "wzorzec2") polecenie2 ;;							
+							  "wzorzec3") polecenie3 ;;						
+							  *) polecenie_domyślne							
+							esac			
+INSTRUCTION FOR:			for ((<inicjacja_zmiennej>; <warunek_zakonczenia>; <zwiększanie/zmniejszanie>)); 
+							do
+							   ...polecenia w pętli...
+							done					
+							for <zmienna> in <lista> 					
+							do												
+								Polecenie1									
+							done			
+INSTRUCTION WHILE:			while [ warunek ] ; do							
+								polecenie									  
+								inkrementacja									
+							done		
+------------------------------------------------------------------------------------------------------------|
 ############################################################################################################
-I BASICS:
-	0* whoami 		[who am i]			--> show userid (username)
-	1* date			[current date]		--> show current date
-	2* man			[manual help]		--> show the description about command program, utility or function
-	3* help			[shell help]		--> the same as man but it is shell's version of command 
-	4* clear/ctrl+l [clear]				--> clean all commands in terminal from history forver
-		   -x								- only move up all commands without clearing them forever					
-	5* pwd			[print working 		--> show current location
-					 directory]
-	6* ls			[list]				--> list names of files (with extends), catalogs and shortcuts with 
-											different colors for files, catalogs and shortcuts.
-		   /dir/dir [directory]				- list files, catalogs and shortcuts for specific directory
-											  (relative or absolute directory)
-		   -l		[long]					- use long format (with file permissions, owner, group owner, 
-											  size, modification date, name)
-		   -a --all [all]					- include files which are hidden
-	7* cd   /dir	[change current 	--> change directory for the typed one (relative or absolute)
-					 directory]
-			~								- back to home directory (your username folder)
-			/								- back to "/" directory ("/" is commonly called root which is 
-											  deeper then home)(Every abs path start with "/")
-			..								- back 1 level (go to parent directory)
-			../../							- back 2 levels (you can back as many levels as you wish)
+X PROGRAMMING BASH:
+	0* EVERY INSTRUCTION START WITH:	 #!/bin/bash
+	1* VARIABLES:
+		***declare variables normally: (ex: x=2)
+		***show variables: (ex: echo $x   OR   	echo "$x"   OR   echo "${x}"   BUT NOT   echo '$x')
+	2* INSTRUCTION IF/ELSE:							examples:
+		a) 	if [   <warunek>   ]; then						if [ -e ~/.bashrc ] ; then
+			   polecenia1										echo "Masz plik .bashrc"
+			fi												fi
+		b)	if [   <warunek>   ]; then						if [ -e ~/.bashrc ] ; then
+				polecenia1										echo "Masz plik .bashrc"
+			else											else
+				polecenia2										echo "Nie masz pliku .bashrc"
+			fi												fi
+	3* INSTRUCTION CASE:							example:
+			case "<zmienna>" in								case "$d" in
+			  "wzorzec1") polecenie1 ;;							"1") echo 'Styczeń' ;;
+			  "wzorzec2") polecenie2 ;;							"2") echo 'Luty' ;;
+			  "wzorzec3") polecenie3 ;;							"3") echo 'Marzec' ;;
+			  *) polecenie_domyślne								*) echo "Nic nie wybrałeś"
+			esac											esac
+	4* INSTRUCTION FOR:								example:
+		a)	for <zmienna> in <lista> 						for x in jeden dwa trzy 
+ 			do												do
+				Polecenie1										echo "To jest $x"
+			done											done
+		b) 	for ((<inicjacja_zmiennej>; <warunek_zakonczenia>; <zwiększanie/zmniejszanie>)) ; 
+			do										
+			   ...polecenia w pętli...				example:
+			done											for (( i=1; $i <= 10; i++ )) ; 
+															do
+																   echo " Iteracja nr: $i"
+															done
+	5* INSTRUCTION WHILE:							example:
+			while [ warunek ] ; do							while [ $x -le 10 ] ; do
+				polecenie									    echo "Napis pojawił się po raz: $x"
+				inkrementacja									x=$[x + 1]
+			done											done
+			
+IX ADMINISTRATE:						--> permisions: drwx|rwx|rwx - FIRST LETTER:('d' means directory, 
+											'-' means regular file, 'l' means link/shortcut), OTHERS:
+											(r -read, w-write, x - execute). First section is about what 
+											owner can do, 2nd section is about what group members (group 
+											owner) can do, 3rd section is about what everyone else can do.	
+											(ex: -rwxr-xr-- means regular file which owner can read, write 
+											and execute, group member (group owner can read and execute and
+											others can only read))									
+	1* who			[who]				--> display all names of logged in users in every console 
+	2* su - <user>	[switch user]		--> give a possibility of switching to another account 
+	3* sudo	<cmd>	[superuser do]		--> use it before command to run them as root (with administrator 
+											permissions)
+			apt install <cmd/packages>		- give an oportunity to install packages
+					[install new cmd/packages]
+	4* passwd		[change password]	--> give an oportunity to change password on your account
+			sudo passwd <username>			- or as an administrator to change somebodies passwords.
+	5* chown <owner> <file/dir>			--> change who owns particular file or directory.
+					[change ownership]	
+			-R		[recursively]			- change recursively all files and folders nested in typed dir
+			<owner>:<groupOwner> <file/dir> - in linux you've got 2 types of owners: owner (read, change, 
+											  delete) and group owner (only read)
+	6* chmod <(u,g,o,a)+/-(r,w,x)> f/dir--> change permissions. In mode section firstly you type which
+					[change mode file]	 	section of permision do you choose ('u'= user/owner; 'g'= group, 
+											'o'= others, 'a'= all), than by (+ or -) add or remove('r'= read,
+											'w'= write, 'x'= execute)  some of the permissions. 
+											(ex: chmod go+wx file.txt - means change mode to group owner 
+											and others adding them a write and execute options in file.txt)
+											Also you can use Binary (000 - 111) or Octagonal (0-7) permision
+											options OR you can use '=' signs which means equals only.
 
-II CREATING, MOVING, REMOVING:			--> every below command can be executed for multiple files or folder
-											like: (mkdir one two three) AND it can be executed by absolute
-											path like: (mkdir ~/one/first) AND
-			-v		[verbose]				- additional confirmation information about executed operation					
-	1* mkdrir		[make directory]	--> create one folder in current directory (by: mkdir one) 
-			-p		[parents]				- if directory doesn't exist (nested folder) it creates it (by: 
-											  mkdir one/two/three - 'two' is not existing, '-p' creates it)
-	2* touch		[create files]		-->	create one file in current directory (by: touch file.txt)
-											IF FILE EXISTS IT WILL ONLY CHANGE THE TIMESTAMPS.
-	3* rmdir		[remove EMPTY		--> remove a folder (it has to be an empty folder)
-					 directory]	
-	4* rm	-r 		[remove directory   --> remove folders and files ('-r' removes all files within folders,
-					 or file recursivly]    without '-r' it will not work) 
-			-i		[remove interactive]	- '-i' give you an option to decide in removing every case
-	5* mv			[move or rename]	--> it can change one dir to another (by: mv dir1/file1 dir2/)
-											or it can rename the file (by: mv file1 file2)
-	6* cp			[copy file]			--> copy file (by: cp file1 file2)
-					[copy dirs				 - copy directory recursively (all dirs and files) 
-					 recursively]			   (by: cp -r dir DIR2)
-	7* >			[redirect]			--> it redirects the output to the file as a text and clear 
-											everything what was before in a file (by: ls -l > a.txt)
-	8* >>			[redirect + append]	--> it redirect the output to the file as a text and append it to
-											everything what was before in a file (by: ls -l >> a.txt)
-					 
+VIII COMPRESSING FILES:					--> on each instruction you can add verbose"
+			-v		[verbose]				- it will give you extra information about creation of zip
+	1* gzip -k fname[zip file without	--> zip only files. (you can't give a folder with files) You have 
+					 replace original]	 	to use flag -k because without it, it will replace your orignal
+											file by zip file.
+			-d		[decompress]			- unzip the file with extension gz.		 
+	2* gunzip		[decompress]		--> unzip the file with extension gz and delete the original zip.
+    3* tar  -czf name.tar f1 f2 -C dir	 	--> create an archive with compression for files and also folders 
+					[take archive + 		with files. (Normally tar command without '-z' flag WILL NOT 
+					 create, gzip, fname]	COMPRESS but only makes in one folder all files and folders. 
+											Then to	compress after tar use gzip) Use tar command with flag 
+											'-c' (means create), with flag '-z' (means gzip (compress)) and 
+											with flag '-f' to indicates name of archive (tar file). After 
+											that name you list all files you wanna archive and gzip.
+			-xf name.tar -C dir				- TO EXTRACT archive in current directory. (ex: tar -xf name.tar)
+					[extract file +			  Remember that FIRST you have to use GUNZIP to decompress. 
+					filename]  				  To extract in a specific directory use flag -C and type dir.
+											  (ex: tar -xf name.tar -C directory).
+
+VII ARGS, LINKS, ALIASSESS:
+	1* cmd1 | xargs	cmd2				--> take output from one command as an arguments to the 2nd command.
+					[exchange to args]	 	(ex: cat filesToDelete.txt | xargs rm -r) (take names of files
+											which you wanna delete from filesToDelete.txt and take them as 
+											arguments to command remove (rm))
+	2* ln <originalFile> <link>			--> create links to typed files. This links are shortcuts with 
+					[links (shotcuts)]		reference to original files. (Default links are hardlinks which 
+											will not be deleted when the original was removed (rm) and still
+											show all data inside the original file.
+			-s 		[softlinks]				- when original file will be removed the softlink will still 
+											  exist but will show: "No such file or directory"
+	3* alias		[define aliases]	--> define aliases for custom commands (ex: alias myalias='ls -lh')
+											but it's not penamently (if you close terminal it will disappear)
+											Double quotes in alias you use for variables (alias m="ls $PWD")
+	   cd ~  -->>  nano .bashrc  -->>		- to create pernament alias you should type it inside file:
+	   type inside: alias myA='command'		'.bashrc' in aliassess section. Then you should save this file. 
+	 
+VI PROCESSESS:
+	1* du 			[disk usage (file	--> shows all directories and their space usage on disk
+					 space usage)]
+			-m /-k	[Mb or Kb]				- show in Mb or in kb
+			-h		[human readable]		- show in huna readable format
+	2* df 			[disk technicians]	--> show technicians about disk such as disk usage, availblness ...
+			-h		[human readable]		- show in huna readable format
+	3* ps			[process status]	--> display information about users currently running processess 
+			ax				    			- display all running processess (with system processess also)
+	4* top 			[top 10 CPU]		--> show top 10 CPU intense processess (with process ID <PID>)
+			-o mem  [memory intense]		- show top 10 MEMORY intense processess
+	5* kill -9 <PID>[kill process]		--> terminate process by specific killing signal (9 means SIGKILL) 
+											(you can display all kill signal by kill -l)
+	6* killall -9 phrase			--> terminate all processess which has in their programName typed phrase
+					[kill processess by 
+					 programName phrase]
+	7* jobs 		[jobs]			--> if the command is during a lot you don't have to it break it by
+										CTRL+C. You can pause it by CTRL+Z and by 'jobs' check is it running
+										or not. 
+V SEARCHING PART II						--> it uses patterns similar to regex like:
+			?								- means single every sign 
+			*								- means multiple every signs
+										
+	1* find			[find]				--> find files and folders recursively (by going through all tree of
+											folders) matching to some patterns. As a first argument you give
+											a location than you give an operator and after it you give a 
+											pattern. '.' means: in current folder. Without a parameter it 
+											shows TREE of all folders and files in current dir. (ex: find .)
+			-name	[name]					- It search by pattern matched to parmeter: name of the file or 
+											  folder. (ex: find . -name 'Day*.txt')
+			-type f [type]					- It search by type file or type directory. Also you can union 
+			-type d							  this parameter with others (ex: find . -name 'Day*' -type d)
+			-size +/-num {c,k,M}	 		- It search files hish has greater characters than typed (c)
+					[character size			  (ex: find . -size +100c) or files with greater size than typed:
+					 or file size]			  (k = KB, M = MB) (ex: find . -size +1M)(greater than 1MB) or
+											  size beetween first typed size and second typed size:
+											  (ex: find . -type f-size +100k -size -1M)(files greater than 
+											  100KB but smaller than 1MB)
+			-mtime +/-num					- It search files which are moified more or less than typed days
+					[modified time]			  (ex: find . -mtime -2)(files which have been modified less
+											  than 2 days)
+			-exec command {} \;				- on the earlier finded results for each execute typed command
+					[executed]				  (ex: find . -type f cat {} \;)(for each file execute command 
+											  cat)(2nd ex: find . -type f -size +100c -exec ls -l {} \;)
+											  (find files which size is bigger than 100characters and exec
+											  command ls -l on each finded result)
+	2* grep			[global reular		--> find typed text inside in files. First parameter is search text
+					 expression]			and second parameter is name of the files. (You need to type 
+											the name of one file not a dorectory with multiple files)
+											(ex: grep myText myFile.js). Also you can grep by REGEXes. 
+			-r		[recursively]			- look not only in single file but is searching in all nested 
+											  folders and files (ex: grep -r myText myFolder) 
+			-n		[number of line]		- additionally grep will show you number of each line where find
+											  the match (ex: grep -n myText myFile.js)
+			-C		[additional lines		- additionally shows typed number of lines before and after 
+					 before and after]		  matched lines.( ex: grep -C 2 myText myF.js)(show 2 lines before 
+											  and after matched words)
+			
+IV SEARCHING PART I
+	0* ... | ...	[commant after pip] --> take the output from commands before pip and pass it to the
+											input to a second command. You can use not only one pip (ex:
+										    cat m.txt my.txt my2.txt | sort | uniq -uc > a.txt )
+	1* wc 			[lines, word,		--> returns number of lines, number of words, number of bytes. You 
+					 bytes count]			can use it after pip (by: ls -al | wc) or for file (by: wc f.txt)
+			-l 		[lines count]	 		- shows only number of lines
+			-w		[words count]	 		- shows only number of words
+			-c 		[bytes count]	 		- shows only number of bytes
+	2* sort			[sort and print]	--> sort lines in file and print it. It doesn't change the file. You 
+											can use it after pip (by: ls -al | sort) or sort the file 
+											(by: sort f.txt)
+			-n		[sort numbers]			- sort by amount of the number
+			-r		[reverse sorting]		- sort in reversed order
+			-u		[unique]				- sort with unique items (duplications will be avoided)
+	3* uniq			[unique]			--> give us all lines without duplicates (but only those which are 
+											occured after the next line - if it is break by another line
+											and after this another line is duplication, that duplication 
+											will be occured normally). 
+			-d 		[duplicate]				- shows only duplicates (It is often used with sort -> first you
+											  sort and after pip you search for all duplication by uniq -d
+											  (by: sort file.txt | uniq -d)
+			-u		[non duplicated lines]	- shows only NON duplicated lines (but it has to be used with 
+											  sort command) (by: sort file.txt | uniq -u)
+			-c		[COUNT lines]			- shows number of duplicated lines (but it has to be used with 
+											  sort command) (by: sort file.txt | uniq -c)
 III SHOWING:
 	1* xdg-open 	[open file or dir]	--> open file or folder in a editor or in file explorer
 			.		[open current dir]  	- open folder with files in current directory in file explorer
@@ -92,11 +296,74 @@ III SHOWING:
 	5* less			[show all file and  --> show in terminal all file and because you can navigate by arrows 
 					 can search within]		it is designed for BIG files. Also you can search within by 
 											typing '/' and searching word (by: less f1.txt ==> '/word')
-	6* echo			[show typed words]	--> show typed words within/without quotes (preffered with quotation)
-											(Also you can redirect this typed words)
-		{expansions}
-		
-IV SEARCHING
+	6* echo			[show typed words]	--> show typed words within/without quotes (preffered with quotation
+											because special signs as expansions)(Also you can redirect this
+											typed words to a file)
+	***{expansions - special signs:}					--> special characters and syntax which shows special values as:
+			~								- show home directory (ex: echo ~)
+			$PATH							- show DIRECTORY PATH VARIABLE (ex: echo $PATH)
+			*								- show list of all results (star match anything (ex: echo *.txt))
+			?								- show list of all results (question mark match one letter
+											  (ex: echo *.??? - files with 3 letter extension)
+			{a,b}.txt						- show LIST (divided by space) of all combinations (a.txt, b.txt)	
+			{1..99}						    - show LIST (divided by space) of all numbers from 1 to 99 
+	7* diff			[difference]		--> show like in git diference between two files 
+			-u		[unified]				-like difference in git (with lines and what is added/removed)
 	
-	
-	
+II CREATING, MOVING, REMOVING:			--> every below command can be executed for multiple files or folder
+											like: (mkdir one two three) AND it can be executed by absolute
+											path like: (mkdir ~/one/first) AND
+			-v		[verbose]				- additional confirmation information about executed operation	
+			cos{opt1, opt2)cos				- create combinations of files/folders (ex: touch my{A,B,C}.txt
+											  returns myA.txt, myB.txt, myC.txt)
+			cos{num1..num2}cos				- create combinations of files/folders with numbers from num1 to
+											  num2 (ex: touch Day{2..5}.txt returns: Day2.txt, Day3.txt, 
+											  Day4.txt, Day5.txt)
+	1* mkdrir		[make directory]	--> create one folder in current directory (by: mkdir one) 
+			-p		[parents]				- if directory doesn't exist (nested folder) it creates it (by: 
+											  mkdir one/two/three - 'two' is not existing, '-p' creates it)
+	2* touch		[create files]		-->	create one file in current directory (by: touch file.txt)
+											IF FILE EXISTS IT WILL ONLY CHANGE THE TIMESTAMPS.
+	3* rmdir		[remove EMPTY		--> remove a folder (it has to be an empty folder)
+					 directory]	
+	4* rm	-r 		[remove directory   --> remove folders and files ('-r' removes all files within folders,
+					 or file recursivly]    without '-r' it will not work) 
+			-i		[remove interactive]	- '-i' give you an option to decide in removing every case
+	5* mv			[move or rename]	--> it can change one dir to another (by: mv dir1/file1 dir2/)
+											or it can rename the file (by: mv file1 file2)
+	6* cp			[copy file]			--> copy file (by: cp file1 file2)
+					[copy dirs				 - copy directory recursively (all dirs and files) 
+					 recursively]			   (by: cp -r dir DIR2)
+	7* >			[redirect]			--> it redirects the output to the file as a text and clear 
+											everything what was before in a file (by: ls -l > a.txt)
+	8* >>			[redirect + append]	--> it redirect the output to the file as a text and append it to
+											everything what was before in a file (by: ls -l >> a.txt)
+	9* nano	/ 		[nano editor]		--> beginer friendly editor. You can open it with file or without it.
+	   nano fname						    Use shortcuts with CTRL (ex: CTRL+S +type name +ENTER -to save)	
+	   
+I BASICS:
+	0* whoami 		[who am i]			--> show userid (username)
+	1* date			[current date]		--> show current date
+	2* man			[manual help]		--> show the description about command program, utility or function
+	3* help			[shell help]		--> the same as man but it is shell's version of command 
+	4* clear/ctrl+l [clear]				--> clean all commands in terminal from history forver
+		   -x								- only move up all commands without clearing them forever					
+	5* pwd			[print working 		--> show current location
+					 directory]
+	6* ls			[list]				--> list names of files (with extends), catalogs and shortcuts with 
+											different colors for files, catalogs and shortcuts.
+		   /dir/dir [directory]				- list files, catalogs and shortcuts for specific directory
+											  (relative or absolute directory)
+		   -l		[long]					- use long format (with file permissions, owner, group owner, 
+											  size, modification date, name)
+		   -a --all [all]					- include files which are hidden
+		   *.txt							- shows only txt files
+	7* cd   /dir	[change current 	--> change directory for the typed one (relative or absolute)
+					 directory]
+			~								- back to home directory (your username folder)
+			/								- back to "/" directory ("/" is commonly called root which is 
+											  deeper then home)(Every abs path start with "/")
+			..								- back 1 level (go to parent directory)
+			../../							- back 2 levels (you can back as many levels as you wish)
+	8* history		[history of all		--> show all history of typed commands with number of order
+					 typed commands]	
