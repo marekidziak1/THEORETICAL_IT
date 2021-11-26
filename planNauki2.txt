@@ -32,8 +32,8 @@ python:
 	
 Django:
 2|2 *Corey Shaffer - DJANGO
-1|6 *Traversy media - Django Crash Course
-3|10*freecodecamp--> django web framework
+3|6 *freecodecamp--> django web framework
+1|10*Traversy media - Django Crash Course
   14*techwithtim-->django webdevelopment tutorial
   15*techwithtim-->django & react integration
 3|  *dr chuck--> django
@@ -55,3 +55,4 @@ Zrobione:
 12.GIT - Git and GitHub for Beginners - Crash Course - FREECODECAMP: https://www.youtube.com/watch?v=RGOj5yH7evk&t=48s
 13.Corey Shafer (PRE-INTERMEDIATE) (13,14,18,19,20,21,22,23,26,27,28,29,30,32,35 36,37,38,39,45,47,48,49,51)
 14.Bash tutorial   https://www.youtube.com/watch?v=ZtqBQ68cfJc
+15:5 simple python project - tech with tim https://www.youtube.com/watch?v=DLn3jOsNRVE

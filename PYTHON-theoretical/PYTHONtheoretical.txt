@@ -109,7 +109,7 @@ MODULE CALENDAR:					https://www.geeksforgeeks.org/python-calendar-module/
 MODULE, if__name__ == '__main__':	https://www.youtube.com/watch?v=sugvnHA7ElY
 
  
-6*MODULE getpass: 
+6*MODULE getpass
 	*służy do tego żeby w inputcie w momencie wpisywania hasła nie były widoczne znaki:
 				import getpass
 				username=input('Username: ')
@@ -276,7 +276,7 @@ https://www.geeksforgeeks.org/python-shutil-copytree-method/
 					from random import randint 
 					for i in range(100):
 						print(randint(1,10))
-			*random.randrange(1,10) - ze zaimportuj zbior random   +   funkcja: randrange(1,10)    [1-9]
+			*random.randrange(1,10) -(przedział lewostronnie zamknięty, prawostronnie otwarty)    [1-9]
 					import random	
 					print(random.randrange(1,10))
 			*random.uniform(3,7) - używaj przy rzeczywistym podejściu losowości 
@@ -303,7 +303,7 @@ https://www.geeksforgeeks.org/python-shutil-copytree-method/
 			*random.choice(list) - ktora z danej sekwencji (np. listy) wybierze losowo jedną wartość:
 					import random
 					lst=['rock' 'paper', 'scizzors']
-					obj=random.choice(lst
+					obj=random.choice(lst)
 				*żeby zrobić losowanie z dictionary to zamień je wczesniej na listę:
 					import random 
 					dictionary={'north':[1,0],'east':[0,1],'south':[-1,0],'west':[0,-1]}
@@ -5756,12 +5756,6 @@ SŁOWNICZEK:				https://www.w3schools.com/python/python_ref_glossary.asp
 	VISUALSTUDIO - też IDE (środowisko)
 	
 	PYTHON.org	- interpreter (cos jak kompilator)
-
-0.2*Do Windowsa korzystaj z komend:
-	*cd path - change direction
-	*ls - list files
-	*d: - do zmiany dysk na d:
-	*cat file - do pokazania wnętrze pliku
 	
 0.1* KONSOLA DLA PYTHONA:
 	*OTWIERASZ PLIK PYTHON.EXE i masz konsole z pythonem. 
