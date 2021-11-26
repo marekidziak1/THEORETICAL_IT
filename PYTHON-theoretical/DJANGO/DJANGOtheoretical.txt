@@ -290,10 +290,156 @@
 	 pliku models.py i następnie ja zarejestrować. Dzięki temu będziesz mógł ją modyfikować z pozycji 
 	 administratora będąc zalogowanym na stronę administracyjną:
 					#w admin.py danej app/funkcjonalności
-					from . models import Post
-					admin.site.register(Post)
+					from . models import Post1
+					admin.site.register(Post1)
 			
 3. MODUŁY i FOLDERY w APLIKACJACH/pojedyńczych_funkcjonalnościach:
+	*module MODELS.PY 
+		*PODSTAWY:
+			*Django ma własny wbudowany ORM (Object-Relational Mapping), który zamienia utworzone obiekty na
+			 bazy danych (na konkretne encje/tabele) oraz pozwala na automatyczne generowanie instrukcji sql.
+			 Dzięki temu możesz używać różnych baz danych (SQLite, POSTGREsql) bez konieczności zmiany kodu. 
+			*Users (użytkownicy) mają osobną baze danych więc w models.py zamiast budowania jej możesz ją
+			 tylko modyfikować. Gdybyś chciał użyć tej tabeli użytkowników jako klucz obcy w innej tabeli
+			 to musisz ją zaimportować z django.contrib.auth.models:
+							from django.contrib.auth.models import User
+							from django.db import models
+							class Post(models.Model):
+								author = models.ForeignKey(User, on_delete = models.CASCADE)
+		*BUDOWA:
+			*nasze bazy danych/tabele (dzieki Django ORM) są reprezentowane poprzez klasy zwane 'models'
+			 a każdy atrybut reprezentuję pole w tabeli.
+			*nasze klasy/modele będą dziedziczyć klasę Model z modułu models (który jest importowany z 
+			 pakietu django.db)
+							from django.contrib.auth.models import User
+							from django.db import models
+							from django.utils import timezone
+							class Post(models.Model):
+								title=models.CharField(max_length=100)
+								content = models.TextField() 
+								date_posted = models.DateTimeField(default = timezone.now)
+								author= models.ForeignKey(User, on_delete=models.CASCADE)
+								def __str__(self):
+									return self.title								
+			*TYPY DANYCH konkretnych pól:
+				*models.ForeignKey(nazwaTabeli) - pole o kluczu w innym tabeli (czyli ForeignKey). Trzeba 
+				 zaimportować wpierw tę tabele a póżniej podać ją jako argument nazwaTabeli					
+							from django.contrib.auth.models import User
+								...
+								author = models.ForeignKey(User)
+					**on_delete=models.CASCADE - parametr który każe usunąć wszystkie obiekty powiązane z
+					    tą tabelą z klucza obcego gdy obiekt ztymże kluczem obcym zostanie usunięty. 
+							from django.contrib.auth.models import User
+								...
+								author = models.ForeignKey(User, on_delete =models.CASCADE)
+				*models.Charfield() - pole typu CHAR 
+					**max_length=100 - możesz dodać parametr ograniczający max długość
+								title = models.CharField(max_length=100)
+				*models.TextField() - pole typu text (bez ograniczenia w max długości)
+								content = models.TextField()
+				*models.DateTimeField() - pole typu data i czas
+					**auto_now=True - możesz dodać parametr który będzie generował automatycznie czas zawsze
+						podczas edycji obiektu.
+								date-posted = models.DateTimeField(auto_now=True)
+					**auto_now_add= True - możesz dodać parametr który będzie generował automatycznie czas
+						zawsze przy pierwszym tworzeniu obiektu. Nie daję to możliwości modyfikacji
+								date-posted = models.DateTimeField(auto_now_add=True)
+					**default=timezone.now - automatycznie generuję czas przy tworzeniu obiektu ORAZ daję
+						możliwośc modyfikacji czasu. 
+							from django.utils import timezone
+								...
+								date-posted = models.DateTimeField(default=timezone.now)	 
+															#nie dajesz nawiasów na końcu metody now, gdyż 
+															#nie chcesz jej wywoływać tylko jej referencje
+			*metoda __str__() - metoda magiczna która ma zwrócić tytuł posta w momencie gdy będzie 
+			 wywoływany z bazy danych w shellu (python manage.py shell) poprzez:
+							Post.objects.all()				#zwróci:  <QuerySet [<Post: Blog 1>]>
+															#zamiast: <QuerySet [<Post: Post object (1)>]>
+						#w models.py:
+							def __str__(self):
+								return self.title
+															
+	*katalog MIGRATIONS 
+		*PODSTAWY:
+			*w katalogu MIGRATIONS są przechowywane 'migracje' które są zrzutami historii wszystkich 
+			 operacji tworzenia i modyfikacji klas reprezentujących tabele w bazie danych od ostatniego 
+			 użycia komendy makemigrations. Klasy te znajdują się w pliku models.py.
+			*Wewnątrz pliku migracji zobaczysz że dana migracja zależy od poprzedniej (zmienna dependencies)
+			 dzięki czemu można zauważyć historyczne przejście do pierwszej migracji, widząc dokładnie co 
+			 się działo po drodze.
+		*KOMENDY związane z katalogiem MIGRATIONS:
+			*Migracja (która będzie wszystkimi zmianami na klasach w pliku models.py) tworzysz poprzez:
+							python manage.py makemigrations
+			*By podejrzeć jaka instrukcja sql zostaną wytworzone podczas komendy migrate w danej migracji 
+			 możesz podejrzeć poprzez komendę sqlmigrate podając za nią argumenty w postaci nazwy 
+			 aplikacji/funkcjonalnosci oraz numeru który jest na początku pliku danej migracji.
+							python manage.py sqlmigrate blog 0001
+			*By dokonać MIGRACJI z plików migracji (wszystkich plików migracji) do pliku danej bazy danych 
+			 (domyślnie dla sqlite db.sqlite3) użyj instrukcji:
+							python manage.py migrate 
+							
+	*module URLS.PY
+	  **OPCJA 1:
+		*JEZELI WIESZ ŻE TWOJA STRONA BĘDZIE MIAŁA PODSTRONY DLA DANEJ APP/FUNKCJONALNOŚCI to tworzysz moduł
+		 urls.py w swojej app/funkcjonalności (moduł urls.py nie powstaje automatycznie przy tworzeniu nowej
+		 app/funkcjonalnośći - trzeba go stworzyć samemu)
+		*musisz zaimportować module django.urls oraz module views(ten poniżej) 
+		*musisz stworzyć URLconf tworząc listę 'urlpatterns' (koniecznie tak nazwaną bo django będzie tego
+		 szukał) i wpisać w nią obiekty typu 'URLpattern' za pomocą funkcji path(), którą zaimportowałeś z 
+		 django.urls:
+					#aplikacja/funkcjonalonośc o nazwie playground
+					from django.urls import path
+					from . import views		#kropka oznacza: 'z folderu rodzica' 
+											#(czyli tego samego w którym się znajduję) 
+					#URLConf:				#każda aplikacja/pojedyńcza funkcjonalność 
+					urlpatterns = [			#ma swoje URLConf (URL configuration)
+						path('hello/', views.says_hello, name='playground-hello')
+					]			#path() zwraca obiekt typu URLpattern. Przyjmuję w argumencie ścieżkę 
+								#względną pod którą będzie wyświetlać się funkcja podana w 2gim argumencie
+								#pochodząca z katalogu views. Ścieżka ta nie ma zawierać nazwy 
+								#folderu/aplikacji gdyż ten podamy w urlpatterns w urls.py w głównym
+								#katalogu projektu.
+										#trzeci argument (w postaci name) jest dodatkowy ale specjalnie go 
+										#podajesz gdyż w templates w plikach html w linkach (<a hre="...">)
+										#zamiast podawania konkretnego linka podasz wartość tego argumentu
+										#dzieki czemu gdybyś chiał zmienić tenże link to robisz to w 
+										#pierwszym argumencie metody path zamiast w dwóch miejscach na raz
+										#czyli w metodzie path i w pliku HTML. (-->patrz linki w templates)
+					  ##path('', views.says_hello)	#say_hello z modułu views mógłbyś też wywołać dla pustej
+													#2giej cześci linka tj wyświetlałoby się dla linka z
+													#nazwą app/funkcjonalności tj:
+													#http://127.0.0.1:8000/playground zamiast powyższego 
+													#http://127.0.0.1:8000/playground/hello
+		*następnie musisz zaimportować cały ten moduł do głównego URLConf (URL configuration który znajduję 
+		 się w głównym folderze projektu w module URLS.PY. 
+			*Wenwnątrz tego moduły urls.py z głównego katalogu projektu musisz zaimportować metody include 
+			 i path z django.urls 
+			*dodać do tamtejszej listy urlpatterns obiekt URLpattern poprzez funkcje path z 1wszym 
+			 argumentem w postaci ścieżki/nazwy_folderu_projektu oraz drugim w postaci funkcji include z 
+			 argumentem który będzie ścieżką do pliku urls.py w katalogu naszej funkcjonalnośći(aplikacji) 
+			 nazwanym tak jakby to była funkcja w module: 'nazwa_katalogu.urls':
+					from django.urls import include, path
+					urlpatterns =[
+						... ,
+						path('blog/', include('blog.urls'))
+					]
+		 od teraz pod ścieżką: http://127.0.0.1:8000/playground/hello będzie wyświetlać się twoja podstrona.
+	  **OPCJA 2:
+		*JEŻELI WIESZ ŻE TWOJA STRONA NIE BĘDZIE MIAŁA ŻADNYCH PODSTRON DLA DANEJ APP/FUNKCJONALNOŚCI to nie
+		 musisz tworzyć wewnątrz app/funkcjonalności modułu urls.py. (np strona do rejestracji (patrz 
+		 formularz do rejestracji))
+		*Całe przekierowanie na plik views.py app/funkcjonalności zrobisz w głównej app/funkcjonalności w 
+		 pliku urls.py w liście urlpatterns.
+		*importujesz moduł views ze swojej app/funkcjonalności (w tym przypadku playground) i w liście 
+		 urlpatterns dodajesz ścieżkę ('hello/') która będzie wskazywać na moduł vievs w app/funkcjonalności
+		 playground:
+						#plik urls.py w app/funkcjonalności django-project
+						from playground import views
+						urlpatterns = [							
+							...
+							path('hello/', views.says_hello, name='playground-hello')
+						]
+						
 	*module VIEWS.PY:
 		*PODSTAWY:
 			*funkcje w views.py sa 'request handlerami' i przyjmują 'request' a zwracają 'response'
@@ -325,7 +471,7 @@
 			 render):
 							from django.shortcuts import redirect
 							def say_hello(request):
-								return redirect(request, 'playground/helloHTML.html',{'name':'Mosh'})
+								return redirect('blog-home')
 		*ZESTAWY DANYCH PRZESYŁANE PRZY ZWRACANIU OBIEKTÓW response z powyższych 3 metod:
 			*W METODACH REDIRECT() I RENDER() MESSAGES: 
 				*messages nie trzeba ich zwracać w słowniku w 3cim argumencie metody render(). Messages są 
@@ -339,14 +485,14 @@
 								return redirect('blog-home')
 					2)		def say_hello(request):
 								messages.success(request, f'Text sended')
-								return redirect(request, 'playground/helloHTML.html',{'name':'Mosh'})
+								return render(request, 'playground/helloHTML.html',{'name':'Mosh'})
 				*jest 5 rodzajów messages tóre możesz wysyłać w ten sposób:
 						**messages.debug
 						**messages.info
 						**messages.success
 						**messages.warning
 						**messages.error
-				*żeby ukazać messages w swoim pliku.html to musisz umieścić w szablonie html:
+				*żeby ukazać messages w swoim pliku.html to musisz umieścić w szablonie html (w templates):
 							 {% if messages %}									 #jeżeli messages istnieje
 								{% for mess in messages %}
 									<div class="alert alert-{{ message.tags }}"> #w bootstrapie dodatkowo
@@ -447,67 +593,6 @@
 								u1.post_set.create(title='Blog 3', content='Blog content 3')
 														#autorowi tworzysz dany post, nie musisz w tymże 
 														#konstruktorze dodawać autora na samym końcu 							
-	*module URLS.PY
-	 **OPCJA 1:
-		*JEZELI WIESZ ŻE TWOJA STRONA BĘDZIE MIAŁA PODSTRONY DLA DANEJ APP/FUNKCJONALNOŚCI to tworzysz moduł
-		 urls.py w swojej app/funkcjonalności (moduł urls.py nie powstaje automatycznie przy tworzeniu nowej
-		 app/funkcjonalnośći - trzeba go stworzyć samemu)
-		*musisz zaimportować module django.urls oraz module views(ten powyżej) 
-		*musisz stworzyć URLconf tworząc listę 'urlpatterns' (koniecznie tak nazwaną bo django będzie tego
-		 szukał) i wpisać w nią obiekty typu 'URLpattern' za pomocą funkcji path(), którą zaimportowałeś z 
-		 django.urls:
-					#aplikacja/funkcjonalonośc o nazwie playground
-					from django.urls import path
-					from . import views		#kropka oznacza: 'z folderu rodzica' 
-											#(czyli tego samego w którym się znajduję) 
-					#URLConf:				#każda aplikacja/pojedyńcza funkcjonalność 
-					urlpatterns = [			#ma swoje URLConf (URL configuration)
-						path('hello/', views.says_hello, name='playground-hello')
-					]			#path() zwraca obiekt typu URLpattern. Przyjmuję w argumencie ścieżkę 
-								#względną pod którą będzie wyświetlać się funkcja podana w 2gim argumencie
-								#pochodząca z katalogu views. Ścieżka ta nie ma zawierać nazwy 
-								#folderu/aplikacji gdyż ten podamy w urlpatterns w urls.py w głównym
-								#katalogu projektu.
-										#trzeci argument (w postaci name) jest dodatkowy ale specjalnie go 
-										#podajesz gdyż w templates w plikach html w linkach (<a hre="...">)
-										#zamiast podawania konkretnego linka podasz wartość tego argumentu
-										#dzieki czemu gdybyś chiał zmienić tenże link to robisz to w 
-										#pierwszym argumencie metody path zamiast w dwóch miejscach na raz
-										#czyli w metodzie path i w pliku HTML. (-->patrz linki w templates)
-					  ##path('', views.says_hello)	#say_hello z modułu views mógłbyś też wywołać dla pustej
-													#2giej cześci linka tj wyświetlałoby się dla linka z
-													#nazwą app/funkcjonalności tj:
-													#http://127.0.0.1:8000/playground zamiast powyższego 
-													#http://127.0.0.1:8000/playground/hello
-		*następnie musisz zaimportować cały ten moduł do głównego URLConf (URL configuration który znajduję 
-		 się w głównym folderze projektu w module URLS.PY. 
-			*Wenwnątrz tego moduły urls.py z głównego katalogu projektu musisz zaimportować metody include 
-			 i path z django.urls 
-			*dodać do tamtejszej listy urlpatterns obiekt URLpattern poprzez funkcje path z 1wszym 
-			 argumentem w postaci ścieżki/nazwy_folderu_projektu oraz drugim w postaci funkcji include z 
-			 argumentem który będzie ścieżką do pliku urls.py w katalogu naszej funkcjonalnośći(aplikacji) 
-			 nazwanym tak jakby to była funkcja w module: 'nazwa_katalogu.urls':
-					from django.urls import include, path
-					urlpatterns =[
-						... ,
-						path('playground/', include('playground.urls'))
-					]
-		 od teraz pod ścieżką: http://127.0.0.1:8000/playground/hello będzie wyświetlać się twoja podstrona.
-	 **OPCJA 2:
-		*JEŻELI WIESZ ŻE TWOJA STRONA NIE BĘDZIE MIAŁA ŻADNYCH PODSTRON DLA DANEJ APP/FUNKCJONALNOŚCI to nie
-		 musisz tworzyć wewnątrz app/funkcjonalności modułu urls.py. (np strona do rejestracji (patrz 
-		 formularz do rejestracji))
-		*Całe przekierowanie na plik views.py app/funkcjonalności zrobisz w głównej app/funkcjonalności w 
-		 pliku urls.py w liście urlpatterns.
-		*importujesz moduł views ze swojej app/funkcjonalności (w tym przypadku playground) i w liście 
-		 urlpatterns dodajesz ścieżkę ('hello/') która będzie wskazywać na moduł vievs w app/funkcjonalności
-		 playground:
-						#plik urls.py w app/funkcjonalności django-project
-						from playground import views
-						urlpatterns = [							
-							...
-							path('hello/', views.says_hello, name='playground-hello')
-						]
 	*katalog TEMPLATES (którego tworzymy sami (musi być tak nazwany))
 	   A*PODSTAWY:
 			*w innych frameworkach byłoby to nazwane views ale w Django viev.py odpowiada za coś innego
@@ -524,7 +609,7 @@
 			*możesz edytować pliki HTML dla różnych zmiennych poprzez przekazanie w metodzie render 
 			 (w pliku views.py) słownika(dictionary). 
 			*do wartości tego słownika odwołujesz się poprzez wypisanie kluczy bez cudzysłowiów. Jeżeli 
-			 wartości słownika odpowiadają listom albo innym słownikom to odowłujesz się do ich elementów
+			 wartości słownika odpowiadają listom albo innym słownikom to odwołujesz się do ich elementów
 			 NIE poprzez NAWIASY KWADRATOWE (wypisanie numeru elementu (dla list) lub nazwy klucza (dla 
 			 słownika)) tylko poprzez wypisanie kolejnych elementów PO KROPCE (numer elementu po kropce 
 			 (dla list) lub nazwa klucza po kropce (dla słownika)).
@@ -624,89 +709,6 @@
 					{% load static %}
 			 oraz w sekcji head umieścić do nich link css poprzez:
 					<link rel="stylesheet" type="text/css" href="{% static 'playground/main.css' %}">
-	*module MODELS.PY 
-		*PODSTAWY:
-			*Django ma własny wbudowany ORM (Object-Relational Mapping), który zamienia utworzone obiekty na
-			 bazy danych (na konkretne encje/tabele) oraz pozwala na automatyczne generowanie instrukcji sql.
-			 Dzięki temu możesz używać różnych baz danych (SQLite, POSTGREsql) bez konieczności zmiany kodu. 
-			*Users (użytkownicy) mają osobną baze danych więc w models.py zamiast budowania jej możesz ją
-			 tylko modyfikować. Gdybyś chciał użyć tej tabeli użytkowników jako klucz obcy w innej tabeli
-			 to musisz ją zaimportować z django.contrib.auth.models:
-							from django.contrib.auth.models import User
-							from django.db import models
-							class Post(models.Model):
-								author = models.ForeignKey(User, on_delete = models.CASCADE)
-		*BUDOWA:
-			*nasze bazy danych/tabele (dzieki Django ORM) są reprezentowane poprzez klasy zwane 'models'
-			 a każdy atrybut reprezentuję pole w tabeli.
-			*nasze klasy/modele będą dziedziczyć klasę Model z modułu models (który jest importowany z 
-			 pakietu django.db)
-							from django.contrib.auth.models import User
-							from django.db import models
-							from django.utils import timezone
-							class Post(models.Model):
-								title=models.CharField(max_length=100)
-								content = models.TextField() 
-								date_posted = models.DateTimeField(default = timezone.now)
-								author= models.ForeignKey(User, on_delete=models.CASCADE)
-								def __str__(self):
-									return self.title								
-			*TYPY DANYCH konkretnych pól:
-				*models.ForeignKey(nazwaTabeli) - pole o kluczu w innym tabeli (czyli ForeignKey). Trzeba 
-				 zaimportować wpierw tę tabele a póżniej podać ją jako argument nazwaTabeli					
-							from django.contrib.auth.models import User
-								...
-								author = models.ForeignKey(User)
-					**on_delete=models.CASCADE - parametr który każe usunąć wszystkie obiekty powiązane z
-					    tą tabelą z klucza obcego gdy obiekt ztymże kluczem obcym zostanie usunięty. 
-							from django.contrib.auth.models import User
-								...
-								author = models.ForeignKey(User, on_delete =models.CASCADE)
-				*models.Charfield() - pole typu CHAR 
-					**max_length=100 - możesz dodać parametr ograniczający max długość
-								title = models.CharField(max_length=100)
-				*models.TextField() - pole typu text (bez ograniczenia w max długości)
-								content = models.TextField()
-				*models.DateTimeField() - pole typu data i czas
-					**auto_now=True - możesz dodać parametr który będzie generował automatycznie czas zawsze
-						podczas edycji obiektu.
-								date-posted = models.DateTimeField(auto_now=True)
-					**auto_now_add= True - możesz dodać parametr który będzie generował automatycznie czas
-						zawsze przy pierwszym tworzeniu obiektu. Nie daję to możliwości modyfikacji
-								date-posted = models.DateTimeField(auto_now_add=True)
-					**default=timezone.now - automatycznie generuję czas przy tworzeniu obiektu ORAZ daję
-						możliwośc modyfikacji czasu. 
-							from django.utils import timezone
-								...
-								date-posted = models.DateTimeField(default=timezone.now)	 
-															#nie dajesz nawiasów na końcu metody now, gdyż 
-															#nie chcesz jej wywoływać tylko jej referencje
-			*metoda __str__() - metoda magiczna która ma zwrócić tytuł posta w momencie gdy będzie 
-			 wywoływany z bazy danych w shellu (python manage.py shell) poprzez:
-							Post.objects.all()				#zwróci:  <QuerySet [<Post: Blog 1>]>
-															#zamiast: <QuerySet [<Post: Post object (1)>]>
-						#w models.py:
-							def __str__(self):
-								return self.title
-															
-	*katalog MIGRATIONS 
-		*PODSTAWY:
-			*w katalogu MIGRATIONS są przechowywane 'migracje' które są zrzutami historii wszystkich 
-			 operacji tworzenia i modyfikacji klas reprezentujących tabele w bazie danych od ostatniego 
-			 użycia komendy makemigrations. Klasy te znajdują się w pliku models.py.
-			*Wewnątrz pliku migracji zobaczysz że dana migracja zależy od poprzedniej (zmienna dependencies)
-			 dzięki czemu można zauważyć historyczne przejście do pierwszej migracji, widząc dokładnie co 
-			 się działo po drodze.
-		*KOMENDY związane z katalogiem MIGRATIONS:
-			*Migracja (która będzie wszystkimi zmianami na klasach w pliku models.py) tworzysz poprzez:
-							python manage.py makemigrations
-			*By podejrzeć jaka instrukcja sql zostaną wytworzone podczas komendy migrate w danej migracji 
-			 możesz podejrzeć poprzez komendę sqlmigrate podając za nią argumenty w postaci nazwy 
-			 aplikacji/funkcjonalnosci oraz numeru który jest na początku pliku danej migracji.
-							python manage.py sqlmigrate blog 0001
-			*By dokonać MIGRACJI z plików migracji (wszystkich plików migracji) do pliku danej bazy danych 
-			 (domyślnie dla sqlite db.sqlite3) użyj instrukcji:
-							python managey.py migrate 
 	
 2. KOMENDY które warto opisać do 'django-admin' a raczej do 'python manage.py' który jest wrapperem do 
      django-admin (specjalnie używamy python manage.py _____ zamiast django-admin _______ gdyz ta pierwsza 
@@ -781,16 +783,16 @@
 						*wbudowanych aplikacji w Django zaczynających się od django.contrib:
 							*.admin - admin interface to manage data,
 							*.auth - authenticating app to authentication users
-							*.contetypes
+							*.contenttypes
 							*.session - (no longer use this)
 							*.messages - display user a one-time notifications
 							*.staticfiles - for serving files (images, css files, itp)
-						*z wpisanych przez nas nazwy aplikacji po wcześniejszym jej utworzeniu
+						*z wpisanych przez nas nazwy app/funckjonalności po wcześniejszym jej utworzeniu
 						 (python manage.py startsapp nameapp), (nazwę wpisujesz w cudzysłowiu)
 			*urls.py - tutaj definiujemy linki url naszej aplikacji
 			*asgi.py oraz wsgi.py - odpowiadają za deployment
 		B* manage.py - to jest wrapper naszej komendy django-admin, który powinniśmy uruchamiać z komendami 
-		    dajngo-admin (zamiast djagno-admin + komenda). Wszystko dlatego że manage.py bierzez pod uwagę 
+		    dajngo-admin (zamiast djagno-admin + komenda). Wszystko dlatego że manage.py bierzesz pod uwagę 
 			również plik settings.py a komenda django-admin już nie.
 					*zamiast używać: django-admin runserver 	
 							#spowoduję Tobie to błąd django.core.excpetionsImproperlyConfigured
