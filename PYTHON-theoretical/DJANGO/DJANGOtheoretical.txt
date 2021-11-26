@@ -601,11 +601,12 @@
 			 app/funkcjonalności i to właśnie w nim umieszczasz pliki HTML --> Django domyślnie szuka 
 			 ścieżki templates w danej aplikacji/funkcjonalnosci oraz przeszukuję w sekcji INSTALED_APPS
 			 w pliku settings w głównym projekcie wskazane aplikacje/funkcjonalnosci.
-			*żeby dokumenty HTMLa w folderze 'templates/nazwaAplikacji' działały to w pliku settings.py w
-			 głównym katalogu projektu w sekcji INSTALED_APPS musisz umieścić nazwę klasy, która dziedziczy
+			*żeby dokumenty HTMLa w folderze 'templates/nazwaAplikacji' działały to w pliku settings.py
+			 w głównej app/funkcjonalności w sekcji INSTALED_APPS umieść nazwę klasy, która dziedziczy
 			 po AppConfig z pliku apps.py z katalogu danej app/funkcjonalności (zapisane w cudzysłowiu)
 			 np: 'mojBlog.apps.mojBlogConfig' (ALBO tylko nazwę app/funkcjonalności np 'mojBlog') 
 	   B*MOŻLIWOŚC EDYTOWANIA PLIKÓW HTML:
+		  *PODSTAWY:
 			*możesz edytować pliki HTML dla różnych zmiennych poprzez przekazanie w metodzie render 
 			 (w pliku views.py) słownika(dictionary). 
 			*do wartości tego słownika odwołujesz się poprzez wypisanie kluczy bez cudzysłowiów. Jeżeli 
@@ -613,7 +614,8 @@
 			 NIE poprzez NAWIASY KWADRATOWE (wypisanie numeru elementu (dla list) lub nazwy klucza (dla 
 			 słownika)) tylko poprzez wypisanie kolejnych elementów PO KROPCE (numer elementu po kropce 
 			 (dla list) lub nazwa klucza po kropce (dla słownika)).
-			*EDYTUJĄC HTMLa możesz uzyskać konstrukcje:
+		  *ROZSZERZENIE:	 
+			*KONSTRUKCJE UZYSKANE POPRZEZ EDYTOWANIE HTMLA (NAWIASY WĄSOWE{}):
 				*zmienne - zawierasz w podwójnych nawiasach wąsowych:
 						<h1>Hello {{name}}</h1>
 					###(we views.py) dla danej funkcji zwracającej: 
@@ -684,7 +686,7 @@
 				*dzięki temu gdybyś chciał zmienić link to będziesz mógł to zrobić w jednym miejscu czyli
 				 w liście urlpatterns w metodzie path w pliku urls.py w naszej app/funkcjonalności
 				 zamiast w dwóch miejscach czyli w metodzie path oraz pliku html.
-					#w pliku urls.py w naszej app/funkcjonalności:
+					#w pliku urls.py w naszej głównej app/funkcjonalności:
 						urlpattrens =[path('home/', views.say_hello, name='playground-hello')]	
 					#od teraz w plikach html zamiast używać /home wpisujesz {% url 'plaground-hello' %}
 						...<a href={% url 'plaground-hello' %}>...</a>...
@@ -798,8 +800,8 @@
 							#spowoduję Tobie to błąd django.core.excpetionsImproperlyConfigured
 					*dlatego użyj: 
 							  python manage.py runserver  
-		C* FOLDERY Z POJEDYŃCZYMI APLIKACJAMI:
-			*(pojedyńczą funkcjonalnością a nie całym projektem)
+		C* FOLDERY Z POJEDYŃCZYMI APP/FUNKCJONALNOŚCIAMI:
+			*(pojedyńczą app/funkcjonalnością a nie całym projektem)
 			*pojedyńczy folder/APLIKACJA tworzy się w terminalu poprzez: 	  
 							python manage.py startapp nameApp
 			 i następnie trzeba go zarejestrować poprzez wpisanie jego nazwy w apostrofach w:
