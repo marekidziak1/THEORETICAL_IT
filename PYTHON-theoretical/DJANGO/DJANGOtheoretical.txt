@@ -400,7 +400,7 @@
 								#folderu/aplikacji gdyż ten podamy w urlpatterns w urls.py w głównym
 								#katalogu projektu.
 										#trzeci argument (w postaci name) jest dodatkowy ale specjalnie go 
-										#podajesz gdyż w templates w plikach html w linkach (<a hre="...">)
+										#podajesz gdyż w templates w plikach html w linkach (<a href="...">)
 										#zamiast podawania konkretnego linka podasz wartość tego argumentu
 										#dzieki czemu gdybyś chiał zmienić tenże link to robisz to w 
 										#pierwszym argumencie metody path zamiast w dwóch miejscach na raz
@@ -489,7 +489,7 @@
 				*jest 5 rodzajów messages tóre możesz wysyłać w ten sposób:
 						**messages.debug
 						**messages.info
-						**messages.success
+						**messages.success 
 						**messages.warning
 						**messages.error
 				*żeby ukazać messages w swoim pliku.html to musisz umieścić w szablonie html (w templates):
@@ -533,7 +533,7 @@
 			   **METODY które zwracają zestaw danych w postaci obiektów których możesz uzyć jako KLUCZ 
 				 SŁOWNIKA (na przykładzie tabeli User pobranej z django.contrib.auth.models).
 										##Możesz nie tylko to wywołać ale też przypisać jakieś zmiennej
-										##poniższych komend możesz użyć też w konsoli shella w DJANGO-PYTHON
+										##Poniższych komend możesz użyć też w konsoli shella w DJANGO-PYTHON
 								##PAMIĘTEJ żeby najpierw zaimportować bazy danych (znajdujące się w module
 								##models.py) oraz bazę użytkownikow która jest wbudowana w django:
 								from blog.models import Post
@@ -604,7 +604,8 @@
 			*żeby dokumenty HTMLa w folderze 'templates/nazwaAplikacji' działały to w pliku settings.py
 			 w głównej app/funkcjonalności w sekcji INSTALED_APPS umieść nazwę klasy, która dziedziczy
 			 po AppConfig z pliku apps.py z katalogu danej app/funkcjonalności (zapisane w cudzysłowiu)
-			 np: 'mojBlog.apps.mojBlogConfig' (ALBO tylko nazwę app/funkcjonalności np 'mojBlog') 
+			 np: 'mojBlog.apps.mojBlogConfig' (ALBO tylko nazwę app/funkcjonalności np 'mojBlog')
+			 (ex: 'blog.apps.BlogConfig' )
 	   B*MOŻLIWOŚC EDYTOWANIA PLIKÓW HTML:
 		  *PODSTAWY:
 			*możesz edytować pliki HTML dla różnych zmiennych poprzez przekazanie w metodzie render 
