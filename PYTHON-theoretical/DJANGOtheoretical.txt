@@ -9,9 +9,10 @@
 						'users.apps.UsersConfig',
 				*w głównej app/funkcjonalności w pliku urls.py w urlpatterns dodajesz ścieżkę ('register') 
 				 która będzie wskazywać na moduł vievs w app/funkcjonalności users. (ze względu na to że 
-				 ścieżka register nie będzie miała żadnych innych podstron to nie musisz tworzyć dodatkowego
-				 modułu urls.py w app/funkcjonalności users. Wystarczy zawrzeć przekierowanie w urls.py w 
-				 głównej app/funkcjonalności)
+				 ścieżka register nie będzie miała żadnych innych podstron (a w pliku views.py będzie 
+				 istnieć tylko jedna funkcja (w postaci register()) to nie musisz tworzyć dodatkowego
+				 modułu urls.py w app/funkcjonalności users. Wystarczy zawrzeć przekierowanie w urls.py 
+				 w głównej app/funkcjonalności)
 						#plik urls.py w app/funkcjonalności django-project
 						from users import views
 						urlpatterns = [							#poniżej odwołanie do metody register w 
@@ -30,7 +31,7 @@
 						{% extends "blog/base.html" %}				#odwołujesz się do szablonu base.html 
 																	#w app/funkcjonalności blog
 				*tworysz strukturę formularza html która będzie podmieniana w szablonie html'a (base.html).
-				 Ponieważ to formularz to dodajesz atrybut method ='POST' do tagu <form> żeby móc wysyłąć
+				 Ponieważ to formularz to dodajesz atrybut method ='POST' do tagu <form> żeby móc wysyłać
 				 treści znajdujące się w polach formularza:
 						{% block content %}	
 							<div class="content-section">
@@ -62,28 +63,40 @@
 				 moduł ten musisz zaimportować:
 							from django.contrib.auth.forms import UserCreationForm
 				*tworzysz funkcję odpowiedzialną przy rejestracji:
-					*za utworzenie formularza, zwalidowanie go, zapisania i przesłania danych z niego.
+					*za utworzenie użytkownika z danych przesłanych przez formulasz, walidację i zapis
 					*za przekierowanie na inną stronę po udanej operacji lub w przypadku niuedanej operacji
-					 za ponowne otworzenie otworzenie strony register wraz z danymi przekazynymi w 
-					 poprzednim formularzu:
+					 za ponowne otworzenie strony register wraz z danymi przekazanymi w poprzednim 
+					 formularzu:
 							def register(request):
-								if request.method == 'POST':				# czy w pliku html w tagu form
-																			##atrybut method=='POST'
-									form = UserCreationForm(request.POST)	# utworzenie formularza z
-																			##przekaznymi danymi z 'POST'
-																			##z poprzedniego formularza
-																			##(jeżeli był) (nieudanego)
-									if form.is_valid():						# walidacja formularza
-										form.save()							# zapisanie danych z formularza
-										return redirect('blog-home')		# przekierowanie na stronę 
-																			##podaną w zmiennej name w 
-																			##urls.py app/funkcjonalności
-									else:									##blog
-										return render(request,'users/register.html', {'form':form})
+								if request.method == 'POST':			##gdy na dole w else'ie formularz 
+																		##zostanie uzupełniony danymi to w 
+																		##w pliku html poprzez przycisk 
+																		##submit oraz metodę 'POST' z tagu 
+																		##form te dane są przesłane i można
+																		##je przekazać requestem
+									formWithData=UserCreationForm(request.POST)	
+																	##utworzenie formularza z danymi 
+																	##przekazanymi przez metodę 'POST'
+																	##z tagu form w pliku html
+									if formWithData.is_valid():			##walidacja danych w formularzu
+										formWithData.save()			##utworzenie użytkownika z danych z 
+																	##formularza
+										return redirect('blog-home')	##przekierowanie na stronę podaną
+																		##w zmiennej name w urls.py 
+																		##app/funkcjonalności blog
+									else:									
+										return render(request,'users/register.html', {'form':formWithData})
+																	##wysłane powtórnie formularz z 
+																	##uzupełnionymi danymi gdy dane z 
+																	##formularza mają jakiś błąd
 								else:
-									form = UserCreationForm()								
-									return render(request, 'users/register.html', {'form':form})
-				*możesz rozszerzyć tę funkcję o wiadomość o udanej operacji zapisania  i przesłania danych 
+									formWithoutData = UserCreationForm()
+									return render(request, 'users/register.html', {'form':formWithoutData})
+																		##na początku odpala się formularz
+																		##bez danych ponieważ nie została
+																		##w pliku html nie została jeszcze
+																		##odpalona metoda POST z tagu form
+				*możesz rozszerzyć tę funkcję o wiadomość o udanej operacji zapisania i przesłania danych 
 				 z formularza:
 					*W PLIKU VIEWS.PY musisz zaimportować moduł messages z pakietu django.contrib oraz 
 					 utworzyć wiadomość która zostanie automatycznie przesłana na podaną stronę przy
@@ -91,9 +104,9 @@
 					 obiektu typu Response):
 							from django.contrib import messages
 									...
-									if form.is_valid():
-										form.save()
-										username = form.cleaned_data.get('username')
+									if formWithData.is_valid():
+										formWithData.save()
+										username = formWithData.cleaned_data.get('username')
 														#tworzy zmienną pobierającą 'username' z formularza
 										messages.success(request, f'Account created for {username}!')
 														#tworzysz wiadomość która będzie automatycznie
@@ -170,7 +183,7 @@
 								<link rel="stylesheet" type="text/css" href="{% static 'blog/main.css' %}">
 			3*W pliku views.py tworzysz swój własny typ formularza który nie będzie oparty o zaimportowany
 			  UserCreationForm tylko o własną klasę która będzie dziedziczyć po UserCreationForm i która 
-			  będzie rozszerzone o dodatkowe pola w formularzu.
+			  będzie rozszerzona o dodatkowe pola w formularzu.
 				*PLIK FORMS.PY wraz z UserRegisterForm  który dziedziczy po UserCreationForm. 
 					*wewnątrz swojej app/funkcjonalności users tworzysz moduł forms.py w którym tworzysz 
 					 klasę UserRegisterForm dziedziaczącą po UserCreationForm. 
@@ -178,7 +191,7 @@
 					 wskazujesz bazę danych z modeli ze swojej app/funkcjonalności oraz wypisujesz kolejność 
 					 swoich pól w liście fields:
 							from django import forms		
-										#do pobierania róznych typów pól dla formularzy, tutaj EmialField()
+										#do pobierania róznych typów pól dla formularzy, tutaj EmailField()
 							from django.contrib.auth.forms import UserCreationForm
 															#do możliwości dziedziczenia w swojej klasie
 							from django.contrib.auth.models import User
@@ -199,17 +212,17 @@
 							from . forms import UserRegisterForm
 							def register(request):
 								if request.method == 'POST':
-									form = UserRegisterForm(request.POST)
-									if form.is_valid():
-										form.save()
-										username = form.cleaned_data.get('username')
+									formWithData = UserRegisterForm(request.POST)
+									if formWithData.is_valid():
+										formWithData.save()
+										username = formWithData.cleaned_data.get('username')
 										messages.success(request, f'Account created for {username}!')
 										return redirect('blog-home')
 									else:
-										return render(request,'users/register.html', {'form':form})
+										return render(request,'users/register.html', {'form':formWithData})
 								else:
-									form = UserRegisterForm()
-									return render(request, 'users/register.html', {'form':form})
+									formWithoutData = UserRegisterForm()
+									return render(request, 'users/register.html', {'form':formWithoutData})
 
 ============================================================================================================
 ====================================================PODSTAWY================================================
@@ -249,10 +262,10 @@
 	*INSTALACJA:	
 		*instalacja w wirtualce:
 				pipenv install django-debug-toolbar
-		*dodanie do settings.py w głównym katalogu projektu do sekcji INSTALLED_APPS:
+		*dodanie do settings.py w głównej APP/FUNKCJONALNOŚCI do sekcji INSTALLED_APPS:
 				... ,
-				'debug_toolbar 
-		*dodanie do urls.py w głównym katalogu projektu do urlpatterns (+ dodanie biliotek):
+				'debug_toolbar' 
+		*dodanie do urls.py w głównej APP/FUNKCJONALNOŚCI do urlpatterns (+ dodanie biliotek):
 				import debug_toolbar
 				from django.conf import settings
 				from django.urls import include, path
@@ -260,10 +273,10 @@
 					...
 					path('__debug__/', include(debug_toolbar.urls)),
 				]
-		*dodanie do settings.py w głównym katalogu projektu do sekcji MIDDLEWARE:
+		*dodanie do settings.py w głównej APP/FUNKCJONALNOŚCI do sekcji MIDDLEWARE:
 				... ,
 				'debug_toolbar.middleware.DebugToolbarMiddleware',
-		*dodanie do settings.py w głównym katalogu projektu całej sekcji INTERNAL_IPS wraz ze swoim ip:
+		*dodanie do settings.py w głównej APP/FUNKCJONALNOŚCI całej sekcji INTERNAL_IPS wraz ze swoim ip:
 				INTERNAL_IPS = [
 					# ...
 					'127.0.0.1',
@@ -286,12 +299,12 @@
 					python manage.py migrate					#utworzenie domyślnych baz danych
 					python manage.py createsuperuser			#utworzenie 1wszego administratora
 				#jeżeli nie działa to przed komedą wpisz winpty: winpty python manage.py createsuperuser
-	*AUTOMATYCZNE WYGENEROWANIE TABEL z pliku MODELS.PY - w pliku admin.py musisz pobrać daną tabelę z
-	 pliku models.py i następnie ja zarejestrować. Dzięki temu będziesz mógł ją modyfikować z pozycji 
-	 administratora będąc zalogowanym na stronę administracyjną:
-					#w admin.py danej app/funkcjonalności
-					from . models import Post1
-					admin.site.register(Post1)
+	*AUTOMATYCZNE WYGENEROWANIE TABELI z KLASY w pliku MODELS.PY - w pliku admin.py musisz pobrać daną 
+	 klasę/tabelę z pliku models.py i następnie ja zarejestrować. Dzięki temu będziesz mógł  modyfikować 
+	 fane z tabeli z pozycji administratora będąc zalogowanym na stronie administracyjnej:
+					#w admin.py danej app/funkcjonalności (w ty, przypadku w app/funckjonalności klasaPost):
+					from . models import klasaPost
+					admin.site.register(klasaPost)
 			
 3. MODUŁY i FOLDERY w APLIKACJACH/pojedyńczych_funkcjonalnościach:
 	*module MODELS.PY 
@@ -306,6 +319,8 @@
 							from django.db import models
 							class Post(models.Model):
 								author = models.ForeignKey(User, on_delete = models.CASCADE)
+			*póżniej taką klasę/tabelę możesz zarejestrować w pliku admin.py w danej app/funckjonalności i 
+			 zarządzać tą tabelą ze strony administracyjnej --> WIĘCEJ patrz 4.STRONA ADMINISTRATORA 
 		*BUDOWA:
 			*nasze bazy danych/tabele (dzieki Django ORM) są reprezentowane poprzez klasy zwane 'models'
 			 a każdy atrybut reprezentuję pole w tabeli.
@@ -353,7 +368,7 @@
 															#nie chcesz jej wywoływać tylko jej referencje
 			*metoda __str__() - metoda magiczna która ma zwrócić tytuł posta w momencie gdy będzie 
 			 wywoływany z bazy danych w shellu (python manage.py shell) poprzez:
-							Post.objects.all()				#zwróci:  <QuerySet [<Post: Blog 1>]>
+							Post.objects.all()				#zwróci:  <QuerySet [<Post: Title1>]>
 															#zamiast: <QuerySet [<Post: Post object (1)>]>
 						#w models.py:
 							def __str__(self):
@@ -477,7 +492,7 @@
 				*messages nie trzeba ich zwracać w słowniku w 3cim argumencie metody render(). Messages są 
 				 przesyłane automatycznie przy zwracaniu obiektu typu response tj: przy metodzie redirect()
 				 oraz przy metodzie render()). 
-				*Trzeba zaimporotwać klasę messages z modułu django.contrib:
+				*Trzeba zaimportować klasę messages z modułu django.contrib:
 							from django.contrib import messages
 							from django.shortcuts import redirect, render
 					1)		def say_hello(request):
@@ -503,75 +518,94 @@
 							{% endif %}
 						    {% block content %}{% endblock %}				#message bedzie sie wyświetlał	
 																			#nad podminianym block contentem
+				*(we views.py) do messages możesz przekazać jakieś dane:
+					*dane z formularza rejestracji poprzez odwołanie się do metody get na polu cleaned_data:
+							def register(request):
+								if request.method='POST':
+									form=UserCreationForm(request.POST)
+									if form.is_valid():
+										form.save()
+										username = form.cleaned_data.get('username')
+										messages.success(request, f'Account created for {username}!')
+							
 			*W METODZIE RENDER() SŁOWNIK JAKO 3CI ARGUMENT:
-			   **W metodzie render jako 3ci argument możesz podać w konkretny zestaw danych wyciągnięty 
-				 przez ORM Django JEDNAKŻE MUSI ON BYĆ PRZYPISANY JAKO KLUCZ DO SŁOWNIKA !!! :
-							from django.shortcuts import render
-							from blog.models import Post
-							from django.contrib.auth.models import User					#baza uzytkowników
-							def say_hello(request):
-								return render(request, 'blog/home.html',{'user': User.objects.first()})
-													#User.objects.first() jest przypisany do klucza 'user'
 			   **DANE Z FORMULARZA które podajesz jako wartości do klucza w słowniku. Klucz ten może zostać 
 			     wykorzystany jako zmienna w pliku html w celu przekazania danych z nieudanego formularza
 				 (jeżeli pojawi sie jakiś błąd w formularzu i nie zostanie on zaakceptowany to zamiast 
 				 wpisywać wszystkie pola od początku to zostaną one uzupełnione tymi z poprzedniego 
 				 formularza:
+								form = UserCreationForm()	#form = UserCreationForm(request.POST)
 								return render(request,'users/register.html', {'form':form})
-					**formularz REJESTRACYJNY tworzy się poprzez klasę UserCreationForm() 
-							from django.contrib.auth.forms import UserCreationForm
-							form = UserCreationForm(request.POST)		#request.POST oznacza że przekazuje
-																		#dane z poprzedniego formularza
-					**form.is_valid() pozwala sprawdzić czy formularz jest poprawnie zwalidowany
-							form.is_valid():
-					**form.save() pozwala zapisać dane z formularza (dla UserCreationForm() baza danych jest
-					  domyślnie ustawiona na USER i nie trzeba jej wskazywać jak w dziedziczącej klasie 
-					  UserRegisterForm():
-							form.save()
-					**FORMULARZ REJSTRACYJNY JEST OMÓWIONY W  DZIALE IIGIM CZYLI 
-					  PRZYKŁADY RÓŻNYCH APLIKACJI WYTWORZONYCH WE VIEWS.PY
-			   **METODY które zwracają zestaw danych w postaci obiektów których możesz uzyć jako KLUCZ 
-				 SŁOWNIKA (na przykładzie tabeli User pobranej z django.contrib.auth.models).
-										##Możesz nie tylko to wywołać ale też przypisać jakieś zmiennej
-										##Poniższych komend możesz użyć też w konsoli shella w DJANGO-PYTHON
-								##PAMIĘTEJ żeby najpierw zaimportować bazy danych (znajdujące się w module
-								##models.py) oraz bazę użytkownikow która jest wbudowana w django:
+				 WIĘCEJ W FORMULARZU REJESTRACYJNYM W DZIALE IIGIM: PRZYKŁADY RÓŻNYCH APLIKACJI WE VIEWS.PY
+			   **ZESTAW DANYCH WYCIĄGNIĘTY PRZEZ ORM DJANGO PRZYPISANY JAKO KLUCZ DO SŁOWNIKA (W metodzie 
+			     render podany jako 3ci argument)
+							from django.shortcuts import render
+							from blog.models import Post
+							from django.contrib.auth.models import User					#baza uzytkowników
+							def say_hello(request):
+								return render(request, 'blog/home.html',{'user': User.objects.first()})
+									##Przykład jednej z poniższych instrukcji w postaci User.objects.first() 
+									##jest przypisany do klucza 'user'
+					*INSTRUKCJE które zwracają zestaw danych w postaci obiektów których możesz uzyć jako 
+					 KLUCZ SŁOWNIKA (na przykładzie tabeli User pobranej z django.contrib.auth.models).
+						##Poniższych komend możesz użyć też w konsoli shella w DJANGO-PYTHON i nie tylko
+						##wywołać ale też przypisać do jakieś zmiennej 
+						***PAMIĘTEJ żeby najpierw zaimportować bazy danych (znajdującą się w module 
+						   models.py) oraz bazę użytkownikow która jest wbudowana w django:
 								from blog.models import Post
 								from django.contrib.auth.models import User				#baza uzytkowników
-					*wszystkie obiekty z danej tabeli:	
+						*wszystkie obiekty z danej tabeli:	
 								User.objects.all()	#zwróci: <QuerySet [<User: marek>, <User: testUser>]>
-					*pierwszy obiekt z danej tabeli:
+										#  w render 3ci argument:{'users': User.objects.all()}
+						*pierwszy obiekt z danej tabeli:
 								User.objects.first()						#zwróci: <User: marek>
-					*ostatni obiekt z danej tabeli:		
+										#  w render 3ci argument:{'user': User.objects.first()}
+						*ostatni obiekt z danej tabeli:		
 								User.objects.last()							#zwróci: <User: testUser>					
-					*wybrany zbior obiektów ODFILTROWANY przez filter np: username:
+										#  w render 3ci argument:{'user': User.objects.last()}
+						*wybrany zbior obiektów ODFILTROWANY przez filter np: username:
 								User.objects.filter(username='marek')	#zwróci: <QuerySet [<User: marek>]>
 								User.objects.filter(username='marek').first()	    #zwróci:  <User: marek>
-					*zwrócenie użytkownika na bazie jakiegoś pola np id:
+										#  w render 3ci argument:
+										#  {'users': User.objects.filter(username='marek')}
+										#  {'user': User.objects.filter(username='marek').first}
+						*zwrócenie użytkownika na bazie jakiegoś pola np id:
 								User.objects.get(id=1)								#zwróci:  <User: marek>
-					*zwrócenie pola konkretnego rekordu odbywa się po kropce:
+										#  w render 3ci argument:{'user': User.objects.get(id=1)}
+						*zwrócenie pola konkretnego rekordu odbywa się po kropce:
 							**Primary KEY / id
 								User.objects.filter(username='marek').first().pk   /LUB   
 								User.objects.filter(username='marek').first().id			
+										#  w render 3ci argument:
+										#  {'pk': User.objects.filter(username='marek').first().pk}
+										#  {'id': User.objects.filter(username='marek').first().id}
 							**pozostałe:
-								User.objects.filter(username='marek').first().content
-					*zwrócenie pól z tabeli klucza obcego w naszej tabeli (author jest FOREGIN KEY i ma 
-					 swoją tabele w postaci User):
+								User.objects.filter(username='marek').first().email
+										#  w render 3ci argument:
+										#  {'email': User.objects.filter(username='marek').first().email}
+						*zwrócenie pól z tabeli klucza obcego w naszej tabeli (w models.py w klasie Post:
+						 {author=models.ForeignKey(User, on_delete=models.CASCADE)	}):
 								p1 = Post.objects.get(id=1)
 								p1.author.id									#zwróci: 1
 								p1.author.email									#zwróci: 'marek@gmail.com'
-					*jeżeli odwołujesz się do obiektu w tabeli który jest kluczem obcym dla innej tabeli to
- 					 możesz zobaczyc zbiór wszystkich wystąpień tego obiektu w tej tabeli dla której obiekt
-					 jest kluczem obcym poprzez odwołanie się do tejże tabeli wraz z '_set'.all() (czyli 
-					 możesz zobaczyć wszystkie obiekty związane z obiektem klucza obcego na jego bazie):
-								u1=User.objects.filter=(username='marek').first()
+										#  w render 3ci argument:
+										#  {'authorId': Post.objects.get(id=1).author.id}
+										#  {'authorEmail': Post.objects.get(id=1).author.email}
+						*jeżeli odwołujesz się do obiektu w tabeli który jest kluczem obcym dla innej tabeli
+ 						 to możesz zobaczyc zbiór wszystkich wystąpień tego obiektu w tej tabeli dla której 
+						 obiekt jest kluczem obcym poprzez odwołanie się do tejże tabeli wraz z '_set'.all()
+						 (czyli możesz zobaczyć wszystkie obiekty związane z obiektem klucza obcego na jego 
+						 bazie):
+								u1=User.objects.filter(username='marek').first()
 								u1.post_set.all()		#zwróci wszystkie posty danego usera
 														#zwróci <QuerySet [<Post: Blog 1>, <Post: Blog 2>]>
-			   **METODY TWORZĄCE takie obiekty KTÓRE można przekazać jako KLUCZ SŁOWNIKA  (na przykładzie 
-				 tabeli User pobranej z django.contrib.auth.models):
-					*UTWORZENIE oraz późniejsze ZAPISANIE konkretnego rekordu dla danej tabeli (musisz 
-					 wcześniej pobrać tę tabele) wg: schematu jej pól:
-						  **tworzenie
+										#  w render 3ci argument:
+										#  {'posts': User.objects.get(id=1).post_set.all()}
+		*TWORZENIE OBIEKTÓW w module views.py I ZAPISYWANIE ICH W BAZIE DANYCH:
+			*UTWORZENIE oraz ZAPISANIE OBIEKTU(z models.py)/REKORDU dla DANEJ TABELI:
+				**tworzenie:
+					*musisz wcześniej pobrać dany obiekt(z models.py)/tabelę
+					*tworzysz rekord w tabeli poprzez utworzenie obiektu przez konstruktor:
 								from blog.models import Post
 								from django.contrib.auth.models import User
 								post_1 = Post(title='Blog 1', content='First Post Content'/
@@ -581,18 +615,59 @@
 													#argumencie obieku tabeli obcej dodajesz podkreślnik
 													#a w przypisywanym obiekcie dodajesz kropkę:
 											##,author_id=User.objects.filter(username='marek').first().id)
-						  **zapisywanie:
+				**zapisywanie:
 								post_1.save()		#teraz mozesz zobaczyć że masz post_1 zapisany we 
 													#wszystkich Postach: Post.objects.all()
 													#które zwróci: <QuerySet [<Post: Post object (1)>]>
-					*jeżeli odwołujesz się do obiektu w tabeli który jest kluczem obcym dla innej tabeli to
-					 możesz UTWORZYĆ obiekt tejże tabeli w której obiekt jest kluczem obcym (czyli możesz 
-					 utworzyć obiekt na bazie obiektu klucza obcego) (poprzez odwołanie się do jego
-					 wszystkich wystąpień i metody create)
+			*UTWORZENIE OBIEKTU poprzez ODWOŁANIE SIĘ DO OBIEKTU który jest KLUCZEM OBCYM DLA TWOJEJ TABELI:
+ 			  (możesz utworzyć obiekt na bazie obiektu klucza obcego)(poprzez odwołanie się do jego 
+			   wszystkich wystąpień (_set) i na tym wywołać metodę create):
 								u1=User.objects.filter(username='marek').first()
 								u1.post_set.create(title='Blog 3', content='Blog content 3')
 														#autorowi tworzysz dany post, nie musisz w tymże 
-														#konstruktorze dodawać autora na samym końcu 							
+														#konstruktorze dodawać autora na samym końcu 
+			**PRZEKAZANIE DANYCH Z FORMULARZA REJESTRACYJNEGO I NA ICH BAZIE UTWORZENIE OBIEKTU USERa:
+					#FORMULARZ REJSTRACYJNY JEST OMÓWIONY W DZIALE IIGIM W PRZYKŁADACH RÓŻNYCH APLIKACJI 
+					#WYTWORZONYCH WE VIEWS.PY			
+							def register(request):
+								if request.method == 'POST':			##gdy na dole w else'ie formularz 
+																		##zostanie uzupełniony danymi to w 
+																		##w pliku html poprzez przycisk 
+																		##submit oraz metodę 'POST' z tagu 
+																		##form te dane są przesłane i można
+																		##je przekazać requestem
+									formWithData=UserCreationForm(request.POST)	
+																	##utworzenie formularza z danymi 
+																	##przekazanymi przez metodę 'POST'
+																	##z tagu form w pliku html
+									if formWithData.is_valid():			##walidacja danych w formularzu
+										formWithData.save()			##utworzenie użytkownika z danych z 
+																	##formularza
+										return redirect('blog-home')	##przekierowanie na stronę podaną
+																		##w zmiennej name w urls.py 
+																		##app/funkcjonalności blog
+									else:									
+										return render(request,'users/register.html', {'form':formWithData})
+																	##wysłane powtórnie formularz z 
+																	##uzupełnionymi danymi gdy dane z 
+																	##formularza mają jakiś błąd
+								else:
+									formWithoutData = UserCreationForm()
+									return render(request, 'users/register.html', {'form':formWithoutData})
+																		##na początku odpala się formularz
+																		##bez danych ponieważ nie została
+																		##w pliku html nie została jeszcze
+																		##odpalona metoda POST z tagu form
+					**formularz REJESTRACYJNY tworzy się poprzez klasę UserCreationForm() 
+							from django.contrib.auth.forms import UserCreationForm
+							form = UserCreationForm(request.POST)			#request.POST oznacza że 
+																			#przekazuje dane z formularza
+					**form.is_valid() pozwala zwalidować dane z formularza:
+							form.is_valid():
+					**form.save() pozwala zapisać dane z formularza (dla UserCreationForm() baza danych 
+					  jest domyślnie ustawiona na USER:
+							form.save()
+					  
 	*katalog TEMPLATES (którego tworzymy sami (musi być tak nazwany))
 	   A*PODSTAWY:
 			*w innych frameworkach byłoby to nazwane views ale w Django viev.py odpowiada za coś innego
@@ -622,6 +697,9 @@
 					###(we views.py) dla danej funkcji zwracającej: 
 					###render(request, 'playground/hello.html',{'name':'Mosh'}) 		
 															#zwróci: <h1>Hello Mosh</h1>
+					*chcąc odwołać się do zmiennej którą jest obiekt typu datetime możesz edytować go 
+					 według schematu edytowania obiektów typu datetime (czyli '|date' + zmienne): 
+						<h1>{{zmienna_date|date:"F d, Y"}}</h1>		#edycja: Month, day, YEAR
 				*konstrukcje IF - zawierasz w nawiasach wąsowych ze znakiem procenta wg składni:
 						{% if name %}				#jeśli klucz 'name' istnieje
 						<h1>Hello {{name.0}}</h1>	#zwróc pierwszy element listy
@@ -738,7 +816,7 @@
 					python manage.py makemigrations
 		*sqlmigrate nameAplications numberOfMigration - daję możliwość podejrzenia jakie instrukcje sql
 			zostaną wytworzone na podstawie konkretnej 'migracji'
-					python manage.py blog 0001
+					python manage.py sqlmigrate blog 0001
 		*migrate - wykonuję instrukcje sql które są automatycznie wytworzone przez ORM na podstawie 
 			wszystkich migracji. Wynik tych instrukcji zostanie zapisany w plikach bazy danych (domyślnie 
 			dla sqlite db.sqlite3):
