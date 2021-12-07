@@ -75,12 +75,14 @@ https://www.w3schools.com/python/python_regex.asp
 FUNKCJE Stringow: 					https://www.w3schools.com/python/python_strings_methods.asp
 					   			   (https://www.w3schools.com/python/python_ref_string.asp)[to samo]
 STRING FORMATTER:					https://www.w3schools.com/python/python_string_formatting.asp
-###########################  LEKCJA 14 OPERACJE NA PLIKACH (.txt) ##########################################
+######################################## OPERACJE NA PLIKACH (.txt) ########################################
 FILE METHODS: 						https://www.w3schools.com/python/python_ref_file.asp
 FILE OPERATIONS:   					https://www.w3schools.com/python/python_file_handling.asp
+									https://www.programiz.com/python-programming/file-operation
 
 
 ############################################## WYJATKI #####################################################
+TWORZENIE WŁASNYCH WYJĄTKÓW:		https://www.programiz.com/python-programming/user-defined-exception
 TYPY WYJĄTKÓW:						https://www.w3schools.com/python/python_ref_exceptions.asp
 									https://www.programiz.com/python-programming/user-defined-exception	
 ################################## PETLA FOR | FUNKCJE | REKURSJA ##########################################
@@ -91,6 +93,445 @@ SŁOWA KLUCZOWE:						https://www.w3schools.com/python/python_ref_keywords.asp
 SŁOWNICZEK:							https://www.w3schools.com/python/python_ref_glossary.asp
 
 
+############################################################################################################
+############################################################################################################
+############################################################################################################
+############################################################################################################
+############################################################################################################
+############################################################################################################
+############################################# SKRÓCONA WERSJA ##############################################
+############################################################################################################
+############################################################################################################
+############################################################################################################
+############################################################################################################
+############################################################################################################
+############################################################################################################
+############################################################################################################
+
+
+
+
+
+
+
+			
+######################################### OPERACJE NA PLIKACH (.txt) #######################################
+FILE METHODS: 						https://www.w3schools.com/python/python_ref_file.asp
+FILE OPERATIONS:   					https://www.w3schools.com/python/python_file_handling.asp
+									https://www.programiz.com/python-programming/file-operation
+										
+1* OPERACJE NA PLIKACH:
+  ------------------------------------------------ ODCZYT --------------------------------------------------
+  *METODY:   *OPEN(file)	   *READLINES() -cały plik	    *NEXT() -linie osobno	*READLINE()-linie osobno
+	 f=open('plik.txt')			f=open(path,"r")			 f=open(path,"r")		  f=open(path,"r")			
+	 if f.readable():			if f.readable():			 if f.readable():		  if f.readable():	
+		 for line in f:				lines=f.readlines()			 line1=next(file)		  l1=f.readline()
+			 print(line)				for line in lines:		 line2=next(file)		  l2=f.readline()
+	 f.close()								print(line)		 f.close()				  f.close()
+								f.close()
+	 with open(path, "r") as f:	with open(path, "r") as f:	 with open(p,"r") as f:   with open(p,"r") as f:
+		 if f.readable():			if f.readable():		 	 if f.readable():		  if f.readable():
+			 for line in f:				lines=f.readlines()			 line1=next(file)		  l1=f.readline()
+				 print(line)			for line in lines:			 line2=next(file)		  l2=f.readline()
+											print(line)	
+											
+    *READ() - caly plik jednorazowo albo tyle znakow		  	
+			  ile chcemy wpisując ilosc jako argument: 		
+		f=open(test.txt)		with open('p.txt,'r') as f:	
+		lines=f.read()				lines=f.read				
+		tenSigns=f.reead(10)		tenSigns=f.reead(10)		
+		f.close()
+		
+  *OPCJE PODCZAS ODCZYTU:
+	   *TELL() - informacja o aktualnej pozycji/linijce		*SEEK() - zmiana pozycji/linijki do odczytu
+	    f=open("plik.txt", 'r', encoding="utf-8")	   		 f=open("plik.txt", 'r', encoding="utf-8")
+		if f.readable():									 if f.readable():
+			line1=next(file)									 line1=next(file)
+			f.tell();		#zwroci numer pozycji np 1		 	 f.seek(10); 		#zmiana numeru czytanej 
+																					#pozycji na 10
+ -------------------------------------------------- ZAPIS --------------------------------------------------
+ **ZAPIS:
+   *WRITE() - zwraca ilosc bajtów/znaków w tekście:		    *PRINT() (z parametrem file):
+	f=open('plik.txt','w')	   #f=open('plik.txt','a')		 f=open('plik.txt','w')	
+	f.write("costam"+"\n")									 print("costam", file=f)
+	ile1 = f.write("costam2\n")								 print("costam2", file=f)
+	ile2 = f.write(input('Wprowadź tekst')+"\n")
+	print(ile1,ile2)	  #ilosc wprowadzonych znaków
+	f.close()
+	
+	with open('p.txt','w') as f:							 with open('p.txt','w') as f:
+		f.write("costam"+"\n")									 print("costam", file=f)
+		ile1 = f.write("costam2\n")								 print("costam2", file=f)
+		ile2 = f.write(input('Wprowadź tekst')+"\n")
+		print(ile1,ile2)  #ilosc wprowadzonych znaków
+ -----------------------------------------------------------------------------------------------------------
+
+2* ROZSZERZENIE - METODA OPEN():
+	A* Funkcja open() może działać na ścieżce 	 	 B* FileNotFoundError - (TYLKO PRZY ODCZYCIE) jeżeli 
+				 WZGLĘDNEJ jak i BEZWZGLĘDNEJ:		 	plik nie istnieje -> ujmij to klauzulą try except:
+	   f = open("demofile.txt", "r")						 try:							
+	   f = open("D:\\myfiles\welcome.txt", "r")					 with open('p.txt,'r') as f:				
+																	 ...									
+															 except FileNotFoundError:		
+																 ...
+	C* TRZY PARAMETRY FUNKCJI OPEN(): nazwaPliku, trybOtwarcia (domyślnie tryb "r"), kodowanie:
+			*TRYBY OTWARCIA("r","a","w","x"):
+				*'r'-'READ' -do odczytu
+				*'a'-'APPEND' -do appendowania nowego tekstu do starego, plik jest tworzony gdy nie istnieje
+				*'w'-'WRITE' -do zapisu, za kazdym razem od poczatku, dotychczasowe dane zostaną usunięte
+				*'x'-'CREATE' -do tworzenia pliku gdy NIE ISTNIAŁ WCZESNIEJ. Jeżeli istnieje to zwróci error
+				*do tych trybow mozesz dodac jeszcze 2 literki odpowiadajace za to czy bedziesz bral pod 
+				 uwage plik tekstowy ['t'] czy plik binarny ['b'] (domyślnie tekstowy):
+						with open("test.txt","wb") as f:
+							...
+			*KODOWANIE (domyślne utf-8):
+						with open("test.txt","w", encoding='utf-8') as f:
+							...						
+	D* KOPIOWANIE PLIKÓW (odczyt + zapis):		  	E* ODCZYT i ZAPIS PLIKÓW JPG (do jpg stosuj READ())
+	  with open('my_file.txt','r') as rf:					 with open('my_file.jpg','rb') as rf:
+	      with open('my_file_copy.txt','w') as wf:				 with open('my_file.jpg','rb') as rf:
+		      for line in rf:										 chunk_size=4096
+				  wf.write(line)									 rf_chunk=rf.read(chunk_size)
+																	 while len(rf_chunk)>0:
+																		 wf.write(rf_chunk)
+																		 rf_chunk=rf.read(chunk_size)
+																	
+3* USUWANIE PLIKU: 					 /		 			USUWANIE FOLDERU:
+	import os												 import os
+	if os.path.exists("test.txt"):							 if os.path.exists("test.txt"):
+		os.path.remove("test.txt")								os.rmdir("myfolder")
+
+
+############################################################################################################
+############################################################################################################
+############################### WYJATKI: OBSŁUGA, RAISE, ASERCJE, WŁASNE WYJĄTKI ###########################
+TWORZENIE WŁASNYCH WYJĄTKÓW:		https://www.programiz.com/python-programming/user-defined-exception
+TYPY WYJĄTKÓW:						https://www.w3schools.com/python/python_ref_exceptions.asp
+									https://www.programiz.com/python-programming/exceptions
+									
+3* TWORZENIE WŁASNYCH WYJĄTKÓW:		https://www.programiz.com/python-programming/user-defined-exception
+	*tworzysz klasę wyjątku która dziedziczy po klasie Exception i przesłaniasz metodę __init__(): 
+		class MyError(Exception):
+			def __init__(self, salary, message="Salary is not in (5000, 15000) range"):
+				self.salary = salary
+				self.message = message
+				super().__init__(self.message)
+	*można go wywołać normalnie poprzez raise							oraz obsłużyć w blokach [try except]:
+		def func(salary)													try:
+			if not 5000 < salary < 15000:										func(1000)
+				raise MyError(salary) #raise MyError(salary,"błąd")			except MyError as c:
+		func(1000) 													 			print(c.salary, c.message)
+		#zwróci:__main__.MyError Salary is not in (5000, 15000) range 		#zwróci: 1000 błąd		
+		#LUB:  	__main__.MyError błąd
+		
+1* RAISE i ASERCJE - podnoszenie wyjatku poprzez raise albo wywolywanie asercji realizujesz głównie podczas 
+   działania programu (przy definiowaniu funkcji). Ma to służyc głównie sytuacją gdzie chcesz zaakcentować 
+   błąd logiczny w działaniu programu a nie taki który jest zdefiniowany w systemie (TypeError, KeyError itp)
+   ***RAISE - PODNOSZENIE WYJATKU (W Javie 'throw'):
+		*używa się by wyrzucić WŁASNY TYP WYJĄTKU (czyli taki którego system sam by nie podniósł) ALE
+ 		 JEDNORAZOWO (by używać go wielokrotnie to zrobiłbyś to poprzez własną klasę wyjątku)
+		*w raise możesz użyć już zdefiniowanych typów wyjątków np.: ValueError
+		  def function():			def function():					   def function():
+			  x = "hello"			    x = "hello"					       x = "hello"
+			  if not type(x) is int:	if not type(x) is int:			   if not type(x) is int:
+				  raise Exception		    raise Exception("Only int")	       raise ValueError("Only int")
+		*później używając tej funkcji możesz zrobić jej obsługę wyjątku ale wtedy zamiast napisu w raise 
+		 wyświetlą się instrukcje w bloku except (jeżeli nie zrobisz obsługi wyjątku to przy podniesieniu 
+		 twojego wyjątku nastąpi standardowe przerwanie programu):
+					function()									#'Only int' + przerwanie programu
+			#ALBO
+					try:
+						function()
+						print("nie wykona się")
+					except:
+						print("instrukcje w bloku except")		#'instrukcje w bloku except'
+					print("dalsze instrukcje")					#'dalsze instrukcje'
+		*jeżeli słówko raise umieścisz wewnątrz bloku [except] to mimo tego że zrobiłeś obsługę wyjątku to
+		 program zostanie przerwany. W tym przypadku jedynie blok finally zawsze zostanie wywolany.
+					try:
+						print(2/0)
+					except ZeroDivisionError:
+						print("Blad")
+						raise
+					finally:
+						print("blok finally")
+					print("dalsze instrukcje nie zostaną zrealizowane")
+   ***ASERCJA - (UPEWNIENIE) 'ASSERT' (działa tak samo jak raise):
+		*przy asercji musisz wygenerowac jakis warunek logiczny i jezeli ten warunek sie NIE SPRAWDZI to 
+		 przy wywolaniu funkcji zostanie wyrzucony wyjątek (asercja) (przerywający dzialanie programu)
+		*asercji uzywa sie po to zeby byc pewnym tego ze funkcja bedzie zwracac dana wartosc i uzywa sie
+		 tego tylko na czas tworzenia programu a nie gdy juz jest gotowy program
+		*przy asercji, po przecinku po warunku logicznym mozna wypisac co ma zostac wyswietlone w momencie 
+		 podniesienia wyjatku
+				def dzielenie(x, y):
+					assert y!=0, " y jest rowne 0"
+					print(x/y)
+				dzielenie(2, 0)				#zwróci: AssertionError:  y jest rowne 0]
+				
+0* OBSLUGA WYJAKOW   [try ; except ; else ; finally]:
+	*TYPY WYJĄTKÓW:		https://www.w3schools.com/python/python_ref_exceptions.asp
+						https://www.programiz.com/python-programming/exceptions
+		*SKŁADNIOWE (syntax)
+		*LOGICZNE (logical) np (FileNotFoundError, ZeroDivisionError,ImportError)
+	*OBSŁUGA WYJĄTKÓW:
+	  *żeby program działał mimo wyjątku bo inaczej wystąpi przerwanie programu 
+	  *przy obsluzeniu wyjątku (któremu możesz nadać alias) przerwanie bloku try i przejście do bloku except)
+		 *RÓŻNE WARIANTY BLOKU EXCEPT:				    *BLOK FINALLY i ELSE:
+			x,y,z,n,t = 4,3,0,'mama',[]				   x,y,z,n,t = 4,3,0,'mama',[]
+			try:										   try:
+				print(x/z) 									   print(x/y)
+				print("linijki ktore sie nie wykonają")		   print("brak błędu więc się wykona")
+			except ZeroDivisionError as zerr:			   except:					
+				print("dzielenie przez zero")				   print("jakiś błąd")
+			except (TypeError, IndexError):	#x/n | x/t[0]  else:
+				print("1 z dwoch wyjatkow")					   print("wykona się gdy nie przerwie bloku try")
+			except:										   finally:
+				print("jakis inny blad")					   print("niezaleznie czy wyjatek czy nie")
+			print("dalsze instrukcje")			 		   print("dalsze instrukcje")
+					#'dzielenie przez zero'						 #1.3333333
+					#'dalsze instrukcje'					 	 #'wykona się gdy nie przerwie bloku try'
+																 #'niezaleznie czy wyjatek czy nie'
+																 #'dalsze instrukcje'
+																
+############################################## FUNKCJE | REKURSJA ##########################################
+3*Funkcje REKURENCYJNE (rekursja) - limit rekursji = 1000. Przy przekroczeniu błąd: RecursionError
+	*pamiętaj o PRZYPADKU PODSTAWOWYM:
+			def silnia(x):
+				if x <= 1:			#przypadek podstawowy
+					return 1
+				else:
+					return x * silnia(x-1)
+	*MEMOIZATION (dodatkowy słownik poza funkcją rekurencyjną do przechowywania obliczonych przypadków:
+			dictionary={}							LUB UŻYCIE dekoratora lru_cache() z modułu functools():
+			def fibonnaci(n):							from functools import lru_cache
+				if n in dictionary.keys():				@lru_cache(maxsize=128)		#PODAJ parametr maxsize 
+					return dictionary.get(n)			def fibonnaci(n):
+				if n==1 or n==2:							if n==1 or n==2:
+					value=1										return 1
+				elif>2:										elif n>2
+					value=fibonnaci(n-1)+fibonnaci(n-2)			return fibonnaci(n-1)+fibonnaci(n-2)
+				dictionary[n]=value
+				return value
+		 
+2* PRZECIĄZANIE FUNKCJI 
+	1*(w pythonie zamiast przeciazania jest nadpisanie)			
+		def dodaj(arg1):								
+			print(arg1+1)
+		def dodaj(arg1, arg2):
+			print(arg1+arg2)
+		dodaj(2, 3)
+		#dodaj(2)   	#ta funkcja nie zostanie wywolana bo zostala nadpisana przez dodaj(arg1, arg2)
+	2*PRZECIAZANIE FUNKCJI mozna uzyskac poprzez ARGUMENT OPCJONALNY (musi być ostatnim argumentem):
+		def dodaj(arg1, arg2=1):
+			print(arg1+arg2)
+		dodaj(2)		#wynik: 3
+		dodaj(2,3)		#wynik: 5
+
+1* Funkcje:
+	*W I linijce funkcji opisz co dokładnie robi w trzech cudzysłowach:
+					def func():
+						'''function return nothing and do nothing'''
+						pass
+					help(func)	#dzięki temu w help(func) zwróci: function return nothing and do nothing
+	*PODSTAWY:
+		*najpierw deklaracja, później wywołanie
+		*brak podzialu na PROCEDURY (voidy) a FUNKCJE ZWRACAJĄCE
+		*do zmiennej mozna przypisac referencje funkcji
+					def func(x):
+						return x*x
+					zmienna =func
+					print(zmienna(5)		#wynik: 25
+	*ARGUMENTY w Pythonie (bez definiowania ich typow):
+		*przekazując argumenty do funkcji działasz na orginałach (referencjach) a nie na kopiach 
+		*podawanie funkcje jako argument (podajesz referencje a nie wywołanie wiec bez nawiasów okrągłych)
+					def func1(z):
+						return z**2
+					def func2(f1, x):
+						return f1(x)
+					print(func2(func1,5))   #wynik: 25
+		*losowa kolejność argumentów jeżeli z dopisaniem ich nazw ;; możliwy tryb mieszany 
+					def greet(name, msg):
+						print(name, msg);
+					greet(name = "Bruce",msg = "How do you do?")	#losowa kolejność
+					greet(msg = "How do you do?", name = "Bruce")
+					greet("Bruce",msg = "How do you do?");			#tryb mieszany podawania argumentów
+	*ARGUMENTY OPCJONALNE / DOMYŚLNE w Pythonie:
+		#arg z domyślną wartością musi być za arg właściwymi, przy wywołaniu nie trzeba go podawać:
+				def my_function(name, country='Norway');
+					print(f"My name is {name} and I'm from {country}")
+				my(function('Marek')						#'My name is Marek, and I'm from Norway'
+	  ! #MUTABLE DEFAULT ARGUMENTS - mutowalny argument domyślny (np jako pusta lista) jest tworzony TYLKO 
+	     RAZ podczas I wywołania a nie za każdym razem od nowa podczas kolejnych wywołań, dlatego zamiast 
+		 MUTOWALNYCH OBIEKTÓW do argumentów domyślnych podaje się IMUTABLE OBIEKTY np: None.
+			1szy* ex: podanie pustej listy jako domyślny arg; 				Powinno być None:
+				#MUTABLE ARGUMENTS:											#IMMUTABLE ARGUMENTS:
+				def add(name, emp_list=[]):									def add(name, emp_list=None):
+					emp_list.append(name)										if emp_list==None:
+					print(emp_list)													emp_list=[]
+																				emp_list.append(name)
+																				print(emp_list)
+				add('Mar')	 #zwróci: ['Mar']								add('Mar')	#zwróci: ['Mar']								
+				add('Dar')	 #zwróci: ['Mar', 'Dar'],zamiast ['Dar'] 		add('Dar')	#zwróci: ['Dar']
+					#nawet po wywołaniu argumentu z listą (['Gary'])
+					#poprzednia domyślna lista będzie przechowywana
+				add('Andrzej', ['Gary'])									add('Andrzej', ['Gary'])
+				add('Jurek') #zwróci: ['Marek', 'Darek', 'Jurek']			add('Jurek') #zwróci: ['Jurekk']
+			*2gi ex: podanie datetime.now() jako argument domyślny; Powinno być None:
+				import time										    import time
+				import datetime 									import datetime 
+				def display_time(timing=datetime.datetime.now())	def display_time(timing=None):
+					print(timing.strftime('%H:%M:%S))					if timing==None:
+				display_time()		#zwróci: 	8:47						timing==datetime.datetime.now()
+				time.sleep(60)											print(timing.strftime('%H:%M:%S))
+				display_time()		#zwróci:  8:47 zamiast 8.48		display_time()		#zwróci: 8:47
+				time.sleep(60)										time.sleep(60)
+				display_time()		#zwróci:  8:47 zamiast 8:49		display_time()		#zwróci: 8.48
+				
+	*ARBITRARY ARGUMENTS : 
+	  *args- argumenty jako krotka, (0 - ~)    **kwargs- argumenty jako słownik w specjalnej składni, (0 - ~)
+		 def my_function(arg0, *args):				def my_function(arg0, **kwargs):
+			 print("Arg0:", arg0)						print("Arg0:", arg0)
+				 for arg in args:						for key, value in kwargs.items():
+					print("ArgV:" + args)				 	print("His",key,"is",value)
+		 my_function("Em","Li","Ma")				my_function("Ma",fname = "Tob", lname = "Ref")
+		##Arg0: Em ; ArgV: Li ; ArgV: Ma			##Arg0: Ma ; His fname is Tob ; His lname is Ref
+					 
+######################################## IF | PETLA WHILE | PĘTLA FOR ######################################
+3* Petla obiektowa FOR i funkcja RANGE
+	*FUNKCJA RANGE():
+			print(list(range(5))) #zwróci: [0,1,2,3,4]   ||   print(list(range(3, 8))) #zwróci: [3,4,5,6,7]
+		*Iterowanie po range():							*Iterowanie po range() z 3cim parametrem = 2:		
+			for i in range(5):							 for i in range(1,11,2)
+				print(i) 		  #zwróci: 0 1 2 3 4 	     print(i)			#zwróci: 1,3,5,7,9
+	*ITEROWANIE 
+		*Po liście:				*Po Stringu:			*Po słowniku:
+		 for x in [1,2,3,4]:	 for x in "banana":		 for key, value in {'c':10,'a':1}.items():
+		     print(x)			     print(x)			     print(key, value)	#zwróci: c 10 ; a 1
+		*Po liście krotek:								*Po posortowanej liście krotek (funkcja sorted):
+		 for m1,m2,m3 in [('r',33,21),('f',10,22)]:		 for m1,m2,m3 sorted([('r',33,21),('f',10,22)]):
+		     print(m1,m2,m3)  #zwroci: r 33 21; f 10 22      print(m1,m2,m3)	#zwroci: f 10 22 ; r 33 21;
+	*DODATKI:
+		*BREAK: 				*CONTINUE:				 *ELSE (musi być bez BREAK):	 *PASS:
+		 for x in range(4):		 for x in range(4):		  for i in range(4):			  for i in [1,2]:
+			 if x == 2:				 if x == 2:			      print(i)					      pass
+				break					 continue		  else:
+		     print(x)   #0,1		 print(x)	#0,1,3		  prin("Koniec") #0,1,2,3,END
+			
+2* PETLA WHILE
+		#BREAK:			#CONTINUE:			#ELSE: (musi być bez BREAK)				  #PETLA NIESKOŃCZONA:
+		while i<5:		while i<5:			while i<5:								  while True:	
+			print(i)		print(i)			print(i)							      print(i)
+			i+=1			i+=1				i+=1
+			if i==3:		if i%2==0:		else:		
+				break			continue		print("WHILE not interupt by BREAK")
+			
+1* IFy (zamiast && -> and ;; zamiast || -> or)
+		1*PODSTAWY:									2*'and' bedzie wykonywany pierwszy. 'or' drugi: 
+			x = 4										if True or False and False:
+			if 5 < x:		    							print('True')
+				print('Prawda')							else:
+			elif 5 == x:									print ('False')		#zwróci 'True'
+				print('Prawda')
+			else 
+				print('Falsz')			
+	SKRÓCONY OPERATOR IF:
+	#1*PODSTAWY:		 print("PRAWDA ") if 5>2 else print("Nieprawda")
+						 import math
+						 math.sin(math.radians(90)) if 5<2 else math.sin(math.radians(0))
+	#2*Z FOREM:			 even_lst=[x for x in [0,1,2,3,4,5] if x%2==0]			#if na końcu
+						 even_lst=[x if x%2==0 else 2 for x in [0,1,2,3,4,5]]	#if na początku
+	#3*IF najpierw ten wewntrzny a poniej dopiero zewnetrzny:
+						 digit_odd_lst=sorted([x for x in lst if x.isdigit() if int(x)%2!=0])	
+################################################ PODSTAWY ##################################################
+PODSTAWOWE FUNKCJE:		https://www.w3schools.com/python/python_ref_functions.asp
+SŁOWA KLUCZOWE:			https://www.w3schools.com/python/python_ref_keywords.asp
+SŁOWNICZEK:				https://www.w3schools.com/python/python_ref_glossary.asp
+			
+2* Składnia:
+	*PODSTAWOWE FUNKCJE: https://www.w3schools.com/python/python_ref_functions.asp
+	*KOMENTARZE i CUDZYSŁOWIA: #, ''' ''', """ """ --> ''' "..." ''' || """ '...' """
+	*PRINT(): print(*objects, sep=' ', end='\n', file=sys.stdout, flush=False) ;; print('...'+str(int))
+	*USUWANIE ZMIENNYCH: del x
+	*ZMIENNE:
+		**UNPACKING: x, y, z = "Orange", "Banana", "Cherry"				
+		**DATA TYPES: str ;; int (1, -1) ;; float (1.1) ;; Decimal(1.1) ;; complex (1+j) ;; None
+		  bool (True, False) ;; Binary:bytes, bytearray, memoryview ;; Pochodne: oct(a), hex(a), bin(a)
+		  Collections:	(range), list, tuple, dict, set, frozenset;
+		**TYP:	type(zmienna)
+		**GLOBAL - Najpierw deklaracja że zmienna jest globalna. Potem przypisywanie wartości:
+				def outer_function():
+					global a
+					a = 20
+					def inner_function():
+						global a
+						a = 30
+						print('a1 =', a)
+					inner_function()
+					print('a2 =', a)
+				a = 10
+				outer_function()			#przez global zwroci: a1=30, a2=30, a3=30
+				print('a3 =', a)			#zamiast a1=30, a2=20, a3=10 gdyby nie było global
+		**NONLOCAL - zmiany na NONLOCAL VARIABLE w funkcji wewnętrznej będą miały wpływ w funkcji 
+		  zewnętrznej. Działa tylko w funkcjach wewnetrznych.
+					a = 10
+					def outer_function():
+						a = 20
+						def inner_function():
+							nonlocal a
+							a= 30
+							print('a1 =', a)
+						inner_function()
+						print('a2 =', a)
+					outer_function()
+					print('a3 =', a)				#przez nonlocal zwroci: a1=30, a2=30, a3=10
+		**KONWERSJA TYPÓW: str(3), int(3), float(3)	
+	*INPUT() - input("Podaj dane do input'a: ")
+		**dane wejściowe jako stringi
+		**LUB stdin.read()z biblioteki sys:
+			import sys
+			txt=sys.stdin.read()
+	*Kolejność działań: (), pow(), * /, + - ;; od lewej do prawej
+	*OPERATORY MATEMATYCZNE rozszerzone: int / int [:float] ;; 5 % 3 [:2] ;; 5 // 2 [:1] ;; 2 ** 3 [:8]
+	*OPERATORY PRZYPISANIA: brak(x-- ; x++) tylko: += -= *= ;/= %= //= **= ;; BITOWE: &= |= ^= >>= <<=
+	*OPERATORY LOGICZNE: brak(&& ||) tylko: and , or , not ;;   is , is not ;;   in , not in 
+		*OPERATORY PRZYNALEŻNOŚCI IS, IS NOT - sprawdzają referencje a dla typ. prostych wartości (m.in str)
+		*OPERATORY 'WYSTĘPOWANIA W' (MEMBERSHIP) (IN, NOT IN):
+			print(1 in 1:'a',2:'b'})			# Output: True
+			print('a' in 1:'a',2:'b'}) 			# Output: False
+	*OPERATORY BITOWE: & AND ;; | OR ;; ^ XOR ;; ~ NOT ;; <<Zero fill left shift ;; >>	Signed right shift
+			
+1* Właściwości i SKROTY:				
+	*SKRÓTY VISUALSTUDIO:
+		*FIND & REPLACE: zaznaczenie text + CTRL+F ;;CTRL+H + newText;; ENTER||CTRL+ALT+ENTER
+		*SHIFT + ALT + (strzałka w dół lub w góre) - kopiowanie linii 
+		*ALT + (strzałka w górę lub w dół) - przemieszczanie się linii w górę lub w dół
+		*CTRL + ` - terminal 
+		*CTRL + b - panel boczny	
+		
+0.1* KONSOLA DLA PYTHONA:
+	*otwieranie pliku .py w konsoli z argumentami:
+				python -i nazwaPliku.py arg1 arg2 arg3
+				python -m nazwaPliku arg1 arg2 arg3
+	
+0.0* INSTALACJA I KONFIGURACJA:			
+	*instalacja pythona									https://www.youtube.com/watch?v=YYXdXT2l-Gg 
+	*zmiana zmiennych środowiskowych:					https://www.youtube.com/watch?v=OdIHeg4jj2c				
+	*sprawdzenie ścieżki do używanego intepretera (w konsoli: python)
+				import sys
+				sys.executable
+	*ustawienie powyższej ścieżki jako 'python' oraz powyższej ścieżki w folderze libs/site-packages 
+	 albo Scripts jako 'pip' w zmiennych środowiskowych 
+	 
+############################################################################################################
+############################################################################################################
+############################################################################################################
+############################################################################################################
+############################################################################################################
+############################################################################################################
+############################################################################################################
+############################################ ROZSZERZONA WERSJA ############################################
+############################################################################################################
+############################################################################################################
 ############################################################################################################
 ############################################################################################################
 ############################################################################################################
@@ -4814,10 +5255,7 @@ https://www.w3schools.com/python/python_string_formatting.asp
 			'%s jakis tekst %d' % ('one', '23') 	#zwroci: one jakistekst 23
 			"%(first)s %(second)s" % {"first":"Hello", "second":"World"}	#dla słownika
 			
-###########################  LEKCJA 14 OPERACJE NA PLIKACH (.txt) ############################
-FILE METHODS: 		https://www.w3schools.com/python/python_ref_file.asp
-FILE OPERATIONS:    https://www.w3schools.com/python/python_file_handling.asp
-
+########################################## OPERACJE NA PLIKACH (.txt) ######################################
 1* OPERACJE NA PLIKACH .TXT
   *W SKRÓCIE:
 	*2 OPCJE DO ODCZYTU i ZAPISU:
@@ -4994,10 +5432,7 @@ FILE OPERATIONS:    https://www.w3schools.com/python/python_file_handling.asp
 					os.rmdir("myfolder")
 
 
-############################################  WYJATKI  ####################################################
-TYPY WYJĄTKÓW:		https://www.w3schools.com/python/python_ref_exceptions.asp
-					https://www.programiz.com/python-programming/user-defined-exception
-
+###############################################  WYJATKI  #################################################
 3* PODSUMOWANIE WYJATKOW:
 TYPY WYJĄTKÓW:		https://www.w3schools.com/python/python_ref_exceptions.asp
 	* obslugujemy wyjatki poprzez bloki 'try except finally' tylko przy wywolaniu tejze funkji
@@ -5167,9 +5602,8 @@ TYPY WYJĄTKÓW:		https://www.w3schools.com/python/python_ref_exceptions.asp
 						print(False)
 
 			
-####################################### PETLA FOR | FUNKCJE | REKURSJA #####################################
-
-4*Funkcje REKURENCYJNE (rekursja):
+############################################# FUNKCJE | REKURSJA ##########################################
+3*Funkcje REKURENCYJNE (rekursja):
 	*tak samo jak w innych jezkach
 	*najwazniejsze zeby pamietac o przypadku podstawowym
 		def silnia(x):
@@ -5204,8 +5638,8 @@ TYPY WYJĄTKÓW:		https://www.w3schools.com/python/python_ref_exceptions.asp
 						return 1
 					elif n>2
 						return fibonnaci(n-1)+fibonnaci(n-2)
-		 
-3* PRZECIĄZANIE FUNKCJI: 
+
+2* PRZECIĄZANIE FUNKCJI: 
 	*w pythonie zamiast przeciazania funkcji masz jej nadpisanie:
 		def dodaj(arg1):
 			print(arg1+1)
@@ -5224,7 +5658,7 @@ TYPY WYJĄTKÓW:		https://www.w3schools.com/python/python_ref_exceptions.asp
 		 po argumencie opcjonalnym ==> arg3 powinno sie podac przed arg2
 			def dodaj ((arg1, arg2 = 1, arg3):			
 				
-2* Funkcje:
+1* Funkcje:
 	*WSTĘP:
 		*w pierwszej linijce po zadeklarowaniu funkcji zawsze powinineś opisać co dokładnie robi 
 		 funkcja poprzez opisanie niej w trzech cudzysłowach --> dzięki temu po wpisaniu funkcji
@@ -5340,6 +5774,7 @@ TYPY WYJĄTKÓW:		https://www.w3schools.com/python/python_ref_exceptions.asp
 				  print("His last name is " + kid["lname"])
 				my_function(fname = "Tobias", lname = "Refsnes")
 					 
+######################################## IF | PETLA WHILE | PĘTLA FOR #####################################
 1* Petla obiektowa FOR i funkcja RANGE
 	*mozesz iterowac petla FOR przez kazdy element kolekcji (NIE TYLKO LISTY) - w pythonie
 	 inaczej niz winnych jezykach programowania, pętla for dziala troche jak iterator w obiektach
@@ -5415,7 +5850,6 @@ TYPY WYJĄTKÓW:		https://www.w3schools.com/python/python_ref_exceptions.asp
 			else:
 				print("koniec")
 		
-####################################### IF | PETLA WHILE ############################################
 2* PETLA WHILE
 	*skladnia:
 		while i < 5:
@@ -5446,8 +5880,30 @@ TYPY WYJĄTKÓW:		https://www.w3schools.com/python/python_ref_exceptions.asp
 			  i += 1
 			else:
 			  print("i is no longer less than 6")
+	
+1*	    #### SKRÓCONY OPERATOR IF:
+	*najpierw podajemy: co ma się wykonać, if warunek, else co ma sie wykonac gdy nieprawda" 
+	*przy elsie gdy chcesz zrobić PRZYPISANIE to nie rób przypisania do zmiennej tylko postaw sam 
+	 parametr (tak jakby było już po znaku przypisania!)
+			for i in range(1,len(string)+1): string2+=string[i-1] if i%max_width!=0 else string[i-1]+'\n' 
+			a=100 if 5>2 else -100
+			print(a) 
+	*ALE gdy chcesz wykonać jakąś metodę jak print TO nie wystarczy ze wpiszesz sam parametr TYLKO MUSISZ
+	 wywołać tę metodę także po ELSE:
+			print("PRAWDA ") if 5>2 else print("Nieprawda")
+			import math
+			math.sin(math.radians(90)) if 5<2 else math.sin(math.radians(0))
+	*jeżeliw list comprehensions ze skroconym operatorem if, else w elsie nie chcesz wykonywać rzadnej 
+	 operacji gdyż np chcesz zeby zwrociło Tobie listę z przefiltrowanej listy przez dany warunek to ifa 
+	 stawiasz po forze zamiast przed:
+			lower_lst=[x for x in lst if x.islower()]
+	*gdy ifa w listcomprehensions stawiasz na koncu to możęsz postawic tez tam ich kilka i wtedy wykona 
+	 sie najpierw ten wewntrzny a poniej dopiero zewnetrzny:
+			digit_odd_lst=sorted([x for x in lst if x.isdigit() if int(x)%2!=0])		
+		#lub mozna to zrobić w dwoch petlach:
+			digit_odd_lst=[y for y in sorted([x for x in lst if x.isdigit()]) if int(y)%2!=0]
 			
-1* IFy:
+0* IFy:
 	* bez nawiasow i bez klamer ;; kończy sie dwukropkiem :
 	* jek jest bardziej skomplikowane rownanie to normalnie mozesz uzyc nawiasow
 	* miedzy jednym poziomem a drugim 4 wciecia (albo tabulator)
@@ -5474,34 +5930,8 @@ TYPY WYJĄTKÓW:		https://www.w3schools.com/python/python_ref_exceptions.asp
 			if a > b: print("a is greater than b")
 	*if statement can not be empty but you can use keyword 'pass' in it
 	
-0*	    #### SKRÓCONY OPERATOR IF:
-	*najpierw podajemy: co ma się wykonać, if warunek, else co ma sie wykonac gdy nieprawda" 
-	*przy elsie gdy chcesz zrobić PRZYPISANIE to nie rób przypisania do zmiennej tylko postaw sam 
-	 parametr (tak jakby było już po znaku przypisania!)
-			for i in range(1,len(string)+1): string2+=string[i-1] if i%max_width!=0 else string[i-1]+'\n' 
-			a=100 if 5>2 else -100
-			print(a) 
-	*ALE gdy chcesz wykonać jakąś metodę jak print TO nie wystarczy ze wpiszesz sam parametr TYLKO MUSISZ
-	 wywołać tę metodę także po ELSE:
-			print("PRAWDA ") if 5>2 else print("Nieprawda")
-			import math
-			math.sin(math.radians(90)) if 5<2 else math.sin(math.radians(0))
-	*jeżeliw list comprehensions ze skroconym operatorem if, else w elsie nie chcesz wykonywać rzadnej 
-	 operacji gdyż np chcesz zeby zwrociło Tobie listę z przefiltrowanej listy przez dany warunek to ifa 
-	 stawiasz po forze zamiast przed:
-			lower_lst=[x for x in lst if x.islower()]
-	*gdy ifa w listcomprehensions stawiasz na koncu to możęsz postawic tez tam ich kilka i wtedy wykona 
-	 sie najpierw ten wewntrzny a poniej dopiero zewnetrzny:
-			digit_odd_lst=sorted([x for x in lst if x.isdigit() if int(x)%2!=0])		
-		#lub mozna to zrobić w dwoch petlach:
-			digit_odd_lst=[y for y in sorted([x for x in lst if x.isdigit()]) if int(y)%2!=0]
-			
-########################################## PODSTAWY ##########################################
-PODSTAWOWE FUNKCJE:		https://www.w3schools.com/python/python_ref_functions.asp
-SŁOWA KLUCZOWE:			https://www.w3schools.com/python/python_ref_keywords.asp
-SŁOWNICZEK:				https://www.w3schools.com/python/python_ref_glossary.asp
-
-3* Składnia:
+################################################ PODSTAWY #################################################
+2* Składnia:
 	*PODSTAWOWE FUNKCJE: https://www.w3schools.com/python/python_ref_functions.asp
 	*PORADY WSTEPNE:
 		**wciecia mozesz takie jakie chcesz ale przyjelo sie ze 1 tab lub 4 spacje - nie mozńa tego 
@@ -5549,9 +5979,7 @@ SŁOWNICZEK:				https://www.w3schools.com/python/python_ref_glossary.asp
 		  przed rozpoczęciem nowej linii znak backslacha '\'
 				zmienna= 1 + 2 + 3 + \
 						 4 + 5 + 6 + \
-						 7 + 8
-		**mozesz przypisac wiele wartosci od razu do jednej zmiennej 
-			x, y, z = "Orange", "Banana", "Cherry"				
+						 7 + 8			
 		**DATA TYPES (TYPY DANYCH):
 			* Text Type:		str
 			* Numeric Types:	int (1, -1) [positive or negative wthout unlimited length]
@@ -5657,14 +6085,14 @@ SŁOWNICZEK:				https://www.w3schools.com/python/python_ref_glossary.asp
 		**python potraktowal to jako Stringi dlatego przy input'cie musisz to przekonwertowac 
 		  na typ int ALBO float poprzez funkcje int() ALBO float()
 			print(int(a) + int(b))
+	*Kolejność wykonywania działań: nawiasy, potęgowanie, mnożenieidzielenie, dodawanie 
+	 oraz wszystko dzieje się od lewej do prawej, czyli jezel iznajduje si ena tym samym
+	 poziomie to idzie od lewej do prawej
 	* OPERATORY MATEMATYCZNE rozszerzone:
 		- dzielenie i mnożenie intow zawsze da wynik we float'cie
 		- modulo: 5 % 3		 [wynik:2]
 		- dzielenie z wynikiem calkowitym:  5 // 2  	[wynik:1]
 		- potegowanie: 2 ** 3  	[wynik:8]
-	*kolejność wykonywania działań: nawiasy, potęgowanie, mnożenieidzielenie, dodawanie 
-	 oraz wszystko dzieje się od lewej do prawej, czyli jezel iznajduje si ena tym samym
-	 poziomie to idzie od lewej do prawej
 	*OPERATORY PRZYPISANIA:
 		* PYTHON nie ma inkrementacji ani dekrementacji  (x-- ; x++) - to nie zadziala
 			=		x = 5		x = 5	
@@ -5723,7 +6151,7 @@ SŁOWNICZEK:				https://www.w3schools.com/python/python_ref_glossary.asp
 			print(1 in y)								# Output: True
 			print('a' in y)								# Output: False
 			
-2* właściwości i SKROTY:
+1* Właściwości i SKROTY:
 	*To defining scope of the class or loop or another structure Python relies on indentation,
      using whitespace. Python uses indentation to indicate a block of code. Other programming 
      languages often use curly-brackets for this purpose
@@ -5751,12 +6179,6 @@ SŁOWNICZEK:				https://www.w3schools.com/python/python_ref_glossary.asp
 		*CTRL + SHIFT +strzałka w góre/w dół - przeniesienie linii w górę lub w dół
 		*CTRL + u - w zaznaczonym tekscie zamiana liter na małe
 		
-1* do pobrania: 
-	PYCHARM (jetbrains) - IDE (srodowisko) albo 
-	VISUALSTUDIO - też IDE (środowisko)
-	
-	PYTHON.org	- interpreter (cos jak kompilator)
-	
 0.1* KONSOLA DLA PYTHONA:
 	*OTWIERASZ PLIK PYTHON.EXE i masz konsole z pythonem. 
 	*lub POWERSHELL/CMD w Windowsie gdzie wpisujesz python /python3 i odpala ci się
@@ -5777,7 +6199,7 @@ SŁOWNICZEK:				https://www.w3schools.com/python/python_ref_glossary.asp
 		*wykorzystując komende python -m możesz wpisać moduł bez końcówki .py - tylko w ten
 		  sposób (dzięki '-m') możesz otwerać skrypty moduły któe nie znajdują się w twojej ścieżce
 				C:\Users\Your_Name>python -m mojPlik arg1 arg2 arg3
-	 
+	
 0.0* INSTALACJA I KONFIGURACJA:
 	*najlepiej wytłumaczona instalacja pythona3 na Maca i Windowsa:
 	 https://www.youtube.com/watch?v=YYXdXT2l-Gg
@@ -5809,8 +6231,4 @@ SŁOWNICZEK:				https://www.w3schools.com/python/python_ref_glossary.asp
 					alias python=python3
 	*To samo dotyczy Django(który znajduję sie w folderze libs/site-packages oraz z pipem 
 	 który znajduję się w folderze Scripts (te dwie ścieżki albo trzeba podać w zmiennych 
-	 środowiskowych (users variables) albo podbić je wyżej w tychże zmiennych środowiskowych).
-	 
-	 
-	
-	
+	 środowiskowych (users variables) albo podbić je wyżej w tychże zmiennych środowiskowych).	
