@@ -2,8 +2,10 @@
 =======II.PRZYKŁADY RÓŻNYCH APLIKACJI WYTWORZONYCH WE VIEWS.PY W KONKRETNYCH APP/FUNKCJONALNOŚCIACH=========
 ============================================================================================================
 	1)FORMULARZ DO REJESTRACJI:
+	---------------------------
 		A) OPCJA PODSTAWOWA:
-			1*Tworzysz nową aplikację users i wykonujesz wszystkie czynności związane z jej utworzeniem:
+			1*W URLS.PY:
+				*Tworzysz nową aplikację users
 					python manage.py startapp users
 				*dla głównej app/funkcjonalności w settings.py w INSTALLED_APPS dodajesz:
 						'users.apps.UsersConfig',
@@ -27,45 +29,8 @@
 							...									#module views w app/funkcjonalności users
 							path('register/', users_views.register, name = 'register'),
 						]
-			2*Tworzysz plik html w templates'ach (register.html):
-				*Tworzysz katalog templates i podkatalog o nazwie app/funkcjonalności users i 
-				 wewnątrz tworzysz plik html: register.html:
-				*odwołujesz się do szablonu umieszczonego w templates'ach innej app/funkcjonalności 
-				 (w tym przypadku aplikacji/funkcjonalnośći blog)(nie musisz wpisywać specjalnej ścieżki 
-				 żaby iśc w górę by przejśc do katalogu innej app/funkcjonalności. Ze względu na to
-				 że strukture plików tworzysz tak że oprócz katalogu templates zawsze tworzysz katalog o 
-				 nazwie app/funkcjonalności to wystarczy że odwołasz się do nazwy tej aplikacji i 
-				 nazwy szablonu w niej zawartego):
-						{% extends "blog/base.html" %}				#odwołujesz się do szablonu base.html 
-																	#w app/funkcjonalności blog
-				*tworysz strukturę formularza html która będzie podmieniana w szablonie html'a (base.html).
-				 Ponieważ to formularz to dodajesz atrybut method ='POST' do tagu <form> żeby móc wysyłać
-				 treści znajdujące się w polach formularza:
-						{% block content %}	
-							<div class="content-section">
-								<form method='POST'>
-								...
-								</form>
-							</div>
-						{% endblock %}
-				*wewnąrz formularza by działał właściwie musisz dodać w pojedyńczych nawiasach wąsowych 
-				 (ukryty_tag/token) csrf_token oraz w podwójnych nawiasach wąsowych zmienną form która
-				 bedzie wyrenderowana poprzez pole as_p (nazwa_pola i pole_formularza będą zaczynać się
-				 od nowej linii)). W ten sposób powstanie nam domyślny formularz, który trzeba jeszcze 
-				 uzupełnić o button typu submit żeby móc wysyłać dany formularz (jest to możliwe dzięki 
-				 przypisaniu 'POST' do atrybutu method w tagu form):
-						{% block content %}	
-							<div class="content-section">
-								<form method='POST'>
-									{% csrf_token %}
-									{{ form.as_p }}
-								</form>
-							</div>
-							<div class="form-group">
-								<button type="submit">Sign Up</button>
-							</div>
-						{% endblock %}		
-			3*Tworzysz logikę działania w pliku views.py:
+						
+			2*WE VIEWS.PY (logika działania): 
 				*korzystasz z gotowego modułu UserCreationForm, do tworzenia schematycznych formularzy 
 				 składających się z: 'username', 'password1', 'password2' (do zatwierdzenia password1).
 				 moduł ten musisz zaimportować:
@@ -131,10 +96,101 @@
 									</div>
 								{% endfor %}
 							{% endif %}
+							
+			3*W TEMPLATES'ACH UTWORZENIE PLIKU HTML (register.html):
+				*Tworzysz katalog templates i podkatalog o nazwie app/funkcjonalności users i 
+				 wewnątrz tworzysz plik html: register.html:
+				*odwołujesz się do szablonu umieszczonego w templates'ach innej app/funkcjonalności 
+				 (w tym przypadku aplikacji/funkcjonalnośći blog)(nie musisz wpisywać specjalnej ścieżki 
+				 żaby iśc w górę by przejśc do katalogu innej app/funkcjonalności. Ze względu na to
+				 że strukture plików tworzysz tak że oprócz katalogu templates zawsze tworzysz katalog o 
+				 nazwie app/funkcjonalności to wystarczy że odwołasz się do nazwy tej aplikacji i 
+				 nazwy szablonu w niej zawartego):
+						{% extends "blog/base.html" %}				#odwołujesz się do szablonu base.html 
+																	#w app/funkcjonalności blog
+				*tworysz strukturę formularza html która będzie podmieniana w szablonie html'a (base.html).
+				 Ponieważ to formularz to dodajesz atrybut method ='POST' do tagu <form> żeby móc wysyłać
+				 treści znajdujące się w polach formularza:
+						{% block content %}	
+							<div class="content-section">
+								<form method='POST'>
+								...
+								</form>
+							</div>
+						{% endblock %}
+				*wewnąrz formularza by działał właściwie musisz dodać w pojedyńczych nawiasach wąsowych 
+				 (ukryty_tag/token) csrf_token oraz w podwójnych nawiasach wąsowych zmienną form która
+				 bedzie wyrenderowana poprzez pole as_p (nazwa_pola i pole_formularza będą zaczynać się
+				 od nowej linii)). W ten sposób powstanie nam domyślny formularz, który trzeba jeszcze 
+				 uzupełnić o button typu submit żeby móc wysyłać dany formularz (jest to możliwe dzięki 
+				 przypisaniu 'POST' do atrybutu method w tagu form):
+						{% block content %}	
+							<div class="content-section">
+								<form method='POST'>
+									{% csrf_token %}
+									{{ form.as_p }}
+								</form>
+							</div>
+							<div class="form-group">
+								<button type="submit">Sign Up</button>
+							</div>
+						{% endblock %}		
+			
 		B)OPCJA ROZSZERZONA (rozszerzająca opcję podstawową):
-			1*Czynności przy tworzeniu aplikacji pozostają takie same jak w pkt 1 OPCJI PODSTAWOWEJ.
-			2*W pliku html w templates'ach twojej app/funkcjonalności zmieniasz formę renderowania i 
-			  przedstawienia błędów przy walidacji danych w formularzu z form.as_p na form|crispy:
+			1*W URLS.PY tak samo jak w OPCJI PODSTAWOWEJ.
+			2*WE VIEWS.PY
+			 *Tworzysz swój własny typ formularza który nie będzie oparty o zaimportowany UserCreationForm
+			  tylko o własną klasę która będzie dziedziczyć po UserCreationForm i która będzie rozszerzona 
+			  o dodatkowe pola w formularzu:
+			   2.0*WE FORMS.PY (class UserRegisterForm(UserCreationForm)):
+					*wewnątrz swojej app/funkcjonalności users tworzysz moduł forms.py w którym tworzysz 
+					 klasę UserRegisterForm dziedziaczącą po UserCreationForm. 
+					*W tej klasie importujesz odpowiednie moduły, tworzysz dodatkowe pola w formularzu, 
+					 wskazujesz bazę danych z modeli ze swojej app/funkcjonalności oraz wypisujesz kolejność 
+					 swoich pól w liście fields:
+							from django import forms		
+										#do pobierania róznych typów pól dla formularzy, tutaj EmailField()
+							from django.contrib.auth.forms import UserCreationForm
+															#do możliwości dziedziczenia w swojej klasie
+							from django.contrib.auth.models import User
+															#do wskazania modelu Bazy danych w zmiennej model
+							class UserRegisterForm(UserCreationForm):
+								#email=forms.EmailField()	#nie musisz tego wpisywać gdyż pola formularz 
+															#weżmie sobie z listy fields ale tutaj możesz
+															#w parametrze wpisać ograniczenia (max_width=100)
+															#lub format daty w przypadku pola Daty
+								class Meta:
+									model=User				#określasz bazę danych gdzie mają być zapisane 
+															#dane z formualrza
+									fields = [ 'username', 'email','password1','password2']
+															#lista fields gdzie określasz wszystkie pola
+															
+			   2.1*WE VIEWS.PY:
+					*ponieważ klasa UserRegisterForm dziedziczy po UserCreactionFrom to tylko je podmieniasz,
+					 wcześniej importując UserRegisterForm z modułu forms znajdującego się w tym samym 
+					 katalogu
+					*dodatkowo dodajesz messages (opisane w PODSTAWACH w dziale MODUŁY I FOLDERY W 
+					 APLIKACJACH w pkt module views.py)
+							from django.shortcuts import render, redirect
+							from django.contrib import messages	
+							from . forms import UserRegisterForm
+							def register(request):
+								if request.method == 'POST':
+									formWithData = UserRegisterForm(request.POST)
+									if formWithData.is_valid():
+										formWithData.save()
+										username = formWithData.cleaned_data.get('username')
+										messages.success(request, f'Account created for {username}!')
+										return redirect('blog-home')
+									else:
+										return render(request,'users/register.html', {'form':formWithData})
+								else:
+									formWithoutData = UserRegisterForm()
+									return render(request, 'users/register.html', {'form':formWithoutData})
+									
+			3*W TEPLATESACH W PLIKU REGISTER.HTML 
+			 *Zmieniasz formę renderowania i przedstawienia błędów przy walidacji danych w formularzu z 
+			  form.as_p na form|crispy:
 				*instalujesz django-crispy-forms w konsoli poprzez:
 							pipenv install django-crispy-forms	  LUB    pip install django-crispy-forms
 				*dodajesz w głównej app/funkcjonalności w sekcji INSTALLED_APPS informacje o nowej 
@@ -189,51 +245,10 @@
 							<head>
 								<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 								<link rel="stylesheet" type="text/css" href="{% static 'blog/main.css' %}">
-			3*W pliku views.py tworzysz swój własny typ formularza który nie będzie oparty o zaimportowany
-			  UserCreationForm tylko o własną klasę która będzie dziedziczyć po UserCreationForm i która 
-			  będzie rozszerzona o dodatkowe pola w formularzu.
-				*PLIK FORMS.PY wraz z UserRegisterForm  który dziedziczy po UserCreationForm. 
-					*wewnątrz swojej app/funkcjonalności users tworzysz moduł forms.py w którym tworzysz 
-					 klasę UserRegisterForm dziedziaczącą po UserCreationForm. 
-					*W tej klasie importujesz odpowiednie moduły, tworzysz dodatkowe pola w formularzu, 
-					 wskazujesz bazę danych z modeli ze swojej app/funkcjonalności oraz wypisujesz kolejność 
-					 swoich pól w liście fields:
-							from django import forms		
-										#do pobierania róznych typów pól dla formularzy, tutaj EmailField()
-							from django.contrib.auth.forms import UserCreationForm
-															#do możliwości dziedziczenia w swojej klasie
-							from django.contrib.auth.models import User
-															#do wskazania modelu Bazy danych w zmiennej model
-							class UserRegisterForm(UserCreationForm):
-								email=forms.EmailField()	#wpisujesz dodatkowe pola
-								class Meta:
-									model=User				#określasz bazę danych gdzie mają być zapisane 
-															#dane z formualrza
-									fields = [ 'username', 'email','password1','password2']
-															#lista fields gdzie określasz wszystkie pola
-				*PLIK VIEWS.PY:
-					*ponieważ klasa UserRegisterForm dziedziczy po UserCreactionFrom to tylko je podmieniasz,
-					 wcześniej importując UserRegisterForm z modułu forms znajdującego się w tym samym 
-					 katalogu
-					*dodatkowo dodajesz messages (opisane w PODSTAWACH w dziale MODUŁY I FOLDERY W 
-					 APLIKACJACH w pkt module views.py)
-							from django.shortcuts import render, redirect
-							from django.contrib import messages	
-							from . forms import UserRegisterForm
-							def register(request):
-								if request.method == 'POST':
-									formWithData = UserRegisterForm(request.POST)
-									if formWithData.is_valid():
-										formWithData.save()
-										username = formWithData.cleaned_data.get('username')
-										messages.success(request, f'Account created for {username}!')
-										return redirect('blog-home')
-									else:
-										return render(request,'users/register.html', {'form':formWithData})
-								else:
-									formWithoutData = UserRegisterForm()
-									return render(request, 'users/register.html', {'form':formWithoutData})
-	2)STRONY DO LOGOWANIA, DO LOGOUTu I DO PROFILU:
+								
+								
+	2)STRONY DO LOGOWANIA, DO LOGOUTu i DO PROFILU:
+	-----------------------------------------------
 	  A)LOGIN oraz LOGOUT:
 		1.MODULE URL.PY (w app/funckjonalności users - wykorzystujesz wcześniej utworzoną app/funkcjonalność)
 			*pobierasz module views z django.contrib.auth by móc wywołac z niego 'class-based views'
@@ -251,7 +266,17 @@
 					path('logout/',auth_views.LogoutView.as_view(template_name='users/logout.html',
 																 name='logout'),
 				]
-		2*W TEMPLATES'ACH 
+				
+		2*W SETTINGS.PY W GŁÓWNEJ APP/FUNCKJONALNOŚCI (zamiast views.py):
+			*ponieważ cała logika działania aplikacji jest zawarta w 'class-based views' w pliku URLS.PY w 
+			 głównej app/funkcjonalności to jedyne co zostaje to przekierowanie na inną stronę po poprawnym 
+			 zalogowaniu. (standardowo DJANGO będzie przekierowac na http://127.0.0.1:8000/accounts/profile/)
+			 By to zmienić musisz w pliku settings.py w głównej app/funckjonalności wpisać zmienną 
+			 LOGIN_REDIRECT_URL i przypisując do niej interesującą cię stronę:
+						#w settings.py w głównej app/funckjonalności
+						LOGIN_REDIRECT_URL = 'blog-home' 	
+						
+		3*W TEMPLATES'ACH 
 			a)W APP/FUNCKJONALNOŚCI USERS - login.html oraz logout.html :
 			 **login.html:
 				*tak samo jak register.html opierasz się na szablonie z app/funckjonalności blog,i zmieniasz
@@ -303,14 +328,7 @@
 							<a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
 							<a class="nav-item nav-link" href="{% url 'register' %}">Register</a>
 						{% endif %}	
-		3*W SETTINGS.PY W GŁÓWNEJ APP/FUNCKJONALNOŚCI 
-			*ponieważ cała logika działania aplikacji jest zawarta w 'class-based views' w pliku URLS.PY w 
-			 głównej app/funkcjonalności to jedyne co zostaje to przekierowanie na inną stronę po poprawnym 
-			 zalogowaniu. (standardowo DJANGO będzie przekierowac na http://127.0.0.1:8000/accounts/profile/)
-			 By to zmienić musisz w pliku settings.py w głównej app/funckjonalności wpisać zmienną 
-			 LOGIN_REDIRECT_URL i przypisując do niej interesującą cię stronę:
-						#w settings.py w głównej app/funckjonalności
-						LOGIN_REDIRECT_URL = 'blog-home' 				
+						
 	  B)PROFILE:
 		0.0* W MODELS.PY 
 		   A* KLASA PROFILE:
@@ -357,9 +375,9 @@
 								import os
 								MEDIA_ROOT=os.path.join(BASE_DIR, 'media')
 							 Bez przypisania ścieżki zmiennej MEDIA_ROOT będzie ona ustawiona na BASE_DIR							 
-						   **w pliku URLS.PY musisz dodać poniższe linie, żeby zdjecia/pliki mogły się 
-						     wyświetlić (zarówno poprzez instrukcje konsolowe tj: user.profile.image.url 
-							 jak i poprzez wpisanie w wyszukiwarke dokładnej lokalizacji zdjęcia):
+						   **w URLS.PY musisz dodać poniższe linie, żeby zdjecia/pliki mogły się wyświetlić 
+						     (zarówno poprzez instrukcje konsolowe tj: user.profile.image.url jak i poprzez 
+							 wpisanie w wyszukiwarke dokładnej lokalizacji zdjęcia):
 								#w pliku urls.py w głównej app/funkcjonalności
 								from django.conf import settings
 								from django.conf.urls.static import static
@@ -416,27 +434,74 @@
 											output_size= (300,300)
 											img.thumbnail(output_size) 			#zmiana wielkości zdjęcia
 											img.save(self.image.path)			#zapis nowego zdjęcia
-		0.1* W SIGNALS.PY 
-			*signals.py jest niczym innym jak kontynuacją pliku models.py (niektórzy wręcz to co jest w 
-			 w signals.py robią w models.py)
-		
-		 
-		 
+											
+		0.1* W SIGNALS.PY oraz APS.PY w danej app/funckjonalności:
+		 *W APPS.PY:
+			*po stworzeniu pliku signals.py żeby sygnały mogły działać to w apps.py wewnątrz klasy o nazwie
+			 nazwa_app/funkcjonalnosci dziedziczącej po AppConfig trzeba stworzyć funkcję ready() i wewnątrz
+			 jej zaimportować plik signals pochodzący z danej app/funkcjonalności poniżej dla users:
+								class UsersConfig(AppConfig): 
+									name = 'users'
+									def ready(self):
+										import users.signals
+		 *W SIGNALS.PY:
+			*Podstawy:
+				*signals.py jest niczym innym jak kontynuacją pliku models.py (niektórzy wręcz to co jest w 
+				 w signals.py robią w models.py)
+				*w tymże sygnale chodzi o to żeby w momencie utworzenia obiektu User zostal automatycznie 
+				 utworzony obiekt Profile (stworzony a następnie zapisany):
+				*by móc utworzyć sygnał potrzebujesz:
+					*zaimportować modele/klasy które będą użyte w sygnale (z pliku models.py) 
+								from .models import Profile
+								from django.contrib.auth.models import User
+					*zaimportować dekorator receiver który jest odpowiedzialna za otrzymanie sygnału i 
+					 uruchomienie funkcji wewnątrz dekoratora:
+								from django.dispatch import receiver
+					*zaimportować typ sygnału - post_save, który uruchomi daną funkcję po utworzeniu i 
+					 zapisaniu wskazanego obiektu - w tym przypadku po utworzeniu i zapisaniu Usera.
+								from django.db.models.signals import post_save 
+			*tworzysz funkcje udekorowane dekoratorem @receiver przyjmującym w parametrach typ sygnału oraz
+			 sender'a czyli nazwę klasę jaka musi zostać stworzona żeby uruchomiły się funkcje tworzące
+			 inną klasę. 	
+								@receiver(post_save, sender=User)
+								def ...
+			 Musisz stworzyć 2 funkcje wewnątrz receivera - do tworzenia i do zapisywania. Muszą one 
+			 przyjmować odpowiednie argumenty,które dostarcza receiver tj: 
+					-sender - jako klasę która wyśle sygnał gdy zostanie stworzona jej instancja
+					-instance - jako instacja klasy która wysłała sygnał ze stworzyła instancje
+					-created - (opcjonalnie) sprawdza czy obiekt zostal stworzony czy nie 
+					-**kwargs - jako jakieś pozostałe elementy 
+				*Funkcja create_profile dzięki funkcji create() użytej na wszystkich obiektach klasy Profile 
+				 stworzy obiekt Profile gdzie w argumencie przyjmie pole user jako instance:
+								@receiver(post_save, sender=User)
+								def create_profile(sender, instance, created, **kwargs):
+									if created:
+										Profile.objects.create(user=instance)
+				*Funkcja save_profile dzięki funkcji save() użytej na danym obiekcie Profile przypisanym do 
+				 konkretnej instancji usera zapisze w modeluklasie/tabeli Profile nowo stworzoną instancje
+				 profilu:
+								@receiver(post_save, sender=User)
+								def save_profile(sender, instance, **kwargs):
+									instance.profile.save()
+			*Logika działania takich sygnałów wygląda tak - po tym gdy User zostanie utworzony/zapisany 
+			 (post_save) zostanie wysłany sygnał od Usera (sender=User) który zostanie otrzymany przez 
+			 funkcje z dekoratorem @receiver. Pierwsza z nich stworzy obiekt Profile dzięki metodzie 
+			 create() a druga zapisze go w tabeli dzięki metodzie save():
+								from django.db.models.signals import post_save 
+								from django.contrib.auth.models import User
+								from django.dispatch import receiver
+								from . models import Profile
 
+								@receiver(post_save, sender=User)
+								def create_profile(sender, instance, created, **kwargs):
+									if created:
+										Profile.objects.create(user=instance)
 
-
-
-
-
-
-
-
-
-
-
-		 
-		 
-		1* W URLS.PY 
+								@receiver(post_save, sender=User)
+								def save_profile(sender, instance, **kwargs):
+									instance.profile.save()
+									
+		1* W URLS.PY:
 			A) ze względu na to że strona profile nie będzie miała żadnych podstron to importujesz moduł 
 			   views.py z app/funkcjonalności users gdzie znajduję się logika działania funkcji profile oraz 
 			   umieszczasz w liście urlpatterns przekierowanie na stronę profile:
@@ -458,7 +523,101 @@
 						from django.conf.urls.static import static
 						if settings.DEBUG:
 							urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-		2* W templates'ach w app/funkcjonalności users 
+							
+		2.0* WE FORMS.PY APP/FUNCKJONALNOŚCI USERS (forms.py który jest przedłużeniem pliku VIEWS.PY):
+		   *Na początku musisz zaimportować modele User i Profile by móc dodawac formularze na ich bazie
+		   *Tworzysz formularze UserUpdateForm oraz ProfileUpdateForm które dziedziczą po klasie ModelForm
+		    z pakietu models (from django import forms). 
+		   *Specjalnie tworzysz UserUpdateForm zamiast tylko ProfileUpdateForm gdzyż interesujące cię dane 
+		    (czyli: username, email) znajdujące się w modelu User i chociaż model Profile poprzez pole typu
+			OneToOneField(User) jest ścieśle z Userem połączony relacją 1:1 to nie dziedziczy po nim więc
+			nie można się dostać z obiektu profilu do pól Usera
+		   *wewnątrz formularzy najważniejsze jest zdeifiniowanie klasy wewnętrznej 'Meta' gdzie deklarujesz 
+		    nazwę modelu na bazie której będzie formularz np: model=User oraz deklarujesz pola w liście 
+			fields które interesują cię w formularzu
+		   *ponadto mógłbyś stworzyć pola o tej samej nazwie co w liście fields w klasie Meta. Pola te mając
+		    tę samą nazwę co w liście fields w klasie Meta zostałyby przedstawione w formularzu w jednym 
+			miejscu. W polu utworzonym poza klasą Meta mógłbyś dać parametr ograniczający jakoś to pole np:
+			#username = forms.CharField(max_length=10) albo #email=forms.EmailField(). Bez ograniczających 
+			parametrów nie ma sensu tworzenie takich pól:
+						from django.contrib.auth.models import User
+						from .models import Profile
+						from django import forms
+						class UserUpdateForm(forms.ModelForm):
+							#username = forms.CharField(max_length=1)	#nie musisz tego podawać ani email
+							#email=forms.EmailField()					#chyba że chcesz jakoś ograniczyć 
+																		#np pole email poprzez: max_width=10 
+							class Meta:
+								model=User
+								fields = ['username', 'email']
+						class ProfileUpdateForm(forms.ModelForm):
+							class Meta:
+								model = Profile
+								fields=['image']
+								
+		2.1* WE VIEWS.PY APP/FUNCKJONALNOŚCI USERS ORAZ W SETTINGS.PY W GŁÓWNEJ APP/FUNCKJONALNOŚCI:
+		   a)'RESTRICTED ROUTE' - Podstrona profile powinna być tylko dla zalogowanego użytkownika:
+			    *WE VIEWS.PY tworzysz funkcje profile() przekierowującą do strony 'users/profile.html'i do 
+			     której dostęp powinien być ograniczony tylko dla zalogowanego użytkownika. By móc takie
+			     coś osiągnąć musisz skorzystać z wbudowanego w django dekoratora o nazwie login_required 
+			     (z paczki django.contrib.auth.decorators):
+						from django.contrib.auth.decorators import login_required
+						@login_required
+						def profile(request):
+							return render(request, 'users/profile.html')
+			    *W SETTINGS.PY W GŁÓNEJ APP/FUNKCJONALNOŚCI - ze wzgłędu na to że gdybyś nie był zalogowanym
+			     a chciał wejść na stronę 'profile/' (która jest 'RESTRICTED ROUTE' (czyli tylko dla 
+			     zalogowanych użytkowników)) NIE Z LINKU tylko wpisując w pasek adres (127.0.0.1/profile)
+			     to django automatycznie przekieruję cię na domyślną stronę logowania (/acounts/login/). 
+			     Ponieważ twoja strona logowania to adres '/login/' to musisz zrobić odpowiednie przypisanie
+			     poprzez zmienną LOGIN_URL i przypisanie do niej 3 zmienną z funkcji path dla login w liscie
+			     urlpatterns w pliku urls.py tj 'login':
+						#w pliku settings.py w głównej app/funckjonalności
+						LOGIN_URL ='login'
+			     Dzięki temu nawet jak będziesz niezalogowany a będziesz chciał wejść na stronę 'profile/' 
+			     która jest 'RESTRICTED ROUTE' to django automatycznie przeniesie cię do strony logowania
+			     z dopiskiem w adresie strony '?next=/profile/' czyli kolejnej strony która zostanie 
+			     automatycznie wybrana gdy już się zalogujesz. 
+		   b)FORMULARZE z FORM.PY użyte WE VIEWS.PY:
+				*formularze dziedzczące po forms.ModelForm 
+				*w formularzu dziedziczącym po forms.ModelForm by móc zapisać dane w konkretnej 
+				 tabeli/modelu/klasie oraz by mogły zostać wyświetlone dane z pól tegóż modelu/klasy w 
+				 polach formularza trzeba podać jako parametr instancje obiektu: 'instance=request.instancja'
+						u_form=UserUpdateForm(instance=request.user)
+						p_form=ProfileUpdateForm(instance=request.user.profile)
+				*w formularzach podczas submitowania formularza dochodzi do post requesta z powrotem do tej
+ 				 samej ścieżki wraz z danymi wprowadzonymi w formularz. By móc przekazać te dane wprowadzone
+				 w formularz (niezależnie od tego czy dane te będą poprawnie wprowadzone czy niepoprawnie)
+				 trzeba dla treści podać parametr 'request.POST' a dla plików/zdjęć 'request.FILES'
+						u_form=UserUpdateForm(request.POST, instance=request.user)
+						p_form=ProfileUpdateForm(request.POST, request.FILES ,instance=request.user.profile)
+				*Po przekazaniu danych wprowadzonych do formularza trzeba:
+				  *móc określić czy dane te są poprawnie wprowadzone czy nie, walidacja poprzez is_valid(). 
+				  *jeżeli są poprawnie zapisane to trzeba te dane zapisać w tabeli poprzez metode save(). 
+				  *na koniec możesz przekierować na inną strone (redirect()) oraz na przekierowanej stronie
+				   pokazać wiadomość (messages.succes9request, 'text').
+						login_required
+						def profile(request):
+							if request.method == 'POST':
+								u_form=UserUpdateForm(request.POST, instance=request.user)
+								p_form=ProfileUpdateForm(request.POST, request.FILES,
+														 instance=request.user.profile)
+								if u_form.is_valid() and p_form.is_valid():
+									u_form.save()
+									p_form.save()
+									messages.success(request, f'Your account has been updated')
+									return redirect('profile')
+
+							else:
+								u_form=UserUpdateForm(instance=request.user)
+								p_form=ProfileUpdateForm(instance=request.user.profile)
+							context={
+								'u_form': u_form,
+								'p_form': p_form 
+							}
+							return render(request, 'users/profile.html', context)
+							
+		3* W TEMPLATES'ACH W APP/FUNKCJONALNOŚCI USERS:
 		   a) Tworzysz stronę profile.html gdzie zawierasz:
 				  *nazwę użytkownika: 'user.username' 
 				  *zdjęcie o ścieżce odwołującej się (dzięki polu OnoToOneField w klasie Profile w pliku 
@@ -506,75 +665,8 @@
 								</div>
 						  </form>
 						  </div>
-						{% endblock content %}
-		3.0* WE FORMS.PY app/funckjonalności users (forms.py który jest przedłużeniem pliku VIEWS.PY):
-		   *Na początku musisz zaimportować modele User i Profile by móc dodawac formularze na ich bazie
-		   *Tworzysz formularze UserUpdateForm oraz ProfileUpdateForm które dziedziczą po klasie ModelForm
-		    z pakietu models (from django import forms). 
-		   *Specjalnie tworzysz UserUpdateForm zamiast tylko ProfileUpdateForm gdzyż interesujące cię dane 
-		    (czyli: username, email) znajdujące się w modelu User i chociaż model Profile poprzez pole typu
-			OneToOneField(User) jest ścieśle z Userem połączony relacją 1:1 to nie dziedziczy po nim więc
-			nie można się dostać z obiektu profilu do pól Usera
-		   *wewnątrz formularzy najważniejsze jest zdeifiniowanie klasy wewnętrznej 'Meta' gdzie deklarujesz 
-		    nazwę modelu na bazie której będzie formularz np: model=User oraz deklarujesz pola w liście 
-			fields które interesują cię w formularzu
-		   *ponadto mógłbyś stworzyć pola o tej samej nazwie co w liście fields w klasie Meta. Pola te mając
-		    tę samą nazwę co w liście fields w klasie Meta zostałyby przedstawione w formularzu w jednym 
-			miejscu. W polu utworzonym poza klasą Meta mógłbyś dać parametr ograniczający jakoś to pole np:
-			#username = forms.CharField(max_length=10) albo #email=forms.EmailField(). Bez ograniczających 
-			parametrów nie ma sensu tworzenie takich pól:
-						from django.contrib.auth.models import User
-						from .models import Profile
-						from django import forms
-						class UserUpdateForm(forms.ModelForm):
-							#username = forms.CharField(max_length=1)	#nie musisz tego podawać ani email
-							#email=forms.EmailField()					#chyba że chcesz jakoś ograniczyć 
-																		#np pole email poprzez: max_width=10 
-							class Meta:
-								model=User
-								fields = ['username', 'email']
-						class ProfileUpdateForm(forms.ModelForm):
-							class Meta:
-								model = Profile
-								fields=['image']
-		3.1* WE VIEWS.PY app/funckjonalności users oraz W SETTINGS.PY w głównej app/funckjonalności:
-		   a)'RESTRICTED ROUTE' - Podstrona profile powinna być tylko dla zalogowanego użytkownika:
-			    *WE VIEWS.PY tworzysz funkcje profile() przekierowującą do strony 'users/profile.html'i do 
-			     której dostęp powinien być ograniczony tylko dla zalogowanego użytkownika. By móc takie
-			     coś osiągnąć musisz skorzystać z wbudowanego w django dekoratora o nazwie login_required 
-			     (z paczki django.contrib.auth.decorators):
-						from django.contrib.auth.decorators import login_required
-						@login_required
-						def profile(request):
-							return render(request, 'users/profile.html')
-			    *W SETTINGS.PY W GŁÓNEJ APP/FUNKCJONALNOŚCI - ze wzgłędu na to że gdybyś nie był zalogowanym
-			     a chciał wejść na stronę 'profile/' (która jest 'RESTRICTED ROUTE' (czyli tylko dla 
-			     zalogowanych użytkowników)) NIE Z LINKU tylko wpisując w pasek adres (127.0.0.1/profile)
-			     to django automatycznie przekieruję cię na domyślną stronę logowania (/acounts/login/). 
-			     Ponieważ twoja strona logowania to adres '/login/' to musisz zrobić odpowiednie przypisanie
-			     poprzez zmienną LOGIN_URL i przypisanie do niej 3 zmienną z funkcji path dla login w liscie
-			     urlpatterns w pliku urls.py tj 'login':
-						#w pliku settings.py w głównej app/funckjonalności
-						LOGIN_URL ='login'
-			     Dzięki temu nawet jak będziesz niezalogowany a będziesz chciał wejść na stronę 'profile/' 
-			     która jest 'RESTRICTED ROUTE' to django automatycznie przeniesie cię do strony logowania
-			     z dopiskiem w adresie strony '?next=/profile/' czyli kolejnej strony która zostanie 
-			     automatycznie wybrana gdy już się zalogujesz. 
-		   b)FORMULARZE z FORM.PY użyte WE VIEWS.PY:
-				*
-		  
-		  
-		  
-		  
-		  
-		  
-		  
-		  
-		  
-		  
-		  
-		  
-		     
+						{% endblock content %}	
+						
 ============================================================================================================
 ====================================================PODSTAWY================================================
 ============================================================================================================
@@ -958,6 +1050,11 @@
 														#zwróci <QuerySet [<Post: Blog 1>, <Post: Blog 2>]>
 										#  w render 3ci argument:
 										#  {'posts': User.objects.get(id=1).post_set.all()}
+						 tak samo jest z polami obiektu który jest kluczem obcym - żeby się do nich dostać 
+						 też musisz odwołać się do nich po podkreślniku:
+								posts=Post.objects.all()
+								for p in posts:
+									p.author_id			#zwróci dla każdego posta jego ID autora
 		*TWORZENIE OBIEKTÓW w module views.py I ZAPISYWANIE ICH W BAZIE DANYCH:
 			*UTWORZENIE oraz ZAPISANIE OBIEKTU(z models.py)/REKORDU dla DANEJ TABELI:
 				**tworzenie:
