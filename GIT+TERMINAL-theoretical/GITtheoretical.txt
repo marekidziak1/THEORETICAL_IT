@@ -89,6 +89,7 @@ COMMITY i ICH HISTORIA:
   *DODANIE KOMENTARZA DO TYTUŁU KOMENTARZA:
 	git commit -m "tytulKomentarza" -m "trescKomentarza"
   *HISTORIA COMMITÓW: (dział 5+6)
+	git log --graph --decorate -- all --oneline		[q zeby wyjsc]
 	git log								 
     git reflog   
 	git shortlog
