@@ -13,7 +13,6 @@ git:
 	
 sql: 
 0|0 *powtórka i ćwiczenia sql KBD and RBD+SBD 
-	 pojscie do biblioteki i zobaczyć prace inżynierskie z baz danych
 1|8	*postgres basics -> youtube
 1|12*postgres ->corey shafer
 1|13*tutorials point -> python postgres
@@ -22,7 +21,7 @@ sql:
 python:
 1|4 *Corey Shafer (INTERMEDIATE)(52, 53, 54, 55,      57 76, 90, 91,92       122, 123, 124, 125)
 1|5 *text-Programmizz: Object & class ;; Adavaced Topics :: Date & Time
-1|7 *Python engineer --> intermediate python course, freecod camp 
+1|7 *Python engineer --> intermediate python course freecode camp 
 2|9 *12 projects
 1|11*Free Code camp/dr chuck - python
  	*

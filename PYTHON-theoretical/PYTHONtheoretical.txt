@@ -37,9 +37,8 @@ REDUCE():							https://www.geeksforgeeks.org/reduce-in-python/
 ACCUMULATE():						https://www.geeksforgeeks.org/python-itertools-accumulate/
 
 
-#################### LEKCJA 28 i 29 i 30 i 31 | DESTRUKTOR | HERMETYZACJA ##################################
-###################### METODY KLAS I METODY STATYCZNE | Gettery i Settery ##################################
-########## LEKCJA 25 i 26 i 27 KLASY I OBIEKTY OOP | DZIEDZICZENIE | METODY MAGICZNE #######################
+########## KLASY I OBIEKTY OOP | METODY KLAS I METODY STATYCZNE | DZIEDZICZENIE | METODY MAGICZNE ##########
+######################## DESTRUKTOR | HERMETYZACJA | Gettery i Settery | DODATKI ###########################
 OOP:								https://www.programiz.com/python-programming/object-oriented-programming
 METODY MAGICZNE: 					https://www.youtube.com/watch?v=IkWrlRei0uA
 
@@ -49,29 +48,36 @@ UNBOXING KOLEKCJI: 					https://www.w3schools.com/python/python_tuples_unpack.as
 ########## BUILT-INS | *ARGS **KWARGS | KOPIOWANIE W PYTHONIE | MODULE COLLECTIONS #########################
 SQUENCES:							https://docs.python.org/3/library/stdtypes.html#mutable-sequence-types
 BUILT-IN:							https://www.programiz.com/python-programming/methods/built-in
-COLLECTIONS MODULE:					https://www.geeksforgeeks.org/python-collections-module/
+COLLECTIONS MODULE (6):				https://www.geeksforgeeks.org/python-collections-module/
 MODULE COPY: 						https://www.geeksforgeeks.org/copy-python-deep-copy-shallow-copy/
-###########################  LEKCJA 15 KOLEKCJA DICTIONARY  ################################################
+######################################## KOLEKCJA DICTIONARY  ##############################################
 DICTIONARY INFORMACJE:				https://www.w3schools.com/python/python_dictionaries.asp
 DICTIONARY METODY:					https://www.w3schools.com/python/python_dictionaries_methods.asp
-####################### LEKCJA 24 KOLEKCJA SET | OPERATORY NA ZBIORACH #####################################
+################################# KOLEKCJA SET | OPERATORY NA ZBIORACH #####################################
 SET INFORMACJE:						https://www.w3schools.com/python/python_sets.asp
 SET METODY:							https://www.w3schools.com/python/python_sets_methods.asp
 SET METODY USUNIECIA: 				https://www.w3schools.com/python/python_sets_remove.asp
 SET METODY ŁACZENIA:				https://www.w3schools.com/python/python_sets_join.asp
-####################### LEKCJA 16 KOLEKCJA TUPLE - KROTKA i SEKWENCJE ######################################
+######################################### KOLEKCJA TUPLE - KROTKA ##########################################
 https://docs.python.org/3/library/stdtypes.html#mutable-sequence-types
 KROTKA INFORMACJE:					https://www.w3schools.com/python/python_tuples.asp
 KROTKA METODY:						https://www.w3schools.com/python/python_tuples_methods.asp
-####################### LEKCJA 7 i 17 | KOLEKCJA: LISTA | LIST COMPREHENSION ###############################
+################################## KOLEKCJA: LISTA | LIST COMPREHENSION ####################################
 METODY LISTA: 						https://www.w3schools.com/python/python_ref_list.asp
 LISTY INFORMACJE:					https://www.w3schools.com/python/python_lists.asp
 LIST COMPREHENSIONS: 				https://www.w3schools.com/python/python_lists_comprehension.asp
 
 
-############################# LEKCJA 32 - 35 | WYRAZENIE REGULARNE #########################################
+########################################### WYRAZENIE REGULARNE ############################################
 https://www.w3schools.com/python/python_regex.asp
-########################## LEKCJA 18 i 19 | STRING | STRING FORMATTER ######################################
+NAJLEPSZY PORADNIK I ZBIÓR WIEDZY O REGEXACH:
+									https://www3.ntu.edu.sg/home/ehchua/programming/howto/Regexe.html
+									https://www.youtube.com/watch?v=K8L6KVGG-7o
+			HOW TO CHECK A VALID REGEX PATTERN:	
+									regex101.com
+									https://www.geeksforgeeks.org/how-to-check-a-valid-regex-string-using-python/
+			FLAGI:					https://www.guru99.com/python-regular-expressions-complete-tutorial.html
+######################################### STRING | STRING FORMATTER ########################################
 FUNKCJE Stringow: 					https://www.w3schools.com/python/python_strings_methods.asp
 					   			   (https://www.w3schools.com/python/python_ref_string.asp)[to samo]
 STRING FORMATTER:					https://www.w3schools.com/python/python_string_formatting.asp
@@ -109,24 +115,1526 @@ SŁOWNICZEK:							https://www.w3schools.com/python/python_ref_glossary.asp
 ############################################################################################################
 
 
-
-
-
-
-
+########## KLASY I OBIEKTY OOP | METODY KLAS I METODY STATYCZNE | DZIEDZICZENIE | METODY MAGICZNE ##########
+https://www.programiz.com/python-programming/object-oriented-programming
+METODY MAGICZNE: https://www.youtube.com/watch?v=IkWrlRei0uA
+1.KLASA I OBIEKTY
+			class Czlowiek:								
+				imie = "Domyslny"	#argument klasowy
+   1*KONSTRUKTOR czyli, def __inif__(self):
+	   A*pola/argumenty dla klasy wpisywane są tylko w metodzie inicjalizacyjnej. Można je przypisać przed 
+		 init ale wtedy będą to argumenty klasowe a nie obiektowe (Argument klasowy przetrzymuję taką samą 
+		 wartość wspólną dla wszystkich obiektów a nie dla pojedyńczego obiektu) 
+	   B*w metodzie inicjalizacyjnej/konstruktorze pierwszy argument 'self' jest domyślny
+	   C*jezeli nie stworzysz konstruktora to przy tworzeniu obiektu zostanie wywołany konstruktor domyślny 
+			class Circle:										class Czlowiek:		
+				def __init__ (self):								def __init__(self, imie, wiek):
+					self.x, self.y, self.r = 0, 0, 1					self.imie, self.wiek = imie, wiek
+	   D*niezależnie od tego czy stworzysz konstruktor to czy tak czy tak można utworzyć do niego pole dla 
+		 danej instancji:
+			class User:
+				def __init__(self, imie)"
+					self.imie=imie;
+			user1=User("Marek")
+			user1.secondName="Darek"					#utworzenie pola TYLKO dla danej instancji - mimo że 
+														#pole secondName wcześniej nie istniało i nie było 
+														#zadeklarowane w konstruktorze  
+   2*Argument SELF:
+	   A*Self jest aliasem dajacym dostep do pol klasy. Self to referencja do danej instancji 
+		 [(do danego obiektu)(jest jak 'this' w Javie ale nie jest opcjonalny tylko konieczny, gdyz inaczej
+ 		   python potraktuje zmienną bez self jak zwyczajną zmienna(The self parameter is a reference to the 
+		   current instance of the class, and is used to access variables that belong to the class.))]
+	   B*slowko 'self' mozna zmiennic na inna nazwe ale przyjete jest self. W metodach w klasie zawsze 
+	     pierwszy argument jest referencją do instancji bo inaczej wywali błąd. 
+	   C*self to argument ukryty (domyslny) - przy wywolaniu metody nie podaje się go.
+			class Employee:
+				raise_amount=1.04						#argument klasowy
+				def __init__(self, first, last)
+					self.first=first
+					self.last=last
+				def fullname(self)
+					return f'{self.first} {self.last}'	#odwołanie się do referencji własnego obiektu
+			emp_1=Employee('Marek', 'Kozarek')
+			print(emp_1.fullname())						#wywołanie metody na obiekcie
+			print(Employee.fullname(emp_1))				#wywołanie metody poprzez odwołanie się do klasy 
+														#i podanie obiektu w pierwszym argumencie metody
+   3*ARGUMENTY/POLA KLASOWE:	
+	   A*Zamiast podawania w konstruktorze to podajesz je wewnątrz klasy (poza __init__(self)).
+	   B*POLE KLASOWE jest takie samo dla wszystkich obiektów danej klasy (ma taki sam adres w pamięci). 
+		 Jak zmodyfikujesz je w którymś obiekcie to zmodyfikujesz we wszystkich.
+	   C*wewnątrz klasy możesz dostać się do pola klasowego albo poprzez odwołanie się do nazwy klasy 
+		 (ZALECANE) albo poprzez odwołanie się do argumentu self. 
+			class Employee:
+				raise_amount=1.00
+				...
+				def change_raise_amount():
+					Employee.raise_amount=1.01			#odwołanie się poprzez NAZWĘ KLASY
+					self.raise_amount=1.01				#odwołanie się poprzez ARGUMENT SELF
+	   D*Poza klasą możesz wywołać pole klasowe poprzez odwołanie się do klasy (ZALECANE) albo poprzez 
+		 jakikolwiek obiekt tejże klasy (NIEZALECANE)
+			Employee.raise_amount = 1.01				#wywołanie przez nazwę klasę (zalecane)
+			emp_1.raise_amount = 1.01					#wywołanie przez obiekt
+	   E*MODYFIKACJA ARGUMENTU KLASOWEGO POPRZEZ odwołanie się do niego przez OBIEKT sprawia że NIE MA ON 
+		 TAKIEJ SAMEJ WARTOŚCI DLA WSZYSTKICH TYLKO DLA TEGO JEDNEGO OBIEKTU !!! Wywoływanie argumentu
+		 klasowego zalecane jest poprzez NAZWĘ KLASY:
+			Employee.raise_amount = 1.12				#wywołanie przez nazwę klasę (ZALECANE)
+			emp_1.raise_amount = 1.56					#wywołanie przez obiekt (NIEZALECANE)
+			print(Employee.raise_amount)				#zwróci 1.12 zamiast 1.56 !!!
+			print(emp_1.raise_amount)					#zwróci 1.56
+		 
+2.METODY KLAS I METODY STATYCZNE
+   1*METODA KLASY i METODA STATYCZNA mogą zostać wywołane nie tylko na obiekcie ale także na klasie.
+		*METODE KLASY - tworzy się poprzez nadpisanie 	*METODA STATYCZNA - tworzy się poprzez nadpisanie 
+		 aliasu @classmethod nad funkcje:				 aliasu @staticmethod nad funkcje:
+			class Czlowiek:										class Czlowiek:
+				raise_amount=1.05									raise_amount=1.05
+				...													...
+				@classmethod										@staticmethod
+				def change_raise_amount(cls, amount):				def przywitaj(arg):
+					cls.raise_amount=amount								print("Czesc "+arg)
+					#LUB Czlowiek.raise_amount=amount			Czlowiek.przywitaj('mama')	  #"Cześć mama"
+			Czlowiek.change_raise_amount(1.07)		
+   2*RÓŻNICE między metodą KLASOWĄ a STATYCZNĄ:
+	   A*Metode klasy od metody statycznej odróżnia slowo kluczowe cls podane jako Iszy argument w metodzie 
+		 klasy. Slowo kluczowe 'cls' jest odwolaniem do klasy(class) i jest tym samym co slowko 'self' dla 
+		 metod obiektowych (Przy odwołaniu się zamiast słówka cls mógłbyś użyć nazwy klasy)
+	   B*Metodę statyczną tworzy się gdy nie jest związana z polami/metodami klasy.
+	   C*Metodę klasową pozwala stworzyć 'ALTERNATYWNY KONSTRUKTOR':
+			class Czlowiek:
+				@classmethod
+				def nowy_czlowiek(cls, imie, nazwisko):
+					return cls(imie, nazwisko)			#działa tak samo jak konstruktor Czlowiek(imie)
+				@classmethod							#IIgi przykład:
+				def nowy_czlowiek_2(cls, string):		#taka sama metoda tylko że z przetwarzaniem
+					imie, nazwisko =string.split('-')
+					return cls(imie, nazwisko)
+				Czlowiek.nowy_czlowiek_2('marek-darek')	#zwróci Czlowiek('marek', 'darek')
+   3*WYWOŁANIA: 
+		*wywołanie metody klasowej i statycznej 		*wywołanie metody klasowej i statycznej NA OBIEKCIE 
+		 NA KLASIE: (ZALECANE)							 (WYWOŁYWANIE NA OBIEKCIE NIE JEST ZALECANE):
+			cz1 = Czlowiek.nowy_czlowiek("mar",'id')   			cz2 =cz1.nowy_czlowiek("slaw",'id')
+			Czlowiek.przywitaj(" Marku!!!")  					cz2.przywitaj(" Slawku!!!")
 			
-######################################### OPERACJE NA PLIKACH (.txt) #######################################
-FILE METHODS: 						https://www.w3schools.com/python/python_ref_file.asp
-FILE OPERATIONS:   					https://www.w3schools.com/python/python_file_handling.asp
-									https://www.programiz.com/python-programming/file-operation
-										
+3.DZIEDZICZENIE
+   0*Dziedziczenie odbywa sie poprzez wpisanie w nawiasy za nazwą klasy, klasy rodzica.
+   1*Najpierw python szuka arg/metod w naszej klasie a jeżeli ich nie znajdzie to szuka ich w klasie rodzica
+			class Animal:
+				color='white'
+				def __init__(self, name, age):
+					self.name=name
+					self.age=age
+				def printParent(self):
+					return "AnimalParent"
+				def voice(self):
+					return "hrrrrr"
+			class Wolf(Animal):							#od tego momentu klasa Wolf odziedziczyła wszystkie
+				pass									#atrybuty i metody z klasy Animal
+			w1	= Wolf('Zbyszek',19)
+			print(w1.name, w1.age)						#'Zbyszek' 19 - odwołanie się do pól 
+			print(w1.printParent(),w1.voice, w1.color)	#odwołanie się do metod oraz arg. klasowego color 
+					#'AnimalParent' 'hrrrrr' 'white'	#które wystepują tylko w klasie Animal ale klasa 
+														#dziedziczaca moze sie do nich odwolac
+   2*PRZESŁONIĘCIE/NADPISANIE + SUPER():
+	   A*Pzesłonięcie/nadpisanie robisz poprzez utworzenie metody o tej samej nazwie w klasie dziedziczacej 
+	   B*Wywołując metodę super() wewnątrz przesłoniętej metody zostanie wywołana metoda z klasy rodzica.
+			class Wolf(Animal):
+				def __init__(self, name, age, speed):	#przesłonięcie konstruktora
+					super().__init__(name, age)			#zostanie wywołana metoda __init__() z klasy Animal
+					self.speed = speed
+				def voice(self):						#przesłonięcie metody voice
+					return super().voice() +" auuuu"	#'hrrrrr auuuu'
+	   C*WYWOŁANIE METODY RODZICA -poprzez super() LUB nazwe klasy rodzica: parentClass.__init__(self,...)
+			class Werewolf(Wolf):
+				def __init__(self, name, age, speed, height):
+					#super().__init__(name,age,speed)	#nie trzeba metody super()
+					Wolf.__init__(self, name,age,speed) #wywołanie konstruktora przez nazwę klasy rodzica
+					self.height=height
+				def __str__(self):
+					return str(self.name) +" "+ str(self.age)+" "+str(self.speed)+" "+str(self.height)
+			werewolf1 = Werewolf("Reksio",22, 100, 1.82)
+			print(werewolf1.printParent(),str(werewolf1),werewolf1.voice()) 
+														#AnimalParent; Reksio 22 100 1.82;* hrrrrr auuuu
+   3*METODY WYKORZYSTYWANE DO SPRAWDZENIA DZIEDZICZENIA:
+		*isinstance(obj, class/type) 					*issubclass(obj, class) 
+		 sprawdza czy ob. jest obiektem klasy dziecka    sprawdza czy klasa jest podklasą (klasą dziecka) 
+		 lub rodzica) + sprawdza czy jest danego typu:   dla rodzica:
+			isinstance(werewolf1, Werewolf)	#True				issubclass(Werewolf, Wolf)		#True
+			isinstance(werewolf1, Wolf)		#True				issubclass(Werewolf, Animal)	#True
+			isinstance(werewolf1, Animal)	#True
+			isinstance([1,2,3], list)		#True			
+				
+4.METODY MAGICZNE:
+   0.0*METODY MAGICZNE: https://www.youtube.com/watch?v=IkWrlRei0uA
+   0.1*PRZECIĄŻENIE a PRZESŁONIĘCIE:
+		*Przeciążenie(overloading) - wiele metod w klasie, posiada tą samą nazwę metody ale inną sygnaturę.
+		*Przesłonięcie(overriding) - klasa bazowa jak i pochodna posiadają tą samą sygnaturę metody.
+   1*PODSTAWY:
+		*zaczynaja sie 2 podkreslnikami i koncza 2 podkreslnikami
+		*zastosowanie: zwiazane z przeciazaniem metod w celu uzycia np operatorow matematycznych do dzialan
+		 na obiektach albo wywolania tych przeciażonych metod przy niektorych sytuacjach
+   2*METODY PODSTAWOWE:
+	   0.if __name__ == '__main__': otwierając plik    1.__doc__() - pozwala dostać się do dokumentacji 
+	     .py w konsoli, blok if(__name__=='__main__')	 danego obiektu (biorącego się z klasy):
+		 zostanie autmatycznie uruchomiony.						class Snowflake:
+			if __name__ == '__main__':								'''Snowflake opis'''
+				func1()												pass
+				print('funkcja1')								s1=Snowflake()
+			#(w konsoli): python -i sendX.py 					s1.__doc__()		#'''Snowflake opis'''
+			##automatyczne uruchomienie bloku w if'ie
+	   2.__init__() jest zawsze wywolywana w momencie  4.__str__() oraz __repr__() (od representation) 
+		 tworzenia obiektu danej klasy:				     Są to metody string, która będą wywoływane gdy 
+			import math									 będziesz chciał wyświetlić obiekt w print'cie:	
+			class Punkt2d:								 A)nieprzeciążone zwracają klasę i adres w pamięci:	
+				def __init__(self, x, y):						class Martian:	
+					self.x=x										pass
+					self.y=y									m1=Martian()									
+					self.odl= math.sqrt(x**2 +y**2)				print(m1, m1.__str__(), m1.__repr__())
+	   3.__dict__ nie jest metodą a polem. Zwraca					#<__main__.Martian object at 0x0371D2D0>
+		 wszystkie pola danego obiektu (jako słownik):			print(id(m1))									
+		 *pola powstałe poprzez przypisanie:						#57791184 (odpowiada to	adresowi hexa.)					
+			s1.name='marek'								 B)przeciązone zwracają to co sobie ustalisz:
+			print(s1.__dict__)	#{'name':'marek'}		  		class Martian:									
+		 *pola powstałe w __init__()(bez arg klasowych)				...konstruktor...										  
+			class Martian:								 			def __str__():			#/__repr__():
+				raise_amount=1.04						  				return f'Imie: {first_name}'
+				def __init__(self,fn, ln):				 C)__str__() jest używane dla end-usera, __repr__()								
+					self.first_name=fn					   jest używane przy debugowaniu i loggingu. Różnią 									
+					self.last_name=ln					   się tym że __repr__() zwraca dokładnie to czym 									
+			m1=Martian('Tomek','Borek')					   są obiekty (gdy skastujesz na stringa to __str__ 									
+			print(m1.__dict__)							   nie pokaze cudzysłowiów przy printcie a __repr__ 
+			#{'first_name':'Tomek',last_name':'Borek'}	   już tak:
+		 *pola klasowe (do pól klasowych można się 				m=Martian('Tomek')	
+		  dostać tylko poprzez nazwę klasy):					print(m.__str__()) #<__main__.Martian ...>
+			print(Martian.__dict__)								print(m.__repr__())#<__main__.Martian ...>
+						#{'raise_amount':1.04}					b=str(m1)
+						#zwróci pole raise_amount 				print(b.__str__()) #<__main__.Martian ...>
+						#(bez zwrócenia pól obiektów)			print(b.__repr__())#'<__main__.Martian ...>'
+   2*METODY ZAAWANSOWANE:			
+	   1.__setattr__(self, name, value) -jest wywoływana przy tworzeniu nowego przypisania wartości do pola.
+	     Używasz tylko wtedy gdy chcesz zeby podczas przypisywania coś się wyświetlało albo dla loggingu. 
+		a)podczas tworzenia obiektu:				   !*CHCĄC przeciązyć metodę SETATTR musisz pamiętać 
+			class Martian:								 o DODANIU ELEMENTÓW DO SŁOWNIKA ATRYBUTÓW. Inaczej 
+				...konstruktor...						 nie zostaną one automatycznie dodane i wywołując 
+				def __setattr__(self, name, value):		 pole __dict__ nie zostaną one pokazane:
+					print('setting: ',name,':', value)			class Martian:
+			m1.Martian("Radek","Maniek") 							...konstruktor...
+			#wyświetli: 'setting: first_name : Radek'				def __setattr__(self, name, value):		
+						'setting: last_name : Maniek'	    #!!!		self.__dict__[name]=value		#!!!
+		b)podczas przypisania wartosci do pola:							print('setting: ',name,':', value)
+			m1.arrival_Date='2038-12-15' 
+			#wyśw. 'setting: arrival_Date : 2038-12-15'
+	   2.__getattr__() 
+			class Martian:
+				...
+				def __getattr__(self, name):
+					print('getting: ',name)
+					if name=='fullname':
+						return f"{self.first_name} {self.last_name}"
+					else:
+						raise AttributeError("No attribute{0}".format(name))
+			print(m1.fullname) 	   #wywołanie pola fullname pozwoli na zwrócenie pól first_name i last_name
+		 a)służy do tego żeby pobierać pola niestandardowe (które nie zostały ani sprecyzowane ani w 
+		   konstruktorze ani podczas przypisania) czyli o takich nazwach które nie znajdują się w słowniku 
+		   zawierającym wszystkie pola (__dict__) 
+		 b)raczej nie przeciąża się metody __getattr__(). O wiele lepiej jest przeciążyć stringa czyli 
+		   metodę __str__(). Chyba że zależy ci na jakieś specjalnej nazwie którą użyjesz do zwracania 
+		   jakiegoś miksa kilku pól.
+		 c)metoda __getattribute__() służy do pobierania pól które znajdują się w __dict__ a tejze metody 
+		   (__getattribute__()) się nie przeciąża
+			 
+   3*PRZECIĄŻANIE ZNAKÓW - dla danej klasy możesz przeciążyc operatory matematyczne/logiczne dzięki czemu 
+     w łatwy sposób będziesz mógł ich użyć w obrębie obiektów tejże klasy. Wywolanie ich odbywa sie poprzez 
+	 uzycie znaku na obiekcie ALBO poprzez uzycie przeciazonej metody na obiekcie:
+	   1*OPERATORY MATEMATYCZNE:
+			*add - dodawanie (adding)					class Punkt2d:
+			*sub - odejmowanie (substracting)				def __init__(self, x, y):
+			*div - dzielenie (dividing)  						self.x, self.y = x, y
+			*mul - mnożenie (multiplying)					def __add__(self, p2):
+																return Punkt2d(self.x + p2.x, self.y + p2.y)
+	   2*OPERATORY LOGICZNE/PORÓWNANIOWE (będą one wykorzystywana nie tylko do porównywań ale także podczas 
+	     sortowania (najważniejsze to przeciążyć metodę less than __lt__(self, other) (znak '<')):
+			*ge - greater equal '>='					class Martian:
+			*gt - greater than '>'							def __init__(self, fn):
+			*le - less equal '<='								self.first_name=fn
+			*lt - less than '<'								def __lt__(self, other):	#przeciążenie '<'
+			*ne - not equal '!=' 								return self.first_name < other.first_name
+			*e  - equal '==' 								def __eq__(self, p2):		#przeciążenie '=='
+																return self.x == p2.x and self.y==p2.y
+	   3*INNE:											m1,m2,m3 = Martian('De'),Martian('Ze'),Martian('Ce')
+			*len LENGTH, abs ABSOLUTE, round ROUND 		if not m1 == m2:		#skorzysta z metody __eq__()
+			*int, float, str - konwersje na inne typy		martians = sorted([m1, m2, m3])		
+																#zwróci posortowane obiekty względem imienia 
+		
+######################## DESTRUKTOR | HERMETYZACJA | Gettery i Settery | DODATKI ###########################
+1*CYKL ŻYCIA OBIEKTU I DESTRUKTOR
+   A*destruktor dziala w momencie konca zycia obiektu  B*Obiekt konczy swoje istnienie, kiedy nie posiada
+	 wykonuje sie zawsze pod koniec dzialania programu   referencji przypisanej do żadnej zmiennej. Mozemy
+	 Poniżej przeciążenie destruktora:					 wymusic wywolanie destruktora poprzez usunięcie
+		class Test:										 zmiennej do ktorej przypisana jest referencja.
+			def __del__(self):		#destruktor					obj = Test()
+				print("Bye Class")								del obj
+2*HERMETYZACJA
+   A*POJEDYNCZY PODKRESLNIK - dodając go do nazwy 	   B*DWA PODKRESLINIKI przed polem sprawiają że żeby
+	 zmiennej uzyskuje sie pole prywatne (zmienna jest   dostać się do takiego pola będąc poza klasą to 
+	 nazywana UKRYTĄ). W Pythonie ten podkreslnik jest   przy wywołaniu trzeba przed nazwą pola (z dwoma
+	 tylko informacja dla programistow ze to powinna	 podkreślnikami) wpisać nazwe klasy z jakiej 
+	 byc zmienna prywatna. Mimo wszystko nadal mozna 	 pochodzi (z jednym podkreslnikiem) i to wszystko
+	 sie dostac do tej zmiennej spoza klasy.			 trzeba wywołać na obiekcie (obj._Klasa__pole)
+			class Klasa:										class Klasa:
+				_listaKlasowa = []									__listaKlasowa2 = []
+				def __init__(self, lista):							def __init__(self, lista):
+					self._lst=lista										self.__lst2=lista
+					###poniżej wywołanie pola klasowego ukrytego i prywatnego wewnątrz klasy
+					Klasa._listaKlasowa=lista							Klasa.__listaKlasowa2=lista
+				def dodaj(self,arg):								def dodaj(self,arg):
+					self._lst.append(arg)								self.__lst2.append(arg)
+					Klasa._listaKlasowa.append(arg)						Klasa.__listaKlasowa2.append(arg)
+			obj = Klasa([3,4,5])								obj = Klasa([3,4,5])
+					###poniżej wywołanie POLA OBIEKTU ukrytego i prywatnego poza klasą 
+			print(obj._lst)										print(obj._Klasa__lst2)		 
+					###poniżej wywołanie POLA KLASOWEGO ukrytego i prywatnego poza klasą 
+			print(Klasa._listaKlasowa							print(Klasa._Klasa__listaKlasowa2)
+																#wywołanie pola klasowego prywatnego 				
+3*Gettery i Settery	i Deletery
+   0.0**https://www.youtube.com/watch?v=jCzT9XFZ5bw
+   0.1**Gettery i Settery w Pythonie zdecydowanie się różnią od tych w Javie. W javie gettery i settery 
+        zwracają lub ustawiają pojedyńcze prywatne pola. W pythonie do prywatnych pól możesz dostać się
+		poprzez wywołanie ich (to że pole jest prywatne jest to bardziej informacja dla programistów)
+   1*GETTERY i SETTERY - w Pythonie DOTYCZĄ PÓL SKŁADAJĄCYCH SIĘ Z INNYCH PÓL:
+	  *UTWORZENIE (nazwa dekoratora musi być taka sama jak nazwa pola (lub @property dla GETTERA)):
+		*GETTER - poprzez dekorator '@property' lub dekorator '@nazwaFunkcji.getter'. Obie opcje są ok.
+		*SETTER - poprzez dekorator '@nazwaFunkcji.setter'. NAJPIERW musisz utworzyć GETTERA. 			 
+	  *WYWOŁANIE:
+		*jak zwykłe zmienne (a nie jak funkcje poprzez nawiasy - co jest ogromną zaletą)
+	  *ZALETY: 
+		*Gdy w konstruktorze przypisujesz jedną wartość do kilku pól (np: imie do pola first i imie jako 
+		 część pola email) to chcąc zmienić wartość pola first musiałbyś też pamiętać o zmianie części 
+		 wartości pola email by przy wywołaniu pierwsza częśc pola emaila w postaci imienia zgadzała się 
+		 z imieniem z pola first. 
+		*Ponieważ można zapomnieć o tym, tworzy się gettera który przez to że jest dekoratorem to wywołuję 
+		 się go jak zmienną i wywołany wywołuję pola z których się składa zamiast mieć przypisaną na stałe 
+		 jakąś wartość.
+		*Chcąc przypisać wartość do pola składającego się z innych pól (i jednocześnie zaaktualizować te 
+		 pola z których się składa) tworzy się settera który dzięki metodzie split() rozdziela wartości na 
+		 pola z których składa się to pole mające settera.
+	  *PRZYKŁAD 1 (dla GETTERA):					    *PRZYKŁAD 2 (dla SETTERA):
+		*zamiast tworzyć pole email w konstruktorze		  *wpierw tworzysz gettera żeby móc utworzyć settera
+			class Employee:										class Employee:
+				def __init__(self, first, last):					def __init__(self, first, last):
+					self.f=first										self.f=first
+					self.l=last											self.l=last
+					self.email=f'{self.f}.{self.l}@e.com'			@property
+		*możesz zrobić to dekoratorem @property:					def fullname(self):
+			class Employee:												return f'{self.first} {self.last}'
+				def __init__(self, first, last)			  *tworzysz SETTERA dekoratorem @fullname.setter
+					self.f=first									@fullname.setter
+					self.l=last										def fullname(self, name):
+				@property												self.f, self.l = name.split(" ")
+				def email(self)							  *możesz mofyfikować zmienną fullname jednocześnie 
+					return f'{self.f}.{self.l}@email.com'  aktualizując pola z których się składa:
+		*lub dekoratorem '@nazwaFunkcji.getter':				emp_1 = Employee('Mar', 'Kucha') 
+				@email.getter									print(emp_1.fullname)		#'Mar Kucha'
+				def email(self)									print(emp_1.f, emp_1.l)		#'Mar' 'Kucha'
+					return f'{self.f}.{self.l}@email.com		emp_1.fullname = 'Dar Jucha'				
+		*od tego momentu poprzez takie wywołanie 				print(emp_1.fullname)		#'Dar Jucha'
+		 dostaniesz pole email:									print(emp_1.f, emp_1.l)		#'Dar' 'Jucha'
+				emp_1= Employee('Mar', 'Kucha') 
+				print(emp_1.email)	#Mar.Kucha@email.com
+   2*DELETERy w Pythonie DOTYCZĄ PÓL SKŁADAJĄCYCH SIĘ Z INNYCH PÓL.
+		*Deleter ma przypisać wartość None, polom z których składało się nasze pole które chcemy usunąć.
+		*Deleter tworzy się poprzez dekorator 'nazwa_pola.deleter'. W Deleter'ze nie podajemy żadnych arg. 
+		 Deleter jest swoistym przeciążeniem aliasu del gdyż wywołuję się go poprzez alias del podczas 
+		 usuwania pola z którego składają się inne pola:
+			class Employee:
+				...
+				@fullname.deleter
+				def fullname(self):
+					self.f=None
+					self.l=None
+			emp_1 = Employee('Mar', 'Kucha') 				#oprócz usunięcia pola fullname usunie również	
+			del emp_1.fullname				 				#pola f i l z których składało się pole fullname				
+4*DODATKI:
+   1*NIE WOLNO PRZEKAZYWAĆ KONSTRUKTORA OBIEKTU JAKO 	2*jeżeli tuż pod klasą wpiszesz w trójcudzysłów
+	 ARGUMENT DOMYŚLNY DO FUNKCJI -chcąc utworzyć 		  komentarze to przy wywołaniu help z nazwa klasy
+	 obiekt gdy nie zostanie podany inny obiekt jako 	  wyświetli ci się ten komentarz w dokumentacji.
+	 argument przy wywolaniu funkcji lepiej jest 				class User:
+	 ZRESETOWAĆ ten obiekt wywołując konstruktor 					'''Komentarz co robi klasa User'''
+	 wewnątrz funkcji. W przeciwnym wypadku zostanie 				pass
+	 utworzony jeden obiekt dla wszystkich funkcji. 			help(User)	'''Komentarz co robi kl...'''
+			class ObiektKlasy():							
+				def __init__(self, current=0):					
+					self.current = current							
+				def get_next(self):									
+					self.current += 2										
+					return self.current 												
+	 zamiast tworzyć obiekt w argumencie domyślnym												
+			def func(n, arg=ObiektKlasy()):
+				for i in range(n):
+					print(arg.get_next())
+			func(2)			#2, 4
+			func(2)			#6, 8 zamiast 2, 4
+	 lepiej jest przekazać typ prosty do argumentu 
+	 domyślnego a wewnątrz funkcji stworzyć obiekt:
+			def func(n, arg=False):
+				if arg==False:
+					arg=ObiektKlasy(0)
+				for i in range(n):
+					print(arg.get_next())
+			func(2)			#2, 4
+			func(2)			#2, 4 czyli poprawnie
+			
+############################################################################################################
+############################################################################################################
+######################## PODSUMOWANIE KOLEKCJI | WYCINKI KOLEKCJI | UNBOXING KOLEKCJI ######################
+0* PODSUMOWANIE KOLEKCJI: (apart of tuples all are mutable) 
+	*List (lista) []		- mozliwe DUPLIKOWANIE elementow, mozna modyfikowac, uporzadkowana
+	*Tuple (krotka) () 		- mozliwe DUPLIKOWANIE elementow, nie zmienna      , uporzadkowana
+	*Set (zbior) {}			- NIE mozna DUPLIKOWAC elementow, mozna modyfikowac, nieuporzadkowany
+	*Dictionary (slwonik) {}- NIE mozna DUPLIKOWAC elementow, mozna modyfikowac, uporzadkowany 
+1* WYCINKI - SLICING COLLECTIONS (wycinaja czesc elementow z kolekcji):
+	*[przedział zamknięty : przedział otwarty]			*parametry puste (od początku albo do końca)
+			print(krotka[0:3])		#elem.: 0,1,2				print(krotka[0:])
+	*jezeli koncowy element taki ktory nie	istnieje			print(krotka[:4]
+	 to nie zwroci nam bledu. weżmie ostatni element	*kopia całej kolekcji (kopia przez wartość):
+			print(krotka[0:100])								print(krotka[:])
+	*wartość skoku - 3ci parametr (np co 2gi element):	*parametry wycinku liczac od konca liczone od -1	
+			print(krotka[1:8:2])	#zwroci co drugi el.		print(krotka[-4:-2])
+	*odwrotne sortowanie = wartosc ujemna w 3cim param.
+			print(krotka[:4:-1])	#od 3go el. do 0go]
+2* Zamiana LISTY/KROTKI na ARGUMENTY, ktore są 		   3*ROZPAKOWANIE DOWOLNEJ KOLEKCJI (UNBOXING):
+   potrzebne do funkcji (*ARGS, Arbitrary arguments):		*unboxing
+			def func(arg1, arg2, arg3):							a,b,c = (2,4,3)	
+				print(arg1, arg2, arg3)						*zamiana wartości w zmiennych:
+			list1 = ['one', 'two', 'three']						x,y=y,x	
+			func(*list1)  				#ALBO				*arbitrary arguments:
+			func(*['a1','a2','a3'])		#ALBO					start,*wszystko,koniec=(1,2,3,4,5,6,7)
+			func(*('a1','a2','a3'))
+
+################## BUILT-INS | *ARGS **KWARGS | KOPIOWANIE W PYTHONIE | MODULE COLLECTIONS #################
+0*BUILT-INS - FUNKCJE WBUDOWANE:						
+ 1*METODY PODSTAWOWE:
+   1*len(collection) - zwraca długość całej kolekcji   2*del collection - usuwa całą kolekcję lub Stringa 
+	 lub Stringa (dla Dictionary zwraca ilosc kluczy)	 lub jakikolwiek obiekt
+			len({'a':1,'b':2})		# 2							del lst
+   3*type(collection) - zwraca typ klasy jaką 		   4*isinstance() - sprawdza czy obiekt jest danego 
+	 reprezentuję obiekt 								 typu zwracając True or False:
+			type({'a':1,'b':2})		#<class 'dict'>				isinstance(200, int)		#True
+   5*słowo kluczowe in - czy dany element(ew.klucz)	   6*all() / any() -gdy wszystkie / jakikolwiek
+ 	 znajduję się w kolekcji lub w Stringu				  argument spelnia warunek zwraca prawdę:
+			print("j" in "To jest zdanie")	#True				if all([i % 2==0 for i in [10,23]]): #False
+			print('a' in {'a':1,'b':2})		#True				if any([i % 2==0 for i in [10,23]]): #True
+   7*sum(list) - sumuję elem. kolekcji (ew. klucze     8*max(list) / min(list) - największy / najmniejszy  
+	 w słowniku). (Tylko kolekcje z liczbami)			 element kolekcji .(Kolekcje liczb jak i stringów)
+			sum([1,2,3])					#6					max([1,2,3]) / min([1,2,3])			 #3/1
+ 2*METODY ZAAWANSOWANE:
+   1*enumerate() 
+		*dla podanej listy zwróci listę par	krotek 		*Jest Iteratorem - można tylko raz po nim przejść.
+		 gdzie pierwszy element to index, a drugi to 	*możesz zmienić indeksowanie od którego zacznie 
+		 wartość z bazowej listy.   					 (w parametrze start podajesz odpowiednią wartość)
+			for i in enumerate([10,20,25]):						for i in enumerate([10,20,25],start=3):
+				print(i)	#[(0, 10),(1, 20),(2, 25)]				print(i)	#[(3, 10),(4, 20),(5, 25)]
+   2*zip(Iterable1,Iterable2,...)  
+		*przyjmuję w arg. kolekcje i zwraca krotki 		*gdy kolekcje róznią się ilościa elementow to jest
+		 elem. o kolejnym indexie z kazdej kolekcji np:	 tworzone tyle krotek ile ma najkrotsza kolekcja:
+		 -I krotka - pierwsze elem. z kazdej kolekcji			zip([1,2],[9,8,7,6,5])		#[(1,9),(2,8)]
+		 -II krotka - drugie elem. z kazdej kolekcji	*można tez wypakować kolekcje poprzez gwiazdkę *								
+			zip([1,2,3,4],'Hack') 								X = [[1,2,3]] + [[6,5,4]] + [[7,8,9]]
+					#[(1,'H'),(2,'a'),(3,'c'),(4,'k')]						#[[1,2,3] + [6,5,4] + [7,8,9]]
+		*Jest Iteratorem, można tylko 1 po nim przejść			zip(*X)		#[(1,6,7), (2,5,8), (3,4,9)]
+   3*ARBITRARY ARGUMENTS *ARGS **KWARGS --> patrz pkt1 poniżej: '*args, **kwargs'
+   4*eval() / exec() 
+		*https://www.programiz.com/python-programming/methods/built-in/eval
+		*https://www.programiz.com/python-programming/methods/built-in/exec
+		*wykorzystywane do zamieniania STRINGOW o 		*exec i eval są praktycznie takie same ale exec 
+		 nazwach funkcji na zwykle działające funkcje. 	 daje wieksze mozliwosci (mozna w nim zapisać 
+		 Przyjmują za argument stringa ktory zostanie 	 więcej linijek) 
+		 wywolany jako funkcja/obiekt/zmienna		     		exec('a = 5\nb=10\nprint("Sum =", a+b)')
+			lst=[1,1,1]									*Zarówno przy exec i eval trzeba uważać na inputy
+			command="insert("+",".join(['z',2])+")"		 bo można zrobić atak podobny do SQLINJECTION
+			eval("lst."+command)		#[1,1,'z',1]	 (pobranie modulu os i skasowania plikow):		 
+			eval('lst[0]+3')			#4(zmienna)				os.system('rm -rf *'))
+   5*setattr(object, name, value)
+		*https://www.programiz.com/python-programming/methods/built-in/setattr
+		*pozwala na dynamiczne utworzenie pola 			*największą zaletą jest to że w IIgim arg (nazwa 
+ 		 do obiektu wraz z wartością:					 pola) możesz podać już istniejącą zmienną
+			class Person:										class Person:							
+				age=23												age=23									
+			p1=Person()											p1=Person()	
+			setattr(p1, "name", "Marek")						a1,a2='name','Marek'	#nie mogąc zrobić 
+			print(p1.name) 				#Marek					setattr(p1, a1, a2)		#p1.a1=a2 używasz
+																print(p1.name)			#setattr() #'Marek'
+   6*getattr(object, name) 
+	   0*https://www.programiz.com/python-programming/methods/built-in/getattr
+	   1*pozwala na wywołanie atrybutu lub metody 	   2*największą zaletą jest to że możesz wywołać pole w
+		 danego obiektu. getattr(obj,attr) == obj.name   obiekcie przez zmienną/stringa podanego w arg:
+			class Person:										class Person:
+				age = 23											age = 23
+			p1= Person()										p1= Person()
+			print('The age is:', getattr(p1, "age"))  			first_argument = 'age'
+			print('The age is:', p1.age)		#23				print(getattr(p1, first_argument))	#23
+	   3*można też wywołać METODĘ Z ARGUMENTAMI - wtedy argumenty wpisujesz w dodatkowym nawiasie:
+			class Person:	
+				def printAge(age):
+					print(age)
+			p1=Person()
+			getattr(p1,printAge)(23)
+		 Nie znając argumentów możesz je wypakować (przy pomocy *args):  getattr(, command)(*arg).	:
+		 #opcja 1										#opcja 2
+			from collections import deque						from collections import deque
+			d=deque()											d=deque()
+			for i in range(int(input())):						for i in range(int(input())):
+				command, *arg = input().split()						c,*arg = input().split()
+				getattr(d, command)(*arg)							exec("d.{0}({1})".format(c,*arg+[""]))
+			[print(x,end=" ") for x in d]						print(x,end=" ") for x in d]
+   7*reversed(sekwencja):
+		*sekwencje (range, string, list, tuple): https://docs.python.org/3/library/stdtypes.html#mutable-sequence-types
+		*odwraca kolejność danej sekwencji (działa na sekwencjach - na zbiorze i słowniku nie działa)
+		*nie działa na orginale, zwraca obiekt  list_reverseiterator który trzeba skonwertować na listę.
+			lst = list(reversed(['a','b','c']))					#['c','b','a']
+   8*sorted(sekwencja):
+	   1*sortuję obiekty Iterable (z krotką, set'em i  4*PARAMETRY:
+		 słownikiem) zwracając listę (działa na kopii)	**parametr reverse=True -sortowanie malejące:		
+			lst = sorted('f','f','d','g','r')					print(sorted('ffdgr', reverse= True))  					
+							#['d','f','f','g','r']  						#['r','g','f','f','d']
+	   2*sortuje także tylusamoelementowe krotki/listy  **parametr key -element wg ktorego odbywa się 
+		 zawarte w LISCIE. Sortowanie od 1 el. od lewo    sortowanie przypisujesz poprzez funkcje/lambde
+			t=[('r',10,22)('g',33,21),('r',9,55)]		  np: key=lambda x:x[1] (sortowanie wg IIgo elem) 		
+			for m1,m2,m3 in sorted(t):							d={'c':10, 'a':1, 'b':22}
+				print(m1,m2,m3)									print(sorted(d.items(),key=lambda x:x[1]))	
+							#g 33 21 r 9 55 r 10 22					  		#a 1 ; c 10 ; b 22							
+	   3*Przydaję się przy sortowaniu słownika  		****do parametru key możesz podać referencje do 
+		 (.items() - zwraca krotki dwuelementowe)			danej funkcji np abs (absolute): 
+			dct= {'c':10, 'a':1, 'b':22}						li = [5,-3,-2,8,-9,72,-1,0]
+			print(sorted(slownik.items()))					 	print(sorted(li, key=abs))
+							#[(a,1),(b, 22),(c,10)]							#[0,-1,-2,-3,5,8,-9,72]
+	   5*MODUŁ OPERATOR (ITEMGETTER i ATTRGETTER) dla PARAMETRU KEY funkcji SORTED:
+		 **PRZY SORTOWANIU ZAGNIEŻDŻONYCH LISTACH do parametru key możesz przypisać itemgetter'a (moduł
+		   operator). W jego argumencie wpisujesz nr indexu zagnieżdzonej listy -posortuje według niego. 
+				x = [['4', '21', '1', '14'], ['3', '22', '4', '2somename']]
+				from operator import itemgetter
+				print(sorted(x,key=itemgetter(1)))				#posortuję względem drugiej liczby 
+		   https://stackoverflow.com/questions/409370/sorting-and-grouping-nested-lists-in-python?answertab=votes#tab-top
+		 **PRZY SORTOWANIU LISTY OBIEKTÓW do parametru key możesz przypisać attrgetter (moduł operator).
+ 		   W jego argumencie podajesz nazwę pola dla klasy (w cudzysłowiu) -posortuje według niego.
+				class Employee:
+					def__init__(self,name, age):
+						self.name=name
+						self.age=age
+				emp1,emp2=('Marek',24),('Kamil',29)
+				lst=[emp1,emp2]
+				from operator import itemgetter
+				print(sorted(lst,key=attrgetter('age')))		#posortuję względem wieku pracownika
+ 
+1*ARBITRARY ARGUMENTS *args,**kwargs - LISTY PARAMETRÓW W FUNKCJI:
+   0*PODSTAWY:
+		*To nie muszą być słowka **args/**kwargs tylko jakiekolwiek z 1/2 gwiazdkami ale tak się przyjeło.
+		*Wykorzystywane gdy funkcja ma przyjmować niewiadomą liczbę argumentow.
+				def f(arg1,arg2="z",*args,**kwargs):
+					print(arg1,arg2,args,*args,kwargs)		#nie da się wyprintować ' **kwargs '
+				f("a")					 					#a z () {} 
+				f("a","b")				 					#a b () {}
+				f("a","b","c","d")		 					#a b ('c','d') c d {}
+				f("a","b","c","d",zm1="x", zm2=2)			#a b ('c','d') c d {'zm1':'x','zm2':2}
+		*1 gwiazdka oznacza że :
+			*stworzy z tego krotke argumentow			*rozpakuje sekwencje						
+				def f(*args):								def f(*args):								
+					print(args)		#zwróci krotkę 				print(*args)  #zwróci arg ze spacją 		
+				f("a","b",2)		#("a","b",2)			f("a","b",2)	  #a b 2													
+		*2 gwiazdki (**kwargs -key words arguments) oznaczają argumenty w postaci elementów słownika czyli:
+		 klucz i wartość które trzeba podać w formie: zmienna = 'wartość'
+				def f(**kwargs):
+					print(kwargs)							
+				f(first ='a', mid ='b', last='c')   		#{'first':'a', 'mid':'b', 'last':'c'}
+   1*UŻYCIE *args (DO WYPAKOWYWANIA ARGUMENTÓW):
+		*w przypadku znanej ilości arg w funkcji 		*w przypadku nieznanej ilości arg. w funkcji 
+		 i takiej samej ilości elementów w liście:		 i różnej długości listach:	
+				def func(arg1,arg2,arg3):					def func(arg1,arg2,*args):
+					print(arg1,arg2,arg3)						print(arg1,arg2,*args)
+				lst=[1,2,3]									func(*[1,2,3,4])		#1 2 3 4   
+				func(*lst)			#rozpakowanie listy		func(*[1,2])			#1 2   
+	2*Ciekawe użycie arbitrary arguments:
+		*wypakowanie argumentów z inputu (który dzięki splitowi stworzy listę inputową):	
+				lst = *input().split())
+		*lista inputowa która przyjmuję jako argument nazwe funkcji (w stringu) oraz argumenty dla tej nazwy 
+		 funkcji. Nastepnie dzieki funkcji eval wywołuje tę podaną funkcję w stringu wraz z jej argumentami.
+		 Wypakowanie argumentów przyda się tutaj pod kontem tego że nie wiadomo ile ta funkcja podana w 
+		 Stringu przyjmuję argumentów (niektore funkcje przyjmują 1 argument inne 0):
+				lst = [1,2,3,4]
+				for i in range(2):
+					eval("lst.{0}({1}))".format(*input().split()+[""]) 			
+				#W INPUTCIE wpisujesz np:  append 4  pop  #wywoła evala na stringu: lst.append(4) lst.pop()
+
+2* KOPIOWANIE W PYTHONIE:
+   0*https://www.geeksforgeeks.org/copy-python-deep-copy-shallow-copy/
+   1*PODSTAWY:
+			#PRZYPISANIE / KOPIOWANIE PRZEZ WARTOŚĆ:	#PRZYPISANIE / KOPIOWANIE przez REFERENCJE:
+				x = 1										lst1 = [1]
+				y = x			#print(y) zwróci 1			lst2 = lst1		#print(lst2)   #[1]
+				x = x+1			#print(y) NADAL 1 			lst1.append(2) 	#print(lst2)   #[1,2]
+		1*Typy proste: KOPIOWANIE PRZEZ WARTOŚĆ (PRZYPISANIE PRZEZ WARTOŚĆ) -> po przypisaniu zmienne są 
+		  oddzielnymi bytami i robienie operacji na pierwotnej nie wpływa na tę co miała przypisanie. 
+		2*Typy złożone: KOPIOWANIE PRZEZ REFERENCJE -> po przypisaniu dwie zmienne mają ten sam adres i 
+		  robienie operacji na tej pierwotnej ma wpływ na tą która miała przypisanie.
+   2*PRZY KOLEKCJACH jak listy, krotki, dictionary, słownik:
+		1*PRZYPISANIE - kopiowanie przez referencję:
+				lst1=[1,2,3,4]
+				lst2=lst1 									#dla print(lst2) wyjdzie [1,2,3,4]
+				lst1.append(5)								#dla print(lst2) wyjdzie [1,2,3,4,5]
+		2*METODA copy() - KOPIOWANIE PRZEZ WARTOŚCI (w krotce nie działa):
+				lst1=[1,2,3,4]
+				lst2=lst1.copy() 							#dla print(lst2) wyjdzie [1,2,3,4]
+				lst1.append(5)								#dla print(lst2) wyjdzie [1,2,3,4]
+		3*SLICING (wycinek całej kolekcji [:]) - KOPIOWANIE PRZEZ WARTOŚCI:
+				lst1=[1,2,3,4]
+				lst2=lst1[:]	 							#dla print(lst2) wyjdzie [1,2,3,4]
+				lst1.append(5)								#dla print(lst2) wyjdzie [1,2,3,4]
+   3*PRZY TYPACH ZŁOŻONYCH tj. KLASACH i OBIEKTACH 
+		1*PRZYPISANIE - KOPIOWANIE PRZEZ REFERENCJE czyli jeżeli na pierwotnym obiekcie zrobisz jakies 
+			operacje to na tym do ktorego ten pierwotny przypisałeś również zajdą zmiany
+				class Hat:
+					def __init__(self, size):
+						self.size=size
+					def setSize(self, size):
+						self.size=size
+					def __str__(self):
+						return str(self.size)
+				hat1=Hat(13)	
+				hat2=hat1									#dla print(hat2) zwroci: 13
+				hat1.setSize(15)							#dla print(hat1) zwroci: 15
+				print(hat2)									#dla print(hat1) TAKŻE: 15 (PRZEZ REFERENCJE)
+		2*COPY() / DEEPCOPY() - nie można wywołać metody copy() na obiekcie, trzeba ją pobrać z modułu copy
+			**SHALLOW COPY (metoda copy() z modułu copy) -KOPIOWANIE PRZEZ REFERENCJE:
+				import copy
+				hat1=Hat(13)
+				hat2=copy.copy(hat1)						#dla print(hat2) zwróci: 13
+				hat1.setSize(15)							#dla print(hat1) zwróci: 15
+				print(hat2)									#dla print(hat2) TAKŻE: 15 (przez REFERENCJE)
+			**DEEP COPY (metoda deepcopy() z modułu copy) -KOPIOWANIE PRZEZ WARTOŚĆ:											
+				import copy
+				hat1=Hat(13)
+				hat2=copy.deepcopy(hat1)					#dla print(hat2) zwroci: 13
+				hat1.setSize(15)							#dla print(hat1) zwróci: 15
+				print(hat2)									#dla print(hat2) zwróci: 13 (PRZEZ WARTOŚĆ)
+3* MODULE COLLECTIONS - KOLEKCJE ROZSZERZONE:
+ 0**https://www.geeksforgeeks.org/python-collections-module/  
+ 1**KOLEKCJA defeaultdict - TAKA SAMA JAK DICTIONARY ALE GDY NIE MA KLUCZA TO NIE WYSKOCZY KEYERROR TYLKO 
+	ZWRÓCI DOMYŚLNĄ WARTOŚĆ PODANĄ W FUNKCJI(LAMBDZIE) W ARGUMENCIE oraz INICJALIZACJA DEFAULTDICT Z 
+	PUSTYM ZNACZNIKIEM LIST W ARG. POZWALA NA STWORZENIE SŁOWNIKA Z KLUCZEM JAKO ELEMENTEM LISTY I LISTAMI 
+	INDEXÓW WYSTĘPOWANIA TYCHŻE KLUCZY JAKO WARTOŚCIAMI (dla listy z powtarzającymi elementami)(patrz pkt3):
+	   0*https://www.geeksforgeeks.org/defaultdict-in-python/
+	   1.1*w argumencie podajesz funkcje zwracającą 	 1.2*nie trzeba w argumencie podawać funkcji -można 
+		   obiekt gdy jest wywołanie bez klucza:			 też podać typ danych jak np int albo float:
+				from collections import defaultdict					from collections import defaultdict
+				d = defaultdict(lambda: "Not")						d=defaultdict(float)
+				print(d['a'], d['b'])			#Not Not			print(d['a'])					#0.0
+	   2*PUSTY ZNACZNIK LIST W ARGUMENCIE:
+				from collections import defaultdict
+				d = defaultdict(list)						#list - tak to jest pusty znacznik listy
+			A*przy wywołaniu niestniejącego klucza stworzy pustą listę
+				d['a']										#{'a':[]} - tworzy pustą listę 
+			B*przy przypiszaniu wartości do niestniejącego klucza (to standardowo stworzy parę):
+				d['b']='z'									#{'a':[], 'b'='z'}
+			C*przy uzyciu append(wartość), na nieistniejącym kluczu to stworzy listę z tą 1dną wartością: 
+				d['c'].append("x")							#{'a':[], 'b'='z', 'c':['x']}			
+				d['c'].append("y")							#{'a':[], 'b'='z', 'c':['x','y']}			
+	   3*NAJWIĘKSZA ZALETA DEFAULTDICT - inicjalizacja defaultdict z pustym znacznikiem 'list' w argumencie 
+	     wykorzystujesz gdy masz liste elementów które się powtarzają a ty chcesz z nich zrobić klucze 
+		 gdzie wartościami dla każdego będą listy z indeksami dla każdego klucza.
+				lst=['b','a','a','b','a','b']
+				from collections import defaultdict
+				dct=defaultdict(list)			
+				for i in range(len(lst)): 
+					dct[lst[i]].append(i)	  $defaultdict(<class 'list'>, {'b': [0, 3, 5], 'a': [1, 2, 4]})
+					
+ 2**KOLEKCJA Counter - TAK JAK SLOWNIK TYLKO PORZĄDKUJE ELEMENTY LISTY POD WZGLĘDEM ILOŚCI MALEJĄCO 
+	   0*https://www.geeksforgeeks.org/counters-in-python-set-1/
+	   1*Przechowuje elementy jako klucze a ich 			*Jest to kolekcja iterowalna czyli Iterable.
+	     liczebność jako wartość (porządkuje el. 			*Funkcjonuje także na Stringach 		   
+				from collections import Counter						from collections import Counter
+				c=Counter([1,1,2,3,4,5,3,2,3,2])					c=Counter("aaabbcccc")	
+					#Counter({2:3, 3:3, 1:2, 4:1, 5:1})					#Counter({'a':3, 'b':2, 'c':4})
+	   2*METODY PODSTAWOWE - te same co w Dictionary:
+			*keys() -zwraca klucze 		*values() -zwraca wartości		*get() -zwraca wartość bez KEYERROR 
+				Counter(myList).keys()		Counter(myList).values()		Counter(myList).get(key,0)
+			*items() -zwraca listę krotek którą mógłbyś posortować metodą sorted() ale przy dużych plikach
+			 niestety metoda items nie daje rady sortować po wartosciach !!!!!
+				c=Counter(myList).items()					#[(2,3), (2,4), (3,4), (4,2), (5,1)]
+				print(sorted(c.items(), key =lambda c:c[0]))	
+	   3*METODY ROZSZERZONE:	
+			*update(list) - do istniejącego Countera dodaje liczebność kluczy (starych i nowych) listy 
+				c = Counter([1, 2, 3, 2, 2, 1, 1, 2])		#Counter({2:4, 1:3, 3:1})
+				c.update([1,2,4)]					 		#Counter({2:5, 1:4, 3:1, 4:1})
+			*elements() - zwraca obiekt który przekonwertowany na liste daje wszystkie elementy listy:
+				c=Counter("aaabbcccc")						#Counter({'a':3, 'b':2, 'c':4})
+				print(list(c.elements()))	# ['a','a','a','a','b','b','c','c','c']
+			*most_common(int) - zwraca najczęsciej występujący element listy. W argumencie podajesz ile 
+			 elementów najczęsiej występujących chcesz by było widocznych.
+				c=Counter("aaaaabbbbccc")
+				print(c.most_common(2))						#[('a',5), ('b',4)]
+				print(c.most_common(1)[0][0])				#a
+
+ 3**KOLEKCJA OrderedDict - UPORZĄDKOWANY SŁOWNIK KOLEJNOŚCIĄ DODAWANIA ELEMENTOW. KLUCZE NIE ZMIENIAJĄ
+    SWOJEJ POZYCJI A KOLEJNO DODAWANE ELEMENTY O ISTNIEJĄCYCH WCZEŚNIEJ KLUCZACH MAJĄ NADPISYWANE WARTOŚCI 
+	GDY KOLEJNOŚĆ KLUCZY SIĘ NIE ZMIENIA (POZBYWASZ SIĘ POWTÓRZEŃ I ZACHOWUJESZ KOLEJNOŚĆ ELEMENTOW) 
+	   0*https://www.geeksforgeeks.org/ordereddict-in-python/
+				from collections import OrderedDict
+				d= OrderedDict()
+				d['a'] = 1									#{'a': 1}
+				d['b'] = 2									#{'a': 1, 'b': 2}
+				d['a'] = 5									#{'a': 5, 'b': 2}
+	   1*METODY:	
+			*fromkeys() - przekonwertowanie listy/stringa NA OrderDict:
+				d = OrderedDict.fromkeys([1,3,2,3,1,2,2])	#OrderedDict([(1,None),(3,None),(2,None)])
+				d = OrderedDict.fromkeys('acbbac') 			#OrderedDict([('a',None),('c',None),('b',None)])
+			*move_to_end(key) - przeniesienie istniejącego klucza na koniec kolekcji:
+				d.move_to_end('c')							#OrderedDict([('a',None),('b',None),('c',None)])
+			*move_to_end(key, last=False) - przeniesienie istniejącego klucza na początek kolekcji:
+				d.move_to_end('c', last=False)				#OrderedDict([('c',None),('a',None),('b',None)])
+				
+ 4**KOLEKCJA ChainMap - TWORZY KONTENER DLA WIELU DICTIONARY:
+	   0*https://www.geeksforgeeks.org/chainmap-in-python/	- metody znajdziesz tutaj: 		
+	   1*chcąc wywołać daney klucz w danym słowniku nie 	*gdyby klucze się powtórzyły w różnych 
+		 musisz znać położenia tego słownika w ChainMapie	 słownikach to ChainMap zwróci wartość z 
+		 wystarczy że na Chainmapie wywołasz tenże klucz:	 pierwszegon apotkanego klucza:
+				from collections import ChainMap					from collections import ChainMap
+				d1 ,d2= {'a':1, 'b':2},{'c':3, 'd':4}				d1 ,d2= {'a':1, 'b':2},{'b':3, 'c':4}
+				c = ChainMap(d1, d2)								c = ChainMap(d1, d2)
+				print(c['a'])			# 1							print(c['b'])			# 2
+				
+ 5**KOLEKCJA namedtuple - POZWALA TWORZYĆ PODRĘCZNE OBIEKTY DO PROSTYCH ZADAŃ MAJĄCE TYLKO POLA BEZ METOD. 
+	NAMEDTUPLE DZIĘKI SWOIM METODOM POZWALA KONWERTOWAĆ LISTĘ I DICTIONARY NA WCZESNIEJ ZDEFINIOWANY OBIEKT. 
+	   0*https://www.geeksforgeeks.org/namedtuple-in-python/
+	   1*ZASTOSOWANIE  i CECHY: namedtule jest idealny jeżeli msz jakiś plik csv (excelowski) i chcesz 
+	     stworzyć proste obiekty na ktorych dokonasz jakiś działań. Obiekty NAMEDTUPLE są IMMUTABLE.
+	   2*SKŁADNIA: 
+		 **PIERWSZY ARGUMENT: nazwa obiektu ;; DRUGI ARGUMENT: lista nazw argumentów tego obieku lub nazwy 
+		   argumentów podane jako string (wymienione po spacji albo po przecinku).
+				from collections import namedtuple					from collections import namedtuple
+				carro = namedtuple('Car','Price Mileage Class')		point = namedtuple('Point','x,y')					
+				c1 = carro(Price=100000, Mileage=30, Class ='Y')	pt1 = point(1,3)
+						#carro(Price=100000, Mileage=30, Class='Y')	pt2 = point(x=5, y=9)
+																	sum = pt1.x + pt2.x 	# 6			
+		 **UTWORZENIE OBIEKTU DLA OBIEKTU NAMEDTUPLE możesz zrobić także poprzez podanie słownika w arg.
+		   (podaj '**'). Musi się zgadzac tylko ilość kluczy do ilość pól w obiekcie namedtuple)
+				from collections import namedtuple
+				Student = namedtuple('Student',['name', 'age', 'indexNumber'])
+				dict={'name':"Jurek", 'age':19, 'indexNumber':'1391997'}
+				s1 = Student(**dict)				#Student(name='Jurek', age='19', indexNumber='1391997')		 
+		 **DO PÓL OBIEKTU NAMEDTUPLE można się dostać poprzez numer pola lub jego nazwę(bez cudzysłowiów):
+				from collections import namedtuple
+				color = namedtuple("Color",'r g b')
+				c1=color(55,155,255)
+				print(c1[0])						# 55
+				print(c1.r)							# 55
+	   3*POLA I METODY:
+			*_fields -zwraca krotke pól obiektu:			*_replace() - pozwala dostać się do jednego z
+															 pól takiego obiektu i zmienić jego wartość:
+				from collections import namedtuple					from collections import namedtuple
+				Student=namedtuple('Student',['n','a','i'])			Point=namedtuple('Point','x y')
+				s1 = Student('Marek', '24','s14453')				p1 = Point(x=10, y=15)
+				s1._fields()	#('Marek', '24','s14453')			p1._replace(x=22)  #Point(x=22, y=15)
+			*_asdict() - pozwala zamienić obiekt stworzony przez namedtuple na słownik OrderedDict		 
+				Student=namedtuple('Student',['n','a','i'])
+				s1 = Student('Mar', '24','s14453')	
+				s1._asdict()						#OrderedDict([('n','Mar'),('a','24'),('i','s14453')])			
+			*_make(list) - pozwala na przekonwertowanie listy na obiekt namedtuple. Wywołuję się 
+			 nie na utworzonym obiekcie z obiektu namedtuple tylko bezpośrednio na obiekcie namedtuple.
+				from collections import namedtuple
+				Student = namedtuple('Student',['name', 'age', 'indexNumber'])
+				lst = ['Andrzej', '34', 's33']
+				Student._make(lst)					#Student(name='Andrzej', age='34', indexNumber='s33')
+	
+ 6**KOLEKCJA deque - LISTA NA KTÓREJ MOŻNA WYKONYWAĆ OPERACJE NIE TYLKO Z PRAWEJ STRONY ALE TEŻ Z LEWEJ
+	   0*https://www.geeksforgeeks.org/deque-in-python/
+	   1*https://towardsdatascience.com/understanding-time-complexity-with-python-examples-2bda6e8158a7
+		 ma zdecydowanie lepszą prędkość działania niż zwykła lista. Według Notacji dużego O time complexity
+		 dla listy wynosi 0(n) a dla deque wynosi 0(1) czyli tę najlepszą.
+	   2*DEQUE JEST DWUSTRONNĄ KOLEJKĄ - metody działają na końcu listy i na początku (ze słówkiem left):
+			**append(elem)  i  leftappend(elem)				**pop()  i  leftpop()
+				from collections import deque					from collections import deque
+				q = deque(['a','b','c'])						q = deque(['a','b','c'])
+				q.append('z')		#['a','b','c','z']			q.pop()						#['a','b']			
+				q.leftappend('x')	#['x','a','b','c','z']		q.leftpop()					#['b']	
+			**możesz też użyć wszystkich metod normalnie działających na listach:
+			  *index(el,begin,end)  *insert(index, el)  *remove(el)  *count()  *reverse()  *clear()
+	   3*METODY SPECYFICZNE dla DEQUE:
+			**extend(iterable)   i   extendleft(iterable)   - rozszerza listę o inną listę lub kolekcję 
+			  iterowalną (rozszerzając z lewej strony odwraca kolejność kolekcji w argumencie)(rozszerzając 
+			  z lewej strony stringiem - weżmie każdą literę osobno i zappenduję ją odwracjąc kolejność):
+				q = deque([1,2,3])								#deque([1,2,3])
+				q.extend([7,8,9])								#deque([1,2,3,7,8,9])		
+				q.extendleft([7,8,9])							#deque([9,8,7,1,2,3])
+				q.extendleft('xyz')								#deque(['z','y','x',9,8,7,1,2,3])
+			**rotate(int) - rotuje w zaleznosci od tego jaką liczbę poda się w argumencie 
+				de = collections.deque([1, 2, 3, 4, 5 ])
+				de.rotate()   - domyślnie rotuję o 1 miejsce z prawej strony  		#deque([5, 1, 2, 3, 4])
+				de.rotate(2)  - gdy liczba dodatnia to rotuję z prawej strony  		#deque([4, 5, 1, 2, 3])
+				de.rotate(-2) - gdy liczba z ujemna to rotuję z lewej strony bez odwracania kolejnośći:
+																					#deque([1, 2 ,3, 4, 5])
+																					
+################################# KOLEKCJA DICTIONARY | DICTIONARY COMPREHENSION ###########################
+KOLEKCJA DICTIONARY (SLOWNIK) [w Javie jest to MAPA] 
+	0.KLUCZE się NIE POWTARZAJĄ (wartości tak), jest NIEUPORZĄDKOWANY (niezaindeksowany), MOŻNA modyfikować
+	  (od wersji PYTHON 3.7 - klucze są zaindeksowane ale lepiej traktować domyślnie że są nieuporządkowane)
+	1*WLAŚCIWOŚCI SŁOWNIKA:
+	   1*Utworzenie słownika:
+			d={}  /  d = dict()			#deklaracja pustego słownika
+			d = {1:"a","z":'b',True:2}	#w jednym słowniku klucze i wartości mogą być różnymi typami danych
+			d = dict(n="a", 4="d") 		#utworzenie słownika przez konstruktor (BEZ podwójnych nawiasów() )
+			d = dict([['n',2],[3,'b']])	#{'n':2, 3:'b'} utworzenie słownika przez konwersje listy w liście
+	   2*Zwrot wartości (dla słownika: d = {1:"a","z":'b',True:2}):
+			print(d)					#zwrot wszystkich elementów słownika - klucze i wartości 
+			print(d["z"])				#zwrot wartości dla danego klucza -w nawiasy kwadratowe wpisz klucz
+			print(d[2])					#KEYERROR gdyż klucz nie istnieje (lepiej użyć funkcji get(a1,a2))
+			print(d.get(2,'n'))			#gdy klucz nie istnieje zwróci wartość w 2gim argumencie
+			print(key) if key in d		#sprawdzenie czy klucz istnieje w słowniku (słowo kluczowe 'in')
+	   3*Update/dodawanie nowych pary - poprzez przypisanie wartości do nieistniejącego klucza (gdy klucz
+		  istnieje to wartość zostaję nadpisana, czyli update'owana)
+			d=dict(a=2,b=3)
+			d['a']=1					#{'a':1,'b':3,'n':13} - update wartości dla klucza 'a'
+			d['n']=13					#{'a':2,'b':3,'n':13} - klucz 'n' wczesniej nie istnial w słowniku
+	   4*Przejscie po kluczach, wartościach oraz po kluczach i wartościach:
+		   *PO KLUCZACH:						   *PO WARTOŚCIACH:			*PO KLUCZACH I WARTOŚCIACH:
+			for key in d:	for key in d.keys:		for val in d.values:	 for key,val in d.items():
+				print(key)		print(key)				print(val)				print(key, val)	
+	2*METODY PODSTAWOWE:
+		*https://www.w3schools.com/python/python_dictionaries_methods.asp
+		*keys() - zwraca listę wszystkich kluczy:			*values() - zwraca listę wszystkich wartości	
+			d.keys()			#dict_keys(['b','c'])			d.values() 			#dict_values(['F',3])
+		*items() -zwraca liste krotek(klucza i wartosci) 	*popitem() - usuwa ostatnio dodaną parę 
+			d.items()	#dict_items([('b','F'),('c',3)]			d.popitem()	#przed v3.7 usuwa losową parę
+		*pop('k') - usuwanie elementow po kluczach			*del dict[key] - usuwa parę o podanym
+		 (gdy klucz nie istnieje to NIE wyskoczy błąd)		 (gdy klucz nie istnieje to błąd KEYERROR)
+			d.pop(1)											del d['b']	  
+		*clear() - pozostawia cała kolekcję pustą:			*del dict - usuwa cała kolekcję dictionary
+			d.clear()											del d
+	3*METODY ROZSZERZONE:		 
+	   1*fromkeys(keysList, value) - konwersja listy na słownik z jedną wartością dla wszystkich kluczy: 
+				dict.fromkeys([1,'n',3],'x')   					dict.fromkeys([1,'n',3])
+				    #{1:'x','n': 'x',3: 'x'}	     				#{1:None,'n': None,3: None}
+	   2*get(key,arg2) - jeżeli klucz nie istnieje to NIE zwraca KEYERROR tylko wartość w 2gim argumencie:
+				d.get('key')									#zwraca wartość dla klucza key
+				d.get('key',"klucz nie istnieje")				#zwraca "klucz nie istnieje"
+		   **HISTOGRAM utworzony poprzez get(key,0) (używasz wartośći 0 w 2gim opcjonalnym argumencie):
+		    *DLA LISTY liczy ilość wystąpień danego 		    *DLA SŁOWNIKÓW liczy ilość wystapień tych 
+			 elementu (dodaje do zera):							 samych kluczy w dwóch słownikach:
+				d1, lst = {}, ['a','b','b','c','c','b']				d1, d2 = {"m":5, "a":6}, {"m": 2}
+				for x in lst:										for k in d1:
+					d1[x]=d1.get(k,0)+1  #{'a':1,'c':3,'b':2}			d2[k]=d2.get(k,0)+1	 #{'m':2,'a':1}
+	   3*update({key:value, key2:value2}) - updatowanie przez słownik w arg. funkcji update wywołanej na 
+		 innym słowniku (klucze istniejące w 2 słownikach są nadpisane wartościami z drugiego słownika):
+				d1, d2 ={ "brand": "Ford", "year": 1964},{"year": 2020, "age": 22}
+				d1.update(d2)									#{"brand": "Ford","year": 2020, 'age':22}
+	   4*copy() - kopiowanie przez wartość (normalnie przy przypisaniu kolekcji jest przez referencje):
+		   **metoda copy() (przez wartość)					   **konwersja słownika na słownik (przez wart.)
+				dict2 = d.copy()									dict2 = dict(d)
+	   5*append(value) - do klucza z wartością jako PUSTA LISTA dodajesz wartości tworząc ich liste:
+				my_dict = {"Name":[],"Address":[]};
+				my_dict["Name"].append("Guru")					#{'Name': ['Guru'], 'Address': []}
+				my_dict["Name"].append("Dupus")					#{'Name': ['Guru','Dupus'], 'Address': []}
+	4*SORTOWANIE SŁOWNIKA (nie można sortować słownika ale możesz zamienić go na listę krotek i posortować)
+	    *sort():
+				listOfTuples = {"B":29,"C":36,"A":19}.items()	#[("B",29),("C",13),("A",19)]
+				listOfTuples.sort(key=lambda x: x[0])			#[("A",89),("B",29),("C",13)] (po kluczach)
+				listOfTuples.sort(key=lambda x: x[1])			#[("C",13),("A",89),("B",29)] (wartościach)
+		*sorted(listOfTuples):
+				listOfTuples = {"B":29,"C":36,"A":19}.items()	#[("B",29),("C",13),("A",19)]
+				sorted(listOfTuples)							#[("A",89),("B",29),("C",13)] (po kluczach)
+				sorted(listOfTuples, key=lambda x: x[1])		#[("C",13),("A",89),("B",29)] (wartościach)
+		  ***bez parametru key chcąc sortować po wartościach metodą sorted() podczas zamiany na listę 
+			 krotek musiałbyś zamienić kolejność kluczy i wartości w krotkach z (key, val) na (val, key)
+				listOfTuples = sorted([(v,k) for k,v in dictionary.items()]) 
+			 jednakże opcja z parametrem key jest lepszaa. Przy sortowaniu malejącym 3ci arg: reverse=True
+				sorted(listOfTuples, key=lambda x: x[1], reverse=True)		#[("A",89),("B",29),("C",13)]	
+	5*DICTIONARY COMPREHENSIONS:
+				num, lit = list(range(5)), ['a','b','c','d','e']
+				d = {l:n for l,n in zip(num,lit)}				#{0: 'a', 1: 'b', 2: 'c', 3: 'd', 4: 'e'}	 
+				d = {x:x*x for x in range(6)} 					#{0: 0, 1: 1, 2: 4, 3: 9, 4: 16, 5: 25}
+
+########################### KOLEKCJA SET | FROZENSET | OPERATORY NA ZBIORACH ###############################
+ZBIÓR SET {}, set():
+	0.1*SET: Elementy się NIE POWTARZAJĄ, jest NIEUPORZĄDKOWANY (niezaindeksowany) i MOŻNA go modyfikować
+	0.2*FROZENSET: - ZBIÓR NIEMODYFIKALNY (el się nie powtarzają, jest niezaindeskowany i niemodyfikalny)
+			s=frozenset([1,2,3,4])
+	1*WLAŚCIWOŚCI SETU - MOŻNA MODYFIKOWAĆ ale jest NIEUPORZĄDKOWANY więc bez sortowania, zmiany kolejności:
+			s = set()					#deklaracja pustego zbioru  #{} -PUSTY SŁOWNIK NIE ZBIÓR
+			s = set(("a", "b", "c")) 	#utworzenie zbioru przez konstruktor (podwójne nawiasy okrągłe)
+			s = {1,'c',"d",4}			#w jednym zbiorze mozesz przechowywac wszystkie typy danych; 
+			s = {1,2,3,}				#zbiór mozemy zakonczyc przecinkiem
+			print(s)					#zwrot wszystkich elementów zioru 
+										#(nie zwróci konkretnego indexu bo zbiór jest nieuporządkowany)
+	2*METODY PODSTAWOWE (nie ma metod jak: insert/append - SET ma swoje indywidualne nazewnictwo metod)
+		*https://www.w3schools.com/python/python_ref_set.asp
+		 https://www.w3schools.com/python/python_sets_remove.asp
+		*add(el) -dodaje do zbioru, (dodanie wartosci 		*remove(el) -usuwa po elemencie a nie po indexie 
+		 ktora już jest w zbiorze nie wywala błędu)			 (jeżeli element nie istnieje to wyskoczy ERROR)
+			s={111,1,11}										s={111,1,11}
+			s.add(111)					#BRAK ERRORa			s.remove(222)					#ERROR
+		*discard(el) -usuwa po elemencie a nie po indexie	*pop() -usuwa ostatni element w zbiorze (zbiór
+		 (jeżeli element nie istnieje to NIEWYSKOCZY ERROR)	 jest nieindeksowany -> usunie losową wartość)
+			s={111,1,11}										s={111,1,11}
+			s.remove(222)				#BRAK ERRORa			s.pop()							#{111,11}
+		*clear() -czyści cały zbiór tak że zostaje pusty	*del -usuwa cały zbiór bezpowrotnie
+			s.clear()											del s
+	3*METODY DLA 2 ZBIORÓW (to nie muszą być dwa zbiory - może być zbiór i jakakolwiek inna kolekcja):
+	   0*issuperset() -zwraca True gdy zbiór w argumencie 	*issubset() -zwraca True gdy zbiór wywołujący
+	     jest podzbiorem dla zbioru wywołującego funkcje	 funkcje jest podzbiorem dla zbioru w arg.
+			s1, s2 = {"a","b","c"}, {"b","c"}					s1, s2 = {"a","b","c"}, {"b","c"}
+			bool=s1.issuperset(s2)					#True		bool=s1.issubset(s2)				#False
+	   1*update() -suma 2 zbiorów robiona na 1szym zbiorze 	*union() -zwraca 3ci zbiór jako suma 2 zbiorów 
+			s1, s2 = {"b","c"}, {"c","d"}						s1, s2 = {"b","c"}, {"c","d"}
+			s1.update(s2)					#{"b","c","d"}		s3=s1.union(s2)				#{"b","c","d"}
+	   2*difference_update() -różnica zbiorów na 1szym		*difference() -zwraca 3ci zbiór jako różnica 
+			s1, s2 = {"b","c"}, {"c","d"}						s1, s2 = {"b","c"}, {"c","d"}	
+			s1.difference_update(s2) 				#{"b"}		s3=s1.difference(s2)				#{"b"}
+	   3*intersection_update() -iloczyn 2 zbiorów robiony   *intersection() -zwraca 3ci zbiór jako iloczyn
+		 na 1szym zbiorze (zatrzymuje tylko duplikaty)		 2 zbiorów (zatrzymuje tylko duplikaty)
+			s1, s2 = {"b","c"}, {"c","d"}						s1, s2 = {"b","c"}, {"c","d"}
+			s1.intersection_update(s2)				#{"c"}		s3=s1.intersection(s2)				#{"c"}	
+	   4*symmetric_difference_update()-odwrotność iloczynu	*symmetric_difference() -zwraca 3ci zbiór jako 
+		 (elementy nieduplikujące się) na 1szym zbiorze		 odwrotność iloczynu (el. nieduplikujące się)
+			s1, s2 = {"b","c"}, {"c","d"}						s1, s2 = {"b","c"}, {"c","d"}
+			s1.symmetric_difference_update(s2)	#{"b","d"}		s3=s1.intersection(s2)			#{"b","d"}	
+	5*OPERATORY w OPERACJACH NA ZBIORACH:
+		*OPERATOR SUMY    *OP. ROZNICY    *OP. ILOCZYNU    *OP. ROZNICY SYMETRYCZNEJ (odwrotność iloczynu)
+			s1 | s2		      s1 - s2	      s1 & s2	       s1 ^ s2
+		*rozszerzenie o końcówkę _update() (zamiast wrotu 3ceigo zbioru działasz na 1szym) (dodajesz "=")
+			*SUMA: 					|= 	or	.update() 						
+			*RÓŻNICA: 				-=	or	.difference_update()	
+			*ILOCZYN: 				&=  or 	.intersection_update()
+			*ODWROTNOŚĆ ILOCZYNU: 	^=  or	.symmetric_difference_update()
+			
+########################################### KOLEKCJA TUPLE - KROTKA ########################################
+1* KROTKA: tuple(), ():
+	0*możliwe duplikowanie elementów, jest uporządkowana (zaindeksowana) ale NIE MOŻNA jej modyfikować 
+	1*PODSTAWY:
+		*NIE MOŻNA MODYFIKOWAĆ (sortować, dodawać wartości, zmieniać ich wartości, zamieniać kolejności)
+			t = () / t = tuple()		#mozna zadeklarować pustą krotka - nie ma ograniczonej wielkości
+			t = tuple(("a", "b", "c"))  #utworzenie krotki przez konstruktor (podwójne nawiasy okrągłe)
+			t = (1,'c',"d",4)			#jedna krotka moze przechowywac wszystkie typy danych; 
+			t = (1,2,3,)				#krotke mozemy zakonczyc przecinkiem
+			t = ('a',)					#krotka z jednym elementem (musi być z przecinkiem)
+			print(t)					#zwrot wszystkich elementów krotki
+			print(t[1])					#zwrot danego elementu
+	2*ROSZERZENIE:
+			t = tuple("slowo") 			#krotka pojedyńczych znaków: ('s','l','o','w','o')
+			(x,y) = (4,'fred')			#przypisanie wartośći jednej krotki do drugiej #x=4; y='fred'
+			(x,y,z) = (y,z,x)			#zamiana kolejnośći w 1 linii przez przypisanie krotki
+			t =("a","b","c") + (1,2,3)	#dodawanie ze sobą krotek	#("a","b","c",1,2,3)
+			t =("a","b","c") * 2		#monożenie krotki			#("a","b","c","a","b","c")
+		*porównynanie krotek (tylko o tej samej ilośći elementów):
+			(1,20,30)<(0,1,1)			#True -porównuję tylko wartości o najmniejszym indexie
+			(1,20,30)<(1,20,33)			#True -jeżeli są takie same to sprawdza kolejny index
+			('Jon','Sam')<('Jon','Sal')	#False - przy slowach sprawdza każdą pojedyńczą literkę
+	3*EFEKTYWNOŚĆ (EFFICENCY):
+		*przy tworzeniu wielu milionów rekordów krotka 				*efektywnejsza: zajmuję mniej miejsca
+		 tworzy sie 10 razy szybciej niż lista:					 	 (~20%); szybciej się dostac do elem.:
+			import timeit												t=("mac",28,3,4,5,"sfsdf",6,"bost")	
+			timeit.timeit(stmt="[1,2,3]",number=1000000) #0.11065		l=list(t)
+			timeit.timeit(stmt="(1,2,3)",number=1000000) #0.01528		import sys										
+																		sys.getsizeof(t),"bytes"  #64bytes
+																		sys.getsizeof(l),"bytes"  #80bytes
+		*przy przetwarzaniu kolekcji bez zamiaru modyfikowanie używaj KROTKI, z modyfikowaniem LISTY;			
+	4*METODY KROTKI:
+		*https://www.w3schools.com/python/python_tuples_methods.asp
+		*count(el) - zliczanie ilości wystąpień danego elementu
+				('a','b','c','a','a').count('a')						#3
+		*index(el) - zwroci pierwszy napotkany index elementu
+				('a','b','c','a','a').count('c')						#2
+		*del(krotka)  - usuwanie krotki
+				del t
+	5*MODYFIKACJE KROTKI:
+		*ZAMIANA ELEMENTÓW: utworzenie krotki przez zsumowanie 		*ZAMIANA ELEMENTÓW i ICH SORTOWANIE: 
+		 kawałków krotki wraz z dod krotką z pojedyńczym el.		 zamiana na listę, modyfikacje, 		
+				t = ('a', 'b', 'c', 'd', 'e')						 sortowanie i zamiana na krotke:
+				t = ('A',) + t[1:]										x = ("apple", "banana", "cherry")
+				print(t)		#('A', 'b', 'c', 'd', 'e')				y = list(x)
+																		y[1] = "kiwi"
+																		x = tuple(y)	
+		*DODAWANIE NOWYCH ELEMENTÓW: dodanie jednoelementowej		*PRZEJSCIE PO LIŚCIE KROTEK:
+		 krotki z nowym elementem.										b=('r',10,22)
+				t = ("app", "ban", "che")								c=('g',33,21)
+				y = ("ora",)											tupleLst=[b,c]
+				t = t + y		#("app", "ban", "che", "ora")			for m1,m2,m3 in sorted(tupleLsts):
+																			print(m1,m2,m3)	
+																				#('g',33,21);('r',10,22)
+#################################### KOLEKCJA: LISTA | LIST COMPREHENSION ##################################
+LISTA [], list():
+	0*możliwe duplikowanie elementów, jest uporządkowana (zaindeksowana) ale można ją modyfikować 
+	1*PODSTAWY:
+			lst = [] / lst = list()		#mozna zadeklarować pustą listę; Lista nie ma ograniczonej wielkosci
+			lst = list(("a", "b", "c")) #utworzenie listy przez konstruktor (podwójne nawiasy okrągłe)
+			lst = [1,'c',"d",4]			#jedna lista moze przechowywac wszystkie typy danych; 
+			lst = [1,2,3,]				#liste mozemy zakonczyc przecinkiem
+			print("mama lubi kota"[3])	#string jest przechowywany jako lista - zwróci:'a'
+			print(lst)					#zwrot wszystkich elementów listy 
+	2*INDEKSOWANIE:
+		*lista jest indexowana od 0 a zwrot jej elementów poprzez indexy (pozytywne i negatywne i wycinki):
+			lst[0]						#pierwszy element
+			lst[-1] 					#ostatni element
+			lst[3:5] 					#od 3ego indexu do 4ego indexu (bez 5ego))
+			lst[3:]	/ lst[:3]			#od 3ego indexu. do ostatniego włącznie / od 1ego do 2ego indexu
+			lst[-4:-1]					#od 4ego el. od końca do przedostatniego (ostatni się nie liczy)			
+			lst[-4:] / lst[:-4]			#od 4ego el. od końca do ostatniego / od 1ego do 4ego el. od końca 
+		*korzystasz z wycinek do zamiany elementów w liscie na inny element/elementy:
+			lst=[1,2,3,4]				
+			lst[1] = "a"				#zamiana 2go elementu na inny ['a',2,3,4]
+			lst[1:3] = ["b", "c"]		#zamiana 2go i 3go elementów na 2 inne ['a','b','c',4]
+			lst[1:3] = ["d"]			#zamiana 2go i 3go elementów na 1 inny ['a','d',4]
+			lst[1:2] = ['e','f']		#zamiana 1go elementu na 2 inne ['e','f','d',4]
+	3*PODSTAWOWE DZIAŁANIA NA LIŚCIE:
+			lst=list(range(5)) 			#konwertowanie obiektu na liste [0,1,2,3,4]
+			lst2=lst*3					#mnozenie listy przez jakas ilosc elementow
+			lst2= lst + ["a", 3]		#dynamiczne łączenie list (mozna tez przez metodę extend())
+			lst.append(["a","eee"])		#zagniężdżenie listy w liście
+	4*ROZSZERZONE DZIAŁANIA NA LIŚCIE:
+		*usuwanie duplikatów w liście poprzez przekonwertowanie na słownik (dict.from.keys()) i na listę:
+			lst = list(dict.fromkeys(["a", "b", "a", "c", "c"]))		#['a','b','c']
+		*usuwanie duplikatów w liście poprzez przekonwertowanie na zbiór i na listę:
+			lst = list(set(["a", "b", "a", "c", "c"]))					#['a','b','c']
+		*przejscie po posortowanej liśćie krotek gdzie masz wiele iteratorów 
+			list_of_tuples=[('r',10,22), ('g',33,21)]
+			[print(m1,m2,m3) for m1,m2,m3 in sorted(list_of_tuples)]	#('g',33,21), ('r',10,22)
+	5*METODY LISTY - NIE ZWRACAJĄ LISTY (to są VOIDy) przez co nie można robić na nich przypisania:
+		*APPEND(el) - dołączenie elementu na koniec listy (znaku lub innej listy):
+					lst=[1,2,3]
+					lst.append(['x','z'])								#[1,2,3,['x','z']]
+					print(lst[3][1])									#'z'
+		*INSERT(index, el) - dołączenie w danym miejscu. Insert zrobi insert na pozycji przed indeksem. 
+					lst.insert(3,'aa')									#[1,2,3,'aa',['x','z']]
+		*EXTEND(collecition) - do dodanie nowej listy do starej (możesz też użyc PLUSA!) 
+					lst.extend([4,5])									#[1,2,3,'aa',['x','z'],4,5]
+		  *możesz też dodac inne kolekcje do listy:
+					lst.extend((1,2))	  								#[1,2,3,'aa',['x','z'],4,5,1,2]
+		*COUNT(el) - liczenie danego znaku w liscie [nie bierze pod uwage znakow w zagniezdzonej liscie]:
+					liczba=  lst.count('aa')							#1
+		*INDEX(el) - zwrocenie indexu znaku [pierwszego napotkanego][liczonego od zera]
+					index = lst.index('aa')								#3
+		*REMOVE(el) - usuniecie pierwszego napotkanego podanego znaku:
+					lst.remove('aa')									#[1,2,3,['x','z'],4,5,1,2]
+		*POP() / POP(index) - usuniecie elementu o podanym indexie lub ostatniego na liście:
+					lst.pop(1)											#[1,3,['x','z'],4,5,1,2]
+					lst.pop()											#[1,3,['x','z'],4,5,1]
+		*CLEAR() - wyczyszczenie listy ze wszystkich elementow
+					lst.clear()											#[] - pusta lista
+		*DEL - usuniecie elementu lub całej listy (metody ogólna a nie do listy): 
+					del lst[0]												
+					del lst												#None
+		*COPY() - kopiowanie i utworzenie nowego obiektu gdyż przy przypisaniu listy działasz na orginale.
+					lst = ["apple", "banana", "cherry"]
+					newList = lst.copy()
+			*innym sposobem kopiowania bedzie przekonwertowanie listy na liste i przypisanie do zmiennej
+					lst = ["apple", "banana", "cherry"]
+					newList = list(lst)
+		*REVERSE() - odworcenie kolejnosci elementow w liscie 
+					lst.reverse()
+		*SORT() - sortowanie rosnace/alfabetyczne (same liczby/stringi). Dla mieszanych błąd TypeError:
+					lst = ["ban", "Ora", "Ki", "cher"]
+					lst.sort();												
+					print(lst)											#['Ki','Ora','ban','ler']
+			*sortowanie malejące poprzez Parametr reverse = True:
+					lst.sort(reverse = True)							#['ler','ban','Ora','Ki']
+			*sortowanie jest 'case sensitive' -słowa z dużymi literami będą wyprzedzać te z małymi.
+			 Parametr: key = str.lower - wielkość liter nie ma znaczenie.
+					lst.sort(key = str.lower)							#['ban','Ki','ler','Ora']	
+			*Parametr: key = function - sortowanie względem tego parametru:
+					lst = [100, 50, 65, 82, 23]		
+					lst.sort(key = lambda x: abs(x - 50))				#zwróci te które są bliżej zera
+					print(lst)											#[50, 65, 23, 82, 100]
+			*funkcja sort() nic nie zwraca tylko modyfikuję orginalną listę. Bez modyfikacji orginalnej 
+			 listy użyj metody SORTED() (built-insy) która zwróci ci nowy obiket posortowanej listy. W 
+			 sorted  możesz posortować liste krotek o tej samej ilosci elementow. (więcej dział BUILT-INS)
+	6*LIST COMPREHENSIONS - WYRAZENIA LISTOWE 
+		a* https://www.w3schools.com/python/python_lists_comprehension.asp
+		b* zwraca listę jako wynik przejśćia po liście bazowej. 
+				lst = [i*3 for i in [0,1,2,3,4,]]						#[0,3,6,9,12,15]		
+		c* mozesz dodac warunek na koncu wyrazenia (manipulujesz przed utworzeniem listy) i warunek na 
+		   początku (wtedy manipulujesz na liście utworzonej przed chwilą)
+				lst = [i*3 for i in [0,1,2,3,4,] if i%2==0] 			#[0,6,12]
+				lst = [i+7 if i!=6 else "m" for i in lista if i%2==0]	#[7, 'm', 19]
+		d* W LIST COMPREHENSION nie można wykonywać operacji przypisywania i iterowania na zmiennej przed 
+		   forem ale zamiast tego mozna użyć przy liczbach funkcji sum():  
+				#[zmienna+=10**j for j in range(10)] 					#!!! tego nie wolno robić !!!
+				sum([10**j for j in range(10)])							#dozwolona opcja
+		e* ITEROWANIE PO ZAGNIEŻDŻONYCH LISTACH wewnątrz siebie w LIST COMPREHENSIONS:	
+					[mainList.append([i,j]) for i in range(x+1) for j in range(y+1)]
+		   zamiast robienia petli w petli:
+					for i in range(x+1):
+						for j in range(y+1):
+							mainList.append([i,j])
+
+############################################################################################################
+############################################################################################################
+########################################### WYRAZENIE REGULARNE ############################################
+0* PODSTAWY PODSTAW:
+	*biblioteka 're' i znacznik 'r' przed patternem:  *funkcja group() by wyświetlić stringa z dopasowanego 
+				import re							   MatchObjectu (z funkcji match, search, finditer):
+				wzor = r'banan\nbanan\tbanan'				print(re.match(r"ko.","kottt").group())	 #'kot'					
+1* WZÓR 'PATTERN' dopasowywany do podanego tekstu:
+	*PODSTAWOWE ZNAKI:
+		*'.' -jakikolwiek POJEDYŃCZY znak:
+				print(re.match(r"ko.","kottt"))				#<re.Match object; span=(0, 3), match='kot'>
+				print(re.match(r"ko.","askot"))				#None
+		*'^' -napis musi sie zaczynac od znaku za 'daszkiem' we wzorze:
+				print(re.match(r"^ko","kottt"))				#<re.Match object; span=(0, 2), match='ko'>
+				print(re.match(r"^ko","sko"))				#None
+		*'$' -napis musi sie konczyc na znaku przed dolarem we wzorze:
+				print(re.match(r"ko$","ko"))				#<re.Match object; span=(0, 2), match='ko'>		
+				print(re.match(r"ko$","kot"))				#None				
+		*'*' -(od 0 do ~)ilość znaków/klasy znakow:
+				print(re.match(r"[A-Z][a-z]*","M"))			#<re.Match object; span=(0, 5), match='M'>
+				print(re.match(r"[A-Z][a-z]*","Marek"))		#<re.Match object; span=(0, 5), match='Marek'>
+				print(re.match(r"[A-Z][a-z]*","adMarek"))	#None
+		*'+' -(od 1 do ~)ilość znaków/klasy znaków:
+				print(re.match(r"[A-Z][a-z]+","M"))			#None
+				print(re.match(r"[A-Z][a-z]+","Marek"))		#<re.Match object; span=(0, 5), match='Marek'>
+				print(re.match(r"[A-Z][a-z]+","adMarek"))	#None
+		*'?' -(od 0 do 1)ilość znaków/klasy znaków:
+				print(re.match(r"[A-Z][a-z]?","M"))			#<re.Match object; span=(0, 1), match='M'>
+				print(re.match(r"[A-Z][a-z]?","Marek"))		#<re.Match object; span=(0, 2), match='Ma'>
+				print(re.match(r"[A-Z][a-z]?","adMarek"))	#None
+	*KLASA ZNAKOW []:
+		*chociaż jeden ze znakow lub przedział znaków:
+				print(re.match(r"[KPk]ot","Pota"))			#<re.Match object; span=(0, 3), match='Pot'>
+				print(re.match(r"[KPk]ot","Nota"))			#None -tylko K lub P lub k
+				print(re.match(r"[A-Za-z]ot","Nota"))		#<re.Match object; span=(0, 3), match='Not'>
+		*'^' -negacja znaków wewnątrz klasy znaków: 
+				print(re.match(r"[^a-k]ot","lotka"))		#<re.Match object; span=(0, 3), match='lot'>
+				print(re.match(r"[^a-k]ot","kotka"))		#None
+	*PRZEDZIAŁ ZNAKÓW {}:
+		*konkretna ilość LUB min i max ilość wystąpień znaków/klasy znaków. Przedział obustronnie zamknięty.
+				print(re.match(r"[A-Z]{3}","MAR"))			#<re.Match object; span=(0, 3), match='MAR'>
+				print(re.match(r"[A-Z][a-z]{2,3}","M"))		#None
+				print(re.match(r"[A-Z][a-z]{2,3}","Marek"))	#<re.Match object; span=(0, 7), match='Mare'>
+				print(re.match(r"[A-Z][a-z]{2,3}$","Marek"))#None
+		*nie zamykanie przedziału - ilość wystąpień: do zero albo do nieskończoności:
+				print(re.match(r"[A-Z][a-z]{,3}$","M"))		#<re.Match object; span=(0, 1), match='M'>
+				print(re.match(r"[A-Z][a-z]{2,}$","Mareko"))#<re.Match object; span=(0, 8), match='Mareko'>
+		*alternatywa konkretnych ilości wystąpień (np 3 albo 6) - nie można zrobić znaku 'LUB' wewnątrz 
+		 przedziału tj: {4|6} (TAK NIE MOŻNA) - trzeba powtórzyć cały pattern z nowym przedziałem znaków 
+				matches = re.findall(r'([a-fA-F0-9]{6}|[a-fA-F0-9]{3})',string)
+	*SEKWENCJE ZNAKÓW:
+		*https://www.w3schools.com/python/python_regex.asp
+		 https://www.regular-expressions.info/backref.html
+		*'\1'-backreference -wyszukiwanie POWTÓRZEŃ danej grupy; stawiasz za grupą; (1nka odwołuję się 
+			  1wszej zwróconej grupy z patternu, 2ka do drugiej grupy itdrugiej)(\1 references the first 
+			  capturing group) matches the same text as previously matched by the capturing group.]
+					string ='123123333'
+					m = re.search(r'(\w)\1', string)
+					print(m.group())									#zwroci: 33
+					m = re.search(r'(\w+)\1', string)
+					print(m.group())									#zwroci: 123123	
+					m = re.search(r'(\w)23\1', string)
+					print(m.group())									#zwroci: 1231	
+					m = re.search(r'(\w)\1{3,}', string)
+					print(m.group(1))									#zwroci: 3 (od 3 elementów)
+			  *W PRZYPADKU grup opcjonalnych tj gdzie za grupą podaję się '?' lub * to nie można się do 
+			   nich odwołać przez backreference bo pojawi się błąd - nie można odwołąć się do grupy ktora 
+			   nie została wywołana:
+					'(b)?\1' 	#nie można 								#jednakże można dwołać się do grupy
+					'(b?)\1'	#można									#wywołanej ale która nic nie zwróciła 
+			  *DO WYSZUKIWANIA POWTÓRZENIA jakiekowielk znaku w całym tekscie( nie musi byc pod rząd 
+					r'(.).*\1'
+			  *DO WYSZUKIWANIA POWTÓRZEŃ POD RZĄD Z SEPARATOREM użyj patternu:
+				    r'(\d)(-?\1){3}' 									#4(nie 3) liczby przedzielone '-'
+																		#w obojetnie jakim miejscu
+		*'\A'-zwraca dopasowanie jeśli znaki za nim sa na poczatku danego stinga:
+					print(re.findall("\AThe", "The Rain in Spain"))		#['The']
+		*'\Z'-zwraca dopasowanie jeśli znaki przed nim sa na końcu danego stinga
+					print(re.findall("Spain\A", "The Rain in Spain"))	#['Spain']
+		*'\b'-zwraca dopasowanie gdy dane znaki SĄ na poczatku słowa (\bpocz) lub na końcu słowa (konc\b). 
+			  Nie używaj tego zaraz po znakach częstotliwości tj +,*,?;
+					print(re.findall("in\b", "The Rain in Spain"))		#['Rain','in'] 	
+					print(re.findall("\bRa", "The Rain in Spain"))		#['Rain'] 	
+					print(re.findall("\bin\b", "The Rain in Spain"))	#['in'] 	
+		*'\B'-zwraca dopasowanie gdy dane znaki nie są na poczatku słowa (\Bain) albo na końcu słowa (ain\B)
+					print(re.findall("\Bain", "The Rain in Spain"))		#['Rain','Spain'] 	
+					print(re.findall("ain\B", "The Rain in Spain"))		#[] 	
+		*'\d'-digit-zwraca dopasowanie gdy znajdzie liczbe 
+					print(re.findall("\d","The rain in S34pai5n"))		#['3','4','5']
+		*'\D'-digit-zwraca dopasowanie gdy nie znajdzie liczby
+					print(re.findall("\D","The r4ain"))					#['T','h','e',' ','r','a','i','n']
+		*'\s'-zwroci tekst gdy string zawiera spacje 
+					print(re.findall("\s","The rain-in=S34pai5n"))		#[' ',' ',' ']
+		*'\S'-zwroci tekst gdy string NIE zawiera spacji
+					print(re.findall("\S","The r"))						#['T','h','e','r']
+		*'\w'-zwroci tekst gdy string bedzie zawieral znaki a-zA-Z0-9 oraz znak '_'):
+					print(re.findall("\w","The r"))						#['T','h','e','r']				
+		*'\W'-zwroci tekst gdy string nie bedzie zawieral znakow a-zA-Z0-9
+					print(re.findall("\W","The rain-in=S34pai5n"))		#[' ','-','=']
+	*GRUPY ZNAKÓW ():
+		1*PODSTAWY:
+			*używane żeby pokazać że dopuszczamy powtórzenie się całego słowa:
+				wynik = re.match(r"^Hi (Wor)(ld)+(im)?","Hi Worldld") 
+															#<re.Match object;span=(0,17),match='Hi Worldld'>
+			*funkcja group() wywołana na MatchObject'cie, bez indexu oraz z indexem zero dopasowuje całego
+			 wyrażenie a dla pierwszego i nastęnych indexów dopasowuję pierwszą i następne grupy.
+				wynik = re.match(r"^Hi (Wo)(rld)+(im)?","Hi Worldrldrld") 
+				print(wynik.group())						#'Hi Worldrldrld' :całe dopasowane wyrażenie
+				print(wynik.group(0))       				#pod indeksem 0 to samo co bez indeksu
+				print(wynik.group(1))						#Wo
+				print(wynik.group(2))						#rld
+			*funkcja groups() zwróci jako krotke wszystkie dopasowane grupy:
+				print(wynik.groups())						#('Wo', 'rld', None) 
+															#dla 'im' niedopasowano indeksu => stąd None 
+		2*ROZSZERZENIE:
+			*możliwość zagnieżdżania grupy wewnątrz innej grupy:
+					wynik = re.match(r"^Hello (Wo(rl)d)$","Hello World")
+					print(wynik.groups())					#('World', 'rl')
+			*alternatywa w grupie: 
+					wynik=re.match(r"((tr|sr)ap)","trapsrap")
+					print(wynik.group())					#'trap'
+					print(wynik.groups())					#('trap', 'tr')		 
+			*backslash do znaków specjalnych w patternie, np: kropka '\.' - PRZYKŁAD dla walidacji emaili:
+					re.match("^([A-Za-z0-9]+|[A-Za-z0-9][A-Za-z0-9\.-]+[A-Za-z0-9])@\
+					([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\.-]+[A-Za-z0-9])\.[A-Za-z0-9]+$","a@p.pl")									 
+			*możliwość nazwania grupy i odwołania się do niej przez nazwe albo standardowo przez index. 
+			 Nazwanie grupy wg składni: '(?P:<nazwagrupy>wzórDlaGrupy)'
+					wynik = re.match(r"^(He(?P<first>ll)o) (Wo)(rld)+(im)?","Hello Worldrldrld")
+					print(wynik.group("first"))				#ll
+					print(wynik.group(2)) 					#ll (dla indexu 1 bedzie: Hello)
+					print(wynik.groups())					#('Hello', 'll', 'Wo', 'rld', None)
+			*możliwość stworzenia grupy anonimowej - nie zmieni ona kolejności innych grup ale nie bedzie 
+			 można się do niej dostać przy pomocy metody group() ani metody groups():
+					wynik = re.match(r"^((?:He)(?P<first>ll)o) (Wo)(rld)+(im)?","Hello Worldrldrld")
+					print(wynik.groups())					#zwroci wszystkie grupy oprocz tej anonimowej
+															#('Hello', 'll', 'Wo', 'rld', None)
+		3*NON CAPTURING GROUP '?:' :
+			*https://www.rexegg.com/regex-disambiguation.html#noncap
+			*podczas matchowania grupa NIE jest traktowana jako grupa - używane głównie dla grupy w grupie,
+			 gdy w patternie masz alternatywę ilości wystąpień LUB konkretną ilość (określona liczba liter):
+					matches = re.findall(r'(LA(?:[a-fA-F]{3}){1,2})',String)
+					matches.group() 			#napisy zaczynające się na 'LA' z 3 lub 6 literami a-f
+		4*BRANCHRESET '?|' :
+			*https://www.rexegg.com/regex-disambiguation.html#branchreset
+			*alternatywa dla NON CAPTURING GROUP. W jednej grupie masz alternatywe podgrup (każda podgrupa 
+			 w alternatywie zaczyna numeracje od 1):
+					(?|(ab)|(cde)|(fghi)) 		#grupy ab,cde,fghi są numerowane od indexu 1
+					(?|a(b)|(c)(de)|(fg)(h)(i)) #grupa (b) ma index 1; (c) 1; (de) 2; (fg) 1; (h) 2; (i) 3;
+			*takie numerowanie indexu przydaję się przede wszystkim przy backreference 
+					(?|(ab)|(cde)|(fghi))\1		#backreference odwołuję się do grupy 1wszej (czyli każdej) 
+												#dzięki czemu możesz zmatchować: 'abab'or'cdecde'or'fghifghi'
+		5*LOOKAHEAD/LOOKBEHIND '?<=' '?=' :
+			*https://www.rexegg.com/regex-disambiguation.html#lookarounds
+			 https://www.geeksforgeeks.org/python-regex-lookahead/
+			 https://www.regextutorial.org/positive-and-negative-lookahead-assertions.php
+			 https://www.regular-expressions.info/lookaround.html
+			*'The lookahead only asserts whether a match is possible or not' - matchuje ale nie zwraca 
+			*OPISOWE FUNKCJONOWANIE (jak kojarzysz to POMIJAJ ten punkt):
+				*chcąc skorzystać z LOOKAHEAD/LOOKBEHIND wyobraź sobie że dzięki nim matchuje dokładnie 
+				 od każdej literki (to tak nie działa ale niech to będzie twoje pierwsze skojarzenie)(dzieki 
+				 czemu nawet jak się pattern zazebia czyli drugi rozpoczyna się wenątrz pierwszego zostaną 
+				 zwrócone oba - zamiast tylko tego pierwszego)
+			*WYKORYSTANIE:
+				*LOOKAHEAD, LOOKBEHIND używaj jako grupy okalające dla poszukiwanego patternu. Grupy te nie
+				 będą zwracane, ale będą brane przy matchowaniu. 
+							st="baa bbb cc dd ee"					
+							print(re.findall(r'(?<=\s)([a-e]{2})(?=\s)',st))			#['cc', 'dd']
+											#Szukaj podwójnych znakow [a-e] mających spacje przed i za 
+											#(normalnie gdy już zmathowałoby 'cc' to nie zmatchowałoby 
+											#'dd' bo spacje przed'dd' policzyłoby jako spacje za dla'cc'
+				*LOOKAHEADA,LOOKBEHINDA używaj gdy masz w jednym regexie wiele warunków-wtedy jeden warunek
+				 ustawiasz jako główny (on będzie zwracany a lookaheady i lookbehindy będą tylko matchowane 
+				 sprawdzając przy okazji wszystkie warunki)
+							pattern=r'^(?=(?:[a-z\d]*[A-Z]){2})(?=(?:\D*\d){3})([a-zA-Z\d]){10}$'
+											#sprawdza czy napis ma 2 Duże litery, 3 cyfry i 10 znaków
+			*RODZAJE:	
+				*Positive lookahead/lookbehind ?<= / ?= matchuje (ale nie zwraca!) wszystkie podane znaki
+				 Negative lookahead/lookbehind ?<! / ?! matchuje (ale nie zwraca!) wszystkie miejsca gdzie 
+				 nie ma podanych znaków:
+							pattern = r'(?<![1-3])(pattern)',x)
+											#zwróci miejsca gdzie przed patternem NIE występują 1,2 lub 3   
+							pattern = r'(?<!^)(pattern)' 
+											#zwróci patterny nie zaczynają się na początku zdania
+			*DZIAŁANIE w PRAKTYCE:
+				*W LOOKAHEAD możesz zrobić ALTERNATYWĘ ALE w LOOKBEHIND już NIE (dla LOOKBEHIND błąd
+				 fixed-width-pattern-error). Alternatywę w LOOKBEHIND robisz przez NON CAPTURING GROUP:
+							(?:(?<=a)|(?<=bc))
+				*funkcja findAll() zwróci listę stringów poza lookabehind/lookahead pod warunkiem że pattern
+				 będzie zawarty w grupie (musi być w nawiasach okrągłych: r'(?<=[\s])(pattern)'
+							string = 'abaabeebuubiide'
+							pattern=r'(?<=[qwrtypsdfghjklzxcvbnm])([aeiou]{2,})(?=[qwrtypsdfghjklzxcvbnm])'
+							print(re.findall(pattern,string,re.I))					#['aa' 'ee' 'uu' 'ii']
+	*FLAGI REGEX:
+		*podawane jako 3ci argument w funkcjach
+							re.findall(pattern,txt,re.I)
+		*wiele flag jednocześnie w 3cim argumencie - wypisane po znaku pipu '|':
+							re.findall(pattern,txt,re.I|re.DOTALL)		
+		*FLAGI: https://www.guru99.com/python-regular-expressions-complete-tutorial.html
+			*re.M/re.Multiline - w sytuacjach gdy string jest zapisany przy pomocy ''' ''' w kliku liniach 
+			*re.I - ignoruje wielkość znaków
+			*re.S lub re.DOTALL - dzięki tej fladze znak kropki '.' (oznaczający wszystkie znaki w stringu) 
+			 bierze pod wagę matchowanie łącznie z enterami zamiast mathowania tylko do końca lini.  
+			 JEDNAKŻE używając tego trzeba wykorzystać LAZY GREEDY MATCHING: do .* dodać znak ? czyli: '.*?'
+							pattern=r'//.*?(?=\n)|/\*.*?\*/'
+							re.findall(pattern,txt,re.I|re.DOTALL)
+			 mimo wszystko i tak najlepszą opcją będzie użycie [\s\S]*? zamiast '.*?' i zamiast 're.DOTALL'
+							pattern=r'//.*|/\*[\s\S]*?\*/'
+							re.findall(pattern,txt,re.I)
+			*re.U - Make { \w,\W,\b,\B} follows Unicode rules
+			*re.L - Make {\w,\W,\b,\B} follow locale
+			*re.X - Allow comment in Regex
+2*WAŻNE ZAWIŁOŚCI PRZY REGEXACH PO PRZECZYTANU O PATTERNACH:
+	*GREEDY MATCHING
+		*WZÓR PASUJĄCY W TEKSCIE DLA KILKU PRZYPADKÓW ZAWSZE WYBIERZE DŁUŻSZE DOPASOWANIE:
+					str="From: Using the spaces: 1st space"
+					print(re.match(r'^F.+:',str))			#"From: Using the spaces:"
+		*gdy dodasz  znak '?' na koncu znaków '.*' lub '.+' ('.*?','.+?') to zwróci dopasoawanie NON GREEDY:
+					str="From: Using the spaces: 1st space"
+					print(re.match(r'^F.+?:',str))			#"From:"
+		*działa to szczególnie przy fladze re.DOTALL gdy REGEX przeszukuję wiele linii zamiast zatrzymać się 
+		 na pojedyńczej linii (przeszukiwanie po jednej linii jest domyślnym przeszukiwaniem). Wtedy Greedy
+		 Matching w całym tekście wybierze najszersze wystąpienie danego matcha (przy patternie .*lub .+)
+	*Alternative Matching | 
+		*Może być w klasie znaków [], w grupie znaków () ale NIE w przedziale znaków {}
+		*W jednej klasie znaków #'[a|b] - a lub b' LUB w grupie znaków #'(and|AND) - grupa and albo AND'
+		 możesz użyć wiele alternative matching tj: [a|b|c] ; (and|AND|aNd)
+		*Alternative matching mozesz uzyc takze w NONCAPTURING GROUP: (?:http://|https://) -
+		 Jeżeli w zadaniu masz wiele grup i podgrup oraz musisz użyć ALTERNATYWY to użyj NON CAPTURING GROUP 
+		 To dobra praktyka używanie NON CAPTURING GROUP zamiast używania wielu grup. 
+					'(?:(?:(?:\d|[1-8]\d)(?:\.\d+)?)|(?:(?:90)(?:\.0+)?))'
+										#zmatchuję liczby od 0 do 89 mające i nie mające liczby po przecinku 
+										#a w przypadku liczby 90 weźmie pod uwagę po przecinku tylko 0
+		*W LOOKAHEAD możesz zrobić alternatywę a w LOOKBEHIND NIE. Wtedy skorzystaj z NON CAPTURING GROUP:
+		 Więcej na wpisie Wiktor Stribiżew: https://stackoverflow.com/questions/20089922/python-regex-engine-look-behind-requires-fixed-width-pattern-error
+					(?:(?<=a)|(?<=bc))
+	*EEKTYWNE KORZYSTANIE Z LOOKBEHIND LOOKAHEAD i NON CAPUTRING GROUP 
+		*To wzajemne zamienne stosowanie =>funkcja findall() zwraca tylko to co jest w nawiasach okrągłych,
+		 funkcja findall() matchuje ale nie zwraca wszystkiego poza nawiasami okrągłymi czyli:
+		 NONCAPTURING GROUPS, LOOKBEHIND/LOOKAHEAD, zwykłego TEKSTu/PATTERNu poza nawiasami okrągłymi
+					re.findall(r'(?:http://)www\.(\w\.)+(?=/)',string)			#zwróci tylko grupę (\w\.)+
+	*WYSZUKIWANIE WIELU GRUP W JEDNYM PATTERNIE:
+		*Najlepiej powtórz tę samą funkcję dla każdego patternu z osobna zamiast łączyć je w jeden duży
+		*jeżeli jeden duży: W patternie użyj NON GREEDY MATCHING oraz nawiasów okrągłych które zwrócą ci to 
+		 czego chcesz. Reszta musi być poza nawiasami okrągłymi (LOOKBEHIND/LOOKAHEAD nie zadziałają tutaj):
+					strg = "<h3><a href="/questions/80405/5v-regulator-power-dissipation
+							class="question-hyperlink">5V Regulator Power Dissipation</a></h3>
+							<h3><a href="/questions/80407/about-power-supply-of-opertional-amplifier" 
+							class="question-hyperlink">about power supply of opertional amplifier</a></h3>
+					pattern=r'href=\"/questions/(\d+)/.*?class=\"question\-hyperlink\">(.*?)</a></h3>'
+										#chcesz znaleźć numer wpisu (za questions) i jego treść 
+3*FUNKCJE W WYRAŻENIACH REGULARNYCH:
+	*https://www.w3schools.com/python/python_regex.asp
+	*czy funkcja zwraca ci STRINGA czy obiekt MATCHOBJECT (na ktorym mozna wywoływać inne funkcje)
+	*FUNKCJE PODSTAWOWE:
+		*match() - wyszukuję patternu na początku Stringa. Zwraca MatchObject  		
+					match=re.match(r"banan","banangkajko")	
+					print(match) if match!=None else None  	#<re.Match object; span=(0, 5), match='banan'>
+			**dodając we wzorze '.*' wyszukiwanie nie tylko na poczatku ale w każdym miejscu w danym tekscie 
+					pattern = r".*banan.*"
+		*search() - szuka wzoru w jakimkolwiek miejscu (wyszukuję pierwsze wystąpienie). Zwraca MatchObject
+					match = re.search(r'szka',"banuszkajogruszka")  
+					print(match) if match!=None else None	#<re.Match object; span=(4, 8), match='szka'>
+		*finditer() - zwraca obiekt iteratora przechodzący przez MatchObjecty
+					[print(x) for x in re.finditer(r"\w",'ma')]
+						#<re.Match object; span=(0, 1), match='m'> <re.Match object; span=(1, 2), match='a'> 
+			**można zmapować iterator i uzyskać listę przez konwersję:
+					print(list(map(lambda x: x, re.finditer(r"\w",'ma'))))
+						#[<re.Match object; span=(0,1), match='m'>,<re.Match object; span=(1,2), match='a'>]
+		*findall() - zwraca liste Stringów wszystkich wystepowan wzoru
+					match = re.findall(r"banan","jagodabanangruszkabananjablko")
+					print(match) if match!=None else None				#['banan','banan']
+			**gdy w patternie użyjesz grupy to zwroci tylko dopasowania do grupy zamiast do całego wyrazenia 
+					re.findall("^From:\s(\S+@\S+)",line)				#zwroci same maile bez slowka From:
+		*split() - zwraca liste Stringów przedzielonych separatorem podanym w patternie. Można podać wiele 
+			  separatorów (zwykły split() w stringu tego nie zrobi), potem możesz to zjoinowac:
+					x=re.split("\s|\.|:","The rain:in.Spain")			#['The', 'rain', 'in', 'Spain']
+					Y=",".join(re.split(regex_pattern, input()))		#'The,rain,in,Spain'												
+			**w 3 argumencie można wskazać ile separatorow ma byc wzietych pod uwage:
+					x =re.split("\s", "The rain in Spain", 1)			#['The', 'rain in Spain']
+		*sub() - zastepuje miejsca wystepowania wzoru w tekście podanym argumentem(2gi arg) Zwraca Stringa: 
+					x =re.sub(r"banan",r"malina",r"jabanangbananja")	#'jamalinagmalinaja'
+			**w 4 argumencie można wskazać ile zaznaczeń ma byc wzietych pod uwage:	
+					x =re.sub(r"banan",r"malina",r"jabanangbananja",1)	#'jamalinagbananja'	  
+		*compile() - do walidacji regexPatternu. Zwraca obiekt re.Pattern NA KTÓRYM mozesz wywołać wszystkie 
+			  powyższe metody. Dzięki temu możesz raz zwalidować pattern i użyć go dla wielu tekstów.
+					pattern = re.compile(r'([aeiou]{2,3}')
+					allMatches1 = pattern.findall(String1)
+					allMatches2 = pattern.findall(String2)
+			**w compile() możesz zawrzeć wiele patternów jednocześnie ale wtedy są one traktowane jak jeden
+					x=re.compile(r'1'r'2'r'3')							#wpisujesz bez przecinków
+					print(x.findall('1234'))							#['123']
+			  dlatego przy wielu warunkach musisz odwołać się do lookaheada:
+					x = re.compile(r'(?=^[4-6])'r'(?!.*(\d)(-?\1){3})'r'\d{16}|\d{4}-\d{4}-\d{4}-\d{4}')
+	*NA WYNIKU funkcji match(),search()(MatchObjecty) i finditer()(iterator MatchObjectów) możliwe operacje:
+		*group(), groups(), groupdict():
+			*dla search() i match() funkcja group() zwraca zmatchowane słowa z MatchObjectu. (nie muszą one 
+			 znajdować się w grupie w patternie):
+					x = re.search(r"\bS\w+", "Rain in Spain").group()	#'Spain'
+			*dla GRUP ZNAKÓW tj dla wyników wyszukiwania patternów które zawierają grupy znaków:
+					m = re.match(r'(\w+)@(\w+)\.(\w+)','username@hackerrank.com')
+				*group()/group(0) -zwraca cały wynik w postaci stringa
+					m.group() #/m.group(0)								#'username@hackerrank.com'
+				*group(1) -zwroci numer danej grupy (liczone od 1 bo 0 jest dla wyswietlenia calego dopasowania)
+					m.group(1)											#'username'			
+				*groups() -zwroci krotke stringow wszystkich dopasowanych grupy
+					m.groups()											#('username', 'hackerrank', 'com')
+				*groupdict() -zwroci Dictionary wszystkich dopasowanych grup gdzie kluczem będą przypisane 
+				 nazwy w grupach poprzez aliasy: ?P<nazwa> (bez aliasów to nie zadziała)
+					m = re.match(r'(?P<user>\w+)@(?P<website>\w+)\.(?P<extension>\w+)','myname@hackerrank.com')
+					m.groupdict()				#{'website': 'hackerrank', 'user': 'myname', 'extension': 'com'}
+		*span() - zwroci krotke zawierającą indexy występowania (pierwszy, ostatni+1):
+					x = re.search(r"\bS\w+", "The rain in Spain")		#(12, 17)
+		*start(), end()- zwraca pierwszy/ostatni+1 indeks znaku patternu w stringu:
+					m = re.search(r'\d+','abcd')
+					print(m.end(), m.start())							#4, 0
+		*string - zwraca całego Stringa przekazanego do funkcji regexowej (search, match, findall, finditer)
+					x = re.search(r"\bS\w+","The rain in Spain")	
+					print(x.string)										#'The rain in Spain'
+	*FUNKCJE w Stringach odpowiadające WYRAŻENIOM REGULARNYM:
+			STRING:					WYRAŻENIA REGULARNE:
+		.splt()						split()
+		.startswith()					^
+		.find()						search()
+									findall()
+4*CIEKAWE ZADANIA:  
+	*jeżeli chcialbyś przeszukiwać jakieś teksty w celu poszukiwania i dostałbyś zestaw Stringowych
+	 intów to pamiętaj żeby odpowiednio rozpocząć (poprzez funkcje match()) i skończyć(znakiem $) 
+					re.match(r"[+-]?\d*[.]\d+$",string)					#zadanie poszukiwania floatow
+	*żwróci wszystkie maile w tekscie ktore występują po słowie 'From':
+					zmienna=re.findall("^From:\s(\S+@\S+)",line)		#zwroci same maile bez slowka From:
+	*szukanie conajmniej 2 samoglosek otoczonych spolgloskami:
+					pattern=r'(?=[qwrtypsdfghjklzxcvbnm]([aeiou]{2,})[qwrtypsdfghjklzxcvbnm])'
+					outcome= re.findall(pattern,'abaabaabaabaae', re.I)					#aa aa aa
+	*matchowanie - liczby rzymskie :
+					thousends = 'M{0,3}' 
+					houndreds = 'C[DM]|D?C{0,3}'
+					tens =      'X[LC]|L?X{0,3}'
+					ones =      'I[VX]|V?I{0,3}'
+					regex_pattern = r'({})({})({})({})$'.format(thousends,houndreds,tens,ones)
+	*matchowanie maili:
+					match= re.match(r'([a-zA-Z][\w\-\.]*@[a-zA-Z]*\.[a-zA-Z]{1,3})',email)
+					print(match.group()) if match else None
+	*matchowanie id z wieloma warunkami w jednym patternie -> najlepiej rozbić sobie to na kilka
+	 warunków i na każdym z nich zrobić search'a() 
+					lst =[input() for i in range(lines)]
+					for x in lst:
+						p1=re.search(r'^[4-6]',x)
+						p2=re.search(r'^\d{16}|^\d{4}-\d{4}-\d{4}-\d{4}$',x)
+						p3=re.search(r'(\d)(-?\1){3}',x)            					#r'(\d)\1{4}'
+						print('Valid') if all([p1,p2]) and not p3 else print('Invalid')
+	*wyszukiwanie wnętrza tagów:
+					pattern=r'(?<=</)[a-zA-Z]+(?=>)|(?<=<)[a-zA-Z]+(?=\s.+/>)'
+	*odroznianie adresow IPv4 od IPv6:
+					[print("IPv6") if re.match(r'''([a-fA-F0-9]{1,4}:){7}([a-fA-F0-9]{1,4})$''',address) 
+					 else (print("IPv4") if re.match(r'''((2[0-5]{2}\.|1[0-9]{2}\.|[1-9][0-9]\.|[1-9]\.){3})
+					 (2[0-5]{2}|1[0-9]{2}|[1-9][0-9]|[1-9])$''',address) else print("Neither")) 
+					 for address in addresses]
+	*wyszukiwanie domen w pliku html:
+					re.findall(r'''(?:http://|https://)(?:www\.|ww2\.)?
+					 ([\w\-]+(?:\.[\w\-]+)+)(?:(?=/)|(?=\?)|(?=\s)|(?=\"))''',string)
+	*matchowanie szerokośći i długości geograficznej:
+					re.match(r'''\((?:\+|\-)?(?:(?:(?:[1-8]\d|\d)(?:\.\d+)?)|(?:(?:90)(?:\.0+)?)),\s
+					(?:\+|\-)?(?:(?:(?:1[0-7]\d|[1-9]\d|\d)(?:\.\d+)?)|(?:(?:180)(?:\.0+)?))\)''',line)
+	
+########################################## STRING | STRING FORMATTER #######################################
+1* STRINGI - PODSTAWY:	
+	*CONCATENATE:						  *STRING AS LIST:				*MULTILINE STRINGS """x"""  '''x'''
+		txt = "maciek dostal "+4 ##ŹLE	      txt='banana'					a = """Lorem ipsum dolor sit 
+		txt = "maciek dostal "+str(4)		  for x in "banana":			amet, consectetur adipiscing""" 
+												  print(x + txt[3])			print(a)	
+	*WYCINANIE - SLICING STRINGS [start;end(open bracket)]				*REVERSE STRING (nie ma funkcji do 
+		b = "Hello, World!"												 tego więc stosuj SLICING STRINGS)
+		print(b[2:5],b[:5],b[9:]) 		   #'llo','Hello','rld!'			txt = "Hello World"[::-1]
+		print(b[-5:-3],b[9:49])			   #'rl','rld!'(zamiast error)		
+	*ESCAPE CHARACTER: 
+		\'   \"   \\   \n #New Line     \t #Tab   		    \b #Backspace   	 \r #Carriage Return   
+		\ #przejście do nowej linii     \xhh #Hex value     \ooo #Octal value    \f #Form Feed    
+					   
+2* OPERACJE NA TEKSCIE - METODY NA STRINGACH:	
+	*join() - a, b, c oddzielone spacja i przecinkiem]		*count('char')
+		print(", ".join(["a","b","c"]))		  #'a, b, c' 		print('Hello World'.count('l'))	   #3
+	*find() - 'str'.find(value, start, end) 				*replace() 
+		x='ananas'.find('na')	   #1							print("Hi mom".replace("Hi","Ok")) #'Ok mom'  
+		x='ananas'.find('na',2)	   #3  -od 2 index włącznie
+		x='ananas'.find('na',2,4)  #-1 -do 4 index bez 4ego
+	*startswith() / endswith()								*upper() / lower():
+		print("To jest".startswith("To")) #True					print("ZDanie".upper())			   #'ZDANIE'
+		print("To jest".endswith("cos"))  #False				print("ZDanie".lower())			   #'zdanie'	
+		
+	*split() -domyślny separator to spacje i entery: 		*sort() -sortować można stringi zamienione na
+			print("To ja!".split())    		 #['To,', 'ja']	 listę, sortowanie jest 'case sensitive':
+			print("To, ja".split(",")) 		 #['To', 'ja']		 	zm=list('BcaD')
+	*strip() -usuwa spacje i taby na początku i końcu:				zm.sort()
+	 lstrip() | rstrip() -tylko początek | tylko koniec				print(zm)			#['B','D','a','c']
+			print(" Hello, World  ".strip()) #'Hello world'	    *sort(key=str.lower()):
+	*translate() -pozbywa się podanych znaków z tekstu:			  	zm.sort(key=str.lower)
+			text = 'T.##o \ja. @t@o@, j$#a !'						print(zm)			#['a','B','c','D']
+			import string									    *sortowanie przez operatory logiczne:
+			znaki = string.punctuation 								if word <"b": print("przed b")
+					#['!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~']			elif word >"b": print("za b")
+			st=text.translate(text.maketrans("","",znaki))			else: print("równe b")
+			print(st)					 	 #'To ja to ja'	*metody powiększające pierwszą literę w słowie:				
+	  *do policzenia każdego słowa w tekście nawet gdy jest 	*title() -powiększa każde słowo 
+	   związane ze znakiem interpunkcyjnym: "soft", "soft!"			x='to mo.to tw'.title()	   #To Mo.To Tw
+	   PRZYKLAD:												*capitalize() -pierwszą literę w tekscie
+			words, dictionary = list(), dict()						x='to mo.t to'.capitalize()	#To mo.t to
+			file = open(fileName,"r")					    *metody sprawdzające z czego składa się napis:		
+			for line in file:									*isalnum() || isalpha() ||*isdigit()	
+				line.lower()  #duże słowa liczone jako małe		 #czy tylko liczby i litery, litery, liczby	
+				import string										'345fds'.isalnum() 		#True
+				zn = string.punctuation								'fds'.isalpha()			#True	
+				st=line.translate(line.maketrans("","",zn))			'345'.isdigit() 		#True			
+				words=zn.split()								*islower() | isupper() -czy małe/duże litery
+				for w in words:										'abc'.islower() 		#True	
+					dictionary[word]=dictionary.get(w,0)+1			'ABC'.isupper() 		#True
+
+	*metody uzupełniające:
+		*fill(int) -do danego tekstu dodaje zera			
+		 wypełniająć brakującą ilość miejsc z przodu
+			numbers=['1','34','103']
+			numbers= [x.zfill(3) for x in numbers]
+								#['001','034','103']
+		*center(width,'znak') || rjust/ljust(width,'znak')
+		 #tworzenie napisów w konsoli o ciekawej formie
+		 #rzadko używane więc sprawdź więcej w rozszerzeniu
+		 				
+3*STRING FORMATTER Formatowanie ciagow String
+	*format():
+			arg = ["Seba", 24]
+			tekst = "{} i mam {} lata".format(arg[0],arg[1])					 #'Seba i mam 24 lat'
+			tekst = "{0} ,{1} lat, nara {0}".format(arg[0],arg[1])				 #'Seba, 24 lat, nara Seba'
+			tekst = "{imie}, {wiek} lata".format(imie = "Tom",wiek = arg[1])	 #'Tom, 24 lata'
+		*z wypakowaną kolekcją dictionary i dictionary jako jeden z argumentów:
+			data = {'name': 'Hodor', 'email': 'holdthe@door.com'}
+			txt = 'Name: {name} ,Email: {email}'.format(**data)
+			"{0} {1} {2['hello']}".format("Hello", "World", {'hello': 'sup'})
+	*'f' wraz ze zmienną w nawiasie wąsowym:
+			name = "Marek"
+			print(f"Nazwa uzytkownika: {name}")
+			my_dict = {'name':'Jennifer', 'surname':'Magican'}
+			print(f'My name is {my_dict['name']} and my surname is {my_dict['surname']}')	
+	*%s %d % (arg1, arg2) -%s dla stringów; %d dla liczb wewnątrz Stringów a za Stringiem znak % +argumenty
+			'%s jakis tekst %d' % ('one', '23') 								 #one jakistekst 23
+			"%(first)s %(second)s" % {"first":"Hello", "second":"World"}		 #dla słownika	
+    *FORMATOWANIE STRING FORMATTERa NA:
+		*daty odpowiednio sformatowane wg kodów: https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes
+				import datetime
+				print({:%B %d,%Y}.format(datetime.datetime(2016,9,24,12,01,01))) #September 24,2016
+		*sformatowane liczby:
+			*liczby o danej liczbie cyfr po przecinku {:.3f}
+				print('pi is {:.3f}'.format(3.14159265)							 #3.142
+			*liczby z wcięciami co 3 cyfrę:
+				print('my number is {:,}'.format(10000000000))					 #10,000,000,000
+			*wpisując 0 przed liczbami do momentu osiągniecia iluś-cyfrowej liczby {:02} ,{:04}
+				for i in range(7,13):
+					print('{:02}'.format(i))									 #'05,06,07,08,09,10,11,12'
+		*otrzymując różnie sformatowane napisy np z wcięciami: '<'-przed ; '^'-przed i po; '>'-za ;
+				"|{:<10}|{:^10}|{:>10}|".format('b','c','d')					 #'|b    |   c   |    d|'		
+		*możesz uzyskać rózne typy danych np"
+			*poprzez{liczba:b} - typ binarny
+				"Binary of {0} is {0:b}".format(12)								 #'Binary of 12 is 1100'
+			*poprzez{liczba:e} - z liczbą e -'1.566345e+03'
+				"Exponent: {0:e}".format(1566.345)								 #'Exponent: 1.566345e+03'
+			
+######################################### OPERACJE NA PLIKACH (.txt) #######################################								
 1* OPERACJE NA PLIKACH:
   ------------------------------------------------ ODCZYT --------------------------------------------------
   *METODY:   *OPEN(file)	   *READLINES() -cały plik	    *NEXT() -linie osobno	*READLINE()-linie osobno
 	 f=open('plik.txt')			f=open(path,"r")			 f=open(path,"r")		  f=open(path,"r")			
 	 if f.readable():			if f.readable():			 if f.readable():		  if f.readable():	
-		 for line in f:				lines=f.readlines()			 line1=next(file)		  l1=f.readline()
-			 print(line)				for line in lines:		 line2=next(file)		  l2=f.readline()
+		 for line in f:				lines=f.readlines()			 line1=next(f)		      l1=f.readline()
+			 print(line)				for line in lines:		 line2=next(f)		  	  l2=f.readline()
 	 f.close()								print(line)		 f.close()				  f.close()
 								f.close()
 	 with open(path, "r") as f:	with open(path, "r") as f:	 with open(p,"r") as f:   with open(p,"r") as f:
@@ -139,14 +1647,14 @@ FILE OPERATIONS:   					https://www.w3schools.com/python/python_file_handling.as
 			  ile chcemy wpisując ilosc jako argument: 		
 		f=open(test.txt)		with open('p.txt,'r') as f:	
 		lines=f.read()				lines=f.read				
-		tenSigns=f.reead(10)		tenSigns=f.reead(10)		
+		#tenSigns=f.read(10)		#tenSigns=f.reead(10)		
 		f.close()
 		
   *OPCJE PODCZAS ODCZYTU:
 	   *TELL() - informacja o aktualnej pozycji/linijce		*SEEK() - zmiana pozycji/linijki do odczytu
 	    f=open("plik.txt", 'r', encoding="utf-8")	   		 f=open("plik.txt", 'r', encoding="utf-8")
 		if f.readable():									 if f.readable():
-			line1=next(file)									 line1=next(file)
+			line1=next(f)									 	 line1=next(f)
 			f.tell();		#zwroci numer pozycji np 1		 	 f.seek(10); 		#zmiana numeru czytanej 
 																					#pozycji na 10
  -------------------------------------------------- ZAPIS --------------------------------------------------
@@ -156,7 +1664,7 @@ FILE OPERATIONS:   					https://www.w3schools.com/python/python_file_handling.as
 	f.write("costam"+"\n")									 print("costam", file=f)
 	ile1 = f.write("costam2\n")								 print("costam2", file=f)
 	ile2 = f.write(input('Wprowadź tekst')+"\n")
-	print(ile1,ile2)	  #ilosc wprowadzonych znaków
+	print(ile1,ile2)	  #ilosci wprowadzonych znaków
 	f.close()
 	
 	with open('p.txt','w') as f:							 with open('p.txt','w') as f:
@@ -189,26 +1697,22 @@ FILE OPERATIONS:   					https://www.w3schools.com/python/python_file_handling.as
 							...						
 	D* KOPIOWANIE PLIKÓW (odczyt + zapis):		  	E* ODCZYT i ZAPIS PLIKÓW JPG (do jpg stosuj READ())
 	  with open('my_file.txt','r') as rf:					 with open('my_file.jpg','rb') as rf:
-	      with open('my_file_copy.txt','w') as wf:				 with open('my_file.jpg','rb') as rf:
-		      for line in rf:										 chunk_size=4096
-				  wf.write(line)									 rf_chunk=rf.read(chunk_size)
-																	 while len(rf_chunk)>0:
-																		 wf.write(rf_chunk)
-																		 rf_chunk=rf.read(chunk_size)
+	      with open('my_file_copy.txt','w') as wf:				 with open('new_file.jpg','wb') as wf:
+		      for line in rf:										 data_size=4096
+				  wf.write(line)									 my_data=rf.read(data_size)
+																	 while len(my_data)>0:
+																		 wf.write(my_data)
+																		 my_data=rf.read(data_size)
 																	
 3* USUWANIE PLIKU: 					 /		 			USUWANIE FOLDERU:
 	import os												 import os
-	if os.path.exists("test.txt"):							 if os.path.exists("test.txt"):
+	if os.path.exists("test.txt"):							 if os.path.exists("myfloder"):
 		os.path.remove("test.txt")								os.rmdir("myfolder")
 
 
 ############################################################################################################
 ############################################################################################################
-############################### WYJATKI: OBSŁUGA, RAISE, ASERCJE, WŁASNE WYJĄTKI ###########################
-TWORZENIE WŁASNYCH WYJĄTKÓW:		https://www.programiz.com/python-programming/user-defined-exception
-TYPY WYJĄTKÓW:						https://www.w3schools.com/python/python_ref_exceptions.asp
-									https://www.programiz.com/python-programming/exceptions
-									
+############################### WYJATKI: OBSŁUGA, RAISE, ASERCJE, WŁASNE WYJĄTKI ###########################									
 3* TWORZENIE WŁASNYCH WYJĄTKÓW:		https://www.programiz.com/python-programming/user-defined-exception
 	*tworzysz klasę wyjątku która dziedziczy po klasie Exception i przesłaniasz metodę __init__(): 
 		class MyError(Exception):
@@ -225,7 +1729,7 @@ TYPY WYJĄTKÓW:						https://www.w3schools.com/python/python_ref_exceptions.asp
 		#LUB:  	__main__.MyError błąd
 		
 1* RAISE i ASERCJE - podnoszenie wyjatku poprzez raise albo wywolywanie asercji realizujesz głównie podczas 
-   działania programu (przy definiowaniu funkcji). Ma to służyc głównie sytuacją gdzie chcesz zaakcentować 
+   działania programu (przy definiowaniu funkcji). Ma to służyc głównie sytuacjom gdzie chcesz zaakcentować 
    błąd logiczny w działaniu programu a nie taki który jest zdefiniowany w systemie (TypeError, KeyError itp)
    ***RAISE - PODNOSZENIE WYJATKU (W Javie 'throw'):
 		*używa się by wyrzucić WŁASNY TYP WYJĄTKU (czyli taki którego system sam by nie podniósł) ALE
@@ -274,10 +1778,10 @@ TYPY WYJĄTKÓW:						https://www.w3schools.com/python/python_ref_exceptions.asp
 		*SKŁADNIOWE (syntax)
 		*LOGICZNE (logical) np (FileNotFoundError, ZeroDivisionError,ImportError)
 	*OBSŁUGA WYJĄTKÓW:
-	  *żeby program działał mimo wyjątku bo inaczej wystąpi przerwanie programu 
+	  *żeby program działał mimo wystąienia wyjątku bo inaczej wystąpi przerwanie programu 
 	  *przy obsluzeniu wyjątku (któremu możesz nadać alias) przerwanie bloku try i przejście do bloku except)
 		 *RÓŻNE WARIANTY BLOKU EXCEPT:				    *BLOK FINALLY i ELSE:
-			x,y,z,n,t = 4,3,0,'mama',[]				   x,y,z,n,t = 4,3,0,'mama',[]
+			x,y,z,n,t = 4,3,0,'mama',[]				  	   x,y,z,n,t = 4,3,0,'mama',[]
 			try:										   try:
 				print(x/z) 									   print(x/y)
 				print("linijki ktore sie nie wykonają")		   print("brak błędu więc się wykona")
@@ -340,7 +1844,7 @@ TYPY WYJĄTKÓW:						https://www.w3schools.com/python/python_ref_exceptions.asp
 					def func(x):
 						return x*x
 					zmienna =func
-					print(zmienna(5)		#wynik: 25
+					print(zmienna(5))		#wynik: 25
 	*ARGUMENTY w Pythonie (bez definiowania ich typow):
 		*przekazując argumenty do funkcji działasz na orginałach (referencjach) a nie na kopiach 
 		*podawanie funkcje jako argument (podajesz referencje a nie wywołanie wiec bez nawiasów okrągłych)
@@ -398,7 +1902,7 @@ TYPY WYJĄTKÓW:						https://www.w3schools.com/python/python_ref_exceptions.asp
 					 
 ######################################## IF | PETLA WHILE | PĘTLA FOR ######################################
 3* Petla obiektowa FOR i funkcja RANGE
-	*FUNKCJA RANGE():
+	*FUNKCJA RANGE():										  print(range(5))		   #zwróci range(0,5)
 			print(list(range(5))) #zwróci: [0,1,2,3,4]   ||   print(list(range(3, 8))) #zwróci: [3,4,5,6,7]
 		*Iterowanie po range():							*Iterowanie po range() z 3cim parametrem = 2:		
 			for i in range(5):							 for i in range(1,11,2)
@@ -415,7 +1919,7 @@ TYPY WYJĄTKÓW:						https://www.w3schools.com/python/python_ref_exceptions.asp
 		 for x in range(4):		 for x in range(4):		  for i in range(4):			  for i in [1,2]:
 			 if x == 2:				 if x == 2:			      print(i)					      pass
 				break					 continue		  else:
-		     print(x)   #0,1		 print(x)	#0,1,3		  prin("Koniec") #0,1,2,3,END
+		     print(x)   #0,1		 print(x)	#0,1,3		  prin("END") 	#0,1,2,3,END
 			
 2* PETLA WHILE
 		#BREAK:			#CONTINUE:			#ELSE: (musi być bez BREAK)				  #PETLA NIESKOŃCZONA:
@@ -442,11 +1946,8 @@ TYPY WYJĄTKÓW:						https://www.w3schools.com/python/python_ref_exceptions.asp
 						 even_lst=[x if x%2==0 else 2 for x in [0,1,2,3,4,5]]	#if na początku
 	#3*IF najpierw ten wewntrzny a poniej dopiero zewnetrzny:
 						 digit_odd_lst=sorted([x for x in lst if x.isdigit() if int(x)%2!=0])	
-################################################ PODSTAWY ##################################################
-PODSTAWOWE FUNKCJE:		https://www.w3schools.com/python/python_ref_functions.asp
-SŁOWA KLUCZOWE:			https://www.w3schools.com/python/python_ref_keywords.asp
-SŁOWNICZEK:				https://www.w3schools.com/python/python_ref_glossary.asp
-			
+
+################################################ PODSTAWY ##################################################	
 2* Składnia:
 	*PODSTAWOWE FUNKCJE: https://www.w3schools.com/python/python_ref_functions.asp
 	*KOMENTARZE i CUDZYSŁOWIA: #, ''' ''', """ """ --> ''' "..." ''' || """ '...' """
@@ -463,7 +1964,7 @@ SŁOWNICZEK:				https://www.w3schools.com/python/python_ref_glossary.asp
 					global a
 					a = 20
 					def inner_function():
-						global a
+						global a			#bez dodania tego global zwróci: a1=30, a2=20, a3=20
 						a = 30
 						print('a1 =', a)
 					inner_function()
@@ -491,13 +1992,13 @@ SŁOWNICZEK:				https://www.w3schools.com/python/python_ref_glossary.asp
 			import sys
 			txt=sys.stdin.read()
 	*Kolejność działań: (), pow(), * /, + - ;; od lewej do prawej
-	*OPERATORY MATEMATYCZNE rozszerzone: int / int [:float] ;; 5 % 3 [:2] ;; 5 // 2 [:1] ;; 2 ** 3 [:8]
+	*OPERATORY MATEMATYCZNE rozszerzone: int / int [:float] ;; 5 % 3 [:2] ;; 5 // 3 [:1] ;; 2 ** 3 [:8]
 	*OPERATORY PRZYPISANIA: brak(x-- ; x++) tylko: += -= *= ;/= %= //= **= ;; BITOWE: &= |= ^= >>= <<=
 	*OPERATORY LOGICZNE: brak(&& ||) tylko: and , or , not ;;   is , is not ;;   in , not in 
 		*OPERATORY PRZYNALEŻNOŚCI IS, IS NOT - sprawdzają referencje a dla typ. prostych wartości (m.in str)
 		*OPERATORY 'WYSTĘPOWANIA W' (MEMBERSHIP) (IN, NOT IN):
 			print(1 in 1:'a',2:'b'})			# Output: True
-			print('a' in 1:'a',2:'b'}) 			# Output: False
+			print('a' in {1:'a',2:'b'}) 		# Output: False
 	*OPERATORY BITOWE: & AND ;; | OR ;; ^ XOR ;; ~ NOT ;; <<Zero fill left shift ;; >>	Signed right shift
 			
 1* Właściwości i SKROTY:				
@@ -519,8 +2020,8 @@ SŁOWNICZEK:				https://www.w3schools.com/python/python_ref_glossary.asp
 	*sprawdzenie ścieżki do używanego intepretera (w konsoli: python)
 				import sys
 				sys.executable
-	*ustawienie powyższej ścieżki jako 'python' oraz powyższej ścieżki w folderze libs/site-packages 
-	 albo Scripts jako 'pip' w zmiennych środowiskowych 
+	*ustawienie powyższej ścieżki jako 'python' oraz dla Django albo pipa powyższej ścieżki wraz z 
+	 libs/site-packages albo Scripts w zmiennych środowiskowych 	
 	 
 ############################################################################################################
 ############################################################################################################
@@ -2487,145 +3988,6 @@ https://www.youtube.com/watch?v=VMJK9JhNxEM
 			acum=accumulate(a,func=operator.mul)
 			print(list(acum))
 		
-################################## DESTRUKTOR | HERMETYZACJA | Gettery i Settery ############################
-
-1* CYKL ŻYCIA OBIEKTU I DESTRUKTOR
-	*destrukktor dziala w momencie konca zycia obiektu i wykonuje sie zawsze pod koniec 
-	 dzialania programu (gdy obiekt nie jest juz nam potrzebny)
-			class Test:
-				def __del__(self):			#destruktor
-					print("Bye Class")
-			
-	*Obiekt konczy swoje istnienie kiedy nie posiada referencji przypisanej do zadnej zmiennej. 
-	 Mozemy wiec wymusic wywolanie destruktora poprzez usunięcie zmiennej do ktorej jest 
-	 przypisana referencja za pomoca slowa kluczowego del np.: del obj
-				obj = Test()
-				del obj
-
-2* HERMETYZACJA
-    *pola prywatne uzyskuje sie poprzez dodanie do nawy zmiennej pojedynczego podkreslnika
- 	 wtedy zmienną nazwywa sie ukrytą
-	*mimo wszystko nadal mozna sie dostac do tej zmiennej poza klasa
-
-    *w Pythonie ten podkreslnik jest tylko informacja dla programistow ze to powinna byc 
-	 zmienna prywatna.
-    *mozna tez dodac dwa podkresliniki przed argumentem i wtedy zeby dostac sie do takiego
-	 argumentu bedac poza klasa to trzeba przed nazwą argumentu(z dwoma podkreslnikami) 
-	 wpisac nazwe klasy z podkreslnikiem (z jakiej pochodzi)(obj._Hermetyzacja__lista)
-			class Hermetyzacja:
-				_lista = []
-				__lista = []
-				def dodaj(self,arg):
-					self._lista.append(arg)
-					self.__lista.append(arg)
-				def zdejmij(self):
-					if len(self.__lista)>0:
-						self.__lista.pop(len(self.__lista)-1)
-					if len(self.__lista) > 0:
-						self._lista.pop(len(self._lista)-1)
-				def __str__(self):
-					return "Lista1: "+str(self._lista)+ \
-						   "\nLista2: "+str(self.__lista)
-			obj =Hermetyzacja()
-			obj.dodaj("A")
-			obj.dodaj("B")
-			obj.dodaj("C")
-			obj.zdejmij()
-			print(str(obj))
-			print(obj._lista)
-			print(obj._Hermetyzacja__lista)	
-								#tak, dobrze jest to zapisane ==> obj._Hermetyzacja__listy
-								
-3*Gettery i Settery	i Deletery
-	https://www.youtube.com/watch?v=jCzT9XFZ5bw
-	*Róźnice w stosunku do JAVY:
-		*Gettery i Settery w Pythonie zdecydowanie się różnią od tych w Javie. W javie gettery i
-		 settery mają za zadanie zwrocenie lub ustawienie pojedyńczych prywatnych pól. W pythonie
-		 przez to że możesz dostać się do pól obiektu w każdej chwili poprzez wywołanie ich po 
-		 nazwie to taki getter lub setter nie ma sensu.
-	*GETTERy w Pythonie DOTYCZĄ PÓL SKŁADAJĄCYCH SIĘ Z INNYCH PÓL,
-		*tworzy się je poprzez dekorator @property i można je wywołać tak samo jak się wywołuję zmienne\
- 		 (nie wywołuję się jak funkcji przez nawiasy tylko jak zmienną! - co jest ogromną zaletą)
-			##zamiast tworzyć pole email w konstruktorze (metoda __init__())
-				class Employee:
-					def __init__(self, first, last)
-						self.first=first
-						self.last=last
-						self.email = f'{seld.first}.{self.last}@email.com'
-			##możesz zrobić to poprzez dekorator @property:
-				class Employee:
-					def __init__(self, first, last)
-						self.first=first
-						self.last=last
-					@property
-					def email(self)
-						return f'{seld.first}.{self.last}@email.com'
-			##od teg omomentu poprzez wywołanie tak jak się wywołuję zmienne dostaniesz pole email
-				emp_1= Employee('Marek', 'Kucharek') 
-				print(emp_1.email)						#zwróci: Marek.Kucharek@email.com
-			#podejście z dekoratorem @property jest lepsze gdyż jeżeli przypisałbyś do pola first 
-			 jakąś inną wartość to w pierwszym przypadku pole email się nie zaaktualizuję a w drugim 
-			 przypadku przy chęci odwołania się do pola email  
-	*SETTERy w Pythonie DOTYCZĄ PÓL SKŁADAJĄCYCH SIĘ Z INNYCH PÓL, 
-		*do pól pojedyńczych jesteś w stanie dostać się bez problemu poprzez wywołanie ich i 
-		 przypisanie do nich wartośći. W przypadku pól składających się z innych pól musisz zadabać o 
-		 zaktualizowanie tych pojedyńćzych pól z których się składa. 
-		*Robi się to poprzez dekorator o nazwie: 'nazwa_pola.setter' (nazwa dekoratora musi być taka 
-		 sama jak nazwa funkcji(czyli nazwa pola)) i stworzeniu funkcji która będzie przyjmować TYLKO 
-		 JEDEN! argument, który później, w wewnątrz funkcji będzie się splitować. 
-		*Później do takiego settera możesz się dostać poprzez wywołanie go jak zmiennej (tak samo jak
-		 w getterze). Pamiętaj! Żeby mógł powstać setter to najpierw musi zostać stworzony getter.
-			##tworzysz najpierw gettera dla fullname żeby póxniej móc utworzyć settera:
-					@property
-					def fullname(self):
-						return f'{self.first} {self.last}'
-			##tworzysz settera poprzez dekorator o nazwie fullname.setter, przyjmujący tylko jedną wartość:
-					@fullname.setter
-					def fullname(self, name):
-						self.first, self.last = name.split(" ")
-			##teraz możesz mofyfikować zmienną fullname jednocześnie aktualizuąc pola z których się składa:
-				emp_1 = Employee('Marek', 'Kucharek') 
-				print(emp_1.fullname)						#zwróci 'Marek Kucharek'
-				print(emp_1.first, emp_1.last)				#zwróci 'Marek' 'Kucharek'
-				emp_1.fullname = 'Darek Jurek'				#SETTER
-				print(emp_1.fullname)						#zwróci 'Darek Jurek'
-				print(emp_1.first, emp_1.last)				#zwróci 'Darek' 'Jurek'				 
-	*DELETERy w Pythonie DOTYCZĄ PÓL SKŁADAJĄCYCH SIĘ Z INNYCH PÓL.
-		*Deleter ma za zadanie przypisać wartość None, polom z których składało się nasze pole
-		 które chcemy usunąć
-		*Deleter'a tworzy się poprzez dekorator o nazwie 'nazwa_pola.deleter'. W Deleter'ze nie 
-		 podajemy żadnych argumentów. JDeleter jest swostym przeciążeniem alaisu del gdyż wywołuję 
-		 się go właśnie poprzez alias del
-					@fullname.deleter
-					def fullname(self):
-						self.first=None
-						self.last=None
-				emp_1 = Employee('Marek', 'Kucharek') 
-				del emp_1
-	***INNA OPCJA GETTER'a:
-		*Możnaby się także zastanowić po co nam inna opcja skoro adekorator property powinien 
-		 kompletnie nam wystarczyć - tak na prawde to nie wiem i trzewba przyjąć że druga opcja 
-		 gettera to to samo co @property:
-			class Pracownik:
-				def __init__(self, imie, nazwisko):
-					self.imie=imie
-					self.nazwisko=nazwisko
-				@property										#I opcja gettera 
-				def pelne_imie(self):
-					return self.__imie+" "+self.__nazwisko
-				@pelne_imie.getter								#II opcja gettera 
-				def pelne_imie(self):
-					return self.__imie+" "+self.__nazwisko
-				@pelne_imie.setter								#SETTER
-				def pelne_imie(self, zmienna):
-					imie,nazwisko=zmienna.split(" ")
-					self.__imie=imie
-					self.__nazwisko=nazwisko
-		*Wywołanie setterow i getterow poprzez przypisanie im wartośći jak do zmiennych:
-			k2=Pracownik()
-			k2.pelne_imie="Darek Jozwik"
-			print(k2.pelne_imie)								#dojście do gettera z I i II opcji
-
 ########## KLASY I OBIEKTY OOP | METODY KLAS I METODY STATYCZNE | DZIEDZICZENIE | METODY MAGICZNE #########
 https://www.programiz.com/python-programming/object-oriented-programming
 METODY MAGICZNE: https://www.youtube.com/watch?v=IkWrlRei0uA
@@ -3005,9 +4367,146 @@ METODY MAGICZNE: https://www.youtube.com/watch?v=IkWrlRei0uA
 				print(p3.x, p3.y)
 				print(p1<p2)
 				print(len(p1))
+		
+################################## DESTRUKTOR | HERMETYZACJA | Gettery i Settery ############################
+1* CYKL ŻYCIA OBIEKTU I DESTRUKTOR
+	*destrukktor dziala w momencie konca zycia obiektu i wykonuje sie zawsze pod koniec 
+	 dzialania programu (gdy obiekt nie jest juz nam potrzebny)
+			class Test:
+				def __del__(self):			#destruktor
+					print("Bye Class")
+			
+	*Obiekt konczy swoje istnienie kiedy nie posiada referencji przypisanej do zadnej zmiennej. 
+	 Mozemy wiec wymusic wywolanie destruktora poprzez usunięcie zmiennej do ktorej jest 
+	 przypisana referencja za pomoca slowa kluczowego del np.: del obj
+				obj = Test()
+				del obj
 
+2* HERMETYZACJA
+    *pola prywatne uzyskuje sie poprzez dodanie do nawy zmiennej pojedynczego podkreslnika
+ 	 wtedy zmienną nazwywa sie ukrytą
+	*mimo wszystko nadal mozna sie dostac do tej zmiennej poza klasa
 
-######### LEKCJA 16 i 37 PODSUMOWANIE KOLEKCJI | WYCINKI KOLEKCJI | UNBOXING KOLEKCJI ####################
+    *w Pythonie ten podkreslnik jest tylko informacja dla programistow ze to powinna byc 
+	 zmienna prywatna.
+    *mozna tez dodac dwa podkresliniki przed argumentem i wtedy zeby dostac sie do takiego
+	 argumentu bedac poza klasa to trzeba przed nazwą argumentu(z dwoma podkreslnikami) 
+	 wpisac nazwe klasy z podkreslnikiem (z jakiej pochodzi)(obj._Hermetyzacja__lista)
+			class Hermetyzacja:
+				_lista = []
+				__lista = []
+				def dodaj(self,arg):
+					self._lista.append(arg)
+					self.__lista.append(arg)
+				def zdejmij(self):
+					if len(self.__lista)>0:
+						self.__lista.pop(len(self.__lista)-1)
+					if len(self.__lista) > 0:
+						self._lista.pop(len(self._lista)-1)
+				def __str__(self):
+					return "Lista1: "+str(self._lista)+ \
+						   "\nLista2: "+str(self.__lista)
+			obj =Hermetyzacja()
+			obj.dodaj("A")
+			obj.dodaj("B")
+			obj.dodaj("C")
+			obj.zdejmij()
+			print(str(obj))
+			print(obj._lista)
+			print(obj._Hermetyzacja__lista)	
+								#tak, dobrze jest to zapisane ==> obj._Hermetyzacja__listy
+								
+3*Gettery i Settery	i Deletery
+	https://www.youtube.com/watch?v=jCzT9XFZ5bw
+	*Róźnice w stosunku do JAVY:
+		*Gettery i Settery w Pythonie zdecydowanie się różnią od tych w Javie. W javie gettery i
+		 settery mają za zadanie zwrocenie lub ustawienie pojedyńczych prywatnych pól. W pythonie
+		 przez to że możesz dostać się do pól obiektu w każdej chwili poprzez wywołanie ich po 
+		 nazwie to taki getter lub setter nie ma sensu.
+	*GETTERy w Pythonie DOTYCZĄ PÓL SKŁADAJĄCYCH SIĘ Z INNYCH PÓL,
+		*tworzy się je poprzez dekorator @property i można je wywołać tak samo jak się wywołuję zmienne\
+ 		 (nie wywołuję się jak funkcji przez nawiasy tylko jak zmienną! - co jest ogromną zaletą)
+			##zamiast tworzyć pole email w konstruktorze (metoda __init__())
+				class Employee:
+					def __init__(self, first, last)
+						self.first=first
+						self.last=last
+						self.email = f'{seld.first}.{self.last}@email.com'
+			##możesz zrobić to poprzez dekorator @property:
+				class Employee:
+					def __init__(self, first, last)
+						self.first=first
+						self.last=last
+					@property
+					def email(self)
+						return f'{seld.first}.{self.last}@email.com'
+			##od teg omomentu poprzez wywołanie tak jak się wywołuję zmienne dostaniesz pole email
+				emp_1= Employee('Marek', 'Kucharek') 
+				print(emp_1.email)						#zwróci: Marek.Kucharek@email.com
+			#podejście z dekoratorem @property jest lepsze gdyż jeżeli przypisałbyś do pola first 
+			 jakąś inną wartość to w pierwszym przypadku pole email się nie zaaktualizuję a w drugim 
+			 przypadku przy chęci odwołania się do pola email  
+	*SETTERy w Pythonie DOTYCZĄ PÓL SKŁADAJĄCYCH SIĘ Z INNYCH PÓL, 
+		*do pól pojedyńczych jesteś w stanie dostać się bez problemu poprzez wywołanie ich i 
+		 przypisanie do nich wartośći. W przypadku pól składających się z innych pól musisz zadabać o 
+		 zaktualizowanie tych pojedyńćzych pól z których się składa. 
+		*Robi się to poprzez dekorator o nazwie: 'nazwa_pola.setter' (nazwa dekoratora musi być taka 
+		 sama jak nazwa funkcji(czyli nazwa pola)) i stworzeniu funkcji która będzie przyjmować TYLKO 
+		 JEDEN! argument, który później, w wewnątrz funkcji będzie się splitować. 
+		*Później do takiego settera możesz się dostać poprzez wywołanie go jak zmiennej (tak samo jak
+		 w getterze). Pamiętaj! Żeby mógł powstać setter to najpierw musi zostać stworzony getter.
+			##tworzysz najpierw gettera dla fullname żeby póxniej móc utworzyć settera:
+					@property
+					def fullname(self):
+						return f'{self.first} {self.last}'
+			##tworzysz settera poprzez dekorator o nazwie fullname.setter, przyjmujący tylko jedną wartość:
+					@fullname.setter
+					def fullname(self, name):
+						self.first, self.last = name.split(" ")
+			##teraz możesz mofyfikować zmienną fullname jednocześnie aktualizuąc pola z których się składa:
+				emp_1 = Employee('Marek', 'Kucharek') 
+				print(emp_1.fullname)						#zwróci 'Marek Kucharek'
+				print(emp_1.first, emp_1.last)				#zwróci 'Marek' 'Kucharek'
+				emp_1.fullname = 'Darek Jurek'				#SETTER
+				print(emp_1.fullname)						#zwróci 'Darek Jurek'
+				print(emp_1.first, emp_1.last)				#zwróci 'Darek' 'Jurek'				 
+	*DELETERy w Pythonie DOTYCZĄ PÓL SKŁADAJĄCYCH SIĘ Z INNYCH PÓL.
+		*Deleter ma za zadanie przypisać wartość None, polom z których składało się nasze pole
+		 które chcemy usunąć
+		*Deleter'a tworzy się poprzez dekorator o nazwie 'nazwa_pola.deleter'. W Deleter'ze nie 
+		 podajemy żadnych argumentów. JDeleter jest swostym przeciążeniem alaisu del gdyż wywołuję 
+		 się go właśnie poprzez alias del
+					@fullname.deleter
+					def fullname(self):
+						self.first=None
+						self.last=None
+				emp_1 = Employee('Marek', 'Kucharek') 
+				del emp_1
+	***INNA OPCJA GETTER'a:
+		*Możnaby się także zastanowić po co nam inna opcja skoro adekorator property powinien 
+		 kompletnie nam wystarczyć - tak na prawde to nie wiem i trzewba przyjąć że druga opcja 
+		 gettera to to samo co @property:
+			class Pracownik:
+				def __init__(self, imie, nazwisko):
+					self.imie=imie
+					self.nazwisko=nazwisko
+				@property										#I opcja gettera 
+				def pelne_imie(self):
+					return self.__imie+" "+self.__nazwisko
+				@pelne_imie.getter								#II opcja gettera 
+				def pelne_imie(self):
+					return self.__imie+" "+self.__nazwisko
+				@pelne_imie.setter								#SETTER
+				def pelne_imie(self, zmienna):
+					imie,nazwisko=zmienna.split(" ")
+					self.__imie=imie
+					self.__nazwisko=nazwisko
+		*Wywołanie setterow i getterow poprzez przypisanie im wartośći jak do zmiennych:
+			k2=Pracownik()
+			k2.pelne_imie="Darek Jozwik"
+			print(k2.pelne_imie)								#dojście do gettera z I i II opcji
+
+######################## PODSUMOWANIE KOLEKCJI | WYCINKI KOLEKCJI | UNBOXING KOLEKCJI #####################
 UNBOXING KOLEKCJI: 		https://www.w3schools.com/python/python_tuples_unpack.asp
 
 0* PODSUMOWANIE KOLEKCJI: (apart of tuples all are mutable) 
@@ -3076,7 +4575,7 @@ UNBOXING KOLEKCJI: 		https://www.w3schools.com/python/python_tuples_unpack.asp
 				print(koniec)								#7
 
 
-########## BUILT-INS | *ARGS **KWARGS | KOPIOWANIE W PYTHONIE | MODULE COLLECTIONS #######################
+########### BUILT-INS | *ARGS **KWARGS | KOPIOWANIE W PYTHONIE | MODULE COLLECTIONS #######################
 https://docs.python.org/3/library/stdtypes.html#mutable-sequence-types
 https://www.programiz.com/python-programming/methods/built-in
 https://www.geeksforgeeks.org/copy-python-deep-copy-shallow-copy/
@@ -3683,7 +5182,7 @@ https://www.geeksforgeeks.org/python-collections-module/#deque
 			**reverse()
 			**clear()
 
-###########################  LEKCJA 15 KOLEKCJA DICTIONARY  ##############################################
+####################################### KOLEKCJA DICTIONARY  ##############################################
 DICTIONARY INFORMACJE:	https://www.w3schools.com/python/python_dictionaries.asp
 DICTIONARY METODY:		https://www.w3schools.com/python/python_dictionaries_methods.asp
 
@@ -3966,7 +5465,7 @@ DICTIONARY METODY:		https://www.w3schools.com/python/python_dictionaries_methods
 												#zwróci:{0: 'a', 1: 'b', 2: 'c', 3: 'd', 4: 'e', 
 														 5: 'f', 6: 'g', 7: 'h', 8: 'i', 9: 'j'}
 		 
-####################### LEKCJA 24 KOLEKCJA SET | OPERATORY NA ZBIORACH #########################
+############################# KOLEKCJA SET | FROZENSET | OPERATORY NA ZBIORACH ############################
 SET INFORMACJE:			https://www.w3schools.com/python/python_sets.asp
 SET METODY:				https://www.w3schools.com/python/python_sets_methods.asp
 SET METODY USUNIECIA: 	https://www.w3schools.com/python/python_sets_remove.asp
@@ -4095,7 +5594,7 @@ SET METODY ŁĄCZENIA:	https://www.w3schools.com/python/python_sets_join.asp
 				set2=frozenset([1,2,3,4])
 				print(set2)
 
-####################### LEKCJA 16 KOLEKCJA TUPLE - KROTKA i SEKWENCJE #########################
+######################################### KOLEKCJA TUPLE - KROTKA #########################################
 https://docs.python.org/3/library/stdtypes.html#mutable-sequence-types
 KROTKA INFORMACJE:		https://www.w3schools.com/python/python_tuples.asp
 KROTKA METODY:			https://www.w3schools.com/python/python_tuples_methods.asp
@@ -4212,7 +5711,7 @@ KROTKA METODY:			https://www.w3schools.com/python/python_tuples_methods.asp
 							#[zwróci: ("apple", "banana", "cherry", "apple", "banana", "cherry")
 						
 				
-####################### LEKCJA 7 i 17 | KOLEKCJA: LISTA | LIST COMPREHENSION ###################
+############################### KOLEKCJA: LISTA | LIST COMPREHENSION ######################################
 METODY LISTA: 			https://www.w3schools.com/python/python_ref_list.asp
 LISTY INFORMACJE:		https://www.w3schools.com/python/python_lists.asp
 LIST COMPREHENSIONS: 	https://www.w3schools.com/python/python_lists_comprehension.asp
@@ -4386,7 +5885,7 @@ LISTA:
 				[mainList.append([i,j]) for i in range(x+1) for j in range(y+1)]
 				
 					
-############################# LEKCJA 32 - 35 | WYRAZENIE REGULARNE ############################
+########################################## WYRAZENIE REGULARNE ############################################
 https://www.w3schools.com/python/python_regex.asp
 NAJLEPSZY PORADNIK I ZBIÓR WIEDZY O REGEXACH:
 			*https://www3.ntu.edu.sg/home/ehchua/programming/howto/Regexe.html
@@ -4996,9 +6495,8 @@ LEKCJA 32 WYRAŻENIA REGULARNE:
 	*matthowanie szerokośći i długości geograficznej:
 			re.match(r'''\((?:\+|\-)?(?:(?:(?:[1-8]\d|\d)(?:\.\d+)?)|(?:(?:90)(?:\.0+)?)),\s
 			(?:\+|\-)?(?:(?:(?:1[0-7]\d|[1-9]\d|\d)(?:\.\d+)?)|(?:(?:180)(?:\.0+)?))\)''',line)
-	*wyszukiwanie wielu informacji w pliku html
-	
-########################## LEKCJA 18 i 19 | STRING | STRING FORMATTER ##########################
+			
+######################################## STRING | STRING FORMATTER ########################################
 FUNKCJE Stringow: 		https://www.w3schools.com/python/python_strings_methods.asp
 					   (https://www.w3schools.com/python/python_ref_string.asp)[to samo]
 STRING FORMATTER:		https://www.w3schools.com/python/python_string_formatting.asp
@@ -5255,7 +6753,7 @@ https://www.w3schools.com/python/python_string_formatting.asp
 			'%s jakis tekst %d' % ('one', '23') 	#zwroci: one jakistekst 23
 			"%(first)s %(second)s" % {"first":"Hello", "second":"World"}	#dla słownika
 			
-########################################## OPERACJE NA PLIKACH (.txt) ######################################
+########################################## OPERACJE NA PLIKACH (.txt) #####################################
 1* OPERACJE NA PLIKACH .TXT
   *W SKRÓCIE:
 	*2 OPCJE DO ODCZYTU i ZAPISU:
