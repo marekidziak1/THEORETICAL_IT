@@ -2712,21 +2712,32 @@ LOGGING INTERMEDIATE:	https://www.youtube.com/watch?v=p0A4CV4MWd0
 	VENV WINDOWS: 		https://www.youtube.com/watch?v=APOPm01BVrk
 	VENV LINUX + MAC: 	https://www.youtube.com/watch?v=Kg1Yvry_Ydk
 	VIRTUALENV:
+		x* Różnica między pipenvem jest taka że pipenv tworzy dodatkowy folder z wirtualką a virtualenv 
+		   tworzy wirtualkę w folderze na którym pracujesz (zawartość wirtualek jest taka sama)
 		0* INSTALACJA:
 					pip install virtualvenv
 		1* UTWORZENIE:
+			** instalacja z utworzeniem folderu
 					virtualenv name_project
-			** -p - instalacja z konkretną wersją pythona:
+			** . instalacja w danym folderze
+					virtualenv .
+			** -p instalacja z konkretną wersją pythona:
 					virtualvenv -p /scieżk_do_pythona_zainstalowanego_lokalnie nazwa_projektu
 		2* AKTYWACJA - musisz aktywować za każdym razem gdy chcesz działać na pythonie/pipie/bibliotekach 
-		   znajdujących się w wirtualce (najlepiej poprzez konsole UNIXową (czyli linuxową) bo w windowsowej 
-		   coś nie działa) i deaktywować po zakończonej pracy)
+		   znajdujących się w wirtualce:
+				*dla konsoli linuxowej:
 					source path_project_ven/Scripts/activate
+					deactivate
+				*dla konsoli windowsowej (najpierw zmiana ExecutionPolicy (wystarczy raz), później aktywacja):	
+					Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force 
+					Scripts\activate.ps1						#bez komendy 'cd'
 					deactivate
 		   Możesz sprawdzić która wersja pythona lub pipa (i gdzie się znajdująca) jest wykorzystywana:
 					which python				#pokaże Tobie scieżkę do miejsca gdzie używany jest python
-		   (Odpalona wirtualka będzie widoczna przede wszystkim poprzez nazwę projektu w nawiasach):		
-		3* ZAPISANIE paczek w pipie znajdujących się w wirtualce i wgranie ich do nowej wirtualki:
+		   (Odpalona wirtualka będzie widoczna przede wszystkim poprzez nazwę projektu w nawiasach):	
+		3* INSTALACJA BIBLIOTEK I FRAMEWORKÓW:
+					pip install django==2.0.7
+		4* ZAPISANIE paczek w pipie znajdujących się w wirtualce i wgranie ich do nowej wirtualki:
 					pip freeze --local > requirements.txt
 					pip install -r requirements.txt
 
