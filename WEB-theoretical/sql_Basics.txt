@@ -45,6 +45,8 @@
 						SELECT ‘nazwisko: ’ || ename FROM emp
 				*możemy łączyć tekst z liczbami bez ich konwersji na tekst:
 						SELECT ename || sal FROM emp
+			D) FOREIGN KEY - przy tworzeniu tabeli odpowiedniej kolumnie trzeba przypisać że jest Foreign key
+			
 		3* FUNKCJE SPECYFICZNE:
 			1) NVL(wartość, zamienić_na) 
 				*zamiana null'a na dowolną wartość			
@@ -54,10 +56,10 @@
 				*zamiast klauzuli LIMIT lub TOP masz 'FETCH FIRST number ROWS ONLY;'
 			3) SYSDATE - zwraca aktualną datę systemową
 						
-						
-
-			
-	3* MSSQL: 
+	3* SQLITE:		
+		Foregin Key - przy tworzeniu tabeli w Sqlite nie trzeba przypisywać kolumnie żę jest FOREIGN KEY
+		
+	4* MSSQL: 
 		1* MANAGEMENT STUDIO - program do zarządzania bazami danych w Mssql.
 		2* RÓŻNICE W STOSUNKU DO INNYCH SILNIKÓW:
 			A) KONKATENACJA (znak: '+' ):
@@ -80,6 +82,7 @@
 				*zwraca część daty date (year, month, day itd.) wyspecyfikowaną w pierwszym argumencie
 			4) LIMIT/TOP:
 				*zamiast klauzuli LIMIT lub FETCH FIRST masz 'TOP numbers;'
+	5* POSTGRESQL:
 			
 
 			
@@ -104,9 +107,9 @@ ZADANIA DO POWTÓRZENIA I UTRWALENIA SQL'a:			https://pja.mykhi.org/0sem/SBD/edu
 																		  columnName1 i columnName2	
 		*columnName.* 	//jezeli JOINujesz wiele kolumn (tworzy ci się iloczyn kartezjański) a chcesz 
 						  danych tylko z jednej kolumny:
-				SELECT columnName.* FROM column1 AS c1
-				INNER JOIN column2 AS c2 ON c1.PrimaryKey = c2.ForeignKey
-				INNER JOIN column2 AS c3 ON c2.PrimaryKey = c3.ForeignKey
+				SELECT columnName.* FROM table1 AS t1
+				INNER JOIN table2 AS t2 ON t1.PrimaryKey = t2.ForeignKey
+				INNER JOIN table3 AS t3 ON t2.PrimaryKey = t3.ForeignKey
 		
 				
 	2.WHERE  =  <  <=  >  >=
@@ -462,7 +465,7 @@ ZADANIA DO POWTÓRZENIA I UTRWALENIA SQL'a:			https://pja.mykhi.org/0sem/SBD/edu
 					
 	 *PRIMARY KEY   AUTOINCREMENT   NOT NULL   UNIQUE:
 				CREATE TABLE "tableName" (
-					"id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+					"id" INTEGER NOT NULL UNIQUE PRIMARY KEY AUTOINCREMENT,
 					"anotherColumn" TEXT
 					);
 				CREATE TABLE "tableName" (
@@ -577,8 +580,7 @@ ZADANIA DO POWTÓRZENIA I UTRWALENIA SQL'a:			https://pja.mykhi.org/0sem/SBD/edu
 	 *PRIMARY KEY - autoincremented field in a table. Klucz podstawowy/glówny ktory jest unikatowy.
 				  - kluczem glownym moga byc takze 2 kolumny
 	 *FOREIGN KEY - klucz obcy ktory wskazuję na wartość klucza glownego (w wierszu) w innej tabeli
-				  - przy tworzeniu tabeli w Sqlite nie trzeba przypisywać kolumnie żę jest FOREIGN KEY
-				    ale w bazie ORACLE już musisz
+			
 	3. MODELE DANYCH:
 		*MODEL DANYCH -integralny zbiór zasad, opisujący dane i powiązania pomiędzy nimi. OKreśla 
 			ograniczenia nakładane na dane jak i operacje na nie nakładane. 

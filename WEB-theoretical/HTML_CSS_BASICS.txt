@@ -90,6 +90,8 @@ HTML:
 			*<a href='adresWWWW' target='_blank' >...</a> - służy do linkowania tekstu danym linkiem. Tagiem
 				'a' okalasz dany tekst lub zdjęcie.
 					* href - tu wpisujesz adres zewnętrzny www lub adres względny na inną podstronę
+						* mailto: - wewnątrz href wskazujesz że link jest do emaila:
+							 <a href ="mailto: marek@gmail.com ">
 					* target='_blank' - otwiera link z hrefa w nowej karcie 
 							<a href='www.google.pl' target='_blank'><a/>
 							<a href='test.html' target='_blank'><a/>
