@@ -31,9 +31,8 @@ python:
 	
 Django:
 	
-4|  *codingentrepreneurs - https://www.youtube.com/watch?v=SlHBNXW1rTk&list=PLEsfXFp6DpzRMby_cSoWTFw8zaMdTEXgL
-3|  *build e-commerce website - https://www.youtube.com/watch?v=YZvRrldjf1Y
 1|  *Traversy media - Django Crash Course - https://www.youtube.com/watch?v=PtQiiknWUcI
+4|  *codingentrepreneurs - https://www.youtube.com/watch?v=SlHBNXW1rTk&list=PLEsfXFp6DpzRMby_cSoWTFw8zaMdTEXgL
 2|  *Corey Shaffer - DJANGO 11-17
     
 	EWENTUALNIE:

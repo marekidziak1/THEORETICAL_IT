@@ -51,18 +51,19 @@ TEMPLATES:
 							#1 do wiele - dla Post: posty Usera usunięte gdy User usunięty
 								class Post(models.Model):
 									author = models.ForeignKey(User, on_delete =models.CASCADE)
-					**on_delete=SET_NULL - wpisanie null w momencie usunięcia klucza obcego 
+					**on_delete=SET_NULL - wpisanie null w momencie usunięcia klucza obcego (trzeba tez 
+					  zezwolić na nulle - null=True)
 							#1 do 1 - pole user w kl Profile przyjmie NULL gdy User usunięty
 								class Profile(models.Model):
-									user = models.OneToOneField(User,  on_delete =models.SET_NULL)
+									user = models.OneToOneField(User,  on_delete=models.SET_NULL, null=True)
 							#1 do wiele - pole author w kl Post przyjmie NULL gdy User usunięty
 								class Post(models.Model):
-									author = models.ForeignKey(User, on_delete =models.SET_NULL)
+									author = models.ForeignKey(User, on_delete =models.SET_NULL, null=True)
 							#wiele do wiele - pole participants w kl Meetup przyjmie NULL gdy wszystkie 
 							 obiekty Participant mające odwołanie do Meetup zostaną usunięte.
 								class Meetup(models.Model):
 									participants = models.ManyToManyField(Participant, null=True,
-																			on_delete =models.SET_NULL)
+																	on_delete =models.SET_NULL, null=True)
 				****RELATIONSHIP ONE_TO_ONE:		
 				*models.OneToOneField(nazwaTabeli)
 								from django.db import models
@@ -78,7 +79,8 @@ TEMPLATES:
 									author = models.ForeignKey(User, on_delete.CASCADE)
 									...
 				****RELATIONSHIP MANY_TO_MANY:
-				*models.ManyToManyField(nazwaTabeli) 
+				*models.ManyToManyField(nazwaTabeli) - Nie trzeba podawać w 2 klasach pola wiele do wiele
+ 				 ale można -> w klasie wyżej wpisujesz nazwę modelu/klasy w cudzysłowiu
 								from django.db import models
 								class Participant(models.Model):
 									email=models.EmailField(unique=True)
@@ -97,14 +99,6 @@ TEMPLATES:
 								summary = models.TextField(default='This is cool')
 					**unique=True 
 								slug = SlugField(unique=True)
-				*models.ForeignKey(nazwaTabeli)
-						from django.contrib.auth.models import User
-								...
-								author = models.ForeignKey(User)
-					**on_delete=models.CASCADE
-						from django.contrib.auth.models import User 
-								...
-								author = models.ForeignKey(User, on_delete =models.CASCADE)
 				*models.ImageField(upload_to="my_folder") 
 					**WIĘCEJ patrz: PODSTAWY -> 6.ELEMENTY ROZSZERZONE -> 2)UPLOADOWANE ZDJĘCIA
 					**upload_to='folder' 
@@ -136,7 +130,15 @@ TEMPLATES:
 						from django.utils import timezone
 								...
 								date-posted = models.DateTimeField(default=timezone.now)
-			D*METODY:
+			D*KLASA WEWNĘTRZNA META- wykorzystuję się przy zwracaniu danych przy konstrukcjach ORM-owych:
+				*pole ordering = przy zwracaniu danych w konstrukcji ORM (np: MyModel.objects.all()) 
+				 zwraca je w kolejność wg danego pola podanego w polu ordering klasy wewnętrznej Meta:
+					class MyModel(models.Model):
+						updated = models.DateTimeField(auto_now=True)
+						created = models.DateTimeField(auto_now_add = True)
+						class Meta:
+							ordering = ['-updated']					#'-' oznacza w koleścnosic malejącej 
+			E*METODY:
 				*__str__() 
 						def __str__(self):
 							return self.title	
@@ -169,7 +171,7 @@ TEMPLATES:
 							app_name = 'products'
 							urlpatterns=[
 								...]
-			E*ROZSZERZENIE:
+			F*ROZSZERZENIE:
 				*DODANIE DO MODELU nowego pola / zmiana wartości pola z null=True' na 'null=False':
 						python manage.py makemigrations 	# +opcja uzupełnienia domyślną wartością 
 						python manage.py migrate
@@ -460,11 +462,12 @@ TEMPLATES:
 			*2 OPCJE przechowywania dokumentów html: 
 				   A)GŁÓWNY KATALOG TEMPLATES W ŚCIEŻCE BAZOWEJ. W settings.py głównej app/funkc.
 							TEMPLATES{
-								'DIRS': os.path.join(BASE_DIR, 'templates'),
+								'DIRS':[  os.path.join(BASE_DIR, 'templates'),  ]
 								...}
 			       B)W DANEJ APP/FUNKC FOLDER TEMPLATES i wewnątrz FOLDER O NAZWIE APP/FUNKC. (domyślnie)
 			*w Visual Studio podstawowy szkielet html ->  '! + TAB'
-	   B*MOŻLIWOŚC EDYTOWANIA PLIKÓW HTML:
+	   B*MOŻLIWOŚC EDYTOWANIA PLIKÓW HTML (DJANGO TEMPLATING ENGINE - JINJA ):
+			0*https://docs.djangoproject.com/en/4.0/topics/templates/
 			1*PODSTAWY:
 				*możesz edytować zmienne w HTMLu poprzez przekazanie w metodzie render słownika(dictionary). 
 				*do wartości tego słownika odwołujesz się poprzez wypisanie kluczy bez cudzysłowiów. Jeżeli 
@@ -486,11 +489,17 @@ TEMPLATES:
 						#dla render(request, 'pl/h.html',{'name':'Mosh'}) #<h1>Hello Mosh</h1>	
 					*NA ZMIENNYCH MOŻNA STOSOWAĆ FILTRY POZWALAJĄCE NA EDYCJĘ (poprzez znak pipe'a)
 					 Wszystkie filtry pozwalające na edycje: https://docs.djangoproject.com/en/4.0/ref/templates/builtins/#built-in-filter-reference
-						<h1>{{zm|add:22}}</h1>						#dla zm= 55 zwróci: 77 
-						<h1>{{zm_date|date:"F d, Y"|upper}}</h1>	#Month, day, YEAR +powiększenie liter
+						{{zm|add:22}}								#dla zm= 55 zwróci: 77 
+						{{zm_date|date:"F d, Y"|upper}}				#Month, day, YEAR +powiększenie liter
+						{{zm_date|timesince}}						#ile czasu mineło od obiektu datetime
 						{{zm|safe}}									#dla context={'zm':'<h1>HELLO</h1>'}
-																	#zamiast czystego tekstu renderuje html				
+																	#zamiast czystego tekstu renderuje html	
+						{
 				c)konstrukcje IF:
+						{% if zmienna == 'login' %}
+							<h1>zaloguj się<h1>
+						{% endif %}
+						
 						{% if name %}								#jeśli klucz 'name' istnieje
 							<h1>Hello {{name.0}}</h1>				#zwróc pierwszy element listy
 						{% elif surname %}
@@ -617,14 +626,17 @@ TEMPLATES:
 				User.objects.filter(username='marek').first()	    #zwróci:  <User: marek>
 			**filter(<model_attrbitute>__startswith='my_text') 
 				User.objects.filter(name__startswith='Mar')
-			**filter(<model_attrbitute>__contains='my_text'
+			**filter(<model_attrbitute>__contains='my_text')
 				User.objects.filter(name__contains='are')
+			*filter(<model_attrbitute>__icontains='my_text')
+				User.objects.filter(name__icontains='are')
 			**filter(<model_attrbitute>	 __lte ; __gte ; __le ; __ge   - (greater/less then or equal):
 				Question.objects.filter(pub_date__lte=timezone.now())
 			**filtrowanie na polach obiektu:
 				Question.objects.filter(pub_date__year=current_year)
-			**filtrowanie na obiekcie klucza obcego i jego polach:
-				Choice.objects.filter(question__pub_date__year=current_year)				
+			**filtrowanie na obiekcie klucza obcego i jego polach oraz wykorzystywanie na nich funkcji:
+				Choice.objects.filter(question__pub_date__year=current_year)
+				Room.objects.filter(topic__name__contains = 'my_word')				
 			**filtrowanie z użyciem order_by:
 				Question.objects.filter(pub_date__lte=timezone.now()).order_by('-pub_date')
 		*zwrócenie użytkownika na bazie jakiegoś pola np id:
@@ -777,9 +789,12 @@ TEMPLATES:
 	*)DODATKOWE: wybranie interpretera pythona z wirtualki:
 0. PODSTAWY:
 		*BACKEND: responding to client -> return generated HTML OR return needed data
+		*MVC (MVT) - MODEL-VIEW-CONTROLLER (MODEL-VIEW-TEMPLATE) 
+			MODEL - DATA ACCESS LAYER	;;	 VIEW - BUSINESS LOGIC 	  ;;    TEMPLATE - PRESENTATION LAYER
 		*DJANGO ADVANTAGES -> can take more data 
+		*ANOTHER: Flaks, Cherry Pie, Web2py, Pyramid
 ============================================================================================================
-
+ 
 
 
 
@@ -855,6 +870,22 @@ TEMPLATES:
 																		##bez danych ponieważ nie została
 																		##w pliku html nie została jeszcze
 																		##odpalona metoda POST z tagu form
+				*możesz rozszerzyć tę funkcje o wewnątrzną modyfikację danych (np o to żeby username był
+				 z małych liter zawsze - żeby użytkownik nie wpisał różnej wielkości liter). poprzez arg
+				 commit=False w funkcji save() tworzysz użtykownika ale nie zapisujesz go na serwer
+				 ORAZ o zalogowanie bezpośrednio po utworzeniu konta:
+							from django.contrib.auth import login	
+							def register(request):
+								form = UserCreationForm()
+								if request.method == 'POST':
+									form=UserCreationForm(request.POST)					
+									if form.is_valid():
+										us = form.save(commit=False)	##utworzenie usera bez zapisania
+										us.username = us.username.lower()
+										us.save()						##zapisanie w bazie danych
+										login(request, us)				##logowanie po rejestracji
+										return redirect('blog-home')		
+								return render(request, 'users/register
 				*możesz rozszerzyć tę funkcję o wiadomość o udanej operacji zapisania i przesłania danych 
 				 z formularza (oraz przeniesienie na strone do alogowania):
 					*W PLIKU VIEWS.PY musisz zaimportować moduł messages z pakietu django.contrib oraz 
@@ -962,12 +993,17 @@ TEMPLATES:
 					 APLIKACJACH w pkt module views.py)
 							from django.shortcuts import render, redirect
 							from django.contrib import messages	
+							from django.contrib.auth import login
 							from . forms import UserRegisterForm
 							def register(request):
 								if request.method == 'POST':
 									formWithData = UserRegisterForm(request.POST)
 									if formWithData.is_valid():
 										formWithData.save()
+										###user = formWithData.save(commit=False) #utworzenie bez zapisania 
+										###user.username = user.username.lower()  #modyfikacja danych
+										###user.save()							  #zapis w bazie
+										###login(request, user)  				  #logowanie po rejestracji 
 										username = formWithData.cleaned_data.get('username')
 										messages.success(request, f'Account created for {username}!')
 										return redirect('login')
@@ -1038,12 +1074,13 @@ TEMPLATES:
 								
 	2)STRONY DO LOGOWANIA, DO LOGOUTu:
 	----------------------------------
+	  0)Gdy się logujesz to jest tworzona sesja czyli plik ciasteczek który zawiera session_id pozwalające 
+	    przy przechodzeniu na inne podstrony zachować iformacje o byciu zalogowanym. 
 	  A)OPCJA 1:
 		****https://www.techwithtim.net/tutorials/django/login-logout/
+		**zawierasz ścieżkę do pliku urls.py do wbudowanej biblioteki django.contrib.auth której funkcje
+		  zawierają logikę działania i nie trzeba ich implementować tylko wystarczy je wywołać w linku  
 		1.MODULE URLS.PY w głównej app/funkc. 
-			*zawierasz ścieżkę do pliku urls.py do wbudowanej biblioteki django.contrib.auth która mając
-			 kilka funkcji path() kieruję do w nich do logiki w funkcjach w pliku views.py we wbudowanej
-			 bibliotece django.contrib.auth 
 					path('', include("django.contrib.auth.urls")),
 			*dzięki zainkludowaniu: django.contrib.auth.urls pojawią ci się ścieżki takie jak:
 					login/ [name='login']
@@ -1093,12 +1130,58 @@ TEMPLATES:
 			*tworzysz 2 zmienne któe wskazują na jaką stronę ma być przekierowanie po loginie lub logout'cie:
 					LOGIN_REDIRECT_URL='/'
 					LOGOUT_REDIRECT_URL='/'
-		
-	  B)OPCJA 2:
-		1.MODULE URLS.PY (w app/funckjonalności users - wykorzystujesz wcześniej utworzoną app/funkcjonalność)
+      B)OPCJA 2:
+		**Utworzenie formularza w HTMLu i obsłużenie jego logiki we views przez function-based-views 
+		1*URLS.PY - zwyczajne wywołanie funkcji z views.py:
+				    path('login/', views.loginUser, name='login'),
+					path('logout/', views.logoutUser, name='logout'),
+		2*VIEWS.py - użycie funkcji authenticate, login, logout z paczki django.contrib.auth do logowania
+		  i logout'u wraz z flash messages związanymi z komunikatami
+					from django.contrib import messages
+					from django.contrib.auth.models import User
+					from django.contrib.auth import authenticate, login, logout
+					def loginUser(request):
+						if request.user.is_authenticated:
+							return redirect('home')
+						if request.method=="POST":
+							username = request.POST.get('username')
+							password = request.POST.get('password')
+							try:
+								user = User.objects.get(username=username)
+							except:
+								messages.error(request, 'User does not exist')
+							else:
+								user = authenticate(request, username=username, password = password)
+								if user is not None:
+									login(request, user)
+									return redirect('home')
+								else:
+									messages.error(request, 'username or password does not exist')
+						context={}                              #if request.method=="POST":
+						return render(request, 'base/login_register.html', context)
+					def logoutUser(request):
+						logout(request)
+						return redirect('home')
+		3*TEMPLATES - zbudowanie formularza całkowice w HTML'u bez zmiennej 'form' przesyłanej z views.py:
+			a)strona html przeznaczona do logowania
+					<form method='POST' action="">
+						{% csrf_token %}
+						<input type="text" name ="username" placeholder="Enter Username" />
+						<input type="password" name ="password" placeholder="Enter Password" />
+						<input type="submit" value="login"/>
+					</form>
+			b)strona wyświetlająca linki do logowania i logout'u"
+					{% if not request.user.is_authenticated %}
+						<a href="{%url 'login' %}">LOGIN</a>
+					{% else %}
+						<a href="{%url 'logout' %}">LOGOUT</a>   
+					{% endif %}
+	  C)OPCJA 3:
+		**wykorzystanie class-based-views LoginView i Logoutview
+		1.MODULE URLS.PY (w app/funckjonalności users - wykorzystujesz wcześniej utworzoną app/funkc.)
 			*pobierasz module views z django.contrib.auth by móc wywołac z niego 'class-based views'
 			 (LoginView dla login oraz LogoutView dla logout).
-			*LoginView dodajesz do ścieżki 'login/' oraz LogoutView dodajesz do ścieżki 'logout/' i ponieważ
+			*LoginView dodajesz do ścieżki 'login/' oraz LogoutView dodajesz do ścieżki 'logout/'. Ponieważ
 			 ścieżki te nie będą miały podścieżek to na tych 'class-based views' wywołujesz metodę as_view()
 			 i podajesz w niej parametetr template_name do którego przypisujesz ścieżki do plików html w
 			 templates'ach w naszej app/funckjonalności users:
@@ -1729,7 +1812,11 @@ TEMPLATES:
 					 np dla pola EmailField() maksymalną ilość liter - max_width=100
 					*w niej wskazujemy model i pola modelu (fields)(żeby przy przesyłaniu formularza nie 
 					 wyskakiwały błędy trzeba wskazać wszystkie wymagane pola modelu. Pola opcjonalne 
-					 (lub z domyślną wartością) można pominąć):
+					 (lub z domyślną wartością) można pominąć). 
+					 *Do klasy wewnętrznej możesz też wpisać '__all__'  by wszystkie pola były uwzględnione
+					  w formularzu, a jeżeli chciałbyś żeby niektóre nie byly wyświetlane to w polu
+					  'exclude' wpisujesz odpowiednią listę
+					 
 							from .models import Product
 							from django import forms
 							class ProductCreateForm(forms.ModelForm):
@@ -1742,17 +1829,19 @@ TEMPLATES:
 								class Meta:
 									model=Product
 									fields =['title', 'description', 'price', 'summary', 'featured']
-				*WŁASNA WALIDACJA DANYCH:
+									#fields = '__all__'
+									#exclude =['price', 'summary']
+				***WŁASNA WALIDACJA DANYCH:
 					*tworzysz we forms.py funkcję wg schematu nazewnictwa: 'clean_<my_field_name>' 
 					 Funkcja ta będzie automatycznie odpaloana przy przesyłaniu formularza. 
 					*wewnątrz korzystasz z atrybutu cleaned_data
 					*podnosisz wyjątek ValidationError z biblioteki forms
-							def clean_email(self, *args, **kwargs):
-								email=self.cleaned_data.get("email")
-								if email.endswith("edu"):
-									raise forms.ValidationError('it is error')
-								else:
-									return email
+								def clean_email(self, *args, **kwargs):
+									email=self.cleaned_data.get("email")
+									if email.endswith("edu"):
+										raise forms.ValidationError('it is error')
+									else:
+										return email
 			*WE VIEWS.PY: 
 				*FUNKCJE i ATRYBUTY związane z formularzami:
 					**form.cleaned_data - atrybut zwracający wszystkie przesłane dane z formularza
@@ -1781,7 +1870,9 @@ TEMPLATES:
 								else:     								  #if request.method =='POST'
 									form_with_data = ProductCreateForm(request.POST)
 									if form_with_data.is_valid():
-										form_with_data.save()				
+										my_prod = form_with_data.save(commit=False)	
+										my_prod.price = 23.10
+										my_prod.save()
 										return redirect('home')
 										####     		Opcja dla formularza dziedziczącego po 
 										####     		forms.Form zamiast po forms.ModelForm:
@@ -1810,7 +1901,9 @@ TEMPLATES:
 								else:     								  #if request.method =='POST'
 									form_with_data = ProductCreateForm(request.POST, instance=obj)
 									if form_with_data.is_valid():
-										form_with_data.save()
+										my_prod = form_with_data.save(commit=False)
+										my_prod.price = 23.10
+										my_prod.save()
 										return redirect(reverse("product_detail", kwargs={'my_id':obj.id}))
 									else:
 										context = {'form':form_with_data}
@@ -2794,17 +2887,18 @@ TEMPLATES:
 									author = models.ForeignKey(User, on_delete =models.CASCADE)
 					**on_delete=SET_NULL - parametr który każe wpisać null w momencie usunięcia powiązanego 
 					  obiektu będącego kluczem obcym (tj argumentem w nawiasach). Dotyczy wszystkich relacji:
+					  Przy tym polu musi istnieć inne pole gdzie zezwalasz na nulle dla kolumny: null=True
 							#pole user w klasie Profile przyjmie NULL gdy obiekt User zostanie usunięty
 								class Profile(models.Model):
-									user = models.OneToOneField(User,  on_delete =models.SET_NULL)
+									user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True)
 							#pole author w klasie Post przyjmie NULL gdy obiekt User zostanie usunięty
 								class Post(models.Model):
-									author = models.ForeignKey(User, on_delete =models.SET_NULL)
+									author = models.ForeignKey(User, on_delete =models.SET_NULL, null=True)
 							#pole participants w klasie Meetup przyjmie NULL gdy wszystkie obiekty
 							#Participant mające odwołanie do Meetup zostaną usunięte.
 								class Meetup(models.Model):
 									participants = models.ManyToManyField(Participant, null=True,
-																			on_delete =models.SET_NULL)
+																	on_delete =models.SET_NULL, null=True)
 				****RELATIONSHIP ONE_TO_ONE:		
 				*models.OneToOneField(nazwaTabeli) - pole w relacji 1:1. np 1 User może być związany z 1 
 				 profilem oraz 1 profil może być związany z 1 Userem. W ten sposób profil jest 
@@ -2816,14 +2910,16 @@ TEMPLATES:
 									...
 				****RELATIONSHIP ONE_TO_MANY:
 				*models.ForeignKey(nazwaTabeli) - pole w relacji 1 do wiele gdzie jeden jest jako ten
-				 wewnątrz argumentu. Pole o kluczu w innej tabeli (czyli ForeignKey).				
+				 wewnątrz argumentu czyli pole Rodzica. Pole o kluczu w innej tabeli (czyli ForeignKey).				
 								from django.db import models
 								from django.contrib.auth.models import User
 								class Post(models.Model):
 									author = models.ForeignKey(User, on_delete.CASCADE)
 									...
 				****RELATIONSHIP MANY_TO_MANY:
-				*models.ManyToManyField(nazwaTabeli) - pole w relacji 'wiele do wiele' gdzie wiele 		
+				*models.ManyToManyField(nazwaTabeli) - pole w relacji 'wiele do wiele'. Nie trzeba podawać
+				 w dwóch klasach tego pola wiele do wiele ale można -> wtedy w klasie znajdującej się 
+				 wyżej w argumencie pola ManyToManyField wpisujesz nazwę modelu/klasy w cudzysłowiu
 								from django.db import models
 								class Participant(models.Model):
 									email=models.EmailField(unique=True)
@@ -2915,6 +3011,13 @@ TEMPLATES:
 						 tej zmiennej: 
 							def get_absolute_url(self):
 								return reverse('products:product-detail', kwargs={'pk':self.pk})	
+		   D*KLASA WEWNĘTRZNA META-  (przy zwracaniu danych przy konstrukcjach ORM-owych):
+				*pole ordering = dla zwracanych danych ustala kolejność zwracania wg danego pola
+					class MyModel(models.Model):
+						updated = models.DateTimeField(auto_now=True)
+						created = models.DateTimeField(auto_now_add = True)
+						class Meta:
+							ordering = ['-updated']					#'-' oznacza w koleścnosic malejącej 
 		   D*ROZSZERZENIE:
 				*Gdy do modelu dodasz nowe pole lub zmienisz wartość pola z 'null=True' na 'null=False' to
 				 wystarczy że zrobisz komendy makemigrations i migrate. W przypadku zgrzytów django daje
@@ -3292,8 +3395,9 @@ TEMPLATES:
 				   A)tworzysz główny katalog templates w ścieżce bazowej i tam trzymasz wszystkie pliki 
 					 html. W pliku settings.py głównej app/funkc. w skecji 'TEMPLATES' w kluczu 'DIRS' 
 					 podajesz ścieżkę do tego głónego katalogu templates (wykorzystując BASE_DIR):
+							import os
 							TEMPLATES{
-								DIRS: os.path.join(BASE_DIR, 'templates'),
+								'DIRS':[  os.path.join(BASE_DIR, 'templates'),  ]
 								...}
 			       B)W danej app/funkc tworzysz folder templates, wewnątrz folder o nazwie app/funkc. i
 				     tam trzymasz pliki html dotyczące danej app/funkc. Działa to dzięki ustawieniu 
@@ -3303,7 +3407,8 @@ TEMPLATES:
 			 folder o nazwie app/funkc. gdyż gdyby pliki html miały taką samą nazwę w głównym katalogu 
 			 templates i tych związanych z app/funkc. to pierszeństwo miałby główny katalog. 
 			*w Visual Studio podstawowy szkielet html tworzysz wpisując '! + TAB'
-	   B*MOŻLIWOŚC EDYTOWANIA PLIKÓW HTML:
+	   B*MOŻLIWOŚC EDYTOWANIA PLIKÓW HTML (DJANGO TEMPLATING ENGINE - JINJA ):
+		  *https://docs.djangoproject.com/en/4.0/topics/templates/
 		  *PODSTAWY:
 			*możesz edytować pliki HTML dla różnych zmiennych poprzez przekazanie w metodzie render 
 			 (w pliku views.py) słownika(dictionary). 
@@ -3328,14 +3433,19 @@ TEMPLATES:
 															#zwróci: <h1>Hello Mosh</h1>
 					*NA ZMIENNYCH MOŻNA STOSOWAĆ FILTRY POZWALAJĄCE NA EDYCJĘ (poprzez znak pipe'a)
 					 https://docs.djangoproject.com/en/4.0/ref/templates/builtins/#built-in-filter-reference
-						<h1>{{zmienna_date|date:"F d, Y"}}</h1>		#edycja: Month, day, YEAR
-						<h1>{{zmienna|add:22}}</h1>					#dla zmiennej= 55 zwróci: 77
+						{{zmienna_date|date:"F d, Y"}}				#edycja: Month, day, YEAR
+						{{zmienna|add:22}}							#dla zmiennej= 55 zwróci: 77
+						{{zm_date|timesince}}						#ile czasu mineło od obiektu datetime
 						{{zm|safe}}									#dla context={'zm':'<h1>HELLO</h1>'}
 																	#zamiast czystego tekstu renderuje html		
 				*konstrukcje IF - zawierasz w nawiasach wąsowych ze znakiem procenta wg składni:
+						{% if zmienna == 'login' %}
+							<h1>zaloguj się<h1>
+						{% endif %}
+
 						{% if name %}					#jeśli klucz 'name' istnieje
 							<h1>Hello {{name.0}}</h1>	#zwróc pierwszy element listy
-						{% elif surname %}
+						{% elif sur name %}
 							<h1>Hello {{surname}}</h1>		
 						{% else %}
 							<h1>Hello World</h1>
@@ -3490,8 +3600,17 @@ TEMPLATES:
 	*6*FOLDER STATIC dla danej app/funkc:
 		*PRZECHOWYWANIE:
 			*pozwala przechowywać PLIKI CSS, javascript, MEDIA
-			*w katalogu 'static' tworzysz folder o nazwie danej app/funkc. (+ możesz ale nie musisz 
-			 stworzyć inne podfoldery jak np: styles albo scripts). Trzymasz tam pliki css/js/itp
+			*w katalogu 'static' tworzysz folder o nazwie danej app/funkc. (dodatkowo możesz ale nie 
+			 musisz stworzyć inne podfoldery jak np: styles albo scripts). Trzymasz tam pliki css/js/itp
+			*możesz też stworzyć plik static w głównym korzeniu drzewa plików jak jakąs app/funkc. Wtedy w 
+			 settings.py w głównej app/funkc. musisz stworzyć zmienną STATICFILES_DIR i przypisać jej 
+			 listę ścieżek przechowania plików static:
+					#w settings.py
+					import os
+					STATIC_URL = 'static/'
+					STATICFILES_DIRS=[
+						os.path.join(BASE_DIR,'static'),
+					]
 		*ZAŁADOWANIE 
 			*na samej górze (przed DOCKTYPE) umieść załadowanie:
 					{% load static %}
@@ -3546,8 +3665,9 @@ TEMPLATES:
 				Question.objects.filter(pub_date__lte=timezone.now())
 			**filtrowanie na polach obiektu:
 				Question.objects.filter(pub_date__year=current_year)
-			**filtrowanie na obiekcie klucza obcego i jego polach:
-				Choice.objects.filter(question__pub_date__year=current_year)				
+			**filtrowanie na obiekcie klucza obcego i jego polach oraz wykorzystywanie funkcji na nich:
+				Choice.objects.filter(question__pub_date__year=current_year)
+				Room.objects.filter(topic__name__contains = 'my_word')
 			**filtrowanie z użyciem order_by:
 				Question.objects.filter(pub_date__lte=timezone.now()).order_by('-pub_date')
 		*zwrócenie użytkownika na bazie jakiegoś pola np id:
@@ -3816,6 +3936,10 @@ TEMPLATES:
 		*by generating requested page using HTML on the server and respond client by sending it 
 		*by returning only the data needed on the requested page ---> Server is the gateway to the data 
 		 ---> Server provides an API to the clients
+		*MVC (MVT) - MODEL-VIEW-CONTROLLER (MODEL-VIEW-TEMPLATE):
+			MODEL - DATA ACCESS LAYER
+			VIEW - BUSINESS LOGIC 
+			TEMPLATE - PRESENTATION LAYER
 	*Frameworki:
 		*SERVER-SIDE FRAMEWORK:
 			*Django
@@ -3835,4 +3959,5 @@ TEMPLATES:
 				*Object-relational-mapper
 				*authentication
 				*caching
+	*ANOTHER: Flaks, Cherry Pie, Web2py, Pyramid
 		

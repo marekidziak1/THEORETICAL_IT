@@ -1,4 +1,15 @@
 
+LEFT JOIN
+RIGHT JOIN
+COUNT(1) / COUNT(1121212) (OBOJĘTNIE)
+dla NULL - nie może być WHERE cos = NUll 
+						TYLKO 
+						WHERE cos IS NULL
+
+
+
+
+
 				
 100* SILNIKI BAZODANOWE:
 	1*MySQL:
@@ -105,9 +116,9 @@ ZADANIA DO POWTÓRZENIA I UTRWALENIA SQL'a:			https://pja.mykhi.org/0sem/SBD/edu
 				SELECT DISTINCT columnName FROM tableName
 				SELECT DISTINCT columnName1, columnName2 FROM tableName	//DISTINCT dotyczy całej pary
 																		  columnName1 i columnName2	
-		*columnName.* 	//jezeli JOINujesz wiele kolumn (tworzy ci się iloczyn kartezjański) a chcesz 
-						  danych tylko z jednej kolumny:
-				SELECT columnName.* FROM table1 AS t1
+		*table.* 		//jezeli JOINujesz wiele tabel (tworzy ci się iloczyn kartezjański) a chcesz 
+						//danych tylko z jednej tabeli:
+				SELECT table1.* FROM table1 AS t1
 				INNER JOIN table2 AS t2 ON t1.PrimaryKey = t2.ForeignKey
 				INNER JOIN table3 AS t3 ON t2.PrimaryKey = t3.ForeignKey
 		
@@ -301,13 +312,20 @@ ZADANIA DO POWTÓRZENIA I UTRWALENIA SQL'a:			https://pja.mykhi.org/0sem/SBD/edu
 	  *PRZYKŁADY:	
 	   *wybór rodzaju trójkąta:
 			SELECT
-			CASE
-				WHEN A=B AND B=C AND C=A THEN 'Equilateral'
-				WHEN A+B<=C OR C+B<=A OR A+C<=B THEN 'Not A Triangle'
-				WHEN A=B OR B=C OR C=A THEN 'Isosceles'
-				ELSE 'Scalene'
-			END AS triangle FROM triangles
-	
+				CASE
+					WHEN A=B AND B=C AND C=A THEN 'Equilateral'
+					WHEN A+B<=C OR C+B<=A OR A+C<=B THEN 'Not A Triangle'
+					WHEN A=B OR B=C OR C=A THEN 'Isosceles'
+					ELSE 'Scalene'
+				END AS triangle 
+			FROM triangles
+		*Wybierz pracowników (nazwisko, numer działu) z działu 30 i 20.Wypisz dział 20 bez nazwisk.
+			SELECT 
+				CASE 
+					WHEN e.deptno != 20 THEN e.Ename
+				END AS empno_Extra,
+				e.deptno
+			FROM EMP e WHERE e.deptno =20 or e.deptno=30
 	3* JOIN ON (AND) - podczas SELECTa łaczy tabele przy pomocy kluczy obcych i glownych tworząc jedną 
 	   główną z której możesz wybierać konkretne dane
 		*szukanie z wielu tabel mógłbyć zrobić przez klauzulę WHERE:
@@ -459,19 +477,32 @@ ZADANIA DO POWTÓRZENIA I UTRWALENIA SQL'a:			https://pja.mykhi.org/0sem/SBD/edu
 	1.Tworzenie tabeli
 	 * w panelu administracyjnym np phpMyAdmin wybierz dla klucza głównego PRIMARY i A_I
 	 *Składnia:
-				CREATE TABLE "tableName" (
-					"textColumn"	TEXT,
-					"integerColumn"	INTEGER);
+				CREATE TABLE tableName (
+					textColumn	TEXT,
+					integerColumn	INT);
 					
 	 *PRIMARY KEY   AUTOINCREMENT   NOT NULL   UNIQUE:
-				CREATE TABLE "tableName" (
-					"id" INTEGER NOT NULL UNIQUE PRIMARY KEY AUTOINCREMENT,
-					"anotherColumn" TEXT
+				CREATE TABLE tableName (
+					id INT NOT NULL UNIQUE PRIMARY KEY AUTOINCREMENT,
+					anotherColumn TEXT
 					);
-				CREATE TABLE "tableName" (
-					"id" INTEGER NOT NULL UNIQUE,
-					"anotherColumn" TEXT,
-					PRIMARY KEY("id" AUTOINCREMENT)
+				CREATE TABLE tableName (
+					id INT NOT NULL UNIQUE,
+					anotherColumn TEXT,
+					PRIMARY KEY(id AUTOINCREMENT)
+					);
+	 *FOREIGN KEYREFERENCES 
+				CREATE TABLE tableName (
+					id INT NOT NULL UNIQUE PRIMARY KEY AUTOINCREMENT,
+					anotherColumn TEXT,
+					my_foreignid INT FOREIGN KEY REFERENCES foreigntable(foreigncolumn)					
+					);
+				CREATE TABLE tableName (
+					id INT NOT NULL UNIQUE,
+					anotherColumn TEXT,
+					my_foreignid INT,
+					PRIMARY KEY(id AUTOINCREMENT),
+					FOREIGN KEY (my_foreignid) REFERENCES foreigntable(foreigncolumn)	
 					);
 	2.INSERT:
 		*Składnia:
@@ -492,6 +523,9 @@ ZADANIA DO POWTÓRZENIA I UTRWALENIA SQL'a:			https://pja.mykhi.org/0sem/SBD/edu
 		*Podczas operacji INSERTOWANIA nazwy kolumn w nawiasie mozesz podac w dowolnej kolejnosci
 		*Inna składnia dla INSERT to:
 				INSERT INTO tableName SET columnName1=value, columnName2=value, columnName3=value
+		*INSERT wykorzystujący zapytanie SELECT:
+				INSERT INTO osoba (id_osoby, nazwisko, data_urodzenia,adres, id_miasto) 
+				VALUES SELECT empno, ename, NULL, NULL, NULL FROM emp
 	3.UPDATE:
 		*Składnia bez klauzuli WHERE wszystkie rekordy zostaną zmodyfikowane DLATEGO PAMIĘTAJ O TYM! :
 				UPDATE tablename 
@@ -533,7 +567,11 @@ ZADANIA DO POWTÓRZENIA I UTRWALENIA SQL'a:			https://pja.mykhi.org/0sem/SBD/edu
 	5.ALTER TABLE:
 		*służy do zmian nazw w tabeli np kolumn.
 				ALTER TABLE table1 CHANGE COLUMN columnOldName columnNewName intTypeColumn;
-		
+		*służy do dodawania kolumn w tabeli
+				ALTER TABLE tablename ADD (columnname VARCHAR2(20) NULL);
+		*służy do nadania więzów CHECK odpowiedzialnych za sprawdzenie przed dodaniem elementu:
+				#nie można dodać osoby starszej niż 120 lat
+				ALTER TABLE osoba ADD (CHECK (wiek <=120))		
 -----------------------------------------------------------------------------------------------------------
 ----------------------------------------------- TYPY DANYCH -----------------------------------------------
 
