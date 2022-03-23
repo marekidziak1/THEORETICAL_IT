@@ -465,7 +465,7 @@ TEMPLATES:
 								'DIRS':[  os.path.join(BASE_DIR, 'templates'),  ]
 								...}
 			       B)W DANEJ APP/FUNKC FOLDER TEMPLATES i wewnątrz FOLDER O NAZWIE APP/FUNKC. (domyślnie)
-			*w Visual Studio podstawowy szkielet html ->  '! + TAB'
+			*w (vs) Visual Studio podstawowy szkielet html ->  '! + TAB'
 	   B*MOŻLIWOŚC EDYTOWANIA PLIKÓW HTML (DJANGO TEMPLATING ENGINE - JINJA ):
 			0*https://docs.djangoproject.com/en/4.0/topics/templates/
 			1*PODSTAWY:
@@ -1259,6 +1259,53 @@ TEMPLATES:
 						{% endif %}	
 	3)STRONA PROFILU:
 	-----------------
+	----------
+	***OPCJA 1 - Stworzenie Profilu poprzez przesłonięcie klasy User:
+	----------
+			0*PODSTAWY:
+				*zamiast stworzenia klasy profile z relacją jeden do jeden (czyli OneToOneField)
+				*z założenia nie tworzy się czegoś takiego tylko towrzy dodatkową klasę połączoną relacją 
+				 OneToOneField klasą User (patrz OPCJA 2)
+			1*w MODELS.PY:
+				*utworzenie klasy User dziedziczącej po AbstractUser wraz ze wskazaniem własnych pól
+				*utworzenie zmiennych  USERNAME_FIELD = 'email' (odpowiada za możliwośc logowania się 
+				 poprzez email zamiast przez podanie username); REQUIRED_FIELDS = [] (wskazuję wymagane 
+				 pola do wpisania przy rejestracji)
+						class User(AbstractUser):
+							name = models.CharField(max_length=200, null=True)
+							email = models.EmailField(unique=True)
+							bio = models.TextField(null=True)
+							avatar = models.ImageField(null=True, default="avatar.svg")
+							USERNAME_FIELD = 'email'
+							REQUIRED_FIELDS = []
+				*dla 'avatar' będącym uploadowanym zdjęciem instalujesz bibliotekę PILLOW: pipenv install 
+				 PILLOW by móc zrobic migrację i działac na zdjęciach (trzeba zainstalować ponieważ nie jest 
+				 ona w  standardowych bibliotekach).(patrz: 6.ELEMENTY ROZSZERZONE -> 2)Zdjęcia uplodowane)
+						pipenv install pillow
+			2*w SETTINGS.PY w głównej app/funkc.
+				*wskazujesz na na klasę po któej będziesz się logować:
+						AUTH_USER_MODEL = 'nazwaTwojejApp.User'
+				*dla pola 'avatar' będącym uploadowanym zdjęciem stworzenie katalogu bazowego dla wszystkich 
+				 zapisywanych zdjęć ze wszystkich klas zawierających pola ImageField:
+					*w settings.py
+						MEDIA_ROOT= os.path.join(BASE_DIR,'media') #(ścieżka do pliku dla zuplodowanych img
+						MEDIA_URL='/media/'					   #(publiczna reprezentacja ścieżki MEDIA ROOT)
+					*w urls.py w głównej app/funkc - by zdjęcia wyświetlały się w instrukcjach konsolowych
+						from django.conf import settings										 !!!!!!!!!
+						from django.conf.urls.static import static
+						if settings.DEBUG:
+							urlpatterns += static(settings.MEDIA_URL, 
+												  document_root=settings.MEDIA_ROOT)
+			3*w ADMIN.PY w twojej app/funkc. musisz zarejestrować swój model:
+						from django.contrib import admin
+						from .models import User
+						admin.site.register(User)
+			4*we VIEWS w formularzu dla żądania POST dodajesz 'request.FILES' a w templatesach w tagu 'form' 
+			  atrybut: enctype="multipart/form-data" (patrz: 6.ELEMENTY ROZSZERZONE -> 2)Zdjęcia uplodowane)
+	
+	----------
+ 	***OPCJA 2 - stworzenia klasy profile relacją jeden do jeden (czyli OneToOneField) z klasą User:
+	----------
 		0* W MODELS.PY 
 		   A* KLASA PROFILE - model/klasa Profile dziedzicząca z models.Model (django.db.models) z polami:
 			   1**pole user typu OneToOneField połączonych relacją 1 do 1 z klasą User --> patrz PODSTAWY 
@@ -1290,8 +1337,8 @@ TEMPLATES:
 											
 		1* SIGNALS.PY (kontynuacja MODELS) oraz APPS.PY w danej app/funkc:
 			*W APPS.PY:
-			    *po stworzeniu pliku signals.py żeby sygnały mogły działać to w apps.py wewnątrz klasy o nazwie
-				 nazwaAppConfig dziedziczącej po AppConfig trzeba stworzyć funkcję ready() i wewnątrz
+			    *po stworzeniu pliku signals.py żeby sygnały mogły działać to w apps.py wewnątrz klasy o 
+				 nazwie nazwaAppConfig dziedziczącej po AppConfig trzeba stworzyć funkcję ready() i wewnątrz
 				 jej zaimportować plik signals pochodzący z danej app/funkcjonalności poniżej dla users:
 								class UsersConfig(AppConfig): 
 									name = 'users'
@@ -1480,7 +1527,7 @@ TEMPLATES:
 				   models.py) do usera z wbudowanej w django bazy danych User: 'user.profile.image.url'
 				  *formularz odpowiadający za edycję danych użytkownika (pola z modelu User)
 				  *formularz odpowiadający za możliwość edycji zdjęcia profilowego (pola z modelu Profile)
-			  KONIECZNIE PAMIĘTAJ O TYM BY dodać konstrukcje 
+			**KONIECZNIE PAMIĘTAJ O TYM BY dodać konstrukcje 
 			      *{% csrf_token %} do poprawnego działania formularzy
 				  *'enctype' w <form method ="POST" enctype="multipart/form-data"> by móc wysyłać zdjęcia 
 				  *zainstalowanie modułu PILLOW (gdybyś nie miał zainstalowanego): pipenv install pillow
@@ -1708,7 +1755,7 @@ TEMPLATES:
 						 Bez przypisania ścieżki do zmiennej MEDIA_ROOT będzie ustawiona na BASE_DIR							 
 					   **MEDIA_URL - zmienna w settings.py. Jest publiczną reprezentacją adresu zmiennej
 						 MEDIA_ROOT. Jeżeli w wyszukiwarce wpiszesz wartość MEDIA_URL np: '/files/' to 
-						 reprezentuje on całą zmienną MEDIA_ROOT ('uploads' dla '127.0.0.1:8000/uploads/')
+						 reprezentuje on całą zmienną MEDIA_ROOT ('uploads' dla '127.0.0.1:8000/files/')
 									#pliku settings.py w głównej app/funckjonalności
 									MEDIA_URL = '/files/'		
 					   **w URLS.PY - żeby zdjecia/pliki mogły się wyświetlić (zarówno poprzez instrukcje 
@@ -1726,7 +1773,27 @@ TEMPLATES:
 						user.profile.image.url 	
 			 lub wpisując w wyszukiwarce (z uwzględnieniem folderu wskazanego w MEDIA_URL):
 						127.0.0.1:8000/files/profile_pics/nazwaZdjęcia.jpg'			
-		C)RESIZING UPLOADOWANYCH ZDJĘĆ:
+		C)we VIEWS.PY i w TEMPLATES'ach w PLIKU HTML - konfiguracja dla uploadu zdjęć:
+			*we VIEWS.PY - przy wywoływaniu formularza dla żadania POST by móc przekazać pliki/zdjęcia do 
+			 formularza oprócz 'request.POST' trzeba podać parametr 'request.FILES':
+						@login_required
+						def updateUser(request):
+							form = UserForm(instance=request.user)
+							if request.method == "POST":
+								form = UserForm(request.POST, request.FILES, instance=request.user)
+			*w TEMPLATES'ach w PLIKU HTML:
+				*w formularzu (tag form) dodaJ enctype="multipart/form-data" by móc przy żadaniu 'POST' 
+				 wysyłać zdjęcia ( <form method ="POST" enctype="multipart/form-data"> ):
+				*zainstaluj moduł PILLOW (gdybyś nie miał zainstalowanego): pipenv install pillow
+						<form class="form" action="" method="POST"  enctype="multipart/form-data">
+							{% csrf_token %}
+							{% for f in form %}
+								<label for="profile_pic">{{f.label}}</label>
+								{{f}}
+							{% endfor %}
+							<button type="submit">Update</button>
+						</form>		
+		D)RESIZING UPLOADOWANYCH ZDJĘĆ:
 			*We Views.py - AUTOMATYCZNY RESIZING ZDJĘCIA PRZY UPLOAOWANIU przez przesłonięcie metody 
 			 save(self, *args, **kwargs). Żeby móc to wykonać musisz zaimportować klase Image z biblioteki 
 			 PILLOW, którą wczesniej zainstalowałeś. (Poniżej automatyczna ZMIANA na wymiar 300 na 300)
@@ -1845,12 +1912,14 @@ TEMPLATES:
 			*WE VIEWS.PY: 
 				*FUNKCJE i ATRYBUTY związane z formularzami:
 					**form.cleaned_data - atrybut zwracający wszystkie przesłane dane z formularza
+					  (tylko dla formularzy dziedziczących po forms.Form a nie po forms.ModelForm)
 					**form.errors - atrybut zwracający wszystkie błędy z danego formularza
 					**form.is_valid() - waliduje dane z formularza
-					**form.save() / get_or_create(form.cleaned_data['attr']) - zapisuję dane z formularza
-					  w modelu/tabeli / na bazie pobranych danych z formularza tworzy lub pobiera z tabeli
-					  dany obiekt. (patrz poniżej: 1*FORMULARZ DLA MODELU KTORY JEST KLUCZEM OBCYM DLA 
-					  INNEGO MODELU)
+					**form.save() - zapisuję dane z formularza w modelu/tabeli
+					**My_model.objects.get_or_create(request.POST.get('formAttr')) - dla forms.ModelForm
+					  My_model.objects.get_or_create(form.cleaned_data['formAttr']) - dla forms.Form - na 
+					  bazie pobranych danych z formularza tworzy lub pobiera z tabeli dany obiekt. (patrz 
+					  1*FORMULARZ DLA MODELU KTORY JEST KLUCZEM OBCYM DLA INNEGO MODELU)					  
 				*DZIAŁANIE:
 					*przy pierwszym odpaleniu strony z formularzem występuję żądanie GET dla requesta 
 					 dlatego najpierw tworzysz i wysyłasz pusty formularz. 
@@ -1872,10 +1941,11 @@ TEMPLATES:
 									if form_with_data.is_valid():
 										my_prod = form_with_data.save(commit=False)	
 										my_prod.price = 23.10
+										my_prod.summary = request.POST.get('summary')
 										my_prod.save()
 										return redirect('home')
-										####     		Opcja dla formularza dziedziczącego po 
-										####     		forms.Form zamiast po forms.ModelForm:
+										####     		Opcja dla formularza dziedziczącego po 		   ####
+										####     		forms.Form zamiast po forms.ModelForm:		   ####
 										#### n = form_with_data.cleaned_data
 										#### p1=Product(title = n["title"], description = n["description"], 
 										#### 	price = n["price"], summary = n["summary"],
@@ -1903,6 +1973,7 @@ TEMPLATES:
 									if form_with_data.is_valid():
 										my_prod = form_with_data.save(commit=False)
 										my_prod.price = 23.10
+										my_prod.summary = request.POST.get('summary')
 										my_prod.save()
 										return redirect(reverse("product_detail", kwargs={'my_id':obj.id}))
 									else:
@@ -1923,6 +1994,35 @@ TEMPLATES:
 									return render(request, "products/product_create.html",context)
 								...
 			*W TEMPLATES:
+				*Możliwości ukazania formularza:
+					*jako zmienna:
+							###<form action={% url 'meetup-detail' zmienna.slug %}" method ="POST">
+							<form action ="" method="POST">		
+								{% csrf_token %}
+								{{form.as_p}}
+								<button type="submit">SAVE</button> #<input type='submit' value="SAVE"/>
+							</form>
+					*przechodząc przez każde pole formularza w pętli:
+							###<form action={% url 'meetup-detail' zmienna.slug %}" method ="POST">
+							<form action ="" method="POST">		
+								{% csrf_token %}
+								{% for my_field in form %}
+									{{my_field.label}}
+									{{my_field}}
+								{% endfor %}
+								<button type="submit">SAVE</button> #<input type='submit' value="SAVE"/>
+							</form>
+					*wypisując każde pole z osobna:
+							#dla modelu o polach ['title', 'description']
+							###<form action={% url 'meetup-detail' zmienna.slug %}" method ="POST">
+							<form action ="" method="POST">		
+								{% csrf_token %}
+								{{form.title.label}}
+								{{form.title}}
+								{{form.description.label}}
+								{{form.description}}
+								<button type="submit">SAVE</button> #<input type='submit' value="SAVE"/>
+							</form>		
 				*ELEMENTY potrzebne do działania formularza:
 					**<form method="POST">	  - tag form z metodą ustawioną na 'POST'
 					  <form action={% url 'meetup-detail' selected_meetup.slug %}" method ="POST">
@@ -1933,16 +2033,7 @@ TEMPLATES:
 					**{% csrf_token %}		  - ukryty_tag/token do prawidłowego działania żądania 'POST' 
 					**{{ form.as_p }}		  - wyrenderowana zmienna/klucz 'form' z przesyłanego słownika 
 					**<button type="submit">  - tag przycisku (button / input) z ustawieniem type ="submit"
-							{% extends "base.html" %}
-							{% block content %}
-								###<form action={% url 'meetup-detail' zmienna.slug %}" method ="POST">
-								<form method="POST">		
-									{% csrf_token %}
-									{{form.as_p}}
-									<button type="submit">SAVE</button> #<input type='submit' value="SAVE"/>
-								</form>
-							{% endblock %}
-				*możliwośći przedstawienia formularza:
+				*możliwości renderowania formularza:
 					*jako 'paragraph'							{{form.as_p}}
 					*jako 'table' (w rzędzie - domyślnie)		{{form.as_table}}
 					*jako 'unordered list'						{{form.as_ul}}
@@ -1950,7 +2041,10 @@ TEMPLATES:
 		1*FORMULARZ DLA MODELU KTORY JEST KLUCZEM OBCYM DLA INNEGO MODELU  - dotyczy formularzy dla modeli 
 		  które są w relacji 'jeden do wiele' lub 'wiele do wiele' do innych obiektów:
 			*WE FORMS.PY:
-				*zamiast dziedziczenie po forms.ModelForm musisz użyć dziedziczenia po forms.Form:
+				*zamiast dziedziczenie po forms.ModelForm musisz użyć dziedziczenia po forms.Form by
+				 we views móc później korzystać ze słownika cleaned_data('formAttr') LUB zamiast korzystać 
+				 ze słownika clened_data we views wykorzystujesz request.POST.get('formAtrr') i formularz
+				 może dziedziczyć albo po forms.ModelForm albo po forms.Form:
 							from django import forms
 							from . models import Participant
 							class RegistrationForm(forms.Form):
@@ -1974,6 +2068,7 @@ TEMPLATES:
 									if form.is_valid():
 										#zamiast: participant = form.save() #używasz:
 										user_email=form.cleaned_data['email'] 
+										#user_email = request.POST.get('email')
 										participant, was_created = Participant.objects.get_or_create(
 																						email=user_email)
 										selected_meetup.add(participant)
@@ -1990,124 +2085,90 @@ TEMPLATES:
 								return render(request, 'meetups/meetup-detail.html', context)
 			*W TEMPLATES
 				*takie samo jak w pkt 1.PODSTAWOWY FORMULARZ.
-			
-		2*Formularz JEDNOKROTNEGO WYBORU (formularz budowany od podstaw w HTMLu, przekierowujący na inną 
-		  stronę przez pole action w tagu form i przekazujący dane przez request.POST):
-			*DLA MODELI, URLS.PY i VIEWS.PY:
-					#w models.py - dla modeli:
-							class Question(models.Model):
-								question_text= models.CharField(max_length=200)
-								pub_date = models.DateTimeField('date published')
-							class Choice(models.Model):
-								question = models.ForeignKey(Question, on_delete=models.CASCADE)
-								choice_text = models.CharField(max_length=200)
-								votes = models.IntegerField(default=0)
-					#w urls.py - dla linku:
-							path('<int:question_id>/', views.detail, name='detail'),	
-					#we views.py - dla funkcji detail():
-							def detail(request, question_id):
-								question = get_object_or_404(Question, id=question_id)
-								return render(request, 'polls/detail.html', {'question': question})
-			*TWORZYSZ FORMULARZ który po wysłaniu przekierowuję do funkcji vote() z views.py zamiast do 
-			 samego siebie. Funkcja vote() we views.py ogarnia logikę (czyli posumowanie głosów) i 
-			 przekierowanie do innej funkcji z views.py która prześle dane do odpowiedniego pliku HTML:
-					#w templates - wyświetla się plik detail.html, gdzie znajduję się formularz:
-							{% if error_message %}
-								<h1>{{ error_messages }}</h1>
-							{% endif %}
-							<form method='POST' action={% url 'vote' question.id %}		
-														#przy metodzie POST przesyła dane z formularza 
-														#do funkcji vote() w pliku views (views.vote())
-								{% csrf_token %}
-								<fieldset>
-									<legend>{{ question.question_text }} </legend>
-									{% for choice in question.choice_set.all %}
-										<input type="radio" name="choice" value ={{choice.id}}  
-																		id="choice{{forloop.counter}}" />
-														#pole name będzie przekazane jako klucz w slowniku
-														#z request.POST a value jako wartość do tego klucza
-										<label for="choice{{ forloop.counter }}">{{choice.choice_text}}
-																								 </label>
-														#label musi pasować do "radio" czyli opcji wyboru. 
-														#Robisz to poprzez 'for' gdzie wskazujesz id 'radio'
-									{% endfor %}
-								</fieldset>
-								<input type="submit" value="vote" />
-							</form>
-					#urls.py
-							path('<int:question_id>/vote/', views.vote, name='vote'),
-							path('<int:question_id>/results/', views.results, name='results'),
-					#we views: 
-							def vote(request, question_id):]
-								question = Question.objects.get(id=question_id)
-								try:
-									selected_choice= question.choice_set.get(pk=request.POST['choice'])
-								except(KeyError, Choice.DoesNotExist):
-									return render(request, 'polls/results.html', {'question':question, 
-																	'error_message':"You didn't choose"})
-								else:
-									selected_choice.votes+=1
-									selected_choice.save()
-									return HttpResponseRedirect(reverse('polls:results', kwargs={
-																			"question_id":question.id}))
-														#przy method=POST używasz HttpResponseRedirect()
-														#zamiast metody render() gdyż dane z request.POST 
-														#przy odświeżaniu w render prześlą się drugi raz 
-														#co nie może mieć miejsca!!!
-							def results(request, question_id):
-								question = Question.objects.get(id=question_id)
-								return render(request, 'polls/results.html',{'question':question}
-					#w templates:
-							{{question.question_text}}
-							<ul>
-								{%for choice in question.choice_set.all %}
-									<li>{{choice.choice_text}} -- {{choice.votes}}, 
-																	vote{{ choice.votes|pluralize }}</li>
-								{% endfor %}
-								<a href="{% url 'polls:detail' question.id %}">Vote again?</a>
-							</ul>
-		3*FORMULARZ REJESTRACYJNY (z utworzeniem obiektu USERa):
-					#FORMULARZ REJSTRACYJNY JEST OMÓWIONY W DZIALE IIGIM
-					*PODSTAWY we VIEWS:
-							def register(request):
-								if request.method == 'POST':			##gdy na dole w else'ie formularz 
-																		##zostanie uzupełniony danymi to w 
-																		##w pliku html poprzez przycisk 
-																		##submit oraz metodę 'POST' z tagu 
-																		##form te dane są przesłane i można
-																		##je przekazać requestem
-									formWithData=UserCreationForm(request.POST)	
-																	##utworzenie formularza z danymi 
-																	##przekazanymi przez metodę 'POST'
-																	##z tagu form w pliku html
-									if formWithData.is_valid():			##walidacja danych w formularzu
-										formWithData.save()			##utworzenie użytkownika z danych z 
-																	##formularza
-										return redirect('blog-home')	##przekierowanie na stronę podaną
-																		##w zmiennej name w urls.py 
-																		##app/funkcjonalności blog
-									else:									
-										return render(request,'users/register.html', {'form':formWithData})
-																	##wysłane powtórnie formularz z 
-																	##uzupełnionymi danymi gdy dane z 
-																	##formularza mają jakiś błąd
-								else:
-									formWithoutData = UserCreationForm()
-									return render(request, 'users/register.html', {'form':formWithoutData})
-																		##na początku odpala się formularz
-																		##bez danych ponieważ nie została
-																		##w pliku html nie została jeszcze
-																		##odpalona metoda POST z tagu form
-				*ELEMENTY POTRZEBNE DO DZIAŁANIA FORMULARZA: 														
-					**formularz REJESTRACYJNY tworzy się poprzez klasę UserCreationForm() 
-							from django.contrib.auth.forms import UserCreationForm
-							form = UserCreationForm(request.POST)			#request.POST oznacza że 
-																			#przekazuje dane z formularza
-					**form.is_valid() pozwala zwalidować dane z formularza:
-							form.is_valid():
-					**form.save() pozwala zapisać dane z formularza (dla UserCreationForm() baza danych 
-					  jest domyślnie ustawiona na USER:
-							form.save()
+
+		2*MIESZANY TRYB FORMULARZA - wykorzystujący standardowe formularze w HTMLu i formularze oparte na 
+		  zmiennych w django:
+			*w MODELS.PY:	
+				*mamy 2 modele będące w relacji jeden do wiele "jeden Topic może być w wielu Room'ach":
+							class Topic(models.Model):
+								name = models.CharField(max_length=200)
+							class Room(models.Model):
+								host = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+								topic = models.ForeignKey(Topic, on_delete=models.SET_NULL, null=True)
+								name = models.CharField(max_length =200)
+								description = models.TextField(null=True, blank=True)
+			*we FROMS.PY:
+				*tworzysz formularz dla klasy Room oparty o ModelForm:
+							class RoomForm(ModelForm):
+								class Meta:
+									model =Room
+									fields = '__all__'
+									exclude = ['host']
+			*we VIEWS.PY:
+				*dla pierwszego przesłania formularza (czyli przy pobraniu danych z serwera (metoda GET)) 
+				 wysyłasz pola formularza 'RoomForm' ale dla jednego pola 'Topic' wysyłasz osobne dane.
+				 To pole będziesz musiał sam rozpisać w HTMLu w pliku HTML
+				*przy drugim wysłaniu formularza (metoda POST) dla pola 'topic' pobierasz dane przy pomocy 
+				 argumentu 'name' w tagu dla pola 'topic' (poprzez request.POST.get('topic_name') a dla 
+				 reszty pól pobierasz dane ze zmiennych gdzie argumnet 'name' jest domyślnie ustawiony 
+				 na nazwę pola w formularzu:
+				*ponieważ pole 'topic' jest w relacji jeden do wiele to stosujesz metodę get_or_create() 
+				 która pozwala na wbyranie jednego z istniejących obiektów lub utworznie nowego.
+							def createRoom(request):
+								form = RoomForm()
+								topics = Topic.objects.all()
+								if request.method == "POST":
+									############################### WERSJA STANDARDOWA:	
+									### form=RoomForm(request.POST)
+									### topic_name= request.POST.get('topic_name')
+									### topic, was_created = Topic.objects.get_or_create(name = topic_name)
+									### if form.is_valid():
+									###		room = form.save(commit=False)
+									###		room.host = request.user
+									###		room.topic = topic
+									### 	room.save()
+													#  dla formularzy dziedziczących po forms.Form
+													#  zamiast po forms.ModelForm opcja dodatkowa:
+													#room.name=form.cleaned_data["name"]
+													#room.description=form.cleaned_data["description"]
+									############################### WERSJA ŁĄCZONA:
+									topic_name= request.POST.get('topic_name')
+									topic, was_created = Topic.objects.get_or_create(name = topic_name)
+									Room.objects.create(
+										host=request.user,
+										topic=topic,
+										name = request.POST.get('name'),
+										description = request.POST.get('description')	
+									)
+									return redirect('home')
+								context = {'form':form, 'topics' : topics}
+								return render(request, 'base/room_form.html', context)
+			*W TEMPLATES plik html:
+				*budujesz formularz w HTMLa częsciowo w oparciu o samego HTMLa a częsciowo o zmienną 'form'
+				 reprezentującą formularz utworzony na bazie formularza dziedziczącego po ModelForm
+				*we views będziesz pobierał dane poprzez request.POST.get(___) wpisując nazwy dla atrybutu
+				 'name' każdego tagu. Dla zmiennych, atrybut 'name' domyślnie jest ustawiony na nazwę 
+				 zmiennej formularza (czyli zmienna {{form.description}} ma domyślny atrybut 'name' 
+				 ustawiony na 'description'):
+								<form class="form" action="" method ="POST">
+									{% csrf_token %}
+									<div>
+										<label for="room_topic">Topic</label>
+										<input required type="text" name="topic_name" list="topic-list" />
+										<datalist id="topic-list">
+											<select id="room_topic">
+												{% for topic in topics %}
+													<option value="{{topic.name}}">{{topic.name}}</option>
+												{% endfor %}
+											</select>
+										</datalist>
+										{{form.name.label}}
+										{{form.name}}
+										{{form.description.label}}
+										{{form.description}}
+										<button type="submit">Create Room</button>
+									</div>
+								</form>
 			
   *3*CLASS-BASED-VIEWS		
     a)*PODSTAWY:

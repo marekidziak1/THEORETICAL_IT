@@ -1,0 +1,75 @@
+
+			 
+			 
+============================================= ODCINEK 11 pagination =======================================
+*pagination czyli dzielenie na strony 													0:00-1:00
+*loadowanie danych z pliku json do bazy danych :										1:00-4:15
+					import json
+					from blog.models import Post
+					with open('posts.json') as f:
+						posts_json=json.load(f)
+						for post in posts_json:
+							p=Post(title=post['title'], content=post['content'], author_id = post['user_id'])
+							p.save()
+*paginetor object																		4:15-8:00
+		python manage.py shell
+			from django.core.paginator import Paginator
+			posts=['1','2','3','4','5'] 
+			p = Paginator(posts, 2)
+			print(p.num_pages)							#zwróci: 3
+			for page in p.page_range:
+				print(page)								#zwróci: 1,2,3
+			print(p.page(1))							#zwróci: <Page 1 of 3>
+			print(p.page(1).number)						#zwróci: 1
+			print(p.page(1).object_list)				#zwróci: ['1', '2']
+			print(p.page(1).has_previous)				#zwróci: False
+			print(p.page(1).has_next)					#zwróci: True
+			print(p.page(1).next_page_number)			#zwróci: 2
+			#print(p.page(1).previous_page_number)	#mógłbyś jeszcze odwołać się do poprzedniej 
+														#strony gdyby istniała
+	 
+*Paginator in PostListView:																8:00 - 22:30
+	*W PostListView(ListView) dodasz zmienną paginate_by i przypiszesz odpowiednią wartość (ilośc postów)
+	 --> będzie to dzielone wg podanej wartości ilośći postów.
+	*paginate_by nie da Tobie możliwości do przechodzenia przez dalszą ilość podzielonych postów ale 
+	 możesz to zrobić własnoręcznie poprzez wpisanie '?page=2':
+			http://127.0.0.1:8000/blog/?page=2
+	*w home.html wewnątrz block content:
+				{% if is_paginated %}
+					{% if page_obj.has_previous %}
+						<a href="?page=1">First</a>
+						<a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+					{% endif %}
+					{% for num in page_obj.paginator.page_range %}
+						{% if page_obj.number == num %}
+							<a href="?page={{ num }}">{{ num }}</a>
+						{% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+							<a href="?page={{ num }}">{{ num }}</a>
+						{% endif %}
+					{% endfor %}
+					{% if page_obj.has_next %}
+						<a href="?page={{ page_obj.next_page_number }}">Next</a>
+						<a href="?page={{ page_obj.paginator.num_pages}}">Last</a>
+					{% endif %}
+				{% endif %}
+		a to już po dodaniu renderowania w bootstrapie:
+				{% if is_paginated %}
+					{% if page_obj.has_previous %}
+						<a class="btn btn-outline-info mb-4" href="?page=1">First</a>
+						<a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+					{% endif %}
+					{% for num in page_obj.paginator.page_range %}
+						{% if page_obj.number == num %}
+							<a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
+						{% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+							<a class="btn btn-outline-info mb-4" href="?page={{ num }}">{{ num }}</a>
+						{% endif %}
+					{% endfor %}
+					{% if page_obj.has_next %}
+						<a class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number }}">Next</a>
+						<a class="btn btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages}}">Last</a>
+					{% endif %}
+				{% endif %}
+	
+	
+*POSTS filter by user:														22:30

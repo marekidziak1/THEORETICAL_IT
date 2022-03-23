@@ -1,0 +1,729 @@
+=============================================================================================================
+=============================================================================================================
+=============================================================================================================
+
+*W ROZSZERZENIACH -> class-bases-views (LoginView, LogoutView)
+			LOGIN_REDIRECT_URL			- (po poprawnym zalogowaniu automatyczne przejście pod podany adres tutaj)
+
+
+*W PODSTAWACH w pk1 module MODELS - opsiać jak można rozszerzyć klasę USER
+		z django.contrib.auth.models (chodzi o zrobienie nowej klasy z polem 
+
+
+*FORMS.PY :
+	PKT 2gi:
+	UserCreationForm wraz z rozszeżeniem (UserRegisterForm)
+	from django import forms  :	forms.ModelForm	 (UserUpdateForm
+	
+	
+	WE FORMSACH     --       dodać CRISPY FORMS
+	 *Zmiana formy renderowania i przedstawienia błędów przy walidacji danych w formularzu z form.as_p na form|crispy:
+		*instalujesz django-crispy-forms w konsoli poprzez:
+					pipenv install django-crispy-forms	  LUB    pip install django-crispy-forms
+		*w sekcji INSTALLED_APPS w głównej app/funkc. dodajesz crispy_forms 
+					INSTALLED_APPS = [
+						...
+						'crispy_forms',
+					]
+		 oraz dodajesz w tym samym pliku zmienną CRISPY_TEMPLATE_PACK = 'bootstrap4'
+					CRISPY_TEMPLATE_PACK = 'bootstrap4'
+	
+	
+*W ROZSZERZENIACH -> signals (dołożenie do rozszerzeńPodstaw -> signals.py jako kontynuacja models.py)
+		
+		
+=============================================================================================================
+=============================================================================================================
+=============================================================================================================
+=============================================================================================================
+=============================================================================================================
+=============================================================================================================
+=============================================================================================================
+=============================================================================================================
+=============================================================================================================
+=============================================================================================================
+=============================================================================================================
+=============================================================================================================
+=============================================================================================================
+=============================================TRAVERSY MEDIA==================================================
+renderowanie zmiennych w HTMLu:
+vote{{ choice.votes|pluralize }}  -  dostosowanie słowa vote w zależnośći od zmiennych 
+=============================================================================
+w URLS.PY ALBO W CLASS-BASED-VIEWS:
+	RedirectView.as_view() - dla danej ścieżki przeniesienie na inną ścieżkę:
+
+			from django.views.generic.base import RedirectView
+			urlpatterns = [
+				path('admin/', admin.site.urls),
+				path('', RedirectView.as_view(url='meetups.urls'))
+				path('meetups/', include('meetups.urls')),
+			]
+=============================================================================
+we views.py --> przykłady dostania się do różnych ścieżek związanych z image(url, path, size, width, height)
+							--> user.username
+=============================================================================
+DLA PROFILE -- SPRAWDZIĆ:
+	W MODELS WPROWADZIC ZMIENNE:
+				USERNAME_FIELD = 'email' - pozwala na zalogowanie się porpzez email zamiast poprzez username
+				REQUIRED_FIELDS = []	 - wskazuję pola któe trzeba wypełnic przy rejestracji 
+=============================================================================
+
+DJANGO USER MODEL:
+	*https://docs.djangoproject.com/en/4.0/ref/contrib/auth/
+	
+
+from django.contrib.auth.models import User
+user = models.ForeignKey(User, on_delete = models.CASCADE)
+
+==============================================================================
+DYNAMIC SEARCHING -WYSZUKIWARKA (we form)
+	SEARCH jako wyszukiwarka utworzona przez formularz
+			<form method="GET" action="{% url 'home' %}">
+				<input type="text" name="q" placeholder="Search rooms..."/ >
+				<input type="submit" value="search">
+			</form>
+	korzystasz z metody GET która zmienną wpisaną w atrybucie name (w tym przypadku 'q') dołącza do linku 
+	który jest wysyłany na serwer i później w pliku views pobiearany w celu pobrania odpowiednich danych:
+		#w linku - po wciśnieciu ENTERa lub przycisku 'submit' zostanie wysyłany link:
+			127.0.0.1:800/?q=wpisany+mojText
+		#we views.py:
+			q= request.GET.get('q') if request.GET.get('q') != None else ''
+			rooms = Room.objects.filter(topic__name__contains= q)
+===============================================================================
+DYNAMICZNE LINKI - dodać:
+	*gdy nie masz stworzonego linku w urls.py do konkretnego obiektu (link ze zmienną) to możesz zrović 
+	 link do innej strony gdzie będzie logika wyszukiwania tego obiektu wykorzystująca metodę GET:
+			<a href="{% url 'home' %}?q={{topic.name}}"> MOJ_TOPIC </a>
+	*we views na innej stronie tworzysz logikę wyszukiwania dla obiektu który nie ma własnego dynamic url:
+			q= request.GET.get('q') if request.GET.get('q') != None else ''
+			topics = Topic.objects.filter(name__icontains=q)
+
+===============================================================================
+w ORM - skomplikowane wyszukiwarki do filter():
+UŻYWANIE klasy 'Q' z django.db.models. przy pobieraniu danych wewnątrz funkcji filter() okalasz dane 
+warunki w nawiasy z klasą 'Q' i dodatkowo możesz używać '&','|' jako 'and','or'
+	# dla linka (w templates):
+			 <a href="{% url 'home' %}?q={{topic.name}}">{{topic.name}}</a>
+	# logika działania we views:
+			from django.db.models import Q
+			my_q= request.GET.get('q') if request.GET.get('q') != None else ''	   #parametr pobrany z linka
+			rooms = Room.objects.filter(
+				Q(topic__name__icontains= my_q) |
+				Q(name__icontains=my_q) |
+				Q(description__icontains=my_q) |
+				Q(host__username__icontains=q))
+================================================================================
+FLASH MESSAGES:
+	https://docs.djangoproject.com/en/4.0/ref/contrib/messages/#using-messages-in-views-and-templates
+	#we views.py:
+			from django.contrib import messages
+			messages.add_message(request, messages.INFO, 'HELLO WORLD')
+			messages.error(request, 'User does not exist')
+	#w pliku main.html w templates'ach tworzysz miejsce gdzie zawsze te komunikaty się wyświetlają:
+			{% if messages %}
+			<ul class="messages">
+				{% for message in messages %}
+				<li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+				{% endfor %}
+			</ul>
+			{% endif %}
+================================================================================
+przerabianie modeli w bazie danych i skasowanie aktualnych modeli:
+	*usunięcie bazy danych 
+	*usuniećie wszystkich migracji oprócz migracji __init__.py
+	
+================================================================================
+operowanie czasem i datami w django - do ustalenia czasu aktualnego
+
+	from django.utils import timezone
+	q= Question(pub_date = timezone.now()
+
+	current_year = timezone.now().year 
+
+do zwykłego operowania na czasie i datach:
+
+	import datetime
+	def was_published_recently(self):
+        return self.pub_date >= timezone.now()-datetime.timedelta(days=1)
+					
+================================================================================
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+================================================================================================================
+================================================================================================================
+================================================================================================================
+ELEMENTY ROZSZERZONE:
+	0.strona administratora
+	1.request 
+	2.ZDJĘCIA
+	3.django templating language
+	4.RESTRICTED ROUTE
+================================================1
+REQUEST we views.py 
+(zamiast request może być inna nazwa jak np response)
+	w pliku HTML w templates: 
+	{{request.META.HTTP_REFERER}} - powrót na poprzednią stronę
+			<a href="{{request.META.HTTP_REFERER}}">go back</a>
+			
+			
+			
+			
+			
+	*w pliku HTML do dynamicznego linka dodajesz parametr 'q' (mógłby być obojętnie jaki znak ale musi być za 
+	 znakiem zapytania czyli zmienna q i wartość do tej zmiennej:
+				<a href="{% url 'home' %}?q={{topic.name}}">{{topic.name}}</a>
+	 w pliku views.py już będziesz wykorzystywał tę zmienną 'q':
+				my_q = request.GET.get('q')
+				topics=Topic.objects.filter(topic__name=q)
+	 W Przypadku gdy 
+				q= request.GET.get('q') if request.GET.get('q') != None else ''
+				rooms = Room.objects.filter(topic__name__contains= q)
+	
+	
+	
+	
+	{% if request.user.is_authenticated %}
+
+
+
+
+
+
+	request.instance (przy s
+	
+	request.method = 'POST'
+	
+	def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+	 
+	------------------------------------- TECH WITH TIM - https://www.techwithtim.net/tutorials/django/custom-forms/
+**	request.GET zwróci słownik zmiennych w linku 
+		z kluczami będącymi zmiennymi w linku 
+						 <a href="{% url 'home' %}?q={{topic.name}}">{{topic.name}}</a>
+		dla link:
+						127.0.0.1:8000/home?q=jakisTekst
+		zwróci słownik
+						 <QueryDict: {'q': ['jakisTekst']}>
+		we views można pobrac te klucze poprzez:
+						request.GET.get('q')
+**	request.POST zwróci słownik
+		z kluczami będącymi:														i wartościami w postaci:
+				*wszystkimi tagami input type='checkbox' które będą zaznaczone				*pola value w tagu input type='checkbox'
+				 (dla starozaznaczonych input'ów type='checkbox  użyj pola: checked  
+				  oraz zrob sprawdzenie warunku np: jeżeli zadanie ukończone to dla
+				  danego tagu input type='checkbox' dodaj pole checked
+				*wszystkimi tagami input type='text'										*tekstu wpisanego do tagu input type='text'
+				*wszystkimi tagami button type='submit'										*pola value w tagu button type='submit'
+				*pole csrf_token 															*z kluczem potrzebnym do odszyfrowania 
+		##dla formularza form który ma za zadanie nadać odpowiednie wartości (pola value) dla odpowiednich tagów o nazwach w polach name :
+						<form method = 'POST' action="create">
+							{% csrf_token %}
+							<ul>
+								{% for item in ls.item_set.all %}
+									{%if item.complete == False%}
+										<li><input type="checkbox", value="clicked", name="c{{item.id}}">{{item}}</li>
+									{% else %}
+										<li><input type="checkbox", value="clicked", name="c{{item.id}}" checked>{{item}} - COMPLETE</li>
+									{%endif %}
+								{% endfor %}
+							</ul>
+							<button type="submit", name="saveButton", value ="save button">SAVE everything</button>
+							<input type='text', name='newItem'>
+							<button type="submit", name="saveNewItemButton", value = "save new Item button">Add new Item</button>
+						</form>
+		##co pozwoli stworzyć słownik klikniętych "checkbox'ów", wciśniętych buttonów i wszystkich input'ów type="text":
+						<QueryDict: {'csrfmiddlewaretoken': ['yXRRDKvKzh70bG4gHZRKSPqZ6ZMa62uUGGCfUZnVOolakuba8ifWaZ5yY9LYem2g'], 
+						'c1': ['clicked'], 'c2': ['clicked'], 'c4': ['clicked'], 'saveButton': ['save button'], 'newItem': ['']}>
+		##który zostanie wykorzystany przez funkcję w pliku views (gdzie znajduję się cała logika):
+			*dane/wartości klucza które pobierasz z request.POST jako słownik możesz pobrać albo poprzez metodę get() albo poprzez
+ 			 wywołania z nawiasów kwadratowych tj: request.POST.get('klucz') ALBO request.POST['klucz']
+						def index(request,id):
+							lst = ToDoList.objects.get(id=id)
+							if request.method != 'POST':			#dla pierwszego pobrania - odpalenie strony HTML - żądanie 'GET'
+								context ={'ls':lst}
+								return render(request, "site1/list.html", context)
+							else:  #if request.method == 'POST':	#dla odświeżenia strony po wysłaniu formularza - przy żądaniu 'POST'
+								#print(request.POST) - w konsoli pokaże ten słownik 
+								if request.POST.get("saveButton"):
+									for item in lst.item_set.all():
+										if request.POST.get("c" + str(item.id)) == "clicked":
+											item.complete = True
+										else:
+											item.complete = False
+										item.save()
+								elif request.POST.get("saveNewItemButton"):
+									txt = request.POST.get("newItem")
+									if len(txt)>2:
+										lst.item_set.create(text=txt, complete=False)
+									else:
+										print("invalid")
+								context ={'ls':lst}
+								return render(request, "site1/list.html", context)
+================================================2				
+DJANGO TEMPLATING LANGUAGE:
+	*metody wywołane na kluczach przekazywanego słownika do templatesów np as_p normalnie we 
+	 views byłby wywoływane z nawiasami okrągłymi a w templatesach są wywoływane bez tych nawiasów
+	 (pole request.user.is_authenticated się nie liczy)
+					#we views.py:
+					if request.user.is_authenticated:
+						form = myForm().as_p()
+					#w templatesach, w plikach HTML:
+					{% if user.is_authenticated %}	
+						{{form.as_p}}
+	*chąc dostać się do obiektów klucza obcego to operujesz bez nawiasów tj:'_set.all()' 
+					#we views.py
+					if request.user.is_authenticated:
+						t = request.user.todolist_set.all()
+					#w templatesach, w plikach HTML:
+					{% if user.is_authenticated %}	
+						{% for item in user.todolist_set.all %}
+							...
+						{% endfor %}
+================================================3
+we views --> restricted route 
+			 --> LOGIN_URL w settings.py głónej app/funkc.
+									- potrzebne do restricted route @login_required by zmienić z 
+									  domślnej ścieżki /acounts/login/ na /login/
+									  
+	--> dekorator @login_required - wykorzystuję plik ciasteczek w postaci session_id przechowujący 
+	    informację o tym czy użytkownik jest zalogowany. Jezeli go nie ma to nie pozwoli odpalić funkcji
+		udekorowanej a przeniesie cię na inną podstronę (np do logowania) podaną w arg login_url:
+			from django.contrib.auth.decorators import login_required
+			
+			@login_required(login_url='/login/')
+			def function(request):
+				...
+				
+	--> we views.py:
+			room=Room.objects.get(id=pk)
+			if request.user != room.host :
+				return HttpResponse('You are not allowed here')
+			if request.user.is_authenticated:
+				return redirect('home')
+		w htmlu:
+			{% if request.user == r.host%}
+				<a href="{% url 'update-room' r.id %}">Update Room</a>
+				<a href="{% url 'delete-room' r.id %}">DELETE Room</a>
+			{% endif %}
+				
+				
+				
+				
+================================================================================================================
+================================================================================================================
+================================================================================================================
+===============================================NOWY PLIK========================================================
+============================================================================================================
+TESTY:
+	https://docs.djangoproject.com/en/4.0/intro/tutorial05/
+	https://docs.djangoproject.com/en/4.0/topics/testing/
+	1)PODSTAWY i Testowanie models.py:
+		*w każdej app/funkc. jest plik test.py przeznaczony do testów
+		*w tym pliku tworzysz klasy testów które musza dziedziczyć po klasie TestCase. Klasy testów służą 
+		 testowaniu nie tylko funkcji w pliku views.py ale także pojedyńczych modeli z models.py.
+		*Wewnątrz klas tworzysz funkcje które przez to że klasa dziedziczy po TestCase będą automatycznie 
+		 uruchamiane po odpaleniu testów. Wewnątrz funkcji tworzysz asercje sprawdzające poprawność danych
+					from django.test import TestCase
+					from .models import Question						#pobierasz model 
+					class QuestionModelTests(TestCase):					#klasa testów do testowania modelu
+						def test_<name_function>_<that_testing>(self):
+							"""opis testu"""
+							q1 = Question(...)
+							self.assertIs(q1.<name_function>(),False)	#czy porównanie zwróci False
+		*testy uruchamia się komendą:
+				python manage.py test <app_name>
+	2)Testowanie pliku VIEWS.PY:
+		a)testowanie w konsoli:
+			*w konsoli musisz zadbać o ustanowienie środowiska do testów:
+					from django.test.utils import setup_test_environment
+					setup_test_environment()	
+			*w konsoli jest konieczność pobrania własnego Client'a imitującego klienta w przeglądarce
+					from django.test import Client
+					client = Client()
+			*od teraz na danym kliencie możemy żadąc zwrócenie odpowiednich danych:
+				*żądanie konkretnej strony po ścieżce:
+					response = client.get('/')			#Not Found: /
+					response = client.get('home/')
+				*żadanie konkretnej strony po atrybucie 'name' w path:
+					form django.url import reverse
+					response = client.get(reverse('index'))
+				*zwrócenie statusu strony:
+					response.status_code 				#404 /200
+				*zwrócenie HTMLa wyrenderowanej strony:
+					response.content					#<li><a href="/polls/1/">Wha's up?</a></li>
+				*zwrócenie przesyłanego słownika na stronę:
+					response.context					#[...'klucz': <QuerySet [<Question: What's up>]>...]
+					response.context['klucz']			#<QuerySet [<Question: What's up?>]>
+		b)testowanie pliku views.py w pliku test.py	
+			*tak jak dla models tworzysz klasę testującą dziedziczącą po TestCasektóra testuję każdą 
+			 funkcje/class-based-view z views.py. Wewnątrz  klasy testującej tworzysz funkcje testujące 
+			 różne przypadki i w nich wykorzystujesz wbudowane pole client'a:
+					from django.test import TestCase
+					class QuestionIndexViewTest(TestCase):
+						def test_no_question(self):
+							response = self.client.get(reverse('index'))
+							self.assertEqual(response.status_code, 200)
+							self.assertContains(response, "No polls availble")	#odpowiada response.content
+																				#sprawdza tekst w htmlu
+							obj = Question(text='mama',pub_date=...)
+							self.assertQuerySetEqual(response.context['klucz'],[obj.text])
+			*uruchamiasz testy tak samo jak w pkt1:
+					python manage.py test <app_name>
+	3)Rzeczy dodatkowe odróżniające zwykłe testy od testów w Django:
+		*testująca klasa dziedziczy po klasie Testcase
+					from django.test import TestCase
+		*klasa TestCase dostarcza pole client które pozwala na imitowanie klienta i żądanie stron po 
+		 atrybucie name w funkcji path w urls.py: 
+					from django.url import reverse
+					class MyTestClass(TeatCase):
+						def my_func(self):
+							self.client.get(reverse('detail')
+		*klasa TestCase dostarcza specjalny typ asercji: assertContains() i assertQuerySetEqual()
+					from django.url import reverse
+					class MyTestClass(TeatCase):
+						def my_func(self):
+							response = self.client.get(reverse('detail')
+			*assertContains() - sprawdza czy w zwracanym wyrenderowanym HTML'u zawiera się string w 2gim arg
+							self.assertContains(response, 'my text in HTML'(
+			*assertQuerySetEqual() - czy zwracany słownik dla podanego klucza odpowiada liście wartości
+							self.assertQuerySetEqual(response.context['my_key'], [value1, value2])
+					
+RÓŻNE FORMY FORMULARZY:
+		1*Formularz JEDNOKROTNEGO WYBORU (formularz budowany od podstaw w HTMLu, przekierowujący na inną 
+		  stronę przez pole action w tagu form i przekazujący dane przez request.POST):
+			*DLA MODELI, URLS.PY i VIEWS.PY:
+					#w models.py - dla modeli:
+							class Question(models.Model):
+								question_text= models.CharField(max_length=200)
+								pub_date = models.DateTimeField('date published')
+							class Choice(models.Model):
+								question = models.ForeignKey(Question, on_delete=models.CASCADE)
+								choice_text = models.CharField(max_length=200)
+								votes = models.IntegerField(default=0)
+					#w urls.py - dla linku:
+							path('<int:question_id>/', views.detail, name='detail'),	
+					#we views.py - dla funkcji detail():
+							def detail(request, question_id):
+								question = get_object_or_404(Question, id=question_id)
+								return render(request, 'polls/detail.html', {'question': question})
+			*TWORZYSZ FORMULARZ który po wysłaniu przekierowuję do funkcji vote() z views.py zamiast do 
+			 samego siebie. Funkcja vote() we views.py ogarnia logikę (czyli posumowanie głosów) i 
+			 przekierowanie do innej funkcji z views.py która prześle dane do odpowiedniego pliku HTML:
+					#w templates - wyświetla się plik detail.html, gdzie znajduję się formularz:
+							{% if error_message %}
+								<h1>{{ error_messages }}</h1>
+							{% endif %}
+							<form method='POST' action={% url 'vote' question.id %}		
+														#przy metodzie POST przesyła dane z formularza 
+														#do funkcji vote() w pliku views (views.vote())
+								{% csrf_token %}
+								<fieldset>
+									<legend>{{ question.question_text }} </legend>
+									{% for choice in question.choice_set.all %}
+										<input type="radio" name="choice" value ={{choice.id}}  
+																		id="choice{{forloop.counter}}" />
+														#pole name będzie przekazane jako klucz w slowniku
+														#z request.POST a value jako wartość do tego klucza
+										<label for="choice{{ forloop.counter }}">{{choice.choice_text}}
+																								 </label>
+														#label musi pasować do "radio" czyli opcji wyboru. 
+														#Robisz to poprzez 'for' gdzie wskazujesz id 'radio'
+									{% endfor %}
+								</fieldset>
+								<input type="submit" value="vote" />
+							</form>
+					#urls.py
+							path('<int:question_id>/vote/', views.vote, name='vote'),
+							path('<int:question_id>/results/', views.results, name='results'),
+					#we views: 
+							def vote(request, question_id):]
+								question = Question.objects.get(id=question_id)
+								try:
+									selected_choice= question.choice_set.get(pk=request.POST['choice'])
+								except(KeyError, Choice.DoesNotExist):
+									return render(request, 'polls/results.html', {'question':question, 
+																	'error_message':"You didn't choose"})
+								else:
+									selected_choice.votes+=1
+									selected_choice.save()
+									return HttpResponseRedirect(reverse('polls:results', kwargs={
+																			"question_id":question.id}))
+														#przy method=POST używasz HttpResponseRedirect()
+														#zamiast metody render() gdyż dane z request.POST 
+														#przy odświeżaniu w render prześlą się drugi raz 
+														#co nie może mieć miejsca!!!
+							def results(request, question_id):
+								question = Question.objects.get(id=question_id)
+								return render(request, 'polls/results.html',{'question':question}
+					#w templates:
+							{{question.question_text}}
+							<ul>
+								{%for choice in question.choice_set.all %}
+									<li>{{choice.choice_text}} -- {{choice.votes}}, 
+																	vote{{ choice.votes|pluralize }}</li>
+								{% endfor %}
+								<a href="{% url 'polls:detail' question.id %}">Vote again?</a>
+							</ul>
+		2*FORMULARZ REJESTRACYJNY (z utworzeniem obiektu USERa):
+					#FORMULARZ REJSTRACYJNY JEST OMÓWIONY W DZIALE IIGIM
+					*PODSTAWY we VIEWS:
+							def register(request):
+								if request.method == 'POST':			##gdy na dole w else'ie formularz 
+																		##zostanie uzupełniony danymi to w 
+																		##w pliku html poprzez przycisk 
+																		##submit oraz metodę 'POST' z tagu 
+																		##form te dane są przesłane i można
+																		##je przekazać requestem
+									formWithData=UserCreationForm(request.POST)	
+																	##utworzenie formularza z danymi 
+																	##przekazanymi przez metodę 'POST'
+																	##z tagu form w pliku html
+									if formWithData.is_valid():			##walidacja danych w formularzu
+										formWithData.save()			##utworzenie użytkownika z danych z 
+																	##formularza
+										return redirect('blog-home')	##przekierowanie na stronę podaną
+																		##w zmiennej name w urls.py 
+																		##app/funkcjonalności blog
+									else:									
+										return render(request,'users/register.html', {'form':formWithData})
+																	##wysłane powtórnie formularz z 
+																	##uzupełnionymi danymi gdy dane z 
+																	##formularza mają jakiś błąd
+								else:
+									formWithoutData = UserCreationForm()
+									return render(request, 'users/register.html', {'form':formWithoutData})
+																		##na początku odpala się formularz
+																		##bez danych ponieważ nie została
+																		##w pliku html nie została jeszcze
+																		##odpalona metoda POST z tagu form
+				*ELEMENTY POTRZEBNE DO DZIAŁANIA FORMULARZA: 														
+					**formularz REJESTRACYJNY tworzy się poprzez klasę UserCreationForm() 
+							from django.contrib.auth.forms import UserCreationForm
+							form = UserCreationForm(request.POST)			#request.POST oznacza że 
+																			#przekazuje dane z formularza
+					**form.is_valid() pozwala zwalidować dane z formularza:
+							form.is_valid():
+					**form.save() pozwala zapisać dane z formularza (dla UserCreationForm() baza danych 
+					  jest domyślnie ustawiona na USER:
+							form.save()					
+					
+===========================================================================================================
+DJANGO REST FRAMEWORK:
+	3*DOSTĘPNOŚĆ:
+		1*CORS-HEADERS:
+			*)https://github.com/adamchainz/django-cors-headers
+			a)instalujesz cors-headers:
+							python -m pip install django-cors-headers
+			b)w głównej app/funkc w settings.py:
+				*w sekcji INSTALLED_APPS dodajesz "corsheaders":
+							INSTALLED_APPS = [
+								"corsheaders", 
+								...,
+							]
+				*w sekcji MIDDLEWARE dodajesz "corsheaders.middleware.CorsMiddleware":
+							MIDDLEWARE = [
+							"corsheaders.middleware.CorsMiddleware",
+								...,
+							]
+				*na samym dole ustwiasz jedną z trzech zmiennych 
+					*CORS_ALLOW_ALL_ORIGINS = True  - wskazujesz że wszystkie storny mogą mieć dostęp
+					*CORS_ALLOWED_ORIGINS - wskazujesz które konkretne strony mogą mieć dostęp
+					*CORS_ALLOWED_ORIGIN_REGEXES - wskazujesz regexa pasujących stron mogących mieć dostęp
+			c)dzięki tym ustawieniom pliki javascript będą mieć dostęp do danych przesyłanych przez API, np:
+							<!DOCTYPE html>
+							<html lang="en">
+							<head>
+								<meta charset="UTF-8">
+								<meta http-equiv="X-UA-Compatible" content="IE=edge">
+								<meta name="viewport" content="width=device-width, initial-scale=1.0">
+								<title>Document</title>
+							</head>
+							<body>
+								<h1>Cool rooms</h1>
+								<div id ="rooms-container">
+
+								</div>
+							</body>
+							<script>
+								let roomsContainer = document.getElementById('rooms-container')
+								let getRooms = async () =>{
+									let response = await fetch('http://127.0.0.1:8000/api/rooms/')
+									let rooms = await response.json()
+									//console.log("RESPONSE: ", response)
+									//console.log("rooms:", rooms)
+									for(let i=0; rooms.length>i; i++){
+										let room = rooms[i]
+										let row = `<div>
+														<h3>${room.name}</h3>
+													</div>`
+										roomsContainer .innerHTML += row
+									}
+								}
+								getRooms()
+							</script>
+							</html>
+	2*DZIAŁANIE:
+		1*w URLS.PY - standardowo tworzysz ścieżki do funkcji we views.py.
+							from django.urls import path
+							from . import views 
+							urlpatterns = [
+								path('', views.getRoutes),
+								path('rooms/', views.getRooms),
+								path('rooms/<str:pk>', views.getRoom),
+							]
+		2*we VIEWS.PY:
+			*OPCJA 1 - wykorzystujesz wysyłanie plików Json poprzez JsonResponse, gdzie argument safe=False
+			 pozwala na podanie listy do argumentu JsonResponse zamiast słownika:
+					#przykład 1:
+							from django.http import JsonResponse
+								lst = ["1", "2"]
+								return JsonResponse(lst, safe=False)
+					#przykład 2:
+							from django.http import JsonResponse
+							import json
+							from django.core.serializers import serialize
+							def getRooms(request):
+								rooms = Room.objects.all()
+								rooms_serialize = json.loads(serialize('json',rooms))
+								return JsonResponse(rooms_serialize, safe=False)      
+			*OPCJA 2 - wykorzystujesz rest_framework ale bez pliku serializers.py:
+				*przypisujesz do funkcji dekorator @api_view, w którym precyzujesz dla jakich żądań mają 
+				 byc udostępniane dane - GET, POST, PUT 
+				*serializujesz dane (nie można wysyłać obiektów Pythona - korzystasz z metody serialize 
+				*wysyłasz dane poprzez obiekt Response
+							from rest_framework.decorators import api_view
+							from rest_framework.response import Response
+							from django.core.serializers import serialize
+							@api_view(['GET'])
+							def getRooms(request):
+								rooms = Room.objects.all()
+								serializer = serialize('json',rooms)
+								return Response(serializer)
+			*OPCJA 3 (POWSZECHNIE UŻYWANA)- wykorzystujesz rest_framework oraz plik serializers.py:
+				*przypisujesz do funkcji dekorator @api_view, w którym precyzujesz dla jakich żądań mają 
+				 byc udostępniane dane - GET, POST, PUT 
+				*korzystasz z wcześniej stworzonego pliku serializers.py w którym masz sprecyzowaną klasę 
+				 gdzie jest określone jaki model ma być serializowany wraz z jakimi polami --> patrz: 
+				 2*Działanie -> 3.serializers.py	
+							#w pliku serializers.py:
+							from rest_framework.serializers import ModelSerializer
+							from base.models import Room
+							class RoomSerializer(ModelSerializer):
+								class Meta:
+									model = Room
+									fields = '__all__'
+				*wysyłasz dane poprzez obiekt Response
+							from rest_framework.decorators import api_view
+							from rest_framework.response import Response
+							@api_view(['GET'])
+							def getRooms(request):
+								rooms = Room.objects.all()
+								serializer = RoomSerializer(rooms, many = True)
+										#arg ' many=True ' oznacza że będzie serializacja więcej niż 
+										#jednego obiektu (cała lista/zbiór)
+								return Response(serializer)
+				*dodatkowo (nie jest to wymagane możesz stworzyć legende dla wszystkich ścieżek w api:
+							@api_view(['GET'])     
+							def getRoutes(request):
+								routes = [
+									'GET /api',
+									'GET /api/rooms',
+									'GET /api/rooms/:id',
+								]
+								return Response(routes)
+		3*w SERIALIZERS.PY - tworzysz klasę jak w forms.py. Wskazujesz który model ma być serializowany 
+		  i jakie pola mają być serizliowane. Tworzysz klasę dziedziczącą po ModelSerializer:
+							from rest_framework.serializers import ModelSerializer
+							from base.models import Room
+							class RoomSerializer(ModelSerializer):
+								class Meta:
+									model = Room
+									fields = '__all__'
+			
+	1*INSTALACJE:
+		*https://www.django-rest-framework.org/
+		a)instalacja w konsoli:
+							pip install djangorestframework  /  python -m pip install djangorestframework
+							pip install markdown      		 /  python -m pip install markdown 
+							pip install django-filter  		 /  python -m pip install django-filter
+		  lub skopiowanie projektu:
+							git clone https://github.com/encode/django-rest-framework
+		b)w INSTALLED_APPS w settings.py w głównej app/funkc. dodajesz 'rest_framework'
+							INSTALLED_APPS = [
+								...
+								'rest_framework',
+							]
+		c)tworzysz nową app/funkc:
+							python manage.py startapp api 
+		  lub samemu zakłądasz folder który musi zawierać plik __init__.py, urls.py, views.py 
