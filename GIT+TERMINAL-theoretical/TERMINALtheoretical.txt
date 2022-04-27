@@ -12,7 +12,7 @@ COMMANDS {with TAB, space & q}:
 whoami		[who am i]				   |   		-v		[verbose]		  |xdg-open     [open file or dir]	
 date		[show date]      		   |		cos{opt1, opt2}cos		  |		.		   [open current dir]
 man			[manual help]			   |		cos{num1..num2}cos		  |head			[open first 10 lines]
-help		[shell help]			   |mkdrir		[make directory]	  |		-n		   [number of lines]
+help		[shell help]			   |mkdir		[make directory]	  |		-n		   [number of lines]
 clear		[clear]					   |		-p		[parents]		  |tail			[open last 10lines]
 pwd			[print working directory]  |touch		[create files]		  |		-n		   [number of lines]
 ls 			[list]					   |rmdir		[remove EMPTY dirs]	  |		-f		   [not kill process]

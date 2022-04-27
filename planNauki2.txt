@@ -30,20 +30,12 @@ python:
 4|19*COREY SHAFER - PRE-ADVANCED- (10,11,12,15, 16, 17, 46,         59, 60, 61, 62, 63, 101, 102, 103, 104, 107, 109 110, 111 126, 127, 139, 140, 141, 142, 143)
 	
 Django:
-	
-1|  *Traversy media - Django Crash Course - https://www.youtube.com/watch?v=PtQiiknWUcI
-4|  *codingentrepreneurs - https://www.youtube.com/watch?v=SlHBNXW1rTk&list=PLEsfXFp6DpzRMby_cSoWTFw8zaMdTEXgL
+	*dennis ivy - management site - https://www.youtube.com/watch?v=xv_bwpA_aEA&list=PL-51WBLyFTg2vW-_6XBoUpE7vpmoR3ztO
 2|  *Corey Shaffer - DJANGO 11-17
-    
-	EWENTUALNIE:
-		https://www.youtube.com/watch?v=aY43fUGlB7E
-		https://www.youtube.com/watch?v=tLq20htu3ss
-		
+4|  *codingentrepreneurs - DJANGO 60-91 (zrobić GIT CLONE 59) https://www.youtube.com/watch?v=SlHBNXW1rTk&list=PLEsfXFp6DpzRMby_cSoWTFw8zaMdTEXgL
+	*coding with mitch - dobry projekt na podsumowanie django: https://www.youtube.com/playlist?list=PLgCYzUzKIBE_dil025VAJnDjNZHHHR9mW
   DJANGO REST FRAMEWORK - REST API
 	*Coding entrepreneurs: https://www.youtube.com/watch?v=c708Nf0cHrs
-	
-	*techwithtim-->django & react integration
-    *dr chuck--> django
 		
 	KURS WARTY KUPNA:
 		Academind - 36zł (bardzo dokładny) (cały a nie tylko wyrywki co zrobiłeś)- https://www.udemy.com/course/python-django-the-practical-guide/?couponCode=D_0322
@@ -69,3 +61,8 @@ Zrobione:
 18.techwithtim - DJANGO TUTORIAL: https://www.youtube.com/watch?v=sm1mokevMWk
 19.Academind Shawrzmueller - DJANGO: https://www.youtube.com/watch?v=t7DrJqcUviA
 20.clever programmer - DJANGO with documantation: https://www.youtube.com/watch?v=cI3FOYIMSYE
+21.Traversy media - Django Crash Course - https://www.youtube.com/watch?v=PtQiiknWUcI
+22.codingentrepreneurs - DJANGO - (1-60) https://www.youtube.com/watch?v=SlHBNXW1rTk&list=PLEsfXFp6DpzRMby_cSoWTFw8zaMdTEXgL
+23.codemyAPI - django rest framework - https://www.youtube.com/watch?v=QaY4t7UOgVM&list=PLCC34OHNcOtoYO3FuoCEt9r7AbfuDKse_
+24.codingwithMitch - django rest framework - https://www.youtube.com/watch?v=44qdTGbWY8c&list=PLgCYzUzKIBE9Pi8wtx8g55fExDAPXBsbV
+25.ParwizForogh - django rest framework - https://www.youtube.com/watch?v=B38aDwUpcFc

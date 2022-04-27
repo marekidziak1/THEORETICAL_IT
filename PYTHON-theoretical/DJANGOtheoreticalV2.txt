@@ -1,0 +1,857 @@
+
+============================================================================================================
+====================================================PODSTAWY================================================
+============================================================================================================
+6. ELEMENTY ROZSZERZONE
+5. ROZSZERZONE MODUŁY i FOLDERY w APP/FUNCKJONALNOŚCIACH:
+	*1*module SIGNALS.PY 
+	*2*module FORMS.PY 
+		1*PODSTAWOWY FORMULARZ:
+		2*FORMULARZ REJESTRACYJNY:
+			
+4. PODSTAWOWE MODUŁY i FOLDERY w APP/FUNCKJONALNOŚCIACH:
+    *1*module MODELS.PY 
+		*https://docs.djangoproject.com/en/4.0/intro/overview/#design-your-model
+		1*PODSTAWY:
+			A*ORM -zamienia obiekty na encje/tabele oraz automatycznie generuje instrukcje sql
+			B*BAZA UŻYTKOWNIKÓW - User: 
+						from django.contrib.auth.models import User
+						from django.db import models
+						class Post(models.Model):
+							author = models.ForeignKey(User, on_delete = models.CASCADE)
+			C*migracja po każdej zmianie w models i po każdym działaniu w ORMie:
+						python manage.py makemigrations
+						python manage.py migrate
+			D*rejestracja w admin.py:
+						from . models import Post
+						admin.site.register(nameClass)
+		2*BUDOWA:
+			A*Dziedziczenie po: models.Model (from django.db import models):
+						from django.db import models
+						class Post(models.Model):
+							...
+			B*RELACYJNE TYPY PÓL W OBIEKCIE:
+				*RELACJE - przy relacjach definuiujesz relację tylko w jednej klasie - tej 'ważniejszej'.
+				*PARAMETRY DLA RELACYJNYCH TYPÓW PÓL:
+					**on_delete=models.CASCADE - usunięcie wszystkich obiektów związanych z kluczem obcym,
+							#1 do 1 - dla Profile: profil usunięty gdy Userusunięty
+								class Profile(models.Model):	
+									user = models.OneToOneField(User, on_delete =models.CASCADE)
+							#1 do wiele - dla Post: posty Usera usunięte gdy User usunięty
+								class Post(models.Model):
+									author = models.ForeignKey(User, on_delete =models.CASCADE)
+					**on_delete=SET_NULL - wpisanie null w momencie usunięcia klucza obcego (trzeba tez 
+					  zezwolić na nulle - null=True)
+							#1 do 1 - pole user w kl Profile przyjmie NULL gdy User usunięty
+								class Profile(models.Model):
+									user = models.OneToOneField(User,  on_delete=models.SET_NULL, null=True)
+							#1 do wiele - pole author w kl Post przyjmie NULL gdy User usunięty
+								class Post(models.Model):
+									author = models.ForeignKey(User, on_delete =models.SET_NULL, null=True)
+							#wiele do wiele - pole participants w kl Meetup przyjmie NULL gdy wszystkie 
+							 obiekty Participant mające odwołanie do Meetup zostaną usunięte.
+								class Meetup(models.Model):
+									participants = models.ManyToManyField(Participant, null=True,
+																	on_delete =models.SET_NULL, null=True)
+				****RELATIONSHIP ONE_TO_ONE:		
+					*models.OneToOneField(nazwaTabeli)
+								from django.db import models
+								from django.contrib.auth.models import User
+								class Profile(models.Model):
+									user=models.OneToOneField(User, on_delete=models.CASCADE)
+									...
+				****RELATIONSHIP ONE_TO_MANY:
+					*models.ForeignKey(nazwaTabeli)			
+								from django.db import models
+								from django.contrib.auth.models import User
+								class Post(models.Model):
+									author = models.ForeignKey(User, on_delete.CASCADE)
+									...
+					*użycie ograniczonej listy stringów/obiektów:
+						#https://docs.djangoproject.com/en/4.0/ref/validators/
+						*utworzenie pliku validators.py wraz z ograniczoną listą stringów i wyrzucenie 
+						 wyjątkiem ValidationError gdy wpisane hasło przy tworzeniu obiektów nie znajduję 
+						 się w liście:
+								from django.core.exceptions import ValidationError
+								my_lst = ['pdf','doc','svg']
+								def validate_MY(value):
+									if value not in my_lst:
+										raise ValidationError(f'{value} is not in list'
+						*wewnątrz models.py
+								from django.db import models
+								class Post(models.Model):
+									extension = models.CharField(max_length=50, validators = [validate_MY]
+									...
+				****RELATIONSHIP MANY_TO_MANY:
+					*models.ManyToManyField(nazwaTabeli) - Nie trzeba podawać w 2 klasach pola wiele do 
+					 wiele ale można -> w klasie wyżej wpisujesz nazwę modelu/klasy w cudzysłowiu
+								from django.db import models
+								class Participant(models.Model):
+									email=models.EmailField(unique=True)
+								class Meetup(models.Model):
+									name=models.CharField(max_length=200)
+									participants = models.ManyToManyField(Participant, null=True,
+																			on_delete =models.SET_NULL)
+			C*TYPY DANYCH konkretnych pól: 
+			  https://docs.djangoproject.com/en/4.0/ref/models/fields/#model-field-types
+				*ATRYBUTY DO KAŻDEGO RODZAJU POLA:
+					**blank=True - w adminie pole może być puste (wypełnienie pustym stringiem)
+								description = models.TextField(blank=True)
+					**null=True  - wypełnienie nullem w bazie danych (występuję z blank=True)
+								description = models.TextField(null=True, blank=True)
+					**default='...' 
+								summary = models.TextField(default='This is cool')
+					**unique=True 
+								slug = SlugField(unique=True)
+				*models.ImageField(upload_to="my_folder") 
+					**WIĘCEJ patrz: PODSTAWY -> 6.ELEMENTY ROZSZERZONE -> 2)UPLOADOWANE ZDJĘCIA
+					**upload_to='folder' 
+								img = models.ImageField(upload_to="my_folder")
+								#pip install PILLOW + makemigrations + migrate
+								#w urls.py +static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+				*models.SlugField(unique=True):
+					**unique=True -każdy slug musi być inny:
+								slug = SlugField(unique=True)
+					****automatyczne tworzenie w SlugField poprzez przesłonięcie metody save():
+								from django.utils.text import slugify
+								...
+									slug = models.SlugField(unique=True, null=True, blank=True)
+									def save():
+										slug = slugify(title)
+										super().save()
+										
+				*models.Charfield()
+					**max_length=100 (parametr wymagany)
+								title = models.CharField(max_length=100)
+				*models.TextField() 
+								content = models.TextField()
+					**default='...'
+								content = models.TextField(default='This is cool')
+				*models.DecimalField()
+					**decimal_places=2 - (paramter wymagany)
+					**max_digits=10000 - (paramter wymagany)
+								price = models.DecimalField(decimal_places=2, max_digits=1000)
+				*models.BooleanField()
+								flaga = models.BooleanField()
+				*models.DateTimeField()s
+					**auto_now=True 			#generowanie przy każdej edycji
+								date-posted = models.DateTimeField(auto_now=True)
+					**auto_now_add= True   		#przy tworzeniu obiektu, bez możliwości edycji
+								date-posted = models.DateTimeField(auto_now_add=True)
+					**default=timezone.now 		#przy tworzeniu obiektu i z możliwością edycji
+						from django.utils import timezone
+								...
+								date-posted = models.DateTimeField(default=timezone.now)
+			D*KLASA WEWNĘTRZNA META- wykorzystuję się przy zwracaniu danych przy konstrukcjach ORM-owych:
+				*pole ordering = przy zwracaniu danych w konstrukcji ORM (np: MyModel.objects.all()) 
+				 zwraca je w kolejność wg danego pola podanego w polu ordering klasy wewnętrznej Meta:
+					class MyModel(models.Model):
+						updated = models.DateTimeField(auto_now=True)
+						created = models.DateTimeField(auto_now_add = True)
+						class Meta:
+							ordering = ['-updated']					#'-' oznacza w koleścnosci malejącej 
+			E*METODY:
+				*__str__() 
+						def __str__(self):
+							return self.title	
+				*metoda save() - wywoływana automatycznie ale można ją przesłonić:
+					*autouzupełnianie pola SlugField (metoda slugify):
+							from django.utils.text import slugify
+							class MyClass(models.Model):
+								title= models.CharField(max_length=120, unique=True)
+								slug = models.SlugField(unique=True, null=True, blank=True)
+								def save():
+									slug = slugify(title)
+									super().save()
+				*get_absolute_url() wykorzystująca reverse():
+						def get_absolute_url(self):
+								return reverse('product-detail', kwargs={'pk':self.pk})	
+					*CELE:
+						*służy do zwrócenia obiektu w tabeli/modelu przy dynamicznych linkach w HTMLu:
+						 ZAMIAST: 		<a href = "{% url 'product-detail' another_object.id %}">...</a> 	
+						 MOŻESZ UŻYĆ:	<a href = "{{ another_object.get_absolute_url }}">...</a>
+						 Przydaję się to przy przechodzeniu przez listę obiektów w HTMLu: 
+							{% for obj in my_objects %}
+								<a href = "{{ obj.get_absolute_url }}">Link nr:{{ obj.id }}</a>
+							{% endfor %}
+						*służy do przekierowania na podstronę DetailView z danym obiektem po stworzeniu/
+						 /zupdatowaniu go przy PRZESŁANIU FORMULARZA z CreateView lub UpdateView. Stosujesz 
+						 to zamiast pola success_url. (WIĘCEJ W CLASS-BASED-VIEWS CreateView lub UpdateView)
+						*we views możesz stosować przy metodzie redirect():
+							...
+							return redirect(obj.get_absoulute_url())
+					*BUDOWA:
+						*bezpośrednie przekazanie dynamicznrj ścieżki:
+							def get_absolute_url(self):
+								return f"/products/{self.id}"
+						*poprzez reverse() przekazanie dynamicznego linku (taka jest praktyka):
+							def get_absolute_url(self):
+								return reverse('product-detail', kwargs={'pk':self.pk})	
+						*gdy linki masz w urls.py w danej app/funkc. zamiast w głównej app/funkc. to dla 
+						 app_name = <app_name> w urls.py danej app/funkc. podajesz link z app_name przed:
+							def get_absolute_url(self):
+								return reverse('products:product-detail', kwargs={'pk':self.pk})
+						 dla urls.py w danej app/funkc. (app/funkc. products):
+							app_name = 'products'
+							urlpatterns=[
+								...]
+			F*ROZSZERZENIE:
+				*DODANIE DO MODELU nowego pola / zmiana wartości pola z null=True' na 'null=False':
+						python manage.py makemigrations 	# +opcja uzupełnienia domyślną wartością 
+						python manage.py migrate
+				*ZESTAWY DANYCH WYCIĄGNIĘTE PRZEZ ORM DJANGO --> pkt 3. ORM DJANGO
+				*TWORZENIE OBIEKTÓW I ZAPISYWANIE ICH W BAZIE DANYCH przez ORM DJANGO --> pkt 3. ORM -> C
+				
+	*2*katalog MIGRATIONS 
+		1*PODSTAWY - dana migracja zależy od poprzedniej (zmienna dependencies)	
+		2*KOMENDY:
+						python manage.py makemigrations
+						python manage.py sqlmigrate blog 0001
+						python manage.py migrate 
+		3*SKASOWANIE WSZYSTKICH MODELI:
+			*skasuj migrację - NIE WOLNO skasować '__init__.py'
+			*skasuj bazę danych 
+			*python manage.py makemigrations  +  python manage.py migrate 
+					
+	*3*module URLS.PY (instrukcja w urls.py w głównej app/funkc.)
+		*https://docs.djangoproject.com/en/4.0/intro/overview/#design-your-urls
+		**URLS.PY TYLKO W GŁÓWNEJ APP/FUNKC.:
+			*OPCJA 1 (z podstronami dla danej app/funkc.) -> utworzenie modułu urls.py w swojej app/funkc.
+			*import modułów: django.urls i views (ze swojej app/funkc.) oraz utworzenie listy urlpatterns
+			*możliwość ale NIE KONIECZNOŚĆ stworzenia zmiennej app_name. Jeżeli stworzysz tę zmienną to 
+			 w templatesach w plikach html w linkach przed podaniem 3go argumentu zmiennej path z urls.py
+			 będziesz musiał ująć podać app_name:	 <a href="{% url 'products:product_detail' %}">LINK</a>
+						#dla app/funkcjonaloności blog
+						from django.urls import path
+						from . import views
+						#app_name ='blog'				#możęsz ale nie musisz jej podawać 
+						urlpatterns = [			
+							path('hello/', views.says_hello, name='blog-hello') #path('', views.says_hello)
+						]
+			*zainkludowanie modułu urls.py z danej app/funkc. w liście urlpatterns w głównym folderze projektu
+						from django.urls import include, path
+						urlpatterns =[
+							... ,
+							path('blog/', include('blog.urls'))
+						]
+			*ścieżka: http://127.0.0.1:8000/blog/hello wyświetla podstronę.
+		**URLS.PY W POZOSTAŁYCH APP/FUNKC.:
+			*OPCJA 2 (bez podstron dla danej app/funkc) -> działanie na urls.py w głównym folderze projektu
+			*bez tworzenia urls.py w app/funkc. Całe rzekierowaniena w urls.py w głównym folderze projektu
+						from django.urls import path
+						from blog import views
+						urlpatterns = [							
+							...
+							path('about/', views.about, name='about'),
+						]
+			*ALIAS (nazwaAppFunkcjonalności_views) bo może byc wiele importów różnych plików views 
+						from django.urls import path
+						from blog import views as blog_views
+						from users import views as users_views
+							...
+							path('about/', blog_views.about, name='about'),
+							path('register/', users_views.register, name = 'register')
+			*ścieżka: http://127.0.0.1:8000/about wyświetlają strony.
+		**REDIRECTVIEW
+			*RedirectView.as_view() - dla danej ścieżki przeniesienie na inną ścieżkę:
+							from django.views.generic.base import RedirectView
+							urlpatterns = [
+								path('', RedirectView.as_view(url='/meetups')),
+								path('meetups/', include('meetups.urls')),
+							]
+		**DYNAMIC URLS:
+			*DYNAMIC URLS skrót - zmienne w linkach przekazujesz do views poprzez argumenty:
+				*w urls.py:	 	path('articles/<int:year>/<int:month>/<int:pk>/', 
+				*w views.py:	news.views.article_detail(request, year=2005, month=5, pk=39323)
+			*DYNAMICZNE ŚCIEŻKI - ZMIENNE W ŚCIEŻKACH (zawyczaj id):  '../product/1'
+				*W URLS.PY 
+					*ZMIENNE w nawiasach trójkątnych: '<...>', 
+					*zazwyczaj ID (Primary Key): <id> lub <pk> LUB SLUG czyli napis z myślnikami: <my_slug>					 
+					*typ zmiennej np: tylko integer: <int:pk> oraz swoja nazwa zmiennej: <int:my_pk>
+					 może być też slug: <slug:my_slug>
+							from .views import product_detail_view
+							urlpatterns = [
+								path('product/<int:my_pk>/', product_detail_view, name='product-detail')
+								path('product/<str:my_name>/'...)
+								path('product/<slug:my_slug>/'...)
+							...
+				*W VIEWS - nazwę parametru <> z urls.py podajesz w arg. funkcji i wykorzystujesz w ORMie:
+							from .models import Product
+							from django.urls import reverse
+							from django shortcuts import render, redirect
+							def product_detail_view(request, my_pk):
+								obj1 = Product.objects.get(id=my_pk)
+								obj2 = Product.objects.get(id=my_pk+1)
+								context = {'my_object'=obj1, 'another_object'=obj2}
+								return render(request, "products/detail.html",context)
+						#lub zamiast przekierowywać do pliku html możesz przekierować na inną ścieżkę URL 
+						#przez co zostnie rozpoczęta cała operacja od początku (url->view->html):
+								#return redirect(reverse("products:product_detail", kwargs=("my_id"=obj1.id)
+						#lub bez użycia metody reverse:
+								#return redirect("products:product_detail", my_id=obj1.id)
+					*Przy otwarciu danego url jest wywoływana funkcja z views.py z arg. z nawiasów ostrych):
+							#127.0.0.1:8000/product/34/
+							#(product_detail(request=<HttpRequest object>, my_pk=34))
+				*W TEMPLATES - DYNAMICZNE LINKI (ze zmienną) w plikach HTML:
+							<a href = "{% url 'product-detail' another_object.id %}">...</a> 	
+							<a href = "{% url 'product-detail' another_object.slug %}">...</a> 	
+				 lub zamiast powyższej konstrukcji użycie get_absolute_url z MODELS:				 
+							<a href ='{{ another_object.get_absolute_url }}'>...</a>
+				 Wtedy w MODELS tworzysz metodę:
+							def get_absolute_url(self):
+								return reverse('product-detail', kwargs={'pk':self.pk})	
+								#return reverse('product-detail', kwargs={'slug':self.slug})	
+					#gdy ścieżki są w urls.py w danej app/funkc. to tworzysz app_name = <app_name> w 
+					#urls.py danej app/funkc. a przy podawania nazwy 3arg funkcji path z urls.py 
+					#podajesz jeszcze przed nim nazwę tego app_name: 
+							def get_absolute_url(self):
+								return reverse('products:product-detail', kwargs={'pk':self.pk})	
+				 Przydatne przy przechodzeniu przez listę obiektów przekazanych przez słownik:
+				 (WIĘCEJ --> get_absolute_url -> C)Funkcje -> MODELS)
+			*PRZEKAZYWANIE PARAMETRÓW (DYNAMIC URL) Z URLS DO VIEW:
+				*w URLS.PY:
+						from .views import product_detail_view
+							urlpatterns = [
+								path('product/<int:my_pk>/', product_detail_view, name='product-detail')
+							...
+				*we VIEWS.PY - nazwa podawango argumentu musi być taka sama jak w ścieżce URL tzn: jeżeli 
+				 nazywa się w urls.py masz <int:my_pk> to we views.py musisz używać my_pk
+						def v1(response, my_pk):	
+							return HttpResponse("%s" % my_pk)
+						from .models import myObject
+						def v2(response, my_pk):	
+							obj = myObject.objects.get(id=my_pk)
+							return HttpResponse("%s" % obj.id)	
+			*ALTERNATYWA DO DYNAMIC URL:
+				*gdy nie masz stworzonego linka ze zmienną który kierowałby do konkretnego obiektu 
+				 (takiego detailView) to możesz stworzyć WYSZUKIWARKĘ gdzie:
+				*W TEMPLATES - tworzysz formularz o methodzie GET:
+						<form method="GET" action="{% url 'home' %}">
+							<input type="text" name="q" placeholder="Search rooms..."/ >
+							<input type="submit" value="search">
+						</form>
+				*W ŚCIEŻCE LINKU - przy wysłaniu tego formularza ALBO wpisaniu w link '?q=objAtribute'
+						<a href="{% url 'home' %}?q={{topic.name}}"> MOJ_TOPIC </a>
+				*WE VIEWS.PY na innej stronie tworzysz logikę wyszukiwania dla obiektu:
+						q= request.GET.get('q') if request.GET.get('q') != None else ''
+						topics = Topic.objects.filter(name__icontains=q)		
+						
+    *4*module VIEWS.PY (logika działania danej app/funkc.)
+		1*PODSTAWY: 
+			*funkcje są 'reguest handlerami' przyjmującymi ob. 'request', zwracającymi ob. 'response'
+			*1wszy arg. w funkc. jest wymagany: request - pozwala na pobranie m.in usera:
+							def first_func(request):
+								print(request.user)
+		2*ZWRÓCENIE OBIEKTU TYPU RESPONSE: 
+		   A*HttpResponse() 
+							from django.http import HttpResponse
+							def say_hello(request):
+								return HttpResponse('<h1>Hello World'</h1>)
+				*użycie z funkcją render_to_string:
+							from django.template.loader import render_to_string
+							from django.http import HttpResponse
+							def home(request):
+								context={'article_obj':Article.objects.get(id=2)}
+								HTML_String = render_to_string('home-view.html', context)
+								return HttpResponse(HTML_String)
+				*użycie z obiektem loader:
+							from .models import Question
+							from django.http import HttpResponse
+							from django.template import loader
+							def index(request):
+								t = loader.get_template('polls/index.html')			#zwróci template
+								context = { 'list': Question.objects.all() }
+								return HttpResponse(t.render(context, request))
+		   B*render() - z przesłaniem danych poprzez słownik (3 arg) zwyczajowo nazwany'context' (do 
+		     którego można przypisać dane pobrane przez ORM DJANGO):
+							from django.shortcuts import render
+							from django.contrib.auth.models import User
+							def say_hello(request):
+								context = {'name':'Mosh', 'user':User.objects.first()}
+								return render(request, 'playground/helloHTML.html',context)
+		   C*redirect() - tylko przekierowywują na inną stronę 
+				*argumentem jest nazwa ustalona w 3 argumencie metody path z pliku urls.py
+				*nie przyjmuję dodatkowego argumentu w postaci słownika
+							from django.shortcuts import redirect
+							def say_hello(request):
+								return redirect('blog-home')	#argumentem jest nazwa ustalona w 3 	
+																#argumncie metody path z pliku urls.py
+				*z użyciem dynamic URL czyli zmiennej potrzebnej do linka - nazwa zmiennej musi być taka 
+				 sama jak w linku:
+							#dla urls.py: path("<int:id_link>/", views.detail, name='product_detail')
+							from django shortcuts import redirect
+							def detail(request, my_id):
+								return redirect('product_detail', id_link=my_id})
+				*z reverse() - możliwość przeniesienia na dynamic url:
+							#dla urls.py: path("<int:id_link>/", views.detail, name='product_detail')
+							from django.urls import reverse
+							from django shortcuts import redirect
+							def detail(request, my_id):
+								return redirect(reverse('product_detail', kwargs={'id_link':my_id})
+			D*HttpResponseRedirect() - podanie dokłądnego linka w zwrotce (z MOŻLIWOŚCIĄ DYNAMIC URL):
+							#dla urls.py: path("<int:id_link>/", views.detail, name='product_detail') 
+							from django.http import HttpResponseRedirect
+							def detail(request, my_id):
+								return HttpResponseRedirect('/{}'.format(my.id)
+				*z reverse() - z możliwością użycia DYNAMIC URLS:
+							#dla urls.py: path("<int:id_link>/", views.detail, name='prod_detail') 
+							from django.http import HttpResponseRedirect
+							from djnago.urls import reverse
+							def detail(request, my_id):
+								return HttpResponseRedirect(reverse('prod_detail', kwargs={id_link:my_id}))
+		3*ZESTAWY DANYCH POBRANE Z BAZY DANYCH:
+		   *A*INSTRUKCJE ORM/SQL -> patrz na instrukcje 3. ORM DJANGO
+		   *B*METODY (zamiast instrukcji ORM/SQL):
+			   **get_object_or_404(model_nazwa, pole_nazwa) 
+					*gdy obiekt nie istnieje to strona 404 zamiast error'u DoesNotExist
+							get_object_or_404(Post, id=id)
+					*używane zamiast ORM/SQL: <model>.objects.get(<pole>=<value>) np: Post.objects.get(id=1)
+					 którą musiałbyś zawrzeć w try except'cie (wykorzystując wyjątek Http404):
+							from django.http import Http404
+							try:
+								obj1 = Post.objects.get(id=my_id)
+							except Post.DoesNotExist:
+								raise Http404
+								#albo podmiana block'u w html'u
+			   **get_list_or_404(model_nazwa) 
+							get_list_or_404(Post)
+					*używane zamiast ORM/SQL: <model>.objects.all() np: Post.objects.all() którą musiałbyś 
+					 zawrzeć w try except'cie (wykorzystując wyjątek Http404):
+							from django.http import Http404
+							try:
+								objects = Post.objects.all()
+							except Post.DoesNotExist:
+								raise Http404
+		4*WYTWORZENIE OBIEKTÓW w module views.py, ZAPISYWANIE ICH W BAZIE DANYCH i USUNIĘCIE:
+		   A*POPRZEZ KONSTRUKTOR I METODĘ CREATE() DLA SETu WSZYSTKICH REKORDÓW TABELI KLUCZA OBCEGO --> 
+		     --> patrz 3.ORM DJANGO -> C UTWORZENIE OBIEKTU
+		   B*UTWORZENIE OBIEKTU USERa FORMULARZEM --> 5.ROZSZEZRZONE MODUŁY ->*2*FORMS ->2*FORM. REJESTR.
+		   C*USUWANIE OBIEKTU:
+				0*w URLS.PY, usuwanie jest związane z dynamicznymi ścieżkami. Podajesz który element usunąć:
+								path('product/<int:my_id>/delete', products_views.product_delete_view, 
+																					name='product_delete'),
+				1*USUWANIE POPRZEZ GET REQUEST (usuwanie tylko poprzez ścieżkę lub link bez strony html)
+							def product_delete_view(request, my_id)
+								obj = get_object_or_404(Product, id=my_id)
+								obj.delete()
+								return redirect("home")
+				2*USUWANIE poprzez POST REQUEST (z użyciem potwierdzającej strony HTML):
+							def product_delete_view(request, my_id)
+								obj = get_object_or_404(Product, id=my_id)
+								if request.method != 'POST':
+									context ={
+										"object":obj
+									}
+									return render(request, "products/product_delete.html", context)
+								else:   #if request.method == 'POST'
+									obj.delete()
+									return redirect("home")
+				    *Wewnątrz pliku HTML tworzysz formularz bez pól. 
+							 <form action="." method="POST">
+								{% csrf_token %}
+								<h1>Do you want to delete the product {{object.title}}?</h1>
+								<p>
+									<input type ="submit" value='Yes'/>
+									<a href="../">Cancel</a>
+								</p>
+							</form>
+    *5*katalog TEMPLATES:
+	   A*PODSTAWY:
+			*templates tworzysz sam (musi być tak nazwany gdyż DJANGO domyślnie szuka katalogu 'templates')
+			*2 OPCJE przechowywania dokumentów html: 
+				   A)GŁÓWNY KATALOG TEMPLATES W ŚCIEŻCE BAZOWEJ. W settings.py głównej app/funkc.
+							TEMPLATES{
+								'DIRS':[  os.path.join(BASE_DIR, 'templates'),  ]
+								...}
+			       B)W DANEJ APP/FUNKC FOLDER TEMPLATES i wewnątrz FOLDER O NAZWIE APP/FUNKC. (domyślnie)
+			*w (vs) Visual Studio podstawowy szkielet html ->  '! + TAB'
+	   B*MOŻLIWOŚC EDYTOWANIA PLIKÓW HTML (DJANGO TEMPLATING ENGINE - JINJA ):
+			0*https://docs.djangoproject.com/en/4.0/topics/templates/
+			1*PODSTAWY:
+				*możesz edytować zmienne w HTMLu poprzez przekazanie w metodzie render słownika(dictionary). 
+				*do wartości tego słownika odwołujesz się poprzez wypisanie kluczy bez cudzysłowiów. Jeżeli 
+				 wartości słownika odpowiadają listom albo innym słownikom to odwołujesz się do ich 
+				 elementów/kluczy po kropce (a NIE poprzez NAWIASY KWADRATOWE)
+						#we views.py:
+						return render(request, 'home.html', {"dictionary":{"o1":1, "o2":2}, "list":[1,2,3]}
+						#w templates w pliku html:
+						<p>{{ dictionary.o1 }} {{ list.0 }}</p>		#traktujesz jako zmienne, zwróci '1 1'			 
+			2*PODSTAWOWE KONSTRUKCJE UZYSKANE POPRZEZ EDYTOWANIE HTMLA (NAWIASY WĄSOWE{}):
+				x)WSZYSTKIE KONSTRUKCJE: https://docs.djangoproject.com/en/4.0/ref/templates/builtins/#
+				a)zmienna user - jeżeli jesteś zalogowany przy pomocy class-based-views LoginView:
+						<h1>Hello {{ user.username }}</h1>
+						#(w  urls.py) głównej app/funkc.: 
+						#from django.contrib.auth impoty views as auth_views
+						#path('login/', views.LoginView.as_view(template_name='users/login.html')),
+				b)zmienne {{  }}:
+						<h1>Hello {{name}}</h1>						
+						#dla render(request, 'pl/h.html',{'name':'Mosh'}) #<h1>Hello Mosh</h1>	
+					*NA ZMIENNYCH MOŻNA STOSOWAĆ FILTRY POZWALAJĄCE NA EDYCJĘ (poprzez znak pipe'a)
+					 Wszystkie filtry pozwalające na edycje: https://docs.djangoproject.com/en/4.0/ref/templates/builtins/#built-in-filter-reference
+						{{zm|add:22}}								#dla zm= 55 zwróci: 77 
+						{{zm_date|date:"F d, Y"|upper}}				#Month, day, YEAR +powiększenie liter
+						{{zm_date|timesince}}						#ile czasu mineło od obiektu datetime
+						{{zm|safe}}									#dla context={'zm':'<h1>HELLO</h1>'}
+																	#zamiast czystego tekstu renderuje html	
+						{{zmienna|pluralize}}						#dostosuję końcówkę słowa do liczby
+																	#pojedyńczej lub mnogiej 
+				c)konstrukcje IF:
+						{% if zmienna == 'login' %}
+							<h1>zaloguj się<h1>
+						{% endif %}
+						
+						{% if name %}								#jeśli klucz 'name' istnieje
+							<h1>Hello {{name.0}}</h1>				#zwróc pierwszy element listy
+						{% elif surname %}
+							<h1>Hello {{surname}}</h1>			
+						{% else %}
+							<h1>Hello World</h1>
+						{% endif %}
+						#dla render(request, 'pl/h.html',{'name':['Mosh','Gosh']}) #<h1>Hello Mosh</h1>
+				d)konstrukcje FOR:
+						{% for p in posts %}	#przejdz przez liste ktora jest wartością dla klucza posts
+							<h1>{{p.t}}</h1>
+						{% endfor %}
+						#render(request,'pl/h.html',{'posts':'[{'t':'a'}{'t':'b'}]}) #<h1>a</h1> <h1>b</h1>
+					*{{ forloop.counter }} - jako licznik iteratora (liczy od 1):
+						#dla return render(request, "about.html", {"list": [11,12,"abc"]})
+						{% for i in list %}	#przejdz przez liste ktora jest wartością dla klucza posts
+							<h1>{{ forloop.counter }} = {{i}}</h1>		#1 = 11 ; 2 = 12 ; 3 = "abc"
+						{% endfor %}
+					*przejscie po obiekcie listy będącej kluczem obcym dla innego modelu - wykorzystaj: 
+					 <model>_set.all BEZ NAWIASÓW:
+						#w models:
+						class ToDoList(models.Model):
+							name=models.CharField(max_length=200)							
+						class Item(models.Model):
+							todolist = models.ForeignKey(ToDoList, on_delete=models.CASCADE)
+						#w templates:
+						{% for it in list.item_set.all %}
+							{{it}}
+						{% endfor %}
+			3*DODATKOWE KONSTRUKCJE UZYSKANE POPRZEZ EDYTOWANIE HTMLA:
+				x)WSZYSTKIE KONSTRUKCJE: https://docs.djangoproject.com/en/4.0/ref/templates/builtins/#
+				  WRAZ Z FILTRAMI do edycji: https://docs.djangoproject.com/en/4.0/ref/templates/builtins/#built-in-filter-reference
+				a)szablony w htmlu {% extends ... %}
+					*plik base.html -> szablon podstawowy dla innych plików html 
+						<body>
+							{% block blockName %}{% endblock %}	#w tym przypadku blockName = content
+							{% block blockName %}DEFAULT TEXT{% endblock %}			#defualtowy text 
+							
+						</body>
+					*w pliku rozszerzającym plik base.html 
+						{% extends  "blog/base.html" %}
+						{% block content %}
+							...	
+						{% endblock content %}
+					*w pliku rozszerzającym plik base.html można użyć też szablonu z innej app/funkc. 
+					 poprzez załadowanie w swoim pliku html: nazwa_aplikacji/nazwe_szablonu.html:
+						{% extends  "blog/base.html" %}		#plik register.html z app/funkc users będzie
+															#wykorzystywał szablon z app/funkc blog
+				b)zainkludowanie wstawki html do pliku html {% include ... %}
+					**zainkludowanie navbar.html w base.html - poniżej plik base.html:
+						<body>
+							{% include "navbar.html" %}
+							...
+						<body>
+					**zainkludowanie pliku html ze zmiennymi (konstrukcja 'with' i schemat 'klucz=wartość'). 
+					  Zmienne w pliku inkludowanym podawane standardowo w podwójnych nawiasach {{ first }}. 
+					  (jako wartosć można podać też zmienne ze słownika przekazywanego przez render):
+						<body>
+							{% include "navbar.html" with first='My title' second=context_variable %}
+							...
+						<body>
+				c)linki w htmlu - zamiast ścieżek w linkach podawaj 3ci arg path z listy urlspattern 
+				  pliku urls.py (dzięki temu przy zmianie linka zmieniasz go tylko w jednym miejscu) 
+						...<a href={% url 'blog-hello' %}>...</a>...
+						#dla urls.py: urlpattrens =[path('home/', views.say_hello, name='blog-hello')]
+				  Jeżeli stworzysz app_name w urls.py to w linkach przed 3cim arg path podajesz app_name:	
+						...<a href="{% url 'blog:blog-hello' %}">LINK</a>
+						#dla urls.py: app_name='blog'
+				  DYNAMICZNE LINKI tj linki ze zmiennymi (jako klucze przekazywanego słownika):
+						...<a href = "{% url 'product-detail' another_object.id %}">...</a> 	#lub				 
+						...<a href ='{{ another_object.get_absolute_url }}'>...</a>
+				  (WIĘCEJ PATRZ --> *3*module URLS.PY --> DYNAMICZNE ŚĆIEŻKI)
+				d)FORMULARZ REJSETRACYJNY W HTMU:
+						{% extends "blog/base.html" %}	   # ładujesz szablon
+						{% block content %}				   # wpisujesz swoją wersję miejsca podmienianego
+							<form method ='POST'>		   # dla tagu form dodajesz argument POST który
+														   ##przesyła dane w formularzu
+								{% csrf_token %}		   # bez csrf_token formularz nie zadziała
+									{{ form|crispy }}	   # podajesz zmienną form wyrenderowaną CSSowo
+														   ##względem pobranych stylów crispy
+								 <button type="submit">Sign Up</button>
+														   #button o typie 'submit' żeby móc wysłać form
+							</form>
+						{% endblock content %}				
+					**możesz dodatkowo wyrenderować formularz poprzez funkcjonalność CSSową CRISPY_FORMS 
+					  patrz --> DZIAŁ II -> FORMLARZ REJESTRACYJNY -> OPCJA ROZSZERZONA -> PKT2GI
+	
+	*6*FOLDER STATIC dla danej app/funkc:
+		*PRZECHOWYWANIE:
+			*pozwala przechowywać PLIKI CSS, javascript, MEDIA
+			*w katalogu 'static' tworzysz folder o nazwie danej app/funkc. (+ możesz ale nie musisz 
+			 stworzyć inne podfoldery jak np: styles albo scripts). Trzymasz tam pliki css/js/itp
+		*ZAŁADOWANIE:
+			*na samej górze (przed DOCKTYPE) umieść załadowanie:
+					{% load static %}
+			 oraz w sekcji head umieścić do danego pliku ścieżkę katalogów poprzez:
+					<link rel="stylesheet" type="text/css" href="{% static 'blog/main.css' %}">
+			*jeżeli używasz szablonu np: base.html to załadowanie i zalinkowanie robisz tylko w nim
+			
+3. ORM DJANGO:
+   A*PODSTAWY:
+		*Stary sposób poruszania się w SHELLu --> dataclass:
+				from dataclasses import dataclass
+				@dataclass
+				class BlogPost:
+					title: str
+					content: str
+				obj =BlogPost(title="Hello World", content="This is cool")
+				obj.content
+		*możesz ich użyć w konsoli shella lub jako wartość do klucza w 3cim argumencie dla metody render())  
+		*najpierw zaimportuj tabele/klasy z których będziesz pobierał dane
+				from django.contrib.auth.models import User
+				from blog.models import Post
+		*we views.py instrukcje trzeba zawrzeć w try except'cie żeby nie zwracało błędu DoesNotExist:
+				from django.http import Http404
+				try:
+					obj1 = Post.objects.get(id=my_id)
+				except Post.DoesNotExist:
+					raise Http404											#podnosisz wyjątek Http404
+   B*INSTRUKCJE ZWRACAJĄCE DANE Z TABEL:
+		*wszystkie obiekty z danej tabeli:	
+				User.objects.all()	#zwróci: <QuerySet [<User: marek>, <User: testUser>]>
+			**zamiast tej instrukcji, to we views.py lepiej użyć get_list_or_404(<model>)
+		*żadny obiekt z danej listy - zwraca pustą liste zamiast None(co mogłoby powodować błąd):
+				User.objects.none()							#zwróci: []
+		*pierwszy/ostatni obiekt z danej tabeli:
+				User.objects.first()						#zwróci: <User: marek>
+				User.objects.last()							#zwróci: <User: testUser>	
+		*zwrócenie pola konkretnego rekordu odbywa się po kropce:
+			**Primary KEY / id
+				User.objects.filter(username='marek').first().pk   /LUB   
+				User.objects.filter(username='marek').first().id			
+			**pozostałe:
+				User.objects.filter(username='marek').first().email
+		*zwrócenie użytkownika na bazie jakiegoś pola np id:
+				from django.contrib.auth.models import User
+				User.objects.get(id=1)								#zwróci:  <User: marek>
+			**zamiast tej instrukcji, to we views.py lepiej użyć get_object_or_404(<model>,<pole>=<value>)
+			**metoda get() zwraca tylko eden obiekt. Gdy będzie pasować więcej to będą wyskakiwać błędy:
+				current_year = timezone.now().year
+				Question.objects.get(pub_date__year=current_year)
+		*zwrócenie obiektów uporządkowanych wg danego pola 'order_by()':
+				Question.objects.order_by('-pub_date')		#zwróci Question uporz. wg. pub_date malejąco
+		*zwrócenie listy wartości danego pola dla wszystkich obiektów obiekcie:
+				myList = My_model.objects.all().values_list('myAttribute',flat=True) 	
+								#zwróci z dodatkowym obiektem None dlatego trzeba jeszcze przefiltrować 
+				My_model.objects.filter(myAttribute__in=myList)
+		*wybrany zbiór obiektów ODFILTROWANY przez filter np: username:
+				User.objects.filter(username='marek')	#zwróci: <QuerySet [<User: marek>]>
+				User.objects.filter(username='marek').first()	    #zwróci:  <User: marek>
+			**filter(<model_attrbitute>__startswith='my_text') 
+				User.objects.filter(name__startswith='Mar')
+			**filter(<model_attrbitute>__contains='my_text')
+				User.objects.filter(name__contains='are')
+			**filter(<model_attrbitute>__icontains='my_text')
+				User.objects.filter(name__icontains='are')
+			**filter(<model_attrbitute>__iexact='my_exact_text') - dokładny tekst case sensitive
+				User.objects.filter(name__iexact='my exact title')
+			**filter(<model_attrbitute>	 __lte ; __gte ; __le ; __ge   - (greater/less then or equal):
+				Question.objects.filter(pub_date__lte=timezone.now())
+			**filtrowanie na polach obiektu:
+				Question.objects.filter(pub_date__year=current_year)
+			**filtrowanie na obiekcie klucza obcego i jego polach oraz wykorzystywanie na nich funkcji:
+				Choice.objects.filter(question__pub_date__year=current_year)
+				Room.objects.filter(topic__name__contains = 'my_word')				
+		*filtrowanie z użyciem order_by('attribute'):
+				Question.objects.filter(pub_date__lte=timezone.now()).order_by('-pub_date')
+		*filtrowanie z WYŁĄCZENIEM - '.exclude()':
+				Question.objects.filter(content__iconatains='my_text').exclude(id=1)
+		*filtrowanie na bazie listy jednego z pól obiektów klucza obcego ( pole__in) dla (values_list)
+		 WIELOPOZIOMOWE SZUKANIE:
+				u1=User.objects.get(id=1)
+				ingredientsIds = user.recipe_set.all().values_list('ingredients__id', flat=True)
+			#!	Ingrediens.objects.filter(id__in=ingredientsIds)					#LUB
+				recipeIds = user.recipe_set.all().values_list('id', flat=True)
+			#!	Ingredients.objects.filter(recipe__id__in=recipeIds)
+		*filtrowanie przy użyciu WIELU WARUNKÓW - klasą 'Q' z django.db.models okalasz dane warunki w 
+		 nawiasy i wykorzystujesz '&','|' jako 'and','or':
+			#dla linka (w templates):
+				<a href="{% url 'home' %}?q={{topic.name}}">{{topic.name}}</a>
+			#logika działania we views:
+				from django.db.models import Q						#poniżej parametr pobrany z linka
+				my_q= request.GET.get('q') if request.GET.get('q') != None else ''	 
+				rooms = Room.objects.filter(
+					Q(topic__name__icontains= my_q) |
+					Q(name__icontains=my_q) |
+					Q(description__icontains=my_q) |
+					Q(host__username__icontains=q))	
+	2*INSTRUKCJE ZWRACAJĄCE ZESTAWY DANYCH ZWIĄZANE Z KLUCZEM OBCYM:
+		*zwrócenie pól z tabeli klucza obcego w naszej tabeli 
+				#w Post: author=models.ForeignKey(User, on_delete=models.CASCADE
+				p1 = Post.objects.get(id=1)
+				p1.author.id 	   / 	p1.author_id			#zwróci: 1
+				p1.author.email	  								#zwróci: 'marek@gmail.com'
+		*zwrócenie pól z tabeli/klasy powiązanej relacją OneToOneField 
+				#w Profile: user = models.OneToOneField(User, on_delete=models.CASCADE)
+				u1=User.objects.filter(username='marek').first()
+				u1.profile 					#zwróci referencje do profilu powiązanego z userem
+				u1.profile.user.username	#zwróci pola profilu wraz z ich atrybutami 
+				u1.profile.image.url		#nazwa zdjęcia	
+				u1.profile.image.size			
+				u1.profile.image.height
+				u1.profile.image.width
+		*zwrócenie pól z tabeli połączonych ForeignKey oraz relacją OneToOneField
+				#w Post: author=models.ForeignKey(User, on_delete=models.CASCADE)
+				#w Profile: user = models.OneToOneField(User, on_delete=models.CASCADE)
+				from blog.models import Post
+				from django.contrib.auth.models import User
+				post = Post.objects.create(title='Blog 1', content='First Post Content'
+								,author=User.objects.filter(username='marek').first())
+				post.save()
+				post.author.profile.image.url
+		*'_set.all()' - zwrócenie wszystkich rekordów w tabeli która jest kluczem obcym dla naszej tabeli: 
+				#w Post: author=models.ForeignKey(User, on_delete=models.CASCADE)
+				u1=User.objects.get(id=1)
+				u1.post_set.all()			#zwróci wszystkie posty danego usera
+											#zwróci <QuerySet [<Post: Blog 1>, <Post: Blog 2>]>	
+		*'_set.all().count()' - zwrócenie liczby ilości obiektów w kluczu obcym:
+				Question.objects.get(id=1).choice_set.count()
+				Question.objects.get(id=1).choice_set.all().count()
+		*'_set.all().values_list('nazwaPola',flat=True)'- zwrócenie listy pola obiektów klucza obcego 
+		 (z możliwością filtrowania po tej liście pola obiektów klucza obcego) '.filter(id__in=...)':
+				u1=User.objects.filter(username='marek').first()
+			#zwraca wszystkie 'id' przepisów(Recipe) usera 'marek' z dod arg 'None': <QuerySet [1, None]>
+			#dlatego później robisz filtrację na obiektach klucza obcego dla Recipe w postaci Ingredient
+				recipeIds = u1.recipe_set.all().values_list('id', flat=True) 	#<QuerySet [1, None]>
+				Ingredient.objects.filter(recipe__id__in=recipeIds)				
+			#LUB
+				ingredientsIds = u1.recipe_set.all().values_list('ingredient__id', flat=True)
+				Ingredient.objects.filter(id__in=ingredientsIds)				
+   C*UTWORZENIE OBIEKTU:
+		*POPRZEZ konstruktor wraz z zapisem (Z OPCJĄ MODYFIKACJI):
+			*tworzenie:
+				from blog.models import Post			#pamiętaj o zaimportowaniu modelu
+				from django.contrib.auth.models import User
+				post_1 = Post(title='Blog 1', content='First Post Content'/
+							  ,author=User.objects.filter(username='marek').first())
+					#w kluczu obcym zamiast tylko id klucza obcego podajesz cały obiekt.
+			*zapisanie:
+				#post1.title='B1'	#(Z OPCJĄ MODYFIKACJI):
+				post_1.save()		
+		*poprzez METODE CREATE() DLA WSZYSTKICH rekordów DANEJ KLASY/TABELI:
+				from blog.models import Post
+				from django.contrib.auth.models import User
+				Post.objects.create(title='Blog 1', content='First Post Content'/
+								,author=User.objects.filter(username='marek').first())
+		*poprzez metode get_or_create() - UTWORZENIE OBIEKTU w tabeli i ZWRÓCENIE GO LUB jeżeli istnieje
+		 SAMO ZWRÓCENIE GO. Get_or_create() zwraca krotkę: (obiekt, flaga_CzyUtworzono). 
+				from .models import Participant
+				participant, was_created = Participant.objects.get_or_create(name='Marek', email=user_email)
+		*POPRZEZ METODĘ CREATE() DLA ZESTAWU (SETu) WSZYSTKICH REKORDÓW TABELI KLUCZA OBCEGO:
+				u1=User.objects.filter(username='marek').first()
+				u1.post_set.create(title='Blog 3', content='Blog content 3')
+				#autorowi tworzysz post więc nie musisz w tymże konstruktorze podawać autora 	
+	    *DODANIE OBIEKTU (ADD()) który jest KLUCZEM OBCYM - wywołujesz na polu klucza obcego.
+				from .models import Participant, Meetup
+				participant = Participant.objects.create(name='Marek', email=user_email)	
+				Meetup.objects.get(id=1).participants.add(participant)
+   D*USUWANIE OBIEKTU:
+				from blog.models import Post 
+				obj = Post.objects.get(id=1)
+				obj.delete()				
+2. KOMENDY dla 'python manage.py' ('django-admin'):
+		*runserver
+						python manage.py runserver    ||   python manage.py runserver 9000  
+		*startapp
+						python manage.py startapp nameapp
+				+rejestracja w settings.py:
+						'nameapp.apps.NameappConfig'
+			***z folederem na wszystkie app/funkc:
+						mkdir apps
+						mkdir apps/myapp
+						python manage.py startapp my_app apps/my_app
+						cd apps
+						touch __init__.py		/ 	    type nul >  __init__.py
+				+rejestracja w settings.py:
+						'apps.myapp.apps.MyappConfig'		 #zamiast 'myapp.config.MyappConfig'				
+		*createsuperuser (migrate -> createsuperuser)
+						python manage.py migrate
+						python manage.py createsuperuser
+		*makemigrations
+						python manage.py makemigrations
+		*sqlmigrate 
+						python manage.py sqlmigrate nameapp 0001 
+		*migrate
+						python manage.py migrate
+		*shell
+						python manage.py shell
+1. INSTALACJA, URUCHOMIENIE oraz STRUKTURA PROJEKTU:
+	1)Stworzenie WIRTUALKI i pobranie django:
+						pip3 install pipenv
+						pipenv install django
+		#lub 
+						pip install virtualenv
+						virtualenv .
+							#dla windowsa:
+						Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force 
+						Scripts\activate.ps1	#bez komendy 'cd'
+						pip install django==2.0.7
+							#dla linuxa:
+						source path_project_ven/Scripts/activate
+						pip install django==2.0.7
+	2)START PROJEKTu w terminalu:
+						pipenv shell
+						django-admin startproject nameproject .	
+													/python -m django startproject nameproject .
+						python manage.py migrate 
+	3)URUCHOMIENIE PROJEKTU W TERMINALU:
+						pipenv shell
+						python manage.py runserver	[ctrl + c ; exit]	-->  http://127.0.0.1:8000
+						python manage.py runserver	5050 				-->  http://127.0.0.1:5050 
+	4)STRUKTURA Twojego PROJEKTU:
+		A* folder 'nameproject' (którego nazwę można zmienić np: na 'config' > wtedy we wszystkich plikach 
+		   (settings.py, asgi.py, wsgi.py i manage.py) trzeba podmienić 'nameproject' na np:'config':
+			*settings.py 
+				-> BASE_DIR					#ścieżka do głównego katalogu projekt
+				-> INSTALLED_APPS 	 	 !!!#zarejestorwane apps:
+											#app wbudowane w Django, stworzone przez Cb i te z zewnątrz
+				-> DEBUG=True 				#dla deploymentu
+				-> ROOT_URLCONF 			#urls.py w głównej app/funkc.
+				-> TEMPLATES				#dotyczy template'ów 
+				-> WSGI_APPLICATION 		#dotyczy serwerów
+				-> DATABASES 				#dotyczy baz danych 
+				-> AUTH_PASSWORD_VALIDATORS #standardy dla wpisywanych haseł
+				-> STATIC_URL='/static/' 	#ścieżka do plików: IMG CSS JS
+			*urls.py
+		B*manage.py (zamiast django-admin)
+		C*FOLDERY app/funkcjonalności:
+			*utworzenie: (komenda startapp) 
+			 rejestracja: (główna app/funkc. -> settings.py -> INSTALLED_APPS) dodajesz wg schematu:
+				'<nameapp>.apps.<Nameapp>Config'  (nazwa klasy z apps.py danej app/funkc) 
+				'users.apps.UsersConfig'				
+			*STRUKTURA:	
+				*models module
+				*migrations KATALOG
+				*urls module (samemu tworzysz)
+				*views module
+				*templates KATALOG (samemu tworzysz)
+				*admin module 
+				*app module 	#konfiguracja
+				*tests module
+		D* SETTING DATABASE
+			https://docs.djangoproject.com/en/4.0/intro/tutorial02/#database-setup
+		    https://docs.djangoproject.com/en/4.0/ref/settings/#std:setting-DATABASES
+	5)DZIAŁANIE:
+		*wywołanie ścieżki -> w urls.py (poprzez path) wywołanie funkcji z views.py -> funkcje we views.py
+		 wywołuję dany plik html (+ew przekazuję mu jakieś dany poprzez dictionary)
+	*)DODATKOWE: wybranie interpretera pythona z wirtualki:
+0. PODSTAWY:
+		*BACKEND: responding to client -> return generated HTML OR return needed data
+		*MVC (MVT) - MODEL-VIEW-CONTROLLER (MODEL-VIEW-TEMPLATE) 
+			MODEL - DATA ACCESS LAYER	;;	 VIEW - BUSINESS LOGIC 	  ;;    TEMPLATE - PRESENTATION LAYER
+		*DJANGO ADVANTAGES -> can take more data 
+		*ANOTHER: Flaks, Cherry Pie, Web2py, Pyramid
+============================================================================================================

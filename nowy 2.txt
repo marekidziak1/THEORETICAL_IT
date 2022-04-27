@@ -1,729 +1,839 @@
-=============================================================================================================
-=============================================================================================================
-=============================================================================================================
-
-*W ROZSZERZENIACH -> class-bases-views (LoginView, LogoutView)
-			LOGIN_REDIRECT_URL			- (po poprawnym zalogowaniu automatyczne przejście pod podany adres tutaj)
-
-
-*W PODSTAWACH w pk1 module MODELS - opsiać jak można rozszerzyć klasę USER
-		z django.contrib.auth.models (chodzi o zrobienie nowej klasy z polem 
-
-
-*FORMS.PY :
-	PKT 2gi:
-	UserCreationForm wraz z rozszeżeniem (UserRegisterForm)
-	from django import forms  :	forms.ModelForm	 (UserUpdateForm
-	
-	
-	WE FORMSACH     --       dodać CRISPY FORMS
-	 *Zmiana formy renderowania i przedstawienia błędów przy walidacji danych w formularzu z form.as_p na form|crispy:
-		*instalujesz django-crispy-forms w konsoli poprzez:
-					pipenv install django-crispy-forms	  LUB    pip install django-crispy-forms
-		*w sekcji INSTALLED_APPS w głównej app/funkc. dodajesz crispy_forms 
-					INSTALLED_APPS = [
-						...
-						'crispy_forms',
-					]
-		 oraz dodajesz w tym samym pliku zmienną CRISPY_TEMPLATE_PACK = 'bootstrap4'
-					CRISPY_TEMPLATE_PACK = 'bootstrap4'
-	
-	
-*W ROZSZERZENIACH -> signals (dołożenie do rozszerzeńPodstaw -> signals.py jako kontynuacja models.py)
-		
-		
-=============================================================================================================
-=============================================================================================================
-=============================================================================================================
-=============================================================================================================
-=============================================================================================================
-=============================================================================================================
-=============================================================================================================
-=============================================================================================================
-=============================================================================================================
-=============================================================================================================
-=============================================================================================================
-=============================================================================================================
-=============================================================================================================
-=============================================TRAVERSY MEDIA==================================================
-renderowanie zmiennych w HTMLu:
-vote{{ choice.votes|pluralize }}  -  dostosowanie słowa vote w zależnośći od zmiennych 
-=============================================================================
-w URLS.PY ALBO W CLASS-BASED-VIEWS:
-	RedirectView.as_view() - dla danej ścieżki przeniesienie na inną ścieżkę:
-
-			from django.views.generic.base import RedirectView
-			urlpatterns = [
-				path('admin/', admin.site.urls),
-				path('', RedirectView.as_view(url='meetups.urls'))
-				path('meetups/', include('meetups.urls')),
-			]
-=============================================================================
-we views.py --> przykłady dostania się do różnych ścieżek związanych z image(url, path, size, width, height)
-							--> user.username
-=============================================================================
-DLA PROFILE -- SPRAWDZIĆ:
-	W MODELS WPROWADZIC ZMIENNE:
-				USERNAME_FIELD = 'email' - pozwala na zalogowanie się porpzez email zamiast poprzez username
-				REQUIRED_FIELDS = []	 - wskazuję pola któe trzeba wypełnic przy rejestracji 
-=============================================================================
-
-DJANGO USER MODEL:
-	*https://docs.djangoproject.com/en/4.0/ref/contrib/auth/
-	
-
-from django.contrib.auth.models import User
-user = models.ForeignKey(User, on_delete = models.CASCADE)
-
-==============================================================================
-DYNAMIC SEARCHING -WYSZUKIWARKA (we form)
-	SEARCH jako wyszukiwarka utworzona przez formularz
-			<form method="GET" action="{% url 'home' %}">
-				<input type="text" name="q" placeholder="Search rooms..."/ >
-				<input type="submit" value="search">
-			</form>
-	korzystasz z metody GET która zmienną wpisaną w atrybucie name (w tym przypadku 'q') dołącza do linku 
-	który jest wysyłany na serwer i później w pliku views pobiearany w celu pobrania odpowiednich danych:
-		#w linku - po wciśnieciu ENTERa lub przycisku 'submit' zostanie wysyłany link:
-			127.0.0.1:800/?q=wpisany+mojText
-		#we views.py:
-			q= request.GET.get('q') if request.GET.get('q') != None else ''
-			rooms = Room.objects.filter(topic__name__contains= q)
-===============================================================================
-DYNAMICZNE LINKI - dodać:
-	*gdy nie masz stworzonego linku w urls.py do konkretnego obiektu (link ze zmienną) to możesz zrović 
-	 link do innej strony gdzie będzie logika wyszukiwania tego obiektu wykorzystująca metodę GET:
-			<a href="{% url 'home' %}?q={{topic.name}}"> MOJ_TOPIC </a>
-	*we views na innej stronie tworzysz logikę wyszukiwania dla obiektu który nie ma własnego dynamic url:
-			q= request.GET.get('q') if request.GET.get('q') != None else ''
-			topics = Topic.objects.filter(name__icontains=q)
-
-===============================================================================
-w ORM - skomplikowane wyszukiwarki do filter():
-UŻYWANIE klasy 'Q' z django.db.models. przy pobieraniu danych wewnątrz funkcji filter() okalasz dane 
-warunki w nawiasy z klasą 'Q' i dodatkowo możesz używać '&','|' jako 'and','or'
-	# dla linka (w templates):
-			 <a href="{% url 'home' %}?q={{topic.name}}">{{topic.name}}</a>
-	# logika działania we views:
-			from django.db.models import Q
-			my_q= request.GET.get('q') if request.GET.get('q') != None else ''	   #parametr pobrany z linka
-			rooms = Room.objects.filter(
-				Q(topic__name__icontains= my_q) |
-				Q(name__icontains=my_q) |
-				Q(description__icontains=my_q) |
-				Q(host__username__icontains=q))
-================================================================================
-FLASH MESSAGES:
-	https://docs.djangoproject.com/en/4.0/ref/contrib/messages/#using-messages-in-views-and-templates
-	#we views.py:
-			from django.contrib import messages
-			messages.add_message(request, messages.INFO, 'HELLO WORLD')
-			messages.error(request, 'User does not exist')
-	#w pliku main.html w templates'ach tworzysz miejsce gdzie zawsze te komunikaty się wyświetlają:
-			{% if messages %}
-			<ul class="messages">
-				{% for message in messages %}
-				<li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-				{% endfor %}
-			</ul>
-			{% endif %}
-================================================================================
-przerabianie modeli w bazie danych i skasowanie aktualnych modeli:
-	*usunięcie bazy danych 
-	*usuniećie wszystkich migracji oprócz migracji __init__.py
-	
-================================================================================
-operowanie czasem i datami w django - do ustalenia czasu aktualnego
-
-	from django.utils import timezone
-	q= Question(pub_date = timezone.now()
-
-	current_year = timezone.now().year 
-
-do zwykłego operowania na czasie i datach:
-
-	import datetime
-	def was_published_recently(self):
-        return self.pub_date >= timezone.now()-datetime.timedelta(days=1)
-					
-================================================================================
-
-	
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-================================================================================================================
-================================================================================================================
-================================================================================================================
-ELEMENTY ROZSZERZONE:
-	0.strona administratora
-	1.request 
-	2.ZDJĘCIA
-	3.django templating language
-	4.RESTRICTED ROUTE
-================================================1
-REQUEST we views.py 
-(zamiast request może być inna nazwa jak np response)
-	w pliku HTML w templates: 
-	{{request.META.HTTP_REFERER}} - powrót na poprzednią stronę
-			<a href="{{request.META.HTTP_REFERER}}">go back</a>
-			
-			
-			
-			
-			
-	*w pliku HTML do dynamicznego linka dodajesz parametr 'q' (mógłby być obojętnie jaki znak ale musi być za 
-	 znakiem zapytania czyli zmienna q i wartość do tej zmiennej:
-				<a href="{% url 'home' %}?q={{topic.name}}">{{topic.name}}</a>
-	 w pliku views.py już będziesz wykorzystywał tę zmienną 'q':
-				my_q = request.GET.get('q')
-				topics=Topic.objects.filter(topic__name=q)
-	 W Przypadku gdy 
-				q= request.GET.get('q') if request.GET.get('q') != None else ''
-				rooms = Room.objects.filter(topic__name__contains= q)
-	
-	
-	
-	
-	{% if request.user.is_authenticated %}
-
-
-
-
-
-
-	request.instance (przy s
-	
-	request.method = 'POST'
-	
-	def form_valid(self, form):
-        form.instance.author = self.request.user
-        return super().form_valid(form)
-	 
-	------------------------------------- TECH WITH TIM - https://www.techwithtim.net/tutorials/django/custom-forms/
-**	request.GET zwróci słownik zmiennych w linku 
-		z kluczami będącymi zmiennymi w linku 
-						 <a href="{% url 'home' %}?q={{topic.name}}">{{topic.name}}</a>
-		dla link:
-						127.0.0.1:8000/home?q=jakisTekst
-		zwróci słownik
-						 <QueryDict: {'q': ['jakisTekst']}>
-		we views można pobrac te klucze poprzez:
-						request.GET.get('q')
-**	request.POST zwróci słownik
-		z kluczami będącymi:														i wartościami w postaci:
-				*wszystkimi tagami input type='checkbox' które będą zaznaczone				*pola value w tagu input type='checkbox'
-				 (dla starozaznaczonych input'ów type='checkbox  użyj pola: checked  
-				  oraz zrob sprawdzenie warunku np: jeżeli zadanie ukończone to dla
-				  danego tagu input type='checkbox' dodaj pole checked
-				*wszystkimi tagami input type='text'										*tekstu wpisanego do tagu input type='text'
-				*wszystkimi tagami button type='submit'										*pola value w tagu button type='submit'
-				*pole csrf_token 															*z kluczem potrzebnym do odszyfrowania 
-		##dla formularza form który ma za zadanie nadać odpowiednie wartości (pola value) dla odpowiednich tagów o nazwach w polach name :
-						<form method = 'POST' action="create">
-							{% csrf_token %}
-							<ul>
-								{% for item in ls.item_set.all %}
-									{%if item.complete == False%}
-										<li><input type="checkbox", value="clicked", name="c{{item.id}}">{{item}}</li>
-									{% else %}
-										<li><input type="checkbox", value="clicked", name="c{{item.id}}" checked>{{item}} - COMPLETE</li>
-									{%endif %}
-								{% endfor %}
-							</ul>
-							<button type="submit", name="saveButton", value ="save button">SAVE everything</button>
-							<input type='text', name='newItem'>
-							<button type="submit", name="saveNewItemButton", value = "save new Item button">Add new Item</button>
-						</form>
-		##co pozwoli stworzyć słownik klikniętych "checkbox'ów", wciśniętych buttonów i wszystkich input'ów type="text":
-						<QueryDict: {'csrfmiddlewaretoken': ['yXRRDKvKzh70bG4gHZRKSPqZ6ZMa62uUGGCfUZnVOolakuba8ifWaZ5yY9LYem2g'], 
-						'c1': ['clicked'], 'c2': ['clicked'], 'c4': ['clicked'], 'saveButton': ['save button'], 'newItem': ['']}>
-		##który zostanie wykorzystany przez funkcję w pliku views (gdzie znajduję się cała logika):
-			*dane/wartości klucza które pobierasz z request.POST jako słownik możesz pobrać albo poprzez metodę get() albo poprzez
- 			 wywołania z nawiasów kwadratowych tj: request.POST.get('klucz') ALBO request.POST['klucz']
-						def index(request,id):
-							lst = ToDoList.objects.get(id=id)
-							if request.method != 'POST':			#dla pierwszego pobrania - odpalenie strony HTML - żądanie 'GET'
-								context ={'ls':lst}
-								return render(request, "site1/list.html", context)
-							else:  #if request.method == 'POST':	#dla odświeżenia strony po wysłaniu formularza - przy żądaniu 'POST'
-								#print(request.POST) - w konsoli pokaże ten słownik 
-								if request.POST.get("saveButton"):
-									for item in lst.item_set.all():
-										if request.POST.get("c" + str(item.id)) == "clicked":
-											item.complete = True
-										else:
-											item.complete = False
-										item.save()
-								elif request.POST.get("saveNewItemButton"):
-									txt = request.POST.get("newItem")
-									if len(txt)>2:
-										lst.item_set.create(text=txt, complete=False)
-									else:
-										print("invalid")
-								context ={'ls':lst}
-								return render(request, "site1/list.html", context)
-================================================2				
-DJANGO TEMPLATING LANGUAGE:
-	*metody wywołane na kluczach przekazywanego słownika do templatesów np as_p normalnie we 
-	 views byłby wywoływane z nawiasami okrągłymi a w templatesach są wywoływane bez tych nawiasów
-	 (pole request.user.is_authenticated się nie liczy)
-					#we views.py:
-					if request.user.is_authenticated:
-						form = myForm().as_p()
-					#w templatesach, w plikach HTML:
-					{% if user.is_authenticated %}	
-						{{form.as_p}}
-	*chąc dostać się do obiektów klucza obcego to operujesz bez nawiasów tj:'_set.all()' 
-					#we views.py
-					if request.user.is_authenticated:
-						t = request.user.todolist_set.all()
-					#w templatesach, w plikach HTML:
-					{% if user.is_authenticated %}	
-						{% for item in user.todolist_set.all %}
-							...
-						{% endfor %}
-================================================3
-we views --> restricted route 
-			 --> LOGIN_URL w settings.py głónej app/funkc.
-									- potrzebne do restricted route @login_required by zmienić z 
-									  domślnej ścieżki /acounts/login/ na /login/
-									  
-	--> dekorator @login_required - wykorzystuję plik ciasteczek w postaci session_id przechowujący 
-	    informację o tym czy użytkownik jest zalogowany. Jezeli go nie ma to nie pozwoli odpalić funkcji
-		udekorowanej a przeniesie cię na inną podstronę (np do logowania) podaną w arg login_url:
-			from django.contrib.auth.decorators import login_required
-			
-			@login_required(login_url='/login/')
-			def function(request):
-				...
-				
-	--> we views.py:
-			room=Room.objects.get(id=pk)
-			if request.user != room.host :
-				return HttpResponse('You are not allowed here')
-			if request.user.is_authenticated:
-				return redirect('home')
-		w htmlu:
-			{% if request.user == r.host%}
-				<a href="{% url 'update-room' r.id %}">Update Room</a>
-				<a href="{% url 'delete-room' r.id %}">DELETE Room</a>
-			{% endif %}
-				
-				
-				
-				
-================================================================================================================
-================================================================================================================
-================================================================================================================
-===============================================NOWY PLIK========================================================
++====================================================================================================
++====================================================================================================
+*przy tworzeniu jakiegokolwiek folderu dla projektu django musisz utworzyć wewnątrz tego folderu 
+ pusty plik _init__.py
+*we view.py przy tworzeniu funkcji związanych z logowaniem itp NIE WOLNO używać nazw funkcji takich jak:
+		*def login()
+		*def logout()
+		*def authenticate()
+*sprawdzić 
+	permissions
+	has_role
+	https://django-role-permissions.readthedocs.io/en/stable/utils.html
+	@allowed_users(allowed_roles=['Admin', 'Staff', 'Lite Scan'])
+	https://coderbook.com/@marcus/how-to-restrict-access-with-django-permissions/
+	https://www.youtube.com/watch?v=xv_bwpA_aEA&list=PL-51WBLyFTg2vW-_6XBoUpE7vpmoR3ztO - ivy
+=====================================================================================================
+	2.POSTMAN:
+		*PODSTAWY:
+			**służy do testowania żądań w API
+			**ustawiasz TYP ŻĄDANIA, uruchamiasz swój serwer, wpisujesz śćieżkę i klikasz 'SEND'
+			**dla żądania POST wpisujesz argumenty do serializera w dziale danych wysyłanych w sekcji 
+			  'BODY' we 'form-data' 
+			**w przypadku ZEZWOLEŃ 'PERMISSIONS' musisz w sekcji 'Headers' dodać zmienną odpowiedzialną 
+			  za autoryzacji i przypisać jej token wgschematu: {'Authorization': 'Token wartość_tokena')
+						KEY:				VALUE:
+						Authorization   	8a09c71f5ba4bda0e8a7c449164d8b58d85197f7
+			**przy żądaniu 'POST' zarówno w ścieżka w URLS.PY jak i w postmanie musi byc BEZ slasha na 
+			  końcu!!! Inaczej ścieżka wywoływana ścieżka będzie pokazywać błędy:
+				**w URLS.PY:
+						urlpatterns = [
+							path("create", api_create_blog_view, name="create"),    
+						]	
+				**w POSTMAN'ie:
+						http://127.0.0.1:8000/api/blog/create
+		*SESJE dla FORMULARZY:
+			**wszystkie formularze zbudowane w django (a nie te oparte o djangorestframework) wymagają
+			  sporządzenia sesji czyli użycia zmiennej csrf_token
+    		**wysyłasz POSTMAN'em żądanie GET na stronę logowania -> kopiujesz csrftoken z odebranych
+			  danych z sekcji 'cookies' 
+			**tworzysz w POSTMAN'ie żądanie POST na stronę logowania -> w danych do wysłania w sekcji 
+			  'Headers' tworzysz zmienną: 'X-CSRFToken' i dajesz jej wartość w postaci skopiowanego
+			  csrftoken'u z poprzedniego punktu. Wysyłasz żądanie. 		
 ============================================================================================================
-TESTY:
-	https://docs.djangoproject.com/en/4.0/intro/tutorial05/
-	https://docs.djangoproject.com/en/4.0/topics/testing/
-	1)PODSTAWY i Testowanie models.py:
-		*w każdej app/funkc. jest plik test.py przeznaczony do testów
-		*w tym pliku tworzysz klasy testów które musza dziedziczyć po klasie TestCase. Klasy testów służą 
-		 testowaniu nie tylko funkcji w pliku views.py ale także pojedyńczych modeli z models.py.
-		*Wewnątrz klas tworzysz funkcje które przez to że klasa dziedziczy po TestCase będą automatycznie 
-		 uruchamiane po odpaleniu testów. Wewnątrz funkcji tworzysz asercje sprawdzające poprawność danych
-					from django.test import TestCase
-					from .models import Question						#pobierasz model 
-					class QuestionModelTests(TestCase):					#klasa testów do testowania modelu
-						def test_<name_function>_<that_testing>(self):
-							"""opis testu"""
-							q1 = Question(...)
-							self.assertIs(q1.<name_function>(),False)	#czy porównanie zwróci False
-		*testy uruchamia się komendą:
-				python manage.py test <app_name>
-	2)Testowanie pliku VIEWS.PY:
-		a)testowanie w konsoli:
-			*w konsoli musisz zadbać o ustanowienie środowiska do testów:
-					from django.test.utils import setup_test_environment
-					setup_test_environment()	
-			*w konsoli jest konieczność pobrania własnego Client'a imitującego klienta w przeglądarce
-					from django.test import Client
-					client = Client()
-			*od teraz na danym kliencie możemy żadąc zwrócenie odpowiednich danych:
-				*żądanie konkretnej strony po ścieżce:
-					response = client.get('/')			#Not Found: /
-					response = client.get('home/')
-				*żadanie konkretnej strony po atrybucie 'name' w path:
-					form django.url import reverse
-					response = client.get(reverse('index'))
-				*zwrócenie statusu strony:
-					response.status_code 				#404 /200
-				*zwrócenie HTMLa wyrenderowanej strony:
-					response.content					#<li><a href="/polls/1/">Wha's up?</a></li>
-				*zwrócenie przesyłanego słownika na stronę:
-					response.context					#[...'klucz': <QuerySet [<Question: What's up>]>...]
-					response.context['klucz']			#<QuerySet [<Question: What's up?>]>
-		b)testowanie pliku views.py w pliku test.py	
-			*tak jak dla models tworzysz klasę testującą dziedziczącą po TestCasektóra testuję każdą 
-			 funkcje/class-based-view z views.py. Wewnątrz  klasy testującej tworzysz funkcje testujące 
-			 różne przypadki i w nich wykorzystujesz wbudowane pole client'a:
-					from django.test import TestCase
-					class QuestionIndexViewTest(TestCase):
-						def test_no_question(self):
-							response = self.client.get(reverse('index'))
-							self.assertEqual(response.status_code, 200)
-							self.assertContains(response, "No polls availble")	#odpowiada response.content
-																				#sprawdza tekst w htmlu
-							obj = Question(text='mama',pub_date=...)
-							self.assertQuerySetEqual(response.context['klucz'],[obj.text])
-			*uruchamiasz testy tak samo jak w pkt1:
-					python manage.py test <app_name>
-	3)Rzeczy dodatkowe odróżniające zwykłe testy od testów w Django:
-		*testująca klasa dziedziczy po klasie Testcase
-					from django.test import TestCase
-		*klasa TestCase dostarcza pole client które pozwala na imitowanie klienta i żądanie stron po 
-		 atrybucie name w funkcji path w urls.py: 
-					from django.url import reverse
-					class MyTestClass(TeatCase):
-						def my_func(self):
-							self.client.get(reverse('detail')
-		*klasa TestCase dostarcza specjalny typ asercji: assertContains() i assertQuerySetEqual()
-					from django.url import reverse
-					class MyTestClass(TeatCase):
-						def my_func(self):
-							response = self.client.get(reverse('detail')
-			*assertContains() - sprawdza czy w zwracanym wyrenderowanym HTML'u zawiera się string w 2gim arg
-							self.assertContains(response, 'my text in HTML'(
-			*assertQuerySetEqual() - czy zwracany słownik dla podanego klucza odpowiada liście wartości
-							self.assertQuerySetEqual(response.context['my_key'], [value1, value2])
-					
-RÓŻNE FORMY FORMULARZY:
-		1*Formularz JEDNOKROTNEGO WYBORU (formularz budowany od podstaw w HTMLu, przekierowujący na inną 
-		  stronę przez pole action w tagu form i przekazujący dane przez request.POST):
-			*DLA MODELI, URLS.PY i VIEWS.PY:
-					#w models.py - dla modeli:
-							class Question(models.Model):
-								question_text= models.CharField(max_length=200)
-								pub_date = models.DateTimeField('date published')
-							class Choice(models.Model):
-								question = models.ForeignKey(Question, on_delete=models.CASCADE)
-								choice_text = models.CharField(max_length=200)
-								votes = models.IntegerField(default=0)
-					#w urls.py - dla linku:
-							path('<int:question_id>/', views.detail, name='detail'),	
-					#we views.py - dla funkcji detail():
-							def detail(request, question_id):
-								question = get_object_or_404(Question, id=question_id)
-								return render(request, 'polls/detail.html', {'question': question})
-			*TWORZYSZ FORMULARZ który po wysłaniu przekierowuję do funkcji vote() z views.py zamiast do 
-			 samego siebie. Funkcja vote() we views.py ogarnia logikę (czyli posumowanie głosów) i 
-			 przekierowanie do innej funkcji z views.py która prześle dane do odpowiedniego pliku HTML:
-					#w templates - wyświetla się plik detail.html, gdzie znajduję się formularz:
-							{% if error_message %}
-								<h1>{{ error_messages }}</h1>
-							{% endif %}
-							<form method='POST' action={% url 'vote' question.id %}		
-														#przy metodzie POST przesyła dane z formularza 
-														#do funkcji vote() w pliku views (views.vote())
-								{% csrf_token %}
-								<fieldset>
-									<legend>{{ question.question_text }} </legend>
-									{% for choice in question.choice_set.all %}
-										<input type="radio" name="choice" value ={{choice.id}}  
-																		id="choice{{forloop.counter}}" />
-														#pole name będzie przekazane jako klucz w slowniku
-														#z request.POST a value jako wartość do tego klucza
-										<label for="choice{{ forloop.counter }}">{{choice.choice_text}}
-																								 </label>
-														#label musi pasować do "radio" czyli opcji wyboru. 
-														#Robisz to poprzez 'for' gdzie wskazujesz id 'radio'
-									{% endfor %}
-								</fieldset>
-								<input type="submit" value="vote" />
-							</form>
-					#urls.py
-							path('<int:question_id>/vote/', views.vote, name='vote'),
-							path('<int:question_id>/results/', views.results, name='results'),
-					#we views: 
-							def vote(request, question_id):]
-								question = Question.objects.get(id=question_id)
-								try:
-									selected_choice= question.choice_set.get(pk=request.POST['choice'])
-								except(KeyError, Choice.DoesNotExist):
-									return render(request, 'polls/results.html', {'question':question, 
-																	'error_message':"You didn't choose"})
-								else:
-									selected_choice.votes+=1
-									selected_choice.save()
-									return HttpResponseRedirect(reverse('polls:results', kwargs={
-																			"question_id":question.id}))
-														#przy method=POST używasz HttpResponseRedirect()
-														#zamiast metody render() gdyż dane z request.POST 
-														#przy odświeżaniu w render prześlą się drugi raz 
-														#co nie może mieć miejsca!!!
-							def results(request, question_id):
-								question = Question.objects.get(id=question_id)
-								return render(request, 'polls/results.html',{'question':question}
-					#w templates:
-							{{question.question_text}}
-							<ul>
-								{%for choice in question.choice_set.all %}
-									<li>{{choice.choice_text}} -- {{choice.votes}}, 
-																	vote{{ choice.votes|pluralize }}</li>
-								{% endfor %}
-								<a href="{% url 'polls:detail' question.id %}">Vote again?</a>
-							</ul>
-		2*FORMULARZ REJESTRACYJNY (z utworzeniem obiektu USERa):
-					#FORMULARZ REJSTRACYJNY JEST OMÓWIONY W DZIALE IIGIM
-					*PODSTAWY we VIEWS:
-							def register(request):
-								if request.method == 'POST':			##gdy na dole w else'ie formularz 
-																		##zostanie uzupełniony danymi to w 
-																		##w pliku html poprzez przycisk 
-																		##submit oraz metodę 'POST' z tagu 
-																		##form te dane są przesłane i można
-																		##je przekazać requestem
-									formWithData=UserCreationForm(request.POST)	
-																	##utworzenie formularza z danymi 
-																	##przekazanymi przez metodę 'POST'
-																	##z tagu form w pliku html
-									if formWithData.is_valid():			##walidacja danych w formularzu
-										formWithData.save()			##utworzenie użytkownika z danych z 
-																	##formularza
-										return redirect('blog-home')	##przekierowanie na stronę podaną
-																		##w zmiennej name w urls.py 
-																		##app/funkcjonalności blog
-									else:									
-										return render(request,'users/register.html', {'form':formWithData})
-																	##wysłane powtórnie formularz z 
-																	##uzupełnionymi danymi gdy dane z 
-																	##formularza mają jakiś błąd
-								else:
-									formWithoutData = UserCreationForm()
-									return render(request, 'users/register.html', {'form':formWithoutData})
-																		##na początku odpala się formularz
-																		##bez danych ponieważ nie została
-																		##w pliku html nie została jeszcze
-																		##odpalona metoda POST z tagu form
-				*ELEMENTY POTRZEBNE DO DZIAŁANIA FORMULARZA: 														
-					**formularz REJESTRACYJNY tworzy się poprzez klasę UserCreationForm() 
-							from django.contrib.auth.forms import UserCreationForm
-							form = UserCreationForm(request.POST)			#request.POST oznacza że 
-																			#przekazuje dane z formularza
-					**form.is_valid() pozwala zwalidować dane z formularza:
-							form.is_valid():
-					**form.save() pozwala zapisać dane z formularza (dla UserCreationForm() baza danych 
-					  jest domyślnie ustawiona na USER:
-							form.save()					
-					
-===========================================================================================================
-DJANGO REST FRAMEWORK:
-	3*DOSTĘPNOŚĆ:
-		1*CORS-HEADERS:
-			*)https://github.com/adamchainz/django-cors-headers
-			a)instalujesz cors-headers:
-							python -m pip install django-cors-headers
-			b)w głównej app/funkc w settings.py:
-				*w sekcji INSTALLED_APPS dodajesz "corsheaders":
-							INSTALLED_APPS = [
-								"corsheaders", 
-								...,
-							]
-				*w sekcji MIDDLEWARE dodajesz "corsheaders.middleware.CorsMiddleware":
-							MIDDLEWARE = [
-							"corsheaders.middleware.CorsMiddleware",
-								...,
-							]
-				*na samym dole ustwiasz jedną z trzech zmiennych 
-					*CORS_ALLOW_ALL_ORIGINS = True  - wskazujesz że wszystkie storny mogą mieć dostęp
-					*CORS_ALLOWED_ORIGINS - wskazujesz które konkretne strony mogą mieć dostęp
-					*CORS_ALLOWED_ORIGIN_REGEXES - wskazujesz regexa pasujących stron mogących mieć dostęp
-			c)dzięki tym ustawieniom pliki javascript będą mieć dostęp do danych przesyłanych przez API, np:
-							<!DOCTYPE html>
-							<html lang="en">
-							<head>
-								<meta charset="UTF-8">
-								<meta http-equiv="X-UA-Compatible" content="IE=edge">
-								<meta name="viewport" content="width=device-width, initial-scale=1.0">
-								<title>Document</title>
-							</head>
-							<body>
-								<h1>Cool rooms</h1>
-								<div id ="rooms-container">
-
-								</div>
-							</body>
-							<script>
-								let roomsContainer = document.getElementById('rooms-container')
-								let getRooms = async () =>{
-									let response = await fetch('http://127.0.0.1:8000/api/rooms/')
-									let rooms = await response.json()
-									//console.log("RESPONSE: ", response)
-									//console.log("rooms:", rooms)
-									for(let i=0; rooms.length>i; i++){
-										let room = rooms[i]
-										let row = `<div>
-														<h3>${room.name}</h3>
-													</div>`
-										roomsContainer .innerHTML += row
-									}
-								}
-								getRooms()
-							</script>
-							</html>
-	2*DZIAŁANIE:
-		1*w URLS.PY - standardowo tworzysz ścieżki do funkcji we views.py.
-							from django.urls import path
-							from . import views 
+	1. MODELOWE PODEŚCIE DO API:
+		*W URLS.PY
+			**musisz pamiętać że ścieżka odwołująca się do funkcji we views wysyłającej żądanie POST 
+			  nie może kończyć się slashem !!! (inaczej nie zadziała):
+			**również przy wywoływaniu w postmanie wywołuj tę ścieżkę (create) bez slasha na końcu!!!
 							urlpatterns = [
-								path('', views.getRoutes),
-								path('rooms/', views.getRooms),
-								path('rooms/<str:pk>', views.getRoom),
+								path("<slug:slug>/", api_detail_blog_view, name="detail"),
+								path("<slug:slug>/update/", api_update_blog_view, name="update"), 
+								path("<slug:slug>/delete/", api_delete_blog_view, name="delete"),
+								path("create", api_create_blog_view, name="create"),    
 							]
-		2*we VIEWS.PY:
-			*OPCJA 1 - wykorzystujesz wysyłanie plików Json poprzez JsonResponse, gdzie argument safe=False
-			 pozwala na podanie listy do argumentu JsonResponse zamiast słownika:
-					#przykład 1:
-							from django.http import JsonResponse
-								lst = ["1", "2"]
-								return JsonResponse(lst, safe=False)
-					#przykład 2:
-							from django.http import JsonResponse
-							import json
-							from django.core.serializers import serialize
-							def getRooms(request):
-								rooms = Room.objects.all()
-								rooms_serialize = json.loads(serialize('json',rooms))
-								return JsonResponse(rooms_serialize, safe=False)      
-			*OPCJA 2 - wykorzystujesz rest_framework ale bez pliku serializers.py:
-				*przypisujesz do funkcji dekorator @api_view, w którym precyzujesz dla jakich żądań mają 
-				 byc udostępniane dane - GET, POST, PUT 
-				*serializujesz dane (nie można wysyłać obiektów Pythona - korzystasz z metody serialize 
-				*wysyłasz dane poprzez obiekt Response
-							from rest_framework.decorators import api_view
-							from rest_framework.response import Response
-							from django.core.serializers import serialize
-							@api_view(['GET'])
-							def getRooms(request):
-								rooms = Room.objects.all()
-								serializer = serialize('json',rooms)
-								return Response(serializer)
-			*OPCJA 3 (POWSZECHNIE UŻYWANA)- wykorzystujesz rest_framework oraz plik serializers.py:
-				*przypisujesz do funkcji dekorator @api_view, w którym precyzujesz dla jakich żądań mają 
-				 byc udostępniane dane - GET, POST, PUT 
-				*korzystasz z wcześniej stworzonego pliku serializers.py w którym masz sprecyzowaną klasę 
-				 gdzie jest określone jaki model ma być serializowany wraz z jakimi polami --> patrz: 
-				 2*Działanie -> 3.serializers.py	
-							#w pliku serializers.py:
-							from rest_framework.serializers import ModelSerializer
-							from base.models import Room
-							class RoomSerializer(ModelSerializer):
+		*W SERIALIZERS.PY:
+							from rest_framework import serializers
+							from blog.models import BlogPost
+							class BlogPostSerializer(serializers.ModelSerializer):
 								class Meta:
-									model = Room
-									fields = '__all__'
-				*wysyłasz dane poprzez obiekt Response
-							from rest_framework.decorators import api_view
+									model = BlogPost
+									fields = ['title', 'body', 'image', 'date_updated' ]
+		*WE VIEWS.PY:									
+							from rest_framework import status
 							from rest_framework.response import Response
-							@api_view(['GET'])
-							def getRooms(request):
-								rooms = Room.objects.all()
-								serializer = RoomSerializer(rooms, many = True)
-										#arg ' many=True ' oznacza że będzie serializacja więcej niż 
-										#jednego obiektu (cała lista/zbiór)
-								return Response(serializer)
-				*dodatkowo (nie jest to wymagane możesz stworzyć legende dla wszystkich ścieżek w api:
-							@api_view(['GET'])     
-							def getRoutes(request):
-								routes = [
-									'GET /api',
-									'GET /api/rooms',
-									'GET /api/rooms/:id',
-								]
-								return Response(routes)
-		3*w SERIALIZERS.PY - tworzysz klasę jak w forms.py. Wskazujesz który model ma być serializowany 
-		  i jakie pola mają być serizliowane. Tworzysz klasę dziedziczącą po ModelSerializer:
-							from rest_framework.serializers import ModelSerializer
-							from base.models import Room
-							class RoomSerializer(ModelSerializer):
-								class Meta:
-									model = Room
-									fields = '__all__'
-			
-	1*INSTALACJE:
-		*https://www.django-rest-framework.org/
-		a)instalacja w konsoli:
-							pip install djangorestframework  /  python -m pip install djangorestframework
-							pip install markdown      		 /  python -m pip install markdown 
-							pip install django-filter  		 /  python -m pip install django-filter
-		  lub skopiowanie projektu:
-							git clone https://github.com/encode/django-rest-framework
-		b)w INSTALLED_APPS w settings.py w głównej app/funkc. dodajesz 'rest_framework'
+							from rest_framework.decorators import api_view
+
+							from .serializers import BlogPostSerializer
+							from blog.models import BlogPost, Account
+							from django.contrib.auth.decorators import login_required
+							
+							from rest_framework.permissions import IsAuthenticated
+							from rest_framework.pagination import PageNumberPagination
+							from rest_framework.filters import SearchFilter, OrderingFilter
+							from rest_framework.generics import ListAPIView
+							from rest_framework.authentication import TokenAuthentication
+							class ApiBlogListView(ListAPIView):
+								queryset = BlogPost.objects.all()
+								serializer_class = BlogPostSerializer
+								authentication_classes = (TokenAuthentication,)
+								permission_classes = (IsAuthenticated,)
+								pagination_class = PageNumberPagination
+								page_size = 2
+								filter_backends = (SearchFilter, OrderingFilter)
+								search_fields = ('^title','body', '=author__username','author__email')
+							
+							@api_view(['GET',])
+							def api_detail_blog_view(request, slug):
+								try:
+									blog_post = BlogPost.objects.get(slug=slug)
+								except BlogPost.DoesNotExist:
+									return Response(status = status.HTTP_404_NOT_FOUND)
+								if request.method =="GET":
+									serializer = BlogPostSerializer(blog_post)
+									return Response(serializer.data, status=status.HTTP_200_OK)
+							
+							@login_required(login_url='login')
+							@api_view(['PUT',])
+							def api_update_blog_view(request, slug):
+								try:
+									blog_post = BlogPost.objects.get(slug=slug)
+								except BlogPost.DoesNotExist:
+									return Response(status = status.HTTP_404_NOT_FOUND)
+								if request.method =="PUT":
+									serializer = BlogPostSerializer(blog_post, data=request.data)
+									data={}
+									if serializer.is_valid():
+										serializer.save()
+										data["success"] = "update successful"
+										return Response(data=data)
+									return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+							
+							@login_required(login_url='login')
+							@api_view(['DELETE',])
+							def api_delete_blog_view(request, slug):
+								try:
+									blog_post = BlogPost.objects.get(slug=slug)
+								except BlogPost.DoesNotExist:
+									return Response(status = status.HTTP_404_NOT_FOUND)
+								if request.method =="DELETE":
+									operation=blog_post.delete()
+									data={}
+									if operation:
+										data["success"] = "delete successful"
+									else:
+										data["failure"] = "delete failed"
+									return Response(data=data)
+
+							@login_required(login_url='login')
+							@api_view(['POST',])
+							def api_create_blog_view(request):
+								account = Account.objects.get(pk=1)
+								blog_post = BlogPost(author=account.user)
+								if request.method == 'POST':
+									serializer = BlogPostSerializer(blog_post, data = request.data )
+									if serializer.is_valid():
+										serializer.save()
+										return Response(serializer.data, status = status.HTTP_201_CREATED)
+									return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+============================================================================================================
+	VIEWSETs i ROUTERs:
+
+
+============================================================================================================
+	PAGINATION oraz WYSZUKIWARKA SEARCHFILTER (FILTERING) w LISTVIEW:
+		*https://www.django-rest-framework.org/api-guide/pagination/
+		*https://www.django-rest-framework.org/api-guide/filtering/#searchfilter
+		*w SETTINGS.PY 
+			*ustawiasz domyślną klasę dla wszystkich klas zwracających listę dla żądania 'GET' (zamiast 
+			 tego możesz wszystko skonfigurować w class-based-views we views.py (oprócz PAGE_SIZE))
+						REST_FRAMEWORK = {
+							...
+							'DEFAULT_PAGINATION_CLASS':'rest_framework.pagination.PageNumberPagination',
+							'PAGE_SIZE':2,
+		*WE VIEWS.PY:
+			*pagination i searchfilter najłatwiej zrobic tworząc dla GET LISTa class-based-views.
+			*w ramach konfiguracji PAGINATION konfigurujesz pola pagination_class odpowiadajce za 
+			 pagination oraz page_size odpowiadające za ilość obiektów wyświetlonych w liście, 
+			*w ramach konfiguracji WYSZUKIWARKI SEARCHFIELDS konfigurujesz pola filter_backends (do 
+			 którego przypisujesz krotkę z klas SearchFilter i OrderingFilter) oraz search_fields
+			 gdzie wpisujesz pola po których ma być wyszukiwany dany obiekt
+				**pola muszą być związane z klasą w pliku serializers.py
+				**pola muszą być typu TextField albo CharField - jeżeli są instancjami obiektów to 
+				  poprzez podwójny podkreślnik '__' można wypisać ich pola 
+				**można podać tez przed polami znaki: '^','='.'$' oznaczających '^'(rozpoczynanie
+				  wyszukiwania, '='(dokładne dopasowanie),'$'(wyszukiwanie po regexie)
+						from rest_framework.permissions import IsAuthenticated
+						from rest_framework.pagination import PageNumberPagination
+						from rest_framework.filters import SearchFilter, OrderingFilter
+						from rest_framework.generics import ListAPIView
+						from rest_framework.authentication import TokenAuthentication
+						class ApiBlogListView(ListAPIView):
+							queryset = BlogPost.objects.all()
+							serializer_class = BlogPostSerializer
+							authentication_classes = (TokenAuthentication,)
+							permission_classes = (IsAuthenticated,)
+							pagination_class = PageNumberPagination
+							page_size = 2
+							filter_backends = (SearchFilter, OrderingFilter)
+							search_fields = ('^title','body', '=author__username','author__email')
+				*na tej podstawie możemy stworzyć ścieżkę do API składającą się z:
+					**ścieżki podstawowej do listy (oraz zmiennych po znaku zapytania):
+								http://127.0.0.1:8000/api/blog/list
+					**zmiennej page (od pagination)	
+								http://127.0.0.1:8000/api/blog/list?page=2
+					**zmiennej search (od searchfilter) używanej z '+' jako spacja:
+								http://127.0.0.1:8000/api/blog/list?page=2&search=body+of+my
+					**zmiennej ordering odpowiedzialnej za wyświetlenie listy w danej kolejności:
+								http://127.0.0.1:8000/api/blog/list?search=body+of&ordering=-date_uptaded
+			*poprzez żądanie 'GET' zostanie zwrócona słownik JSON zawierający klucze: z ilością 
+			 wszystkich obiektów -'count', ściężką do następnej/poprzedniej strony -'next'/'previous'
+			 oraz wszystkimi wynikami -'results':
+						{
+							"count": 3,
+							"next": "http://127.0.0.1:8000/api/blog/list?page=2",
+							"previous": null,
+							"results": [
+								{
+									"title": "my_new_title",
+									"body": "is body of my new",
+									"image": "http://127.0.0.1:8000/blog_images/331050936_s_MbFrqNA.jpg",
+									"date_updated": "2022-04-21T13:51:09.898767Z",
+									"username": "marek"
+								},
+								{
+									"title": "my_title",
+									"body": "thi is body of my new title",
+									"image": "http://127.0.0.1:8000/blog_images/331050936_s_Q2kMpcx.jpg",
+									"date_updated": "2022-04-21T14:03:06.990520Z",
+									"username": "marek"
+								}
+							]
+						}
+		*W URLS.PY:
+			*dodajesz scieżkę do zwracania całej listy:
+						from .views import ApiBlogListView
+						urlpatterns = [
+							...
+							path("list", ApiBlogListView.as_view(), name = "list"),
+						]
+
+========================================================================================================
+	AUTHENTICATION & PERMISSIONS & RESTRICTED ROUTE:
+		*PODSTAWY:
+			*https://www.django-rest-framework.org/api-guide/permissions/#setting-the-permission-policy
+			*w przypadku nieautoryzowanego dostępu są 2 błędy pasujące do tego typu działania:
+				HTTP 401 Unauthorized
+				HTTP 403 Permission Denied
+		*WERYFIKACJA poprzez RESTRICTED ROUTE:
+			**zamiast authentyfikacji i nadania zezwoleń przez @permission_classes(IsAuthenticated, )
+			  możesz udekorować funkcje nad dekoratorem żądania '@api_view' do dodatkowej weryfikacji,
+			  czyli: '@login_required(login='loginPage'):
+							from rest_framework import status
+							from rest_framework.response import Response
+							from rest_framework.decorators import api_view
+							from django.contrib.auth.decorators import login_required
+							
+							@login_required(login_url='login')
+							@api_view(['GET',])
+							def api_detail_blog_view(request, slug):
+								try:
+									blog_post = BlogPost.objects.get(slug=slug)
+								except BlogPost.DoesNotExist:
+									return Response(status = status.HTTP_404_NOT_FOUND)
+								if request.method =="GET":
+									serializer = BlogPostSerializer(blog_post)
+									return Response(serializer.data, status=status.HTTP_200_OK)
+		*DZIAŁANIE we VIEWS.PY - authentykacje i zezwolenia (permissions) można zrobic na 3 sposoby:
+			***wpisując w settings.py ogólną authentykacji / permission dla wszystkich funkcji:
+						REST_FRAMEWORK = {
+							'DEFAULT_AUTHENTICATION_CLASSES': [
+								'rest_framework.authentication.BasicAuthentication',
+								'rest_framework.authentication.SessionAuthentication',
+							],
+							'DEFAULT_PERMISSION_CLASSES': [						#NIE podawaj domyślnej 
+								'rest_framework.permissions.IsAuthenticated',	#klasy ZEZWOLEN bo do
+								]												#każdej funkcji będziesz 
+							}													#musiał podawać token do 
+						}														#autoryzacji:
+			***w function-basedview poprzez dekoratory(@authentication_classes i @permission_classes)
+						from rest_framework.decorators import (api_view, permission_classes, 
+															   authentication_classes)
+						from rest_framework.authentication import (SessionAuthentication, 
+																   BasicAuthentication)
+						from rest_framework.permissions import IsAuthenticated
+						@api_view(['GET'])
+						@authentication_classes([SessionAuthentication, BasicAuthentication])
+																	#sprawdza albo jedną albo drugą
+						@permission_classes([IsAuthenticated])
+						def example_view(request, format=None):
+							...
+			***w class-based-views przesłaniając pola authentication_classes i permission_classes:
+						from rest_framework.authentication import (SessionAuthentication, 
+																   BasicAuthentication)
+						from rest_framework.permissions import IsAuthenticated
+						class ExampleView(APIView):
+							authentication_classes = [SessionAuthentication, BasicAuthentication]
+																	#sprawdza albo jedną albo drugą
+							permission_classes = [IsAuthenticated]				
+							...
+		*RODZAJE AUTHENTYFIKACJI (BasicAuthentication, TokenAuthentication, SessionAuthentication):
+			*BasiAuthentication 
+					**(wraz z zezwoleniem permission_classes = IsAuthenticated)
+					**używane tylko podczas produkcji - nie wolno stosować go już w deployment'cie
+					**potrzebna jest podstawowa weryfikacja (username i password)			
+			*SessionAuthentication 
+					**(wraz z zezwoleniem permission_classes = IsAuthenticated)
+					**zalecane dla aplikacji webowych typu AJAX, korzysta z domyślnego Django session 
+					  backend wykorzystuję się zazwyczaj z BasicAuthentication	
+						authentication_classes = [SessionAuthentication, BasicAuthentication]
+					**musisz dodać do urls:
+						path('auth/', include('rest_framework.urls'))
+			*TokenAuthentication:
+					**(wraz z zezwoleniem permission_classes = IsAuthenticated)
+					**zalecane dla aplikacji natywnych tj na konkretny system, np: android, ios
+				*W SETTINGS.PY:
+					*instalacja pipem 'rest_framework.authtoken' i migracja tego:
+							pip install django-rest-authtoken
+							python manage.py migrate
+					*do INSTALLED_APPS dodajesz 
 							INSTALLED_APPS = [
 								...
-								'rest_framework',
+								'rest_framework.authtoken',
+							]			
+					*od teraz pojawi ci się dodatkowy klasa/model w adminie o nazwie 'Token'
+				*W MODELS.PY:
+					*żeby Token tworzył się automatycznie podczas tworzenia użytkownika towrzysz sygnał 
+					 do utworzenia Tokenu (klasa Token z rest_framework.authtoken.models) przy tworzeniu 
+					 konta użytkownika (User / klasa Account wskazana w zmiennej settings.AUTH_USER_MODEL). 
+					 Dla klasy Token podajesz argument w postaci tego kto jest właścicielem tokenu:
+							from django.conf import settings
+							from django.db.models.signals import post_save
+							from django.dispatch import receiver
+							from rest_framework.authtoken.models import Token
+
+							@receiver(post_save, sender = settings.AUTH_USER_MODEL)
+							def create_auth_token(sender, instance=None, created=False, **kwargs):
+								if created:
+									Token.objects.create(user=instance)
+				*W URLS.PY:
+					*importujesz funkcje obtain_auth_token z rest_framework.authtoken.views która zwraca 
+					 z tabeli Token: auth_token danego użytkownika.
+					*dla ścieżki 'my_obtain' i żądania 'POST' zostaje wywołana funkcja: obtain_auth_token 
+					 która pobiera z requesta 2 parametry: 'username' i 'password' (mimo tego że w 
+					 models.py dla klasy dziedziczącej po AbstractBaseUser w zmiennej USERNAME_FIELD 
+					 podałeś 'email' to przy metodzie obtain_auth_token musisz podać w parametrach 
+					 nazwę 'username' (zamiast 'email'). 
+							from django.urls import path
+							from rest_framework.authtoken.views import obtain_auth_token
+							urlpatterns = [
+								path('my_obtain', obtain_auth_token, name = 'my_obtain'),
+							]							
+				*WE VIEWS.PY:
+							from rest_framework import status
+							from rest_framework.response import Response
+							from .serializers import BlogPostSerializer
+							
+							from rest_framework.decorators import api_view, permission_classes
+							from rest_framework.permissions import IsAuthenticated
+							
+							@api_view(['PUT',])
+							@permission_classes((IsAuthenticated, ))
+							def api_update_blog_view(request, slug):
+								try:
+									blog_post = BlogPost.objects.get(slug=slug)
+								except BlogPost.DoesNotExist:
+									return Response(status = status.HTTP_404_NOT_FOUND)
+								user = request.user
+								if blog_post.author != user:
+									return Response({'response':"You don't have permission to edit that"}) 
+								if request.method =="PUT":
+									serializer = BlogPostSerializer(blog_post, data=request.data)
+									data={}
+									if serializer.is_valid():
+										serializer.save()
+										data["success"] = "update successful"
+										return Response(data=data)
+									return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+					*możesz pobierać Token:
+							account = Account.objects.get(id=1)
+							data={}
+							data['token'] = Token.object.get(user=account).key
+					*możesz nadawać funkcjom ZEZWOLENIA ('PERMISSIONS'):
+						*przed funkcjom dodajesz dekorator: 
+							@permission_classes((IsAuthenticated, ))
+						*jeżeli zależy Tobie żeby oprócz tego żeby użytkownik miał autoryzacje (był 
+						 zalogowany) to jeszcze był autorem utworzone obiektu to dodajesz:
+							user = request.user
+							if blog_post.author != user:
+								return Response({'response':"You don't have permission to edit that"}) 
+					*(w POSTMANIE dla POST w Headers podajesz parametr:
+					 {'Authorization': 'Token wartość_klucza'})
+=====================================================================================================
+	1.SERIALIZERS.PY:
+		0*PODSTAWY
+		1*RODZAJE:
+			A) Z ROZWINIĘCIEM KAŻDEGO POLA i MOŻLIWOŚĆIĄ NAŁOŻENIA OGRANICZEŃ NA POLA
+						from rest_framework import serializers
+						from blog.models import BlogPost
+						class BlogPostSerializer(serializers.Serializer):
+							title = serializers.CharField(max_length=50)
+							body = serializers.CharField(max_length=200)
+							image = serializers.ImageField()
+							date_updated = serializers.DateTimeField(read_only=True)
+			B) Z KLASĄ WEWNĄTRZNĄ i MOŻLIWOŚCIĄ NAŁOŻENIA OGRANICZEŃ NA POLA:
+						from rest_framework import serializers
+						from blog.models import BlogPost
+						class BlogPostSerializer(serializers.ModelSerializer):
+							date_updated = serializers.DateTimeField(read_only=True)
+							class Meta:
+								model = BlogPost
+								fields = ['title', 'body', 'image', 'date_updated' ]
+		2*METODY TWORZENIA:
+			*https://www.django-rest-framework.org/api-guide/serializers/#saving-instances
+			*we views.py podczas zapisywania obiektu serializatora zostanie wywołana metoda save() 
+			 która jeżeli nie będzie przesłonieta wywoła metodę create lub update. (jeżeli w argumencie
+			 serializatora podasz instancje obiektu bazowego dla serializatorem to zostanie wywołana 
+			 metoda update a jeżeli nie to metoda create):
+				**we views.py:
+						serializer = BlogPostSerializer(data=request.data)				#metoda create
+						blog1 = BlogPost(title=...)
+						serializer = BlogPostSerializer(blog1, data=request.data)		#metoda update
+						if serializer.is_valid():
+							serializer.save()		#wywołanie save() i tym samym albo create albo update
+			*wewnątrz serializatora by uzyskać dane używasz validated_data['my_field'] albo 
+			 self.validated_data['my_field'] albo request.POST.get(). Następnie zapisujesz obiekt 
+			 utworzony lub update'towany i go zwracasz.
+				**w serializers.py:
+						class BlogPostSerializer(serializers.ModelSerializer):
+							class Meta:
+								model = BlogPost
+								fields = ['title','body']				#'__all__'
+							def create(self, validated_data):							
+								b1 = BlogPost(
+									title= validated_data['title'], 
+									body= validated_data['body'],
+									)
+								b1.save()
+								return b1
+							def update(self, instance, validated_data): 
+								instance.title = validated_data['title']
+								instance.body = validated_data['body'])
+								instance.save()
+								return instance
+			*metode save() też można przesłonić:
+							def save(self):
+								b1 = BlogPost(
+									title= self.validated_data['title'], 
+									body= self.validated_data['body'],
+									)
+								b1.save()
+								return b1
+		3*METODY WALIDACJI:
+			*dla danych przychodzących (żądania PUT i POST) możesz zrobić własną walidacje w 
+			 serializerze i podnieść wyjątek ValidationError
+			*dla metody 'validate' zwracasz słownik 'data' a dla 'validate_<my_filed>' wartość pola:
+				**w serializers.py:
+							def validate(self, data):
+								if data['start'] > data['finish']:
+									raise serializers.ValidationError("finish must occur after start")
+								return data
+							def validate_title(self, value)
+								if 'django' not in value.lower():
+									raise serializers.ValidationError("Blog post is not about Django")
+								return value				
+			*uruchamiane podczas wywoływania metody 'is_valid()' we views.py:
+				**we views.py:
+							if serializer.is_valid():		#walidacja
+								serializer.save()			#zapisanie danych pryzychodzących jako obiekt 
+		4*serializers.SerializerMethodField()
+			*pozwala na serializację danych które są w klasie serializowanej instancjami innych klas
+			 (konkretnie chodzi o pola innych klas)
+			*najpierw w klasie serializowanej dodajesz metodę która będzie przyjmować obiekt klasy
+			 serializowanej. Wewnątrz pobierasz dane z bazy danych (pola z klasy będacej polem w klasie 
+			 serializowanej) (def get_username_from_author)
+			*następnie tworzysz pole dla Serilizera (username) i przypisujesz mu metodę 
+			 serializers.SerializerMethodField() do której podajesz w arg w cudzysłowiach nazwę tej metody,
+			 którą utworzyłeś przed chwilą (get_username_from_author)
+			*na końcu dodajesz nazwę pola ('username') w klasie Meta w polu fields: 
+				**w serializers.py:
+						from rest_framework import serializers
+						from blog.models import BlogPost
+						class BlogPostSerializer(serializers.ModelSerializer):
+							username = serializers.SerializerMethodField('get_username_from_author')
+							class Meta:
+								model = BlogPost
+								fields = ['title', 'body', 'image', 'date_updated', 'username']
+							def get_username_from_author(self, blog_post):
+								username = blog_post.author.username
+								return username
+
+
+========================================================================================================
+
+=====================================================================================================
+	2.REJESTRACJA USERA POPRZEZ API:
+		*W SERIALIZERS.PY:
+			*dla password i password2 musisz zrobić ograniczenie 'write_only=True' możesz to zrobić 
+			 nad klasą Meta lub w klasie Meta:
+							password2 = serializers.CharField(style={'input_type': 'password'}, 
+															  write_only=True)
+							class Meta:
+								...
+								extra_kwargs ={'password': {'write_only': True}}
+			*przeciążasz metodę save() w której pobierasz dane z słownika 'validated_data' (słownik 
+			 validated_data traktujesz jak cleaned_Data we forms.ModelForm) i na podstawie tych danych 
+			 tworzysz usera, przypisujesz mu hasło ('set_password(password)') i zapisujesz tego usera w 
+			 bazie danych (wraz ze zwróceniem go):
+							from rest_framework import serializers
+							from account.models import Account
+
+							class RegistrationSerializer(serializers.ModelSerializer):
+								password2 = serializers.CharField(style={'input_type': 'password'}, 
+																  write_only=True)    #nadawanie ograniczeń
+								class Meta:
+									model=Account
+									fields = ['email','username','password','password2']
+									extra_kwargs ={                                   #nadawanie ograniczeń                             
+										'password': {'write_only': True}
+									}
+								def save(self):
+									account = Account(
+										email=self.validated_data['email'],                                     
+										username = self.validated_data['username'],
+									)
+									password = self.validated_data['password']
+									password2 = self.validated_data['password2']
+									if password !=password2:
+										raise serializers.ValidationError(
+																  {'password': 'Password must match'})
+									account.set_password(password)
+									account.save()
+									return account
+		*WE VIEWS.PY:
+			*tworzysz api_view(['POST',]) a wewnątrz obiekt serializera któemu przypisujesz dane pobrane 
+			 z requesta. Sprawdzasz metodą is_valid() serializera i w metodzie Response zwracasz status 
+			 i słownik (albo z błędami albo z przypisanymi danymi):
+							from .serializers import RegistrationSerializer
+							from rest_framework import status
+							from rest_framework.response import Response
+							from rest_framework.decorators import api_view
+
+							@api_view(['POST',])
+							def registration_view(request):
+								serializer = RegistrationSerializer(data=request.data)
+								data={}
+								if serializer.is_valid():
+									account = serializer.save()
+									data['response'] = "succesfully registersa new user"
+									data['email'] = account.email
+									data['username'] = account.username
+									s = status.HTTP_201_CREATED
+								else:
+									data = serializer.errors
+									s = status.HTTP_400_BAD_REQUEST
+								return Response(data=data, status = s)
+		*W URLS.PY:
+			*dla żądania POST ścieżka nie może kończyć się slashem (zarówno w urls.py i w postmanie)
+							from django.urls import path
+							from account.api.views import registration_view
+							urlpatterns = [
+								path('register', registration_view, name = 'register'),
 							]
-		c)tworzysz nową app/funkc:
-							python manage.py startapp api 
-		  lub samemu zakłądasz folder który musi zawierać plik __init__.py, urls.py, views.py 
+												
+========================================================================================================
+*logowanie - zmieniasz z funkcji obtain_auth_token na swoją własną:
+		*W URLS.PY:
+
+						from rest_framework.authtoken.views import obtain_auth_token
+						urlpatterns = [
+							path('my_obtain', obtain_auth_token, name = 'my_obtain'),		#login 1
+							path('login', ObtainAuthTokenView.as_view(), name = 'login'),	#login 2
+						]
+		*WE VIEWS.PY:
+			*dla funkcji obtain_auth_token z rest_framework.authtoken.views musisałeś podać w żadaniu 
+			 POST parametr o kluczu 'username' ale teraz możesz podać parametr przez siebie ustalony 
+			 czyli 'email'
+			*GET_OR CREATE() - tworzy token jeżeli user jakims sposobem nie ma tokenu
+						from rest_framework.views import APIView
+						from django.contrib.auth import authenticate
+						class ObtainAuthTokenView(APIView):
+							authentication_classes = []
+							permission_classes = []
+							def post(self, request):
+								data = {}
+								email = request.POST.get('email') 			#dla obtain_auth_token
+																			#musiało by być 'username'
+								password = request.POST.get('password')  
+								account = authenticate(email=email, password = password) 
+								if account:
+									token=Token.objects.get_or_create(user=account)   
+									data['response'] = 'Succesfully authenticated'
+									data['pk'] = account.pk
+									data['email'] = email
+									data['token'] = token.key
+								else:
+									data['response'] = 'Error'
+									data['error_message'] = 'Invalid credentials'
+								return Response(data=data)
+									
+========================================================================================================
+	PODSUMOWANIE SPRAW ZWIĄZANYCH Z UŻYTKOWNIKIEM/PROFILEM:
+		*PODSTAWY:
+			*musisz podać w SETTINGS.PY w zmiennej REST_FRAMEWORK klucz 'DEFAULT_AUTHENTICATION_CLASSES' 
+			 domyślnej klasy używanej do authentykacji przy funkcjcach 'DETAIL', 'UPDATE', 'DELETE' 
+			 które wymagają zezwolenia (permissions)
+			*dla użytkownika nie ma LISTVIEW tylko logowanie (albo po funkcji obtain_auth_token z 
+			 rest-framework.auth_token.views albo po zbudowanej przez siebie class-base-views 
+			 dziedziczącym po APIView)
+			*przy logowaniu nie korzystasz z serializera gdyż nie chcesz tych danych ani zapisać ani 
+			 zwrócić w formie która jest podana w serializerze AccountPropertiesSerializer (chcesz zwrócić 
+			 token a w przypadku nieudanego logowania zwrócić swoje typy błędów)
+			*masz 3 typy serializerów -> wszystkie dotycza klasy Account ALE jeden jest tylko do 
+			 rejestracji, drugi pozwala na zwrócenie lub modyfikacje pól email i username (bez 
+			 możliwości modyfikacji hasła) a trzeci odpowiada tylko za modyfikacje hasła:. 
+			*przy logowaniu i rejestracji nie wymaga się się ZEZWOLEŃ (perrminssion - dekoratora
+			 @permission_classes((IsAuthenticated,))	)
+		*W SETTINGS.PY:
+							INSTALLED_APPS = [
+								...
+								'rest_framework.authtoken',
+							]
+							REST_FRAMEWORK = {
+								'DEFAULT_AUTHENTICATION_CLASSES': [
+									'rest_framework.authentication.TokenAuthentication',
+								]
+							}
+		*W SERIALIZERS.PY:
+					from rest_framework import serializers
+					from account.models import Account
+				#zwrócenie danych usera i update Account'a bez update'u hasła
+					class AccountPropertiesSerializer(serializers.ModelSerializer):
+						class Meta:
+							model = Account
+							fields = ['pk', 'email', 'username']
+				#update hasła
+					class ChangePasswordSerializer(serializers.Serializer):
+						old_password = serializers.CharField(required=True)
+						new_password = serializers.CharField(required=True)
+						confirm_new_password = serializers.CharField(required=True)	
+				#rejestracja Account'a
+					class RegistrationSerializer(serializers.ModelSerializer):
+						password2 = serializers.CharField(style={'input_type': 'password'}, write_only=True)  
+						class Meta:
+							model=Account
+							fields = ['email','username','password','password2']
+							extra_kwargs ={                                                                     
+								'password': {'write_only': True}
+							}
+						def save(self):
+							account = Account(
+								email=self.validated_data['email'],      
+								username = self.validated_data['username'],
+							)
+							password = self.validated_data['password']
+							password2 = self.validated_data['password2']
+							if password !=password2:
+								raise serializers.ValidationError({'password': 'Password must match'})
+							account.set_password(password)
+							account.save()
+							return account
+		*WE VIEWS.PY:
+					from django.shortcuts import render, redirect
+					from account.models import Account
+
+					from rest_framework import status
+					from rest_framework.response import Response 
+
+					from rest_framework.authtoken.models import Token
+					from .serializers import RegistrationSerializer, AccountPropertiesSerializer
+					from rest_framework.decorators import api_view, permission_classes
+					from rest_framework.permissions import IsAuthenticated
+
+					from rest_framework.views import APIView
+					from rest_framework.generics import UpdateAPIView
+					from django.contrib.auth import authenticate
+
+					##LOGOWANIE
+					class ObtainAuthTokenView(APIView):
+						authentication_classes = []
+						permission_classes = []
+						def post(self, request):
+							data = {}
+							email = request.POST.get('email') 
+							password = request.POST.get('password')  
+							account = authenticate(email=email, password = password) 
+							if account:
+								token=Token.objects.get_or_create(user=account)        
+								data['response'] = 'Succesfully authenticated'
+								data['pk'] = account.pk
+								data['email'] = email
+								data['token'] = token[0].key
+							else:
+								data['response'] = 'Error'
+								data['error_message'] = 'Invalid credentials'
+							return Response(data=data)
+
+					#REJESTRACJA:
+					@api_view(['POST',])
+					def registration_view(request):
+						serializer = RegistrationSerializer(data=request.data)
+						data={}
+						if serializer.is_valid():
+							account = serializer.save()
+							data['response'] = "succesfully register a new user"
+							data['email'] = account.email
+							data['username'] = account.username
+							s = status.HTTP_201_CREATED
+							data['token'] = Token.objects.get(user=account).key
+						else:
+							data = serializer.errors
+							s = status.HTTP_400_BAD_REQUEST
+						return Response(data=data, status = s)
+
+					#DETAIL DLA USERA:
+					@api_view(['GET',])
+					@permission_classes((IsAuthenticated,))
+					def account_properties_view(request):
+						try:
+							account=request.user
+						except Account.DoesNotExist:
+							return Response(status=status.HTTP_404_NOT_FOUND)
+						if request.method == 'GET':
+							serializer = AccountPropertiesSerializer(account)
+							return Response(serializer.data)
+
+					#UPDATE DLA USERA:
+					@api_view(['PUT',])
+					@permission_classes((IsAuthenticated,))
+					def account_update_view(request):
+						try:
+							account=request.user
+						except Account.DoesNotExist:
+							return Response(status=status.HTTP_404_NOT_FOUND)
+						if request.method == 'PUT':
+							serializer = AccountPropertiesSerializer(account, data = request.data)
+							data ={} 
+							if serializer.is_valid():
+								serializer.save()
+								data['response'] = "Account update success"
+								return Response(data=data)
+							return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+
+					#DELETE DLA USERA:
+					@api_view(['DELETE',])
+					@permission_classes((IsAuthenticated,))
+					def account_delete_view(request):
+						try:
+							account=request.user
+						except Account.DoesNotExist:
+							return Response(status=status.HTTP_404_NOT_FOUND)
+						if request.method == 'DELETE':
+							operation=account.delete()
+							data={}
+							if operation:
+								data["success"] = "delete successful"
+							else:
+								data["failure"] = "delete failed"
+							return Response(data=data)
+					
+					#ZMIANA HASŁA
+					class ChangePasswordView(UpdateAPIView):
+						serializer_class = ChangePasswordSerializer
+						model = Account
+						permission_classes = (IsAuthenticated,)
+						authentication_classes = (TokenAuthentication,)
+						def get_object(self, queryset=None):
+							obj = self.request.user
+							return obj
+						def update(self, request, *args, **kwargs):
+							self.object = self.get_object()
+							serializer = self.get_serializer(data=request.data)
+							if serializer.is_valid():
+								#check old password
+								if not self.object.check_password(serializer.data.get("old_password")):
+									return Response({"old_password":["Wrong password. "]}, 
+													  status = status.HTTP_400_BAD_REQUEST)
+								#confirm the new passwords match
+								new_password = serializer.data.get("new_password")
+								confirm_new_password = serializer.data.get("confirm_new_password")
+								if new_password != confirm_new_password:
+									return Response({"new_password": ["New passwords must be the same "]}, 
+													  status = status.HTTP_400_BAD_REQUEST)
+								#set_password also hashes the password that the user will get
+								self.object.set_password(serializer.data.get("new_password"))
+								self.object.save()
+								return Response({"reponse":"succesfully changed password"},
+												  status = status.HTTP_200_OK)
+							return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+						
+					#SPRAWDZENIE CZY KONTO ISTNIEJE (dla ewentualnego wybrania zapomniałem hasła)
+					@api_view(['GET',])
+					@permission_classes([])
+					def does_account_exist_view(request):
+						email = request.GET['email']
+						data={}
+						try:
+							email=email.lower()
+							account = Account.objects.get(email=email)
+							data['response'] = email
+						except Account.DoesNotExist:
+							data['response'] = "Account does not exist"
+						return Response(data=data)
+
+		*W URLS.PY:
+					from django.urls import path
+					from rest_framework.authtoken.views import obtain_auth_token
+					from account.api.views import (registration_view, 
+												   account_update_view, 
+												   account_properties_view, 
+												   account_delete_view, 
+												   ObtainAuthTokenView)
+					urlpatterns = [
+						path('my_obtain', obtain_auth_token, name = 'my_obtain'),			#login 1
+						path('login', ObtainAuthTokenView.as_view(), name = 'login'),		#login 2
+						path('register', registration_view, name = 'register'),				#rejestracja
+						path('properties', account_properties_view, name = 'properties'),	#detail usera
+						path('properties/update', account_update_view, name = 'update'),	#update usera
+						path('properties/delete', account_delete_view, name = 'delete'),	#delete usera
+																							#zmiana hasła
+						path('change_password', ChangePasswordView.as_view(), name="change_password"),
+																							#czy istnieje
+						path('check_if_account_exists', does_account_exist_view, name="if_account_exist"),
+					]
+		
+========================================================================================================
+
+
+
+*BLOG SERIALIZER:
+W SERIALIZERS.PY:
+			***def validate(self, blog_post) --> 
+					MIN_TITLE_LENGTH = 5
+					MIN_BODY_LENGTH = 50
+					class BlogPostUpdateSerializer(serializers.ModelSerializer):
+						class Meta:
+							model = BlogPost
+							fields = ['title','body','image']
+						def validate(self, blog_post):
+							try:
+								title = blog_post['title']
+								if len(title) < MIN_TITLE_LENGTH:
+									raise serializers.ValidationError({'response':"Enter a title longer than: " + str(MIN_TITLE_LENGTH)})
+								body = blog_post['body']
+								if len(body) < MIN_BODY_LENGTH:
+									raise serializers.ValidationError({'response':"Enter a body longer than: " + str(MIN_BODY_LENGTH)})
+							excpet KeyError:
+								pass
+							return blog_post
+							
+		**w metodzie validate, działasz na instancji, czyli durigm argumencie funkcji ((blog_post['title']))
+		  a w metodzie save(), działasz na validated_data ((self.validated_data['title']))
+WE VIEWS.PY:
+			***partial=True oznacza że możesz wpisać część danych 
+					serializer = BlogPostUpdateSerializer(blog_post, data=request.data, partial=True)
+					
+
+	
+	

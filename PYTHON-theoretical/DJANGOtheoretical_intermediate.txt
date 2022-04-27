@@ -1,0 +1,1015 @@
+
+DEPLOYING
+DJANGO REST FRAMEWORK:
+TESTY
+RÓŻNE FORMY FORMULARZY
+	*FORMULARZ WIELOKROTNEGO WYBORU
+	*FORMULARZ JEDNOKROTNEGO WYBORU
+ROZSZERZENIE KLASY MODELS
+STRONA ADMINISTRATORA 
+DEBUGOWANIE CAŁEGO PROJEKTU
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+DEPLOYING:
+	1* DEPLOYING (CODING ENTREPRENEURS):
+		a)I część PRZYGOTOWANIA DO DEPLOYingu:
+				*musisz stworzyć plik .env na poziomie pliku manage.py, gdzie 
+				 zapiszesz zmienne które staną się zmiennymi środowiskowymi dla 
+				 serwera i których nie będziesz chciał wysyłac na repozytorium 
+				 (np: SECRET_KEY, API_KEY) (wszystkie te zmienne zamiast wpliku .env
+				 mógłbyś wpisać w pliku settings.py ale wtedy zmienne te będą 
+				 wysyłane na repozytorium a nie powinny
+						SECRET_KEY = 'django-insecure-$2f8b8_2!-91h6ip-!of1(k3zp9@^+ko$=+*l&(0juq#f@*g9j'
+						DEBUG = 1
+						ALLOWED_HOSTS =['127.0.0.1', 'localhost']			
+			*w pliku settings.py - pobierasz zmienne środowiskowe które są zawarte 
+			 w pliku '.env':
+						SECRET_KEY = os.environ.get('SECRET_KEY')
+						DEBUG = str(os.environ.get('DEBUG')) == "1"	
+						ALLOWED_HOSTS =[]
+						if not DEBUG:
+							ALLOWED_HOSTS += [os.environ.get('ALLOWED_HOSTS')]
+			*INSTALACJA django-dotenv
+						pip install django-dotenv	/	pip install python-dotenv
+			*w pliku manage.py - odczytanie pliku .env 
+						import dotenv
+						def main():
+							dotenv.read_dotenv()
+							...
+		b)II część PRZYGOTOWANIA DO DEPLOYingu:
+			*https://www.codingforentrepreneurs.com/blog/prepare-django-for-digital-ocean-app-platform
+			*wytłumaczenie - https://www.youtube.com/watch?v=M9aCNYM_4vQ
+		c)
+					
+===========================================================================================================
+DJANGO REST FRAMEWORK:
+	3*DOSTĘPNOŚĆ:
+		1*CORS-HEADERS:
+			*)https://github.com/adamchainz/django-cors-headers
+			a)instalujesz cors-headers:
+							python -m pip install django-cors-headers
+			b)w głównej app/funkc w settings.py:
+				*w sekcji INSTALLED_APPS dodajesz "corsheaders":
+							INSTALLED_APPS = [
+								"corsheaders", 
+								...,
+							]
+				*w sekcji MIDDLEWARE dodajesz "corsheaders.middleware.CorsMiddleware":
+							MIDDLEWARE = [
+							"corsheaders.middleware.CorsMiddleware",
+								...,
+							]
+				*na samym dole ustwiasz jedną z trzech zmiennych 
+					*CORS_ALLOW_ALL_ORIGINS = True  - wskazujesz że wszystkie storny mogą mieć dostęp
+					*CORS_ALLOWED_ORIGINS - wskazujesz które konkretne strony mogą mieć dostęp
+					*CORS_ALLOWED_ORIGIN_REGEXES - wskazujesz regexa pasujących stron mogących mieć dostęp
+			c)dzięki tym ustawieniom pliki javascript będą mieć dostęp do danych przesyłanych przez API, np:
+							<!DOCTYPE html>
+							<html lang="en">
+							<head>
+								<meta charset="UTF-8">
+								<meta http-equiv="X-UA-Compatible" content="IE=edge">
+								<meta name="viewport" content="width=device-width, initial-scale=1.0">
+								<title>Document</title>
+							</head>
+							<body>
+								<h1>Cool rooms</h1>
+								<div id ="rooms-container">
+
+								</div>
+							</body>
+							<script>
+								let roomsContainer = document.getElementById('rooms-container')
+								let getRooms = async () =>{
+									let response = await fetch('http://127.0.0.1:8000/api/rooms/')
+									let rooms = await response.json()
+									//console.log("RESPONSE: ", response)
+									//console.log("rooms:", rooms)
+									for(let i=0; rooms.length>i; i++){
+										let room = rooms[i]
+										let row = `<div>
+														<h3>${room.name}</h3>
+													</div>`
+										roomsContainer .innerHTML += row
+									}
+								}
+								getRooms()
+							</script>
+							</html>
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+	2*OGÓLNE DZIAŁANIE we VIEWS.PY (opcja 2.2 uzywana docelowo):
+		0**PODSTAWY:
+			*chcąc utworzyć API dla danej app/funkc utwórz wewnątrz folder 'api' gdzie umieścisz pliki: 
+			 urls.py, views.py, serializers.py (będą to dodatkowe pliki do logiki - inne niż views.py, 
+			 urls.py umieszczone bezpośrednio w folderze danej app/funkc. ) Ponadto tworząć nowy folder 
+			 'api' pamiętaj o utworzeniu wewnątrz tego folderu pustego pliku '__init__.py'
+			*ŻĄDANIA: GET -detailView i listView, POST -createView, PUT -updateView, DELETE -deleteView
+		1**OPCJA PIERWSZA - BEZ WYKORZYSTANIA rest_framework'a:
+				*wykorzystujesz wysyłanie plików Json poprzez JsonResponse
+				*dla danych przychodzących w żądaniu POST i PUT korzystasz z: JSONParser().parse(request)
+				 by je sparsować z typu JSON na text. Następnie je serializujesz.
+				*dla żądań PUT i POST by podtrzymać sesje korzystasz z dekoratora @csrf_token (gdyż 
+				 normalnie musiałbyś wysłać najpierw żądanie GET, pobrać csrf_token a później w HEADERS
+				 dołączyć go do żądania POST/PUT:
+			*OPCJA 1.1 - serializujesz poprzez metodę serialize() 
+				*w serialize() nie można wysyłać obiektów Pythona tylko te z ORM
+				*w JsonResponse 'safe=False' pozwala na podanie listy do argumentu zamiast słownika
+					#przykład 1:
+							from django.http import JsonResponse
+								lst = ["1", "2"]
+								return JsonResponse(lst, safe=False)
+					#przykład 2:
+							from django.http import JsonResponse
+							import json
+							from django.core.serializers import serialize
+							def getRooms(request):
+								rooms = Room.objects.all()
+								rooms_serialize = json.loads(serialize('json',rooms))
+								return JsonResponse(rooms_serialize, safe=False) 
+			*OPCJA 1.2 - serializator w pliku serializers.py
+				*w serializers.py:
+							from rest_framework import serializers
+							from .models import Article
+							class ArticleSerializer(serializers.ModelSerializer):
+								class Meta:
+									model = Article
+									fields  = ['id','title', 'author']					
+				*we views.py
+							from django.http import HttpResponse, JsonResponse
+							from rest_framework.parsers import JSONParser
+							from django.views.decorators.csrf import csrf_exempt
+							@csrf_exempt
+							def article_list_and_create(request):
+								if request.method == 'GET':
+									articles = Article.objects.all()
+									serializer = ArticleSerializer(articles, many=True)
+									return JsonResponse(serializer.data, safe=False)
+								elif request.method =='POST':
+									data = JSONParser().parse(request)
+									serializer = ArticleSerializer(data=data)
+									if serializer.is_valid():
+										serializer.save()
+										return JsonResponse(serializer.data, status = 201)
+									return JsonResponse(serializer.errors, status = 400)
+							@csrf_exempt
+							def article_detail_update_delete(request,pk):
+								try:
+									article = Article.objects.get(pk=pk)
+								except Article.DoesNotExist:
+									return HttpResponse(status = 404)
+								if request.method == 'GET':
+									serializer = ArticleSerializer(article)
+									return JsonResponse(data = serializer.data)
+								elif request.method == 'PUT':
+									data = JSONParser().parse(request)
+									serializer = ArticleSerializer(article, data=data)
+									if serializer.is_valid():
+										serializer.save()
+										return JsonResponse(serializer.data, status = 201)
+									return JsonResponse(serializer.errors, status = 400)
+								elif request.method == 'DELETE':
+									article.delete()
+									return HttpResponse(status = 200)
+									
+		2**OPCJA DRUGA - WYKORZYSTUJESZ FUNCTION-BASED-VIEWS w rest_framework'u:
+				*przypisujesz dekorator @api_view, w którym precyzujesz żądania: GET, POST, PUT, DELETE 
+				*dla żądań PUT i POST parsowanie danych (z typu JSON na text) ,które robiłes poprzez 
+				 'JSONParser().parse(request)' wykonuję dekorator @api_view
+				*dla żądań PUT i POST z serializera koszystasz jak z formularza. Przekazujesz dane, 
+				 robisz walidację dla obiektu serializatora (if serializer.is_valid()) i następnie 
+				 wywołujesz save() dla serializatora tworząc nowy obiekt bazowy (dla modelu związanego 
+				 z serializatorem)
+				*zamiast JsonResponse (from django.http) zwracasz Response (from rest_framework.reponse)
+				 który zwraca dane lub błędy (serailizer.data i serializer.errors) oraz status  
+				 (from django.rest_framework import status). Są to m.in statusy takie jak:
+					*status.HTTP_200_OK
+					*status.HTTP_201_CREATED
+					*status.HTTP_400_BAD_REQUEST
+					*status.HTTP_404_NOT_FOUND
+				*argument 'many=True' oznacza że będzie serializacja listy a nie pojedyńczego obiektu
+								serializer = ArticleSerializer(articles, many=True)
+			*OPCJA 2.1 - serializujesz poprzez metode serialize():
+				*w serialize() nie można wysyłać obiektów Pythona tylko te z ORM
+							from rest_framework.decorators import api_view
+							from rest_framework.response import Response
+							from django.core.serializers import serialize
+							@api_view(['GET'])
+							def getRooms(request):
+								rooms = Room.objects.all()
+								serializer = serialize('json',rooms)
+								return Response(serializer)
+			*OPCJA 2.2 (POWSZECHNIE UŻYWANA)- serializator w serializers.py:
+				*w serializers.py:
+							from rest_framework import serializers
+							from .models import Article
+							class ArticleSerializer(serializers.ModelSerializer):
+								class Meta:
+									model = Article
+									fields  = ['id','title', 'author']		
+				*we views.py:
+							from rest_framework.decorators import api_view
+							from rest_framework.response import Response
+							from rest_framework import status
+
+							@api_view(['GET','POST',])
+							def article_list_view(request):
+								if request.method == 'GET':
+									articles = Article.objects.all()
+									serializer = ArticleSerializer(articles, many=True)
+														#arg ' many=True ' oznacza że będzie serializacja 
+														#więcej niż jednego obiektu (cała lista/zbiór)
+									return Response(serializer.data, status=status.HTTP_200_OK)
+								elif request.method =='POST':
+									serializer = ArticleSerializer(data=request.data)
+									if serializer.is_valid():
+										serializer.save()
+										return Response(serializer.data, status =status.HTTP_200_OK)
+									return Response(serializer.errors, status =status.HTTP_400_BAD_REQUEST)
+							@api_view(['GET','PUT','DELETE',])
+							def article_detail_view(request,pk):
+								try:
+									article = Article.objects.get(pk=pk)
+								except Article.DoesNotExist:
+									return Response(status =status.HTTP_404_NOT_FOUND )
+								if request.method == 'GET':
+									serializer = ArticleSerializer(article)
+									return Response(serializer.data, status =status.HTTP_200_OK)
+								elif request.method == 'PUT':
+									serializer = ArticleSerializer(article, data=request.data)
+									if serializer.is_valid():
+										serializer.save()
+										return Response(serializer.data, status =status.HTTP_200_OK)
+									return Response(serializer.errors, status =status.HTTP_400_BAD_REQUEST)
+								elif request.method == 'DELETE':
+									article.delete()
+									return Response(status =status.HTTP_200_OK)
+					*dodatkowo (nie jest to wymagane) możesz stworzyć legende dla wszystkich ścieżek w api:
+							@api_view(['GET'])     
+							def getRoutes(request):
+								routes = [
+									'GET /api/article/',
+									'GET /api/article/:id/',
+								]
+								return Response(routes)
+								
+		3**OPCJA TRZECIA - CLASS-BASED-VIEWS w rest_framework'u:
+				*w serializers.py:
+							from rest_framework import serializers
+							from .models import Article
+							class ArticleSerializer(serializers.ModelSerializer):
+								class Meta:
+									model = Article
+									fields  = ['id','title', 'author']		
+				*w urls.py:
+					*dla opcji 3.1 APIView i 3.2 GenericAPIView & mixinsprzez - mimo że masz 1dną klasę 
+					 dla wszystkich żądań to i tak musisz stworzyć 2 ścieżki - bez i z identyfikatorem id
+					*dla opcji 3.3 OSOBNE GenericAPIView - przez to że masz każdą klasę osobna to dla 
+					 każdej klasy tworzysz odpowiednią ścieżki:
+							urlpatterns =[
+						#dla OPCJI 3.1 - APIView:
+								path('classBasedViewArticle/', ArticleApiView.as_view()),
+								path('classBasedViewArticle/<int:id>/', ArticleApiView.as_view()),
+						#dla OPCJI 3.2 - GenericAPIView & mixins:
+								path('genericsMixins/', GenericAPIView.as_view()),
+								path('genericsMixins/<int:pk>/', GenericAPIView.as_view()),
+						#dla OPCJI 3.3 - OSOBNE GenericAPIView:
+								path('list/', ListApiView.as_view()),
+								path('create/', CreateApiView.as_view()),
+								path('detail/<int:id>/', DetailApiView.as_view()),
+								path('update/<int:id>/', UpdateApiView.as_view()),
+								path('delete/<int:id>/', DeleteApiView.as_view()),								
+							]
+			*OPCJA 3.1 - APIView:
+					*tworzysz klasę dziedzczącą po APIView (rest_framework.views) i przesłaniasz te metody 
+					 dla których chesz by dane żądania działały: get(), post(), put(), delete()
+				*we views.py:
+							from rest_framework.response import Response
+							from rest_framework import status
+							from rest_framework.views import APIView
+							class ArticleApiView(APIView):
+								def get_object(self, id):
+									try:
+										return Article.objects.get(pk=id)
+									except Article.DoesNotExist:
+										return Response(status=status.HTTP_404_NOT_FOUND)
+								def get(self, request, id=None):
+									if id:
+										article = self.get_object(id)
+										serializer = ArticleSerializer(article)
+										return Response(serializer.data)
+									else:
+										articles = Article.objects.all()
+										serializer = ArticleSerializer(articles, many=True)
+										return Response(serializer.data, status =status.HTTP_200_OK)
+								def post(self, request):
+									serializer = ArticleSerializer(data=request.data)
+									if serializer.is_valid():
+										serializer.save()
+										return Response(serializer.data, status =status.HTTP_200_OK)
+									return Response(serializer.errors, status =status.HTTP_400_BAD_REQUEST)
+								def put(self,request, id):
+									article = self.get_object(id)
+									serializer = ArticleSerializer(article, data=request.data)
+									if serializer.is_valid():
+										serializer.save()
+										return Response(serializer.data, status =status.HTTP_200_OK)
+									return Response(serializer.errors, status =status.HTTP_400_BAD_REQUEST)
+								def delete(self, request, id):
+									article = self.get_object(id)
+									try:
+										article.delete()
+									except:
+										data ={'failure':'Object is not exist'}
+										return Response(data, status=status.HTTP_404_NOT_FOUND)
+									else:
+										data ={'succesc':'Object deleted'}
+										return Response(data, status =status.HTTP_200_OK)
+
+			*OPCJA 3.2 -  GenericAPIView CLASS-BASED-VIEWS and MIXINS:
+					*tworzysz klasę dziedzczącą po GenericAPIView (rest_framework.generics) oraz 
+					 wszystkich mixins'ach dla których chcesz by dane żądania działały:
+						GET (LIST) - mixins.ListModelMixin, 
+						POST (CREATE) - mixins.CreateModelMixin,
+						GET (DETAIL) - mixins.RetrieveModelMixin,
+						PUT (UPDATE) - mixins.UpdateModelMixin,
+						DELETE (DELETE) - mixins.DestroyModelMixin
+					*wewnątrz przesłaniasz metody odpowiadające odpowiednim mixins'om: get(), post(), 
+					 put(), delete(). W tych metodach uruchamiasz metody z mixinsów:
+						dla get() - self.list(request) oraz self.retrieve(request, pk)
+						dla post() - self.create(request)
+						dla put() - self.update(request, pk)
+						dla delete() - self.destroy(request, pk)					
+				*we views.py:
+							from rest_framework import generics
+							from rest_framework import mixins
+							class GenericAPIView(generics.GenericAPIView, 
+														mixins.ListModelMixin, 
+														mixins.CreateModelMixin,
+														mixins.RetrieveModelMixin,
+														mixins.UpdateModelMixin,
+														mixins.DestroyModelMixin):
+								serializer_class = ArticleSerializer
+								queryset = Article.objects.all()
+															###jeżeli nie 'pk' tylko np 'id' w urls.py 
+															###to tworzysz zmienną: lookup_field = 'id'
+								def get(self, request, pk=None):
+									if id:
+										return self.retrieve(request, pk)
+									else:
+										return self.list(request)
+								def post(self, request):
+									return self.create(request)
+								def put(self, request, pk=None):
+									return self.update(request, pk)
+								def delete(self, request, pk=None):
+									return self.destroy(request, pk)
+			*OPCJA 3.3 - OSOBNE GENERICS CLASS-BASED-VIEWS:
+					*dziedziczą po GenericAPIView oraz po konkretnych mixins'ach dzieki czemu są 
+					 dostarczone domyślne metody get(), post(), put(), delete() i wystarczy tylko 
+					 skonfigurować odpowiednie pola:
+						*class_serializer = ArticleSerializer
+									- wskazujesz klasę któa będzie wykorzystana do serializera
+						*queryset = Article.objects.all()			 
+									- wskazujesz pobranie wszystkich danych z modelu
+						*lookup_field = 'id' 
+									- wskazujesz nazwę identyfikatora dla detail, update, delete, 
+						*authentication_classes = (TokenAuthentication,)
+									- zmienna odpowidzialna za atuoryzację
+						*permission_classes = (IsAuthenticated,)
+									- wskazujesz typ autoryzacji
+						*filter_backends = (SearchFilter, OrderingFilter)
+									- zmienna związana z searchfield (patrz --> PAGINATION I SEARCHFIELD)
+						*search_fields = ('^title','body', '=author__username','author__email')
+									- wskazujesz po jakich polach ma być wyszukiwarka
+						*pagination_class = PageNumberPagination
+									- tylko dla list (patrz --> PAGINATION I SEARCHFIELD)
+						*page_size = 2
+									- tylko dla list - wskazujesz ilość zwracanych obiektó w liście
+					*dla każdej klasy tworzysz odpowiednie ścieżki:
+						path('list/', ListApiView.as_view()),
+						path('create/', CreateApiView.as_view()),
+						path('detail/<int:id>/', DetailApiView.as_view()),
+						path('update/<int:id>/', UpdateApiView.as_view()),
+						path('delete/<int:id>/', DeleteApiView.as_view()),
+				*we views.py:
+							from rest_framework.generics import (ListAPIView, 
+																 CreateAPIView,
+																 RetrieveAPIView,
+																 UpdateAPIView,
+																 DestroyAPIView)
+							class ListApiView(ListAPIView):
+								serializer_class = ArticleSerializer
+								queryset = Article.objects.all()
+							class CreateApiView(CreateAPIView):
+								queryset = Article.objects.all()
+								serializer_class = ArticleSerializer
+							class DetailApiView(RetrieveAPIView):
+								queryset = Article.objects.all()
+								serializer_class = ArticleSerializer
+								lookup_field='id'
+							class UpdateApiView(UpdateAPIView):
+								queryset = Article.objects.all()
+								serializer_class = ArticleSerializer
+								lookup_field='id'
+							class DeleteApiView(DestroyAPIView):
+								queryset = Article.objects.all()
+								serializer_class = ArticleSerializer
+								lookup_field='id'	
+								
+		4**OPCJA CZWARTA - VIEWSETS & ROUTERS w rest_framework'u:
+					*działają tak samo jak class-based-vews ale zamiast metod jak get() i post() 
+					 dostarczają  takie metody jak list(), retrieve(), create(), update(), destroy()
+				*w urls.py:
+					*poprzez wykorzystanie Router'ów inaczej wygląda przechodzenie po ścieżkach - zamiast
+					 tworzyć 2 ścieżki dla klasy (ścieżkę z identyfikatorem (retrieve, update, destroy) i 
+					 bez niego (list, create)) tworzysz jedną ścieżkę i router powoduję że możesz chodzić 
+					 po innych ścieżkach po identyfikatorach:
+					*ścieżka w routerze nie może się kończyć slashem '/'
+						*w urls.py tworzysz router:
+							from rest_framework.routers import DefaultRouter
+							router = DefaultRouter()
+							router.register('article', ArticleViewSet, basename = 'article')
+							router.register('genericArticle', ArticleGenericViewSet, basename = 'generic')
+							router.register('modalArticle', ArticleModalViewSet, basename = 'modal')
+						*w urls.py tworzysz ścieżke:
+							urlpatterns =[
+								...
+								path('viewset/', include(router.urls)),
+							]
+						*i chodzisz po ścieżkach wg identyfikatorów id (przykład dla opcji 4.1 ViewSet):
+									'viewset/' --> 'viewset/article/'--> 'viewset/article/2/' 
+			*OPCJA 4.1 - ViewSet:
+					**dziedziczy po ViewSet i musisz przesłonić metody (te które chcesz wykorzystać) 
+					  z grupy metod: list(), create(), retrieve(), update(), destroy()
+					**żeby pobrać konkretną instancję użyj get_object_or_404()
+				*we views.py:
+							from rest_framework import viewsets
+							from django.shortcuts import get_object_or_404
+							class ArticleViewSet(viewsets.ViewSet):
+								def list(self, request):
+									articles = Article.objects.all()
+									serializer = ArticleSerializer(articles, many=True)
+									return Response(serializer.data)
+								def create(self, request):
+									serializer = ArticleSerializer(request.data)
+									if serializer.is_valid():
+										serializer.save()
+										return Response(serializer.data, status=status.HTTP_201_CREATED)
+									return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+								def retrieve(self, request, pk=None):
+									queryset = Article.objects.all()
+									article = get_object_or_404(queryset, pk=pk)
+									serializer = ArticleSerializer(article)
+									return Response(serializer.data)
+								def update(self, request, pk=None):
+									queryset = Article.objects.all()
+									article = get_object_or_404(queryset, pk=pk)
+									serializer = ArticleSerializer(article, data=request.data)
+									if serializer.is_valid():
+										serializer.save()
+										return Response(serializer.data, status =status.HTTP_200_OK)
+									return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+								def destroy(self, request, pk=None):
+									queryset = Article.objects.all()
+									article = get_object_or_404(queryset, pk=pk)
+									try:
+										article.delete()
+									except:
+										data ={'failure':'Object is not exist'}
+										return Response(data, status=status.HTTP_404_NOT_FOUND)
+									else:
+										data ={'success':'Object deleted'}
+										return Response(data, status =status.HTTP_200_OK)					
+			*OPCJA 4.2 - GenericViewSet & mixins
+					**klasa dziedziczy po GenericViewSet i mixins'ach -> musisz przesłonić odpowiednie 
+					  pola tak samo jak w osobnych class-based-views. Przede wszystkim pola queryset i 
+					  serializer_class
+				*we views.py:
+							from rest_framework import viewsets
+							from rest_framework import mixins
+							class ArticleGenericViewSet(viewsets.GenericViewSet,
+														mixins.ListModelMixin, 
+														mixins.CreateModelMixin,
+														mixins.RetrieveModelMixin,
+														mixins.UpdateModelMixin,
+														mixins.DestroyModelMixin):
+								serializer_class = ArticleSerializer
+								queryset = Article.objects.all()
+			*OPCJA 4.3 - ModelViewSet :
+					**ModelViewSet dziedziczy po GenericViewSet i po wszystkich mixins'ach więc wystarczy
+					  tylko skonfigurować pla queryset i serializer_class
+							from rest_framework import viewsets
+							class ArticleModelViewSet(viewsets.ModelViewSet):
+								serializer_class = ArticleSerializer
+								queryset = Article.objects.all()
+	1*INSTALACJE:
+		*https://www.django-rest-framework.org/
+		a)instalacja w konsoli:
+							pip install djangorestframework  /  python -m pip install djangorestframework
+							pip install markdown      		 /  python -m pip install markdown 
+							pip install django-filter  		 /  python -m pip install django-filter
+		  lub skopiowanie projektu:
+							git clone https://github.com/encode/django-rest-framework
+		b)w INSTALLED_APPS w settings.py w głównej app/funkc. dodajesz 'rest_framework'
+							INSTALLED_APPS = [
+								'rest_framework',
+							]
+		c)tworzysz nową app/funkc:
+							python manage.py startapp api 
+		  lub samemu zakłądasz folder który musi zawierać plik __init__.py, urls.py, views.py 
+
+
+============================================================================================================
+TESTY:
+	https://docs.djangoproject.com/en/4.0/intro/tutorial05/
+	https://docs.djangoproject.com/en/4.0/topics/testing/
+	0)PODSTAWY:
+		a*w każdej app/funkc. jest plik test.py przeznaczony do testów
+		b*Testy uruchamia się komendami:
+					python manage.py test										#uruchamia wszystkie testy
+					python manage.py test <app_name>
+		c*w tests.py tworzysz klasy testów które musza dziedziczyć po klasie TestCase. Klasy testów służą 
+		  testowaniu nie tylko funkcji w pliku views.py ale także pojedyńczych modeli z models.py.
+		d*testy nie korzystają z ogólnej bazy danych (działającej przy developmentcie oraz produkcji) ale
+		  na swojej własnej bazie danych dlatego w każdej klasie Testującej dziedziczącej po TestCase 
+		  tworzysz funkcje setUp() w której tworzysz obiekty do bazy testującej:
+					from .models import Article
+					from django.test import TestCase
+					class ArticleTestCase(TestCase):
+						def setUp(self):
+							a1 = Article.objects.create(title='Hello World', content='something else')
+							self.my_title = a1.title			#poprzez 'self' możesz tworzyć zmienne 
+																#do użycia w pozostałych metodach
+						def test_quryset_exists(self):
+							qs = Article.objects.all()
+							self.assertTrue(qs.exists())	
+							self.assertEqual(qs.first().title, self.my_title)
+		e*testowanie robisz głónie przez asercje ale możesz testować też poprzez blok 'try except':
+					import os 
+					from django.contrib.auth.password_validation import validate_password
+					class ainventoryCongfigTest(TestCase):
+						def test_secret_key_strength(self):
+							SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
+							try:
+								is_strong = validate_password(SECRET_KEY)
+							except Exception as e:
+								msg = f'Bad Secret key {e.messages}'
+								self.fail(msg)
+		f*testowanie możesz zawrzeć też w bloku with context - jeśli full_clean() wyrzuci błąd przy 
+		  sprawdzeniu danych w utworzonym obiekcie (full_clean()) to test zostanie zaakceptowany:
+				     def test_myObject(self):
+						with self.assertRaises(ValidationError):
+							ingredient = RecipeIngredient( name ="New", quantity = 10)
+							ingredient.full_clean()					
+	1)Testowanie pliku models.py:
+		*Wewnątrz klas tworzysz funkcje które przez to że klasa dziedziczy po TestCase będą automatycznie 
+		 uruchamiane po odpaleniu testów. Wewnątrz funkcji tworzysz asercje sprawdzające poprawność danych
+					from django.test import TestCase
+					from .models import Question						#pobierasz model 
+					class QuestionModelTests(TestCase):					#klasa testów do testowania modelu
+						def test_<name_function>_<that_testing>(self):
+							"""opis testu"""
+							q1 = Question(...)
+							self.assertIs(q1.<name_function>(),False)	#czy porównanie zwróci False
+	2)Testowanie pliku VIEWS.PY:
+		a)testowanie pliku views.py w pliku test.py	
+			*tak jak dla models tworzysz klasę testującą dziedziczącą po TestCase która testuję każdą 
+			 funkcje/class-based-view z views.py. Wewnątrz  klasy testującej tworzysz funkcje testujące 
+			 różne przypadki i w nich wykorzystujesz wbudowane pole client'a:
+					from django.test import TestCase
+					class QuestionIndexViewTest(TestCase):
+						def test_no_question(self):
+							response = self.client.get(reverse('index'))
+							self.assertEqual(response.status_code, 200)
+							self.assertContains(response, "No polls availble")	#odpowiada response.content
+																				#sprawdza tekst w htmlu
+							obj = Question(text='mama',pub_date=...)
+							self.assertQuerySetEqual(response.context['klucz'],[obj.text])
+		b)testowanie w konsoli:
+			*w konsoli musisz zadbać o ustanowienie środowiska do testów:
+					from django.test.utils import setup_test_environment
+					setup_test_environment()	
+			*w konsoli jest konieczność pobrania własnego Client'a imitującego klienta w przeglądarce
+					from django.test import Client
+					client = Client()
+			*od teraz na danym kliencie możemy żadąc zwrócenie odpowiednich danych:
+				*żądanie konkretnej strony po ścieżce:
+					response = client.get('/')			#Not Found: /
+					response = client.get('home/')
+				*żadanie konkretnej strony po atrybucie 'name' w path:
+					form django.url import reverse
+					response = client.get(reverse('index'))
+				*zwrócenie statusu strony:
+					response.status_code 				#404 /200
+				*zwrócenie HTMLa wyrenderowanej strony:
+					response.content					#<li><a href="/polls/1/">Wha's up?</a></li>
+				*zwrócenie przesyłanego słownika na stronę:
+					response.context					#[...'klucz': <QuerySet [<Question: What's up>]>...]
+					response.context['klucz']			#<QuerySet [<Question: What's up?>]>
+	3)Testowanie haseł i SECRET_KEY - metoda validate_password z django.contrib.auth.password_validation 
+					import os 
+					from django.contrib.auth.password_validation import validate_password
+					class ainventoryCongfigTest(TestCase):
+						def test_secret_key_strength(self):
+							SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
+							try:
+								is_strong = validate_password(SECRET_KEY)
+							except Exception as e:
+								msg = f'Bad Secret key {e.messages}'
+								self.fail(msg)
+	4)Rzeczy dodatkowe odróżniające zwykłe testy od testów w Django:
+		*testująca klasa dziedziczy po klasie Testcase z django.test a nie z unittest
+					from django.test import TestCase
+		*klasa TestCase dostarcza pole client które pozwala na imitowanie klienta i żądanie stron po 
+		 atrybucie name w funkcji path w urls.py: 
+					from django.url import reverse
+					class MyTestClass(TeatCase):
+						def my_func(self):
+							self.client.get(reverse('detail')
+		*klasa TestCase dostarcza specjalny typ asercji: assertContains() i assertQuerySetEqual()
+					from django.url import reverse
+					class MyTestClass(TeatCase):
+						def my_func(self):
+							response = self.client.get(reverse('detail')
+			*assertContains() - sprawdza czy w zwracanym wyrenderowanym HTML'u zawiera się string w 2gim arg
+							self.assertContains(response, 'my text in HTML'(
+			*assertQuerySetEqual() - czy zwracany słownik dla podanego klucza odpowiada liście wartości
+							self.assertQuerySetEqual(response.context['my_key'], [value1, value2])
+								
+==============================================================================================================				
+RÓŻNE FORMY FORMULARZY:
+	0*Formularz WIELOKROTNEGO WYBORU 
+		***TO-DO-APP - tech with TIM - https://www.techwithtim.net/tutorials/django/custom-forms/
+		***W TEMPLATES - tworzysz formularz z inputami 'type=text', 'type=checkbox' oraz buttonami:
+							<form method = 'POST' action="create">
+								{% csrf_token %}
+								<ul>
+									{% for item in ls.item_set.all %}
+										{%if item.complete == False%}
+											<li><input type="checkbox", value="clicked", 
+													name="c{{item.id}}">{{item}}</li>
+										{% else %}		###(dla starozaznaczonych input'ów type='checkbox 
+														###użyj pola: 'checked' (przy sprawdzenie warunku: 
+														###'gdy zadanie ukończone' to dla danego tagu 
+														###"input type='checkbox'" dodaj pole 'checked'
+											<li><input type="checkbox", value="clicked", 
+													name="c{{item.id}}" checked>{{item}}-COMPLETE</li>
+										{%endif %}
+									{% endfor %}
+								</ul>
+								<button type="submit", name="saveButton", 
+													value ="save button">SAVE everything</button>
+								<input type='text', name='newItem'>
+								<button type="submit", name="saveNewItemButton", 
+													value = "save new Item button">Add new Item</button>
+							</form>
+		***SŁOWNIK REQUEST - po przesłaniu formularza tworzy się słownik klikniętych "checkbox'ów", 
+		   wciśniętych buttonów i wszystkich input'ów type="text":
+							<QueryDict: {'csrfmiddlewaretoken': ['yXRRDKvKzh70bRK...'], c1': ['clicked'], 
+							'c4': ['clicked'], 'saveButton': ['save button'], 'newItem': ['']}>
+		***WE VIEWS.PY - pobierasz wartości ze słownika request.POST metodęą get() / getlist() (dla list) 
+		   lub nawiasy kwadratowe: request.POST.get('key') ALBO request.POST['klucz']
+							def index(request,id):
+								lst = ToDoList.objects.get(id=id)
+								if request.method != 'POST':			#if request.method == 'GET'	
+									context ={'ls':lst}
+									return render(request, "site1/list.html", context)
+								else:  									#if request.method == 'POST'	
+									#print(request.POST) - w konsoli pokaże ten słownik 
+									if request.POST.get("saveButton"):
+										for item in lst.item_set.all():
+											if request.POST.get("c" + str(item.id)) == "clicked":
+												item.complete = True
+											else:
+												item.complete = False
+											item.save()
+									elif request.POST.get("saveNewItemButton"):
+										txt = request.POST.get("newItem")
+										if len(txt)>2:
+											lst.item_set.create(text=txt, complete=False)
+										else:
+											print("invalid")
+									context ={'ls':lst}
+									return render(request, "site1/list.html", context)
+	1*Formularz JEDNOKROTNEGO WYBORU (formularz budowany od podstaw w HTMLu, przekierowujący na inną 
+	  stronę przez pole action w tagu form i przekazujący dane przez request.POST):
+		*DLA MODELI, URLS.PY i VIEWS.PY:
+					#w models.py - dla modeli:
+							class Question(models.Model):
+								question_text= models.CharField(max_length=200)
+								pub_date = models.DateTimeField('date published')
+							class Choice(models.Model):
+								question = models.ForeignKey(Question, on_delete=models.CASCADE)
+								choice_text = models.CharField(max_length=200)
+								votes = models.IntegerField(default=0)
+					#w urls.py - dla linku:
+							path('<int:question_id>/', views.detail, name='detail'),	
+					#we views.py - dla funkcji detail():
+							def detail(request, question_id):
+								question = get_object_or_404(Question, id=question_id)
+								return render(request, 'polls/detail.html', {'question': question})
+		*TWORZYSZ FORMULARZ który po wysłaniu przekierowuję do funkcji vote() z views.py zamiast do samego 
+		 siebie. Funkcja vote() we views.py ogarnia logikę (czyli posumowanie głosów) i przekierowanie do 
+		 innej funkcji z views.py która prześle dane do odpowiedniego pliku HTML:
+					#w templates - wyświetla się plik detail.html, gdzie znajduję się formularz:
+							{% if error_message %}
+								<h1>{{ error_messages }}</h1>
+							{% endif %}
+							<form method='POST' action={% url 'vote' question.id %}		
+														#przy metodzie POST przesyła dane z formularza 
+														#do funkcji vote() w pliku views
+								{% csrf_token %}
+								<fieldset>
+									<legend>{{ question.question_text }} </legend>
+									{% for choice in question.choice_set.all %}
+										<input type="radio" name="choice" value ={{choice.id}}  
+																		id="choice{{forloop.counter}}" />
+														#pole name będzie przekazane jako klucz w slowniku
+														#z request.POST a value jako wartość do tego klucza
+										<label for="choice{{ forloop.counter }}">{{choice.choice_text}}
+																								 </label>
+														#label musi pasować do "radio" czyli opcji wyboru. 
+														#Robisz to poprzez 'for' gdzie wskazujesz id 'radio'
+									{% endfor %}
+								</fieldset>
+								<input type="submit" value="vote" />
+							</form>
+					#urls.py
+							path('<int:question_id>/vote/', views.vote, name='vote'),
+							path('<int:question_id>/results/', views.results, name='results'),
+					#we views: 
+							def vote(request, question_id):]
+								question = Question.objects.get(id=question_id)
+								try:
+									selected_choice= question.choice_set.get(pk=request.POST['choice'])
+								except(KeyError, Choice.DoesNotExist):
+									return render(request, 'polls/results.html', {'question':question, 
+																	'error_message':"You didn't choose"})
+								else:
+									selected_choice.votes+=1
+									selected_choice.save()
+									return HttpResponseRedirect(reverse('polls:results', kwargs={
+																			"question_id":question.id}))
+														#przy method=POST używasz HttpResponseRedirect()
+														#zamiast metody render() gdyż dane z request.POST 
+														#przy odświeżaniu w render prześlą się drugi raz 
+														#co nie może mieć miejsca!!!
+							def results(request, question_id):
+								question = Question.objects.get(id=question_id)
+								return render(request, 'polls/results.html',{'question':question}
+					#w templates:
+							{{question.question_text}}
+							<ul>
+								{%for choice in question.choice_set.all %}
+									<li>{{choice.choice_text}} -- {{choice.votes}}, 
+																	vote{{ choice.votes|pluralize }}</li>
+								{% endfor %}
+								<a href="{% url 'polls:detail' question.id %}">Vote again?</a>
+							</ul>
+============================================================================================================
+ROZSZERZENIE KLASY MODELS: 
+	A) models.Manger, models.QuerySet
+		1*Podstawy:
+			*we views.py zamiast stosować standardowe metody pobierające dane z bazy danych np: 
+			 Mymodel.objects.filter(...) albo Mymodel.objects.get(...) można stworzyć swoje własne metody
+			 w klasie dziedziczącej po models.Manager
+		2*models.Manager:
+			*w models.py tworzysz klasę o nazwie takiej samej jak główny model ale dodajesz końcówkę 
+			 Manager. Klasa ta dziedziczy po models.Manager ; 
+					class ArticleManager(models.Manager)						#dla klasy Article 
+			*w models.py w głównym modelu musisz dodać pole objects któremu przypisujesz MymodelManager()
+					class(Article(models.Model)
+						objects = ArticleManager()
+			*w models.py w klasie MymodelManager defniujesz funkcje (np search(self, query)) które później 
+			 możesz wykorzystać we views.py przy wywoływaniu obiektów np: Article.objects.search(query='abc')
+					class ArticleManager(models.Manager):
+						def search(self, query):
+							if query is not None:
+								#return Article.objects.filter(Q(title__icontains=query) | 
+															   Q(content__icontains=query))
+								return self.get_queryset().filter(Q(title__icontains=query) | 
+																  Q(content__icontains=query))
+							else:
+								return self.get_queryset().none()  				 #zwróci pustą listę
+				#zamiast Article.objects możęsz wywołać metodę na self.get_queryset()
+		3*models.QuerySet
+			*możesz przesłonić metodę get_queryset() z models.Manager zwracając z niej obiekt klasy 
+			 dziedziczącej po models.QuerySet gdzie wewnątrz umieszczasz metody przejmujące wyszukiwanie; 
+					class ArticleQuerySet(models.QuerySet):
+						def search2(self, query):
+							if query is not None:
+								return self.filter(Q(title__icontains=query) | Q(content__icontains=query))
+							else:
+								return self.none()   #zwróci pustą listę
+			*teraz w klasie dziedziczącej po models.Manager przesłaniasz get_queryset(self.model self._db)
+			 i podając domyślną bazę danych
+					class ArticleManager(models.Manager):
+						def get_queryset(self):
+							return ArticleQuerySet(self.model, self._db)
+						def search(self, query):
+							return self.get_queryset().search2(query)  
+	B) VALIDATORS:
+		*https://docs.djangoproject.com/en/4.0/ref/validators/
+		*słuzy do stworzenia realcji JEDEN - WIELE  z użyciem ograniczonej listy stringów/obiektów:
+		*tworzysz plik validators.py wraz z ograniczoną listą stringów i wyrzucasz wyjątkiem ValidationError 
+		 gdy wpisane hasło przy tworzeniu obiektów nie znajduję  się w liście:
+				*wewnątrz validators.py
+					from django.core.exceptions import ValidationError
+					my_lst = ['pdf','doc','svg']
+					def validate_MY(value):
+						if value not in my_lst:
+							raise ValidationError(f'{value} is not in list'
+				*wewnątrz models.py
+						from django.db import models
+						class Post(models.Model):
+							extension = models.CharField(max_length=50, validators = [validate_MY]
+							...
+
+
+
+
+==============================================================================================================
+STRONA ADMINISTRATORA: 
+	A)WSTĘP:
+		*PODSTAWY:
+			*[<sciezka_do_nazwyStrony_z_serwerem>/admin np 127.0.0.1/8000/admin]
+			*admin site daje możliwość przeglądania wszystkich baz danych wraz z tworzeniem, updatowaniem 
+			 i usuwaniem tychże danych. 
+			*ponadto masz tam bazę użytkowników (na których również możesz dokonywać powyższych operacji)
+ 			 wraz z hasłami które są domyślnie zahashowane i posolone. Użytkownicy ci składają się na 3 
+			 grupy w zależności od statusu dostępu: administratorzy (superuser), ci co mogą się zalogować 
+			 do admin-site ale nie mają praw administratora (staff user) oraz ci o najwęższych prawach 
+			 (active). 
+			*znajduję się tam też panel boczny gdzie masz wyswietlone wszystkie historie wszystkich 
+			 dokonanych operacji.
+		*STWORZENIE I PIERWSZE UŻYCIE - najpierw trzeba stworzyć domyślne bazy danych (komenda migrate 
+		 pozwala na zatwierdzenie zmian w bazie danych, ale jeżeli te bazy jeszcze nie istnieją to są 
+		 tworzone takie domyślne jak auth_user). Następnie możesz utworzy pierwszego superusera 
+		 (administratora).
+						python manage.py migrate					#utworzenie domyślnych baz danych
+						python manage.py createsuperuser			#utworzenie 1wszego administratora
+						#jeżeli nie działa to wpisz winpty: winpty python manage.py createsuperuser
+		*AUTOMATYCZNE WYGENEROWANIE TABELI z KLASY w pliku MODELS.PY - w pliku admin.py musisz pobrać 
+		 daną klasę/tabelę z pliku models.py i następnie ja zarejestrować. Dzięki temu będziesz mógł 
+		 modyfikować dane z tabeli z pozycji administratora będąc zalogowanym na stronie administracyjnej:
+						#w admin.py danej app/funkc. (w tym przypadku w app/funkc klasa Post):
+						from . models import klasaPost
+						admin.site.register(klasaPost)
+	B) ZARZĄDZANIE DANYMI W PANELU ADMINISTRATORA (admin.ModelAdmin + admin.StackedInline/TabularInline)
+		*https://docs.djangoproject.com/en/4.0/ref/contrib/admin/
+		*https://docs.djangoproject.com/en/4.0/intro/tutorial07/
+		*UTWORZENIE - tworzysz klasę o nazwie z modelem/klasą którą chcesz przechowywać i dodajesz końcówkę
+		 'Admin' wraz z dziedziczeniem po admin.ModelAdmin:
+						from django.contrib import admin
+						from  .models import Meetup
+						class MeetupAdmin(admin.ModelAdmin):
+							...
+		*POLA:
+			*fields - w panelu dla danego modelu ustawiasz poszczególne pola wg upodobania. Domyślnie 
+			 gdy nie ustawisz tego pola to wyświetlą się wszystkie pola danego modelu:
+						class Meetup(admin.ModelAdmin):
+							fields = ['title','slug']
+			*raw_id_fields - wskazujesz które pola będaće kluczami obcymi powinny wyświetlać się Tobie 
+			 zamiast w liście to w dodatkowym automatycznie otwierającym się oknie.
+			*read_only_fields - pola tylko do wyświetlenia w adminie bez możliwości edycji 
+						class Meetup(admin.ModelAdmin):
+							read_only_fields = ['timestamp','updated']      
+							raw_id_fields = ['user']    
+			*inlines - daje możliwość wyświetlenia obiektów klucza obcego w modelu powiązanym relacją z 
+			 innym modelem. Tworzysz klasę dziedziczącą po 'admin.StackedInline' lub 'admin.TabularInline'
+			 wg formuły nazewnictwa: 'class <model_name>Inline(admin.StackedInline)' w której podajesz 
+			 pole 'model'. Natępnie w klasie powiązanej relacją w polu inlines podajesz listę wszystkich
+			 tych klas 'Inlines':
+						from django.contrib import admin
+						class ChoiceInline(admin.StackedInline):	#class ChoiceInline(admin.TabularInline):
+							model = Choice
+							extra =1
+						class QuestionAdmin(admin.ModelAdmin):
+							fields = ['pub_date', 'question_text']
+							inlines =[ChoiceInline]
+			*extra - w klasie która jest kluczem obcym możesz wskazać ile pustych obiektów  klucza obcego 
+			 jest domyślnie wyświetlanych. Wykorzystywane w klasach dziedzicząćach po admin.StackedInline
+			 oraz po admin.TabluarInline
+			*list_display - w panelu wyświetlają się kolumny o polach klasy/modelu które wskażesz w krotce:
+						class MeetupAdmin(admin.ModelAdmin):
+							list_display('title','slug')
+			*list_filter - w panelu pokaże się blok z filtrami odwołującymi się do pól klasy/modelu kótre
+			 wskażesz w krotce:
+						class MeetupAdmin(admin.ModelAdmin):
+							list_display('title','slug')
+							list_filter=('location',)
+			*prepopulated_ fields - wskazujesz które pola mają mieć autouzupełnianie na bazie innych pól 
+			 (podajesz je w słowniku gdzie klucz jest polem gdzie ma być autouzupełnianie a wartość ma 
+			 być krotką pól któe mają być tym autouzupełnieniem) -TO JEST AUTOUZUPEŁNIENIE TYLKO W ADMINIE 
+			 A NIE W BAZIE DANYCH WIĘC TRZEBA PÓŹNIEJ TO ZAPISAĆ!!! (zamiast tego raczej przesłaniaj 
+			 metodę save() w models gdzie użyj funkcji slugify()):
+						class MeetupAdmin(admin.ModelAdmin):
+							list_display('title','slug')
+							list_filter=('location',)
+							prepopulated_fields={'slug':(title,)}
+		*REJESTRACJA W ADMIN.PY 
+			***rejestrujesz klasę administracyjną wraz z klasą bazową:
+						admin.site.register(Meetup, MeetupAdmin)
+			***możesz odrejestrować klasę User i zarejestrować ją raz jeszcze później:
+						from django.contrib.auth.models import User
+						admin.site.unregister(User)
+						class RecipeInline(admin.StackedInline):
+							model = Recipe
+							extra = 0
+						class UserAdmin(admin.ModelAdmin):
+							model = User
+							inlines = [RecipeInline]
+							list_display =['username']
+						admin.site.register(User)	
+
+
+
+=============================================================================================================
+DEBUGOWANIE CAŁEGO PROJEKTU:
+  *UTWORZENIE PLIKU potrzebnego DO DEBUGOWANIA
+	*znajdując się wewnątrz jakiegokolwiek pliku z rozszerzeniem .py przechodzisz w panelu bocznym na ikonę 
+	 "play z żuczkiem" i klikasz na napis: "create a launch.json file" i z dostępnych opcji wybierasz opcje 
+	 z DJANGO.
+	*Tworzy ci się plik launch.json w folderze .vscode. Ten plik służy tylko do debugowania więc jeżeli np 
+	 zmienisz port w "args" dodając do listy w cudzysłowiu nowy nr portu to podczas odpalania projektu 
+	 poprzez wpisywanie ręcznie komend w terminalu, nie będzie to miało znaczenia tylko podczas jego 
+	 debugowania (chyba że odpalisz projekt przez CTRL + F5 (czyli Run without debugging))
+	*launch.json - składa się z par kluczy i wartości dających "launch profile"
+  *DEBUGOWANIE:	
+	*żeby rozpocząć debugowanie to (już po zaznaczeniu breakpoint'ów), przechodzisz na ikonę "play z 
+	 żuczkiem" i u góry wciskasz play. Uruchomi się Tobie projekt w taki sam sosób jakbyś uruchamiał go w 
+	 terminalu (pipenv shell ;; python manage.py runserver) tylko w miejscach breakpointów się zatrzyma 
+	 (otworzy ci się nowy teminal) 
+	*KOLEJNE FUNKCJE wyświetlone w panelu:
+		*STEP OVER f10- przejdź przez kolejną linijkę
+			*panel boczny - wraz z przechodzeniem przez kolejne linijki panel będzie (inspect) sprawdzał 
+			 wartości w tych linijkach 
+		*STEP INTO f11 - jeżeli natrafisz w linijce na funkcje to możesz wejśc wewnątrz jej ciała i zobaczyć
+		 czy tam nie ma jakiegoś buga
+		*STEP OUT SHIFT +f11 - następnie możesz wyjśc z takiej funkcji 
+		*RESTART - załączasz debugowanie od nowa
+		*STOP - kończysz debugowanie
+	*żeby włączyć projekt bez debugowania to robisz:
+			CTRL + f5 (RUN --> Run without debugging)
+  *DEBUGOWANIE poprzez DJANGO-DEBUG-TOOLBAR:
+   https://django-debug-toolbar.readthedocs.io/en/latest/installation.html
+    *ZALETY: 
+		*mając odpowiednio przygotowany plik html (czyli conajmniej zawierający tagi html 
+		 oraz body) mozesz w przeglądarce po wcześniejszym odpaleniu pliku (CTRL + f5 / F5) korzystać z 
+		 panelu do debugowaniu gdzie masz wszystkie potrzebne opcje i informacje.
+	*INSTALACJA:	
+		*instalacja w wirtualce:
+				pipenv install django-debug-toolbar
+		*dodanie do settings.py w głównej APP/FUNKCJONALNOŚCI do sekcji INSTALLED_APPS:
+				... ,
+				'debug_toolbar' 
+		*dodanie do urls.py w głównej APP/FUNKCJONALNOŚCI do urlpatterns (+ dodanie biliotek):
+				import debug_toolbar
+				from django.conf import settings
+				from django.urls import include, path
+				urlpatterns = [
+					...
+					path('__debug__/', include(debug_toolbar.urls)),
+				]
+		*dodanie do settings.py w głównej APP/FUNKCJONALNOŚCI do sekcji MIDDLEWARE:
+				... ,
+				'debug_toolbar.middleware.DebugToolbarMiddleware',
+		*dodanie do settings.py w głównej APP/FUNKCJONALNOŚCI całej sekcji INTERNAL_IPS wraz ze swoim ip:
+				INTERNAL_IPS = [
+					# ...
+					'127.0.0.1',
+					# ...
+				]
+				

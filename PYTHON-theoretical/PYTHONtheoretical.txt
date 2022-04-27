@@ -1544,7 +1544,7 @@ LISTA [], list():
 2* OPERACJE NA TEKSCIE - METODY NA STRINGACH:	
 	*join() - a, b, c oddzielone spacja i przecinkiem]		*count('char')
 		print(", ".join(["a","b","c"]))		  #'a, b, c' 		print('Hello World'.count('l'))	   #3
-	*find() - 'str'.find(value, start, end) 				*replace() 
+	*find() /rfind() - 'str'.find(value, start, end) 		*replace() 
 		x='ananas'.find('na')	   #1							print("Hi mom".replace("Hi","Ok")) #'Ok mom'  
 		x='ananas'.find('na',2)	   #3  -od 2 index włącznie
 		x='ananas'.find('na',2,4)  #-1 -do 4 index bez 4ego
@@ -2014,10 +2014,13 @@ LISTA [], list():
 				python -i nazwaPliku.py arg1 arg2 arg3
 				python -m nazwaPliku arg1 arg2 arg3
 	
-0.0* INSTALACJA I KONFIGURACJA:			
+0.0* INSTALACJA I KONFIGURACJA:		
+	*czy 64 bitowy system --> settings -> system -> about
 	*instalacja pythona									https://www.youtube.com/watch?v=YYXdXT2l-Gg 
-	*zmiana zmiennych środowiskowych:					https://www.youtube.com/watch?v=OdIHeg4jj2c				
-	*sprawdzenie ścieżki do używanego intepretera (w konsoli: python)
+	*zmiana zmiennych środowiskowych:					https://www.youtube.com/watch?v=OdIHeg4jj2c	
+	*wersja domysłnie-ustawionego pythona:
+				python -V
+	*sprawdzenie ścieżki do używanego pythona
 				import sys
 				sys.executable
 	*ustawienie powyższej ścieżki jako 'python' oraz dla Django albo pipa powyższej ścieżki wraz z 
@@ -2709,20 +2712,32 @@ LOGGING INTERMEDIATE:	https://www.youtube.com/watch?v=p0A4CV4MWd0
 		*ten plik należy wpisac na listę pliku .gitignore żeby nie był wysyłany na repozytorium
 		
 6* VENV + VIRTUALENV
+		x* Różnica między pipenvem jest taka że pipenv tworzy dodatkowy folder z wirtualką a virtualenv 
+		   i venv tworzą wirtualkę w folderze na którym pracujesz (zawartość wirtualek jest taka sama)
 	VENV WINDOWS: 		https://www.youtube.com/watch?v=APOPm01BVrk
 	VENV LINUX + MAC: 	https://www.youtube.com/watch?v=Kg1Yvry_Ydk
+		0* POBRANIE PYTHONA i sprawdzenie gdzie się znajduję ((odpalenie jakiegokoliek pythona i 
+		   sprawdzenie jego śćieżki (import sys | sys.executable) + przejśćie katalog wyżej iwybranie 
+		   odpowiedniej wersji))
+					python -m venv nazwaFolderu
+		1* UTWORZENIE
+			** -p instalacja z konkretną wersją pythona:
+					/scieżk_do_pythona_zainstalowanego_lokalnie -m venv nazwa_projektu
+			** . instalacja w danym folderze
+					/scieżk_do_pythona_zainstalowanego_lokalnie -m venv .
+		2* AKTYWACJA  | INSTALACJA BIBLIOTEK I FRAMEWORKÓW | SPRAWDZENIE UŻYWANEJ WERSJI PYTHONA | 
+		   INSTALACJA BIBLIOTEK I FRAMEWORKÓW  --> wszystko takie samo jak przy VIRTUALENV
+		   
 	VIRTUALENV:
-		x* Różnica między pipenvem jest taka że pipenv tworzy dodatkowy folder z wirtualką a virtualenv 
-		   tworzy wirtualkę w folderze na którym pracujesz (zawartość wirtualek jest taka sama)
-		0* INSTALACJA:
+		0* INSTALACJA - najpierw pobierasz pythona a potem instalujesz virtualenv 
 					pip install virtualvenv
 		1* UTWORZENIE:
-			** instalacja z utworzeniem folderu
+			** -p instalacja z konkretną wersją pythona:
+					virtualvenv -p /scieżk_do_pythona_zainstalowanego_lokalnie nazwa_projektu
+			** instalacja x domyślną wersją pythona z utworzeniem folderu
 					virtualenv name_project
 			** . instalacja w danym folderze
 					virtualenv .
-			** -p instalacja z konkretną wersją pythona:
-					virtualvenv -p /scieżk_do_pythona_zainstalowanego_lokalnie nazwa_projektu
 		2* AKTYWACJA - musisz aktywować za każdym razem gdy chcesz działać na pythonie/pipie/bibliotekach 
 		   znajdujących się w wirtualce:
 				*dla konsoli linuxowej:
@@ -2737,7 +2752,9 @@ LOGGING INTERMEDIATE:	https://www.youtube.com/watch?v=p0A4CV4MWd0
 		   (Odpalona wirtualka będzie widoczna przede wszystkim poprzez nazwę projektu w nawiasach):	
 		3* INSTALACJA BIBLIOTEK I FRAMEWORKÓW:
 					pip install django==2.0.7
-		4* ZAPISANIE paczek w pipie znajdujących się w wirtualce i wgranie ich do nowej wirtualki:
+		4* SPRAWDZENIE UŻYWANEJ WERSJI PYTHONA - wyświetlenie pliku ' pyvenv.cfg'
+					cat .\pyvenv.cfg
+		5* ZAPISANIE paczek w pipie znajdujących się w wirtualce i wgranie ich do nowej wirtualki:
 					pip freeze --local > requirements.txt
 					pip install -r requirements.txt
 
@@ -7710,6 +7727,7 @@ TYPY WYJĄTKÓW:		https://www.w3schools.com/python/python_ref_exceptions.asp
 				C:\Users\Your_Name>python -m mojPlik arg1 arg2 arg3
 	
 0.0* INSTALACJA I KONFIGURACJA:
+	*sprawdzenie czy 64 bitowy system --> settings -> system -> about
 	*najlepiej wytłumaczona instalacja pythona3 na Maca i Windowsa:
 	 https://www.youtube.com/watch?v=YYXdXT2l-Gg
 			(plik IDLE który jest wewnątrz folderu z zainstalowanym Pythonem jest konsolą i 
@@ -7721,10 +7739,12 @@ TYPY WYJĄTKÓW:		https://www.w3schools.com/python/python_ref_exceptions.asp
 		*albo w tychże zmiennych trzeba przenieść tę ściężkę wyżej w hierarchi (windows patrzy 
 		 w pierwszej kolejnośći na tę najwyższą).
 	*INSTRUKCJE DZIAŁANIA:
-	  *Najpierw sprawdź z jakiej wersji Pythona używasz poprzez sprawdzenie ścieżki z której
-	   windows korzysta by uruchomić plik python.exe :
-				import sys
-				print(sys.executable)
+	  *sprawdź wersję pythona: 
+					python -V
+	  *sprawdzć ścieżkę pliku python.exe z którego korzysta windows
+					#uruchomienie pythona: python
+					import sys
+					print(sys.executable)
 		*Instrukcje jak zmieniać zmienne środowiskowe w Windowsie:
 					https://www.youtube.com/watch?v=OdIHeg4jj2c
 			*by sprawdzić zmienne środowiskowe:
