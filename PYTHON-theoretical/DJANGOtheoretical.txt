@@ -1044,8 +1044,12 @@ TEMPLATES:
 			*w funkcjach we views.py możemy srawdzić czy na serwer zostało wysłane zapytanie 'GET' / 'POST'
 							if request.method =='POST':
 									...
+			*we views.py:
+				*return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/')) - POWRÓT na poprzednią 
+				 stronę
+				*if request.user.is_authenticated - sprawdzenie czy user jest zalogowany (we views.py)
 			*W TEMPLATES:
-				*{{request.META.HTTP_REFERER}} - pozwala powrócić na poprzednią stronę
+				*{{request.META.HTTP_REFERER}} - POWRÓT na poprzednią stronę
 							<a href="{{request.META.HTTP_REFERER}}">go back</a>	
 				*{{request.user}} || {% if request.user.is_authenticated %} - zwraca zaogowanego user'a
 				 lub pozwala sprawdzic czy user jest zalogowany 
@@ -1381,8 +1385,10 @@ TEMPLATES:
 								{% endfor %}
 							{%endif %}
 			*POST - metoda/żądanie do wysłania informacji na serwer. 
-				*Trzeba użyć konstrukcji {% csrf_token %} gdyż żądanie 'POST' jest żądaniem zaszyfrowanym		
-							<form action='search/' method='POST'>
+				*Trzeba użyć konstrukcji {% csrf_token %} gdyż żądanie 'POST' jest żądaniem zaszyfrowanym	
+				 oraz atrybut 'autocomplete="off"' dla tagu 'form' żeby przy cofaniu formularza nie 
+				 uzupełniało pól wpisanymi danymi:
+							<form action='search/' method='POST' autocomplete="off">
 								{% csrf_token %}
 								<input type="text" name='title' placeholder='Your title' />   
 								<input type='submit' value="Save" />
@@ -1412,10 +1418,11 @@ TEMPLATES:
 				 przesłanego formularza we views.py:
 					*żądania POST (zamiast wyświetlenia danych) możemy użyć do zapisu/modyfikacji danych 
 					 na serwerze - wtedy NIE WOLNO UŻYWAĆ METODY RENDER()!!! Zamiast niej UŻYWAJ METODY
-					 HttpResponseRedirect() po to by przy odświeżaniu nie renderowało strony 2gi raz i tym
-					 samym nie przesyłało formularza 2gi raz (czyli nie wykorzystywało danych ze słownika
-					 request 2gi raz)(więcej patrz Views -> HttpResponseRedirect()):
+					 HttpResponseRedirect() z metodą reverse() po to by przy odświeżaniu lub cofaniu strony
+					 nie renderowało strony 2gi raz i tym i samym nie przesyłało formularza 2gi raz (czyli 
+					 nie wykorzystywało danych ze słownika request 2gi raz)(Views -> HttpResponseRedirect()):
 							from django.http import HttpResponseRedirect
+							from django.urls import reverse
 							def product_view(request):
 								my_title=request.POST.get('title')
 								Product.objects.create(title=my_title)
@@ -1600,7 +1607,7 @@ TEMPLATES:
 									context={'form':form_empty}
 									return render(request, "products/product_create.html",context)
 								...
-				*RENDEROWANIE CRIPY FORM - zmiana formy renderowania i przedstawienia błędów przy
+				*RENDEROWANIE CRISPY FORM - zmiana formy renderowania i przedstawienia błędów przy
 				 walidacji danych w formularzu z 'form.as_p' na 'form|crispy':
 						*instalujesz django-crispy-forms w konsoli poprzez:
 									pipenv install django-crispy-forms  /  pip install django-crispy-forms
@@ -1615,17 +1622,19 @@ TEMPLATES:
 									...
 									{form|crispy}
 			*W TEMPLATES:
+				*dla tagu 'form' żtrzeba dodać atrybut 'autocomplete="off"' żeby przy cofaniu formularza nie 
+				 uzupełniało pól wpisanymi danymi
 				*Możliwości ukazania formularza:
 					*jako zmienna:
-							###<form action={% url 'meetup-detail' zmienna.slug %}" method ="POST">
-							<form action ="" method="POST">		
+							###<form action={% url 'meetup-detail' zmienna.slug %}" method ="POST" >
+							<form action ="" method="POST" autocomplete="off">		
 								{% csrf_token %}
 								{{form.as_p}}
 								<button type="submit">SAVE</button> #<input type='submit' value="SAVE"/>
 							</form>
 					*przechodząc przez każde pole formularza w pętli:
 							###<form action={% url 'meetup-detail' zmienna.slug %}" method ="POST">
-							<form action ="" method="POST">		
+							<form action ="" method="POST" autocomplete="off">		
 								{% csrf_token %}
 								{% for my_field in form %}
 									{{my_field.label}}
@@ -1636,7 +1645,7 @@ TEMPLATES:
 					*wypisując każde pole z osobna:
 							#dla modelu o polach ['title', 'description']
 							###<form action={% url 'meetup-detail' zmienna.slug %}" method ="POST">
-							<form action ="" method="POST">		
+							<form action ="" method="POST" autocomplete="off">		
 								{% csrf_token %}
 								{{form.title.label}}
 								{{form.title}}
@@ -1645,7 +1654,8 @@ TEMPLATES:
 								<button type="submit">SAVE</button> #<input type='submit' value="SAVE"/>
 							</form>		
 				*ELEMENTY potrzebne do działania formularza:
-					**<form method="POST">	  - tag form z metodą ustawioną na 'POST'
+					**<form method="POST" autocomplete="off">	  
+											  - tag form z metodą ustawioną na 'POST' oraz autocomplete="off"
 					  <form action={% url 'meetup-detail' selected_meetup.slug %}" method ="POST">
 											  - możesz ale nie musisz podać atrybut action do form. Action 
 											    przy POST może przekierowywać na tę samą stronę co pozwoli 
@@ -1750,20 +1760,20 @@ TEMPLATES:
 			*W TEMPLATES:
 				1*WERSJA html'a NIE DAJĄCA MOŻLIWOŚCI działania WERSJI Z REQUESTEM we views.py:
 					ad1*FORMULARZ DLA PKT1 WE VIEWS.PY:
-							<form action="" method ="POST">
+							<form action="" method ="POST" autocomplete="off">
 								{% csrf_token %}
 								{{form.as_p}}
 								<button type="submit">REGISTER USER IN MEETUP</button>
 							</form>
 					ad2*FORMULARZ DLA PKT2 WE VIEWS.PY:
-							<form action="" method ="POST">
+							<form action="" method ="POST" autocomplete="off">
 								{% csrf_token %}
 								{{form.as_p}}
 								<button type="submit">CREATE ROOM</button>
 							</form>
 				2*WERSJA html'a DAJĄCA MOŻLIWOŚC działania WERSJI Z REQUESTEM we views.py:
 					ad1*FORMULARZ DLA PKT1 WE VIEWS.PY:
-							<form action="" method ="POST">
+							<form action="" method ="POST" autocomplete="off">
 								{% csrf_token %}
 								{{form.name.label}}
 								{{form.name}}
@@ -1772,7 +1782,7 @@ TEMPLATES:
 								<button type="submit">REGISTER USER IN MEETUP</button>
 							</form>
 					ad2*FORMULARZ DLA PKT1 WE VIEWS.PY:
-							<form action="" method ="POST">
+							<form action="" method ="POST" autocomplete="off">
 								{% csrf_token %}
 								{{form.title.label}}
 								{{form.title}}
@@ -1882,7 +1892,7 @@ TEMPLATES:
 				 'name' każdego tagu. Dla zmiennych, atrybut 'name' domyślnie jest ustawiony na nazwę 
 				 zmiennej formularza (czyli zmienna {{form.description}} ma domyślny atrybut 'name' 
 				 ustawiony na 'description'):
-								<form action="" method ="POST">
+								<form action="" method ="POST" autocomplete="off">
 									{% csrf_token %}
 									<div>
 										<div>
@@ -1910,7 +1920,7 @@ TEMPLATES:
 					for p in form.cleaned_data['participants']:     	 ALBO:		  form.save_m2m()
 						room.participants.add(p)  
 				 WTEDY w HTML'u:
-								<form action="" method ="POST">
+								<form action="" method ="POST" autocomplete="off">
 									{% csrf_token %}
 									<div>
 										<div>
@@ -2224,7 +2234,7 @@ TEMPLATES:
 						{% extends "blog/base.html" %}
 						{% load crispy_forms_tags %} 
 						{% block content %}
-								<form method ='POST'>
+								<form method ='POST' autocomplete="off">
 									{% csrf_token %}
 									{{ form|crispy }}
 									<button type="submit">Post</button>
@@ -2749,16 +2759,26 @@ TEMPLATES:
 									author = models.ForeignKey(User, on_delete.CASCADE)
 									...
 					*użycie ograniczonej listy stringów/obiektów:
-						#https://docs.djangoproject.com/en/4.0/ref/validators/
+						*atrybut choices w models.CharField()
+								from django.db import models
+								from django.contrib.auth.models import User
+								class Order(models.Model):
+									STATUS = (
+										('Pending','Pending'),
+										('Out of delivery','Out of delivery'),
+										('Delivered','Delivered'),
+									)
+									status = models.CharField(max_length=200, null=True, choices = STATUS)
 						*utworzenie pliku validators.py wraz z ograniczoną listą stringów i wyrzucenie 
 						 wyjątkiem ValidationError gdy wpisane hasło przy tworzeniu obiektów nie znajduję 
 						 się w liście:
+						 #https://docs.djangoproject.com/en/4.0/ref/validators/
 								from django.core.exceptions import ValidationError
 								my_lst = ['pdf','doc','svg']
 								def validate_MY(value):
 									if value not in my_lst:
 										raise ValidationError(f'{value} is not in list')
-						*wewnątrz models.py
+							*wewnątrz models.py
 								from django.db import models
 								from . import validators.py
 								class Post(models.Model):
@@ -3145,12 +3165,13 @@ TEMPLATES:
 							from django shortcuts import redirect
 							def detail(request, my_id):
 								return redirect(reverse('product_detail', kwargs={'id_link':my_id})
-			D*HttpResponseRedirect() - podanie dokłądnego linka w zwrotce (z MOŻLIWOŚCIĄ DYNAMIC URL):
+			D*HttpResponseRedirect() - do aktualnego linka dodaje to co wpisane w arg - (używaj opcji 
+			  z możliwością użycia DYNAMIC URLS czyli z reverse()):
 							#dla urls.py: path("<int:id_link>/", views.detail, name='product_detail') 
 							from django.http import HttpResponseRedirect
 							def detail(request, my_id):
 								return HttpResponseRedirect('/{}'.format(my.id)
-				*z reverse() - z możliwością użycia DYNAMIC URLS:
+				*z reverse()  - DYNAMIC URLS (jedyna opcja gdzie przy cofaniu strony formularz się nie odtwarza)
 							#dla urls.py: path("<int:id_link>/", views.detail, name='prod_detail') 
 							from django.http import HttpResponseRedirect
 							from djnago.urls import reverse
@@ -3222,9 +3243,10 @@ TEMPLATES:
 			*w innych frameworkach byłoby to nazwane views ale w Django views.py odpowiada za coś innego
 			*są tam m.in dokumenty html które możesz przekazywać poprzez metodę render w module views.py
 			*2 OPCJE przekazywania dokumentów html: 
-				   A)tworzysz główny katalog templates w ścieżce bazowej i tam trzymasz wszystkie pliki 
-					 html. W pliku settings.py głównej app/funkc. w skecji 'TEMPLATES' w kluczu 'DIRS' 
-					 podajesz ścieżkę do tego głónego katalogu templates (wykorzystując BASE_DIR):
+				   A)tworzysz główny katalog templates w ścieżce bazowej (ale nie w głównej app/funkc.) 
+				     i tam trzymasz wszystkie pliki html. W pliku settings.py głównej app/funkc. w skecji 
+					 'TEMPLATES' w kluczu 'DIRS' podajesz ścieżkę do tego głónego katalogu templates 
+					 (wykorzystując BASE_DIR):
 							import os
 							TEMPLATES{
 								'DIRS':[  os.path.join(BASE_DIR, 'templates'),  ]

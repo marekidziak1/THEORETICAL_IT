@@ -36,7 +36,7 @@ Django:
 	*coding with mitch - dobry projekt na podsumowanie django: https://www.youtube.com/playlist?list=PLgCYzUzKIBE_dil025VAJnDjNZHHHR9mW
   DJANGO REST FRAMEWORK - REST API
 	*Coding entrepreneurs: https://www.youtube.com/watch?v=c708Nf0cHrs
-		
+	*restframework with vue.js: https://www.youtube.com/watch?v=Yg5zkd9nm6w
 	KURS WARTY KUPNA:
 		Academind - 36zł (bardzo dokładny) (cały a nie tylko wyrywki co zrobiłeś)- https://www.udemy.com/course/python-django-the-practical-guide/?couponCode=D_0322
 

@@ -93,9 +93,86 @@ dla NULL - nie może być WHERE cos = NUll
 				*zwraca część daty date (year, month, day itd.) wyspecyfikowaną w pierwszym argumencie
 			4) LIMIT/TOP:
 				*zamiast klauzuli LIMIT lub FETCH FIRST masz 'TOP numbers;'
-	5* POSTGRESQL:
-			
-
+	5* POSTGRES:
+			1)Podstawy:
+				*Wspiera ACID - atomowość, konsystencja izolacja, trwałość i MVCC
+				*NAZEWNICTWO w dokumentacji:
+					**CLUSTER - serwer bazy danych
+					**RELACJA - (tablica indexów)
+					**KROTKA/TUPLE - (wiersz)
+					**ATRYUBUT - (kolumna)
+					**PAGE - (data block)
+					**BUFFER - (page)
+				*POSTGRES na LINUXIE (NIE na WINDOWSIE - nie da się go tam dobrze zoptymalizować ponieważ 
+				 POSTGRES sciśle wspólłpracuję z systmemem (np przy cashowaniu danych)
+				*głównie używa się w terminalu ale także w narzędziu graficznym: POSTGRES ADMIN
+			2)ARCHITEKTURA:
+				*główny proces to POSTMASTER (który zajmuję się przyjmowaniem połączeń od użytkonwników)
+				*Shared Memory - pamieć RAM wykorzystywana przez bazę danych. Główy element to Shared 
+				 Buffer który przetrzymuję odpowiedzi dla częstych zapytań i to głównie jego będziemy 
+				 konfigurować. WAL buffer z kolei to podręczny buffor który przetrzymuję wstawiane i 
+				 update'owane dane zanim zostaną one zapisane w plikach (dane zostają zapisane w 
+				 plikach raz na jakiś czas ponieważ jest to operacja wolna)
+				*procesy
+				*pliki danych
+			3)Działanie - gdy przychodzi zapytanie SELECT najpierw sprawdzane są bufory, później cache 
+			  systemu operacyjnego a na samym końcu pliki z danymi
+			4)BUDOWA clustra (serwera)  windows: 'program files / postgresql / 14 / data' ;; 
+				*folder base - (lokalizacja tego folderu powinna być zapisana w zmiennej środowiskowej 
+				 $PG_DATA). Są tam przetrzymywane osobne bazy danych oraz bazy systemowe:
+						**template0
+						**template1
+						**postgresql
+				*foldery ze statystykami i plikami konfiguracyjnymi
+			5)Folder BIN - narzędzia służące do zarządzania POSTGRES'em windows - 
+			  'program files / postgresql / 14 / bin' ;;  linux:  'bin'. Najważniejsze to psql.exe 
+			6)KONFIGURACJA:
+				**pgtune --> strzona w internecie do wytworzenia plików DO KONFIGURACJI (ważne jest 
+				  dobranie DB Type --> 'Online Transaction processing system (appka) albo Warehouse 
+				  magazine (hurtowania danych), total memory (1/4 RAMU dostępnego (16Gb)), number of 
+				  CPU --> 4 ; number of connections --> ~100 (nie więcej niż 120)
+				**postgresql.conf - w folderze 'data' musisz skonfigurować:
+						***shared_buffers (domyślnie ustawienie na 128Mb -> USTAW NA 1/4 RAMu)
+						***Maintance_work_mem = (USTAW na 5% pamięci RAM)
+						***work_mem - (4-64MB) do sortowania
+						***Max_connections (ustaw na 100)
+						***Efective_cache_size=(ustaw 50% RAMu)
+						***Max_wal_size
+						***Log_checkpoint=on
+						***Alter system set max_wal_size = 2GB
+			7)PSQL --> chcąc otworzyć psql'a poprzez konsolę POWERSHELL musisz wziąć pod uwagę to że 
+			  automatycznie psql będzie automatycznie chciał zalogować się użytkownikiem Windowsowym 
+			  dlatego używasz instrukcji:
+							psql -U postgres
+			  inne parametry przy uruchamianiu: '-h' jako hostname,'-p' port, '-d' database
+							psql -h <hostname> -p <port> -U <user> -d <database>
+			  chcąc zalogować się jako inny użytkownik niż postgres trzeba wskazać też bazę danych
+							psql -U <hostname> -d <database>
+			  warto też wyświetlać czas by sprawdzac ile wykonują się dane skrypty (-c command)
+							psql - U postgres -c "select current_time"
+			8)KOMENDY:
+			  '\?' - help
+			  '\h <komenda>' - help dla danej komendy
+			  '\q '- quit
+			  '\du' - display user
+				*Postgresql tworzy nam domyślnego użytkownika z uprawnieniami administratora- 'postgres'
+				*W Postgres'ie rola i użytkownik to to samo
+			  '\l' - list databases
+			  '\l+' - list databases with extra info
+			  '\x' - change displaying table to vertical/horizontal mode
+			  '\dt' - display table (wyświetla relacje)
+			  '\c <database>' - change database
+			  '\timing' - wyświetla czas wykonania zapytania
+			  '\conninfo' - display info
+			  '\wath' -co 2 s będzie wykonywać się dana komenda (w celu sprawdzenia czy w czasie 
+			   występują błędy)
+			  
+			  
+			  
+			  
+			  
+				
+			  
 			
 -----------------------------------------------------------------------------------------------------------
 -------------------------------------------------- SELECT -------------------------------------------------

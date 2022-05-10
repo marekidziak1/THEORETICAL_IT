@@ -65,6 +65,7 @@ PIERWSZE WYSŁANIE DANEGO BRANCHA lub TAGA i KOLEJNE WYSYŁANIA BRANCHA lub TAGA
 	git push -u origin branch1  		
 			 -u origin tag1				
 	git push	
+gitignore: https://www.pluralsight.com/guides/how-to-use-gitignore-file
 ------------------------------------- POBIERANIE ZMIAN ---------------------------------------------------------------------------------------------
 UKAZANIE RÓŹNIC W BRANCHU2 W STOSUNKU DO BRANCHA1
 	git diff branch1 branch2			

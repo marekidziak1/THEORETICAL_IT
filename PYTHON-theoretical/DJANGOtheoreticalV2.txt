@@ -68,16 +68,27 @@
 									author = models.ForeignKey(User, on_delete.CASCADE)
 									...
 					*użycie ograniczonej listy stringów/obiektów:
-						#https://docs.djangoproject.com/en/4.0/ref/validators/
+						*atrybut choices w models.CharField()
+								from django.db import models
+								from django.contrib.auth.models import User
+								class Order(models.Model):
+									STATUS = (
+										('Pending','Pending'),
+										('Out of delivery','Out of delivery'),
+										('Delivered','Delivered'),
+									)
+									status = models.CharField(max_length=200, null=True, choices = STATUS)
 						*utworzenie pliku validators.py wraz z ograniczoną listą stringów i wyrzucenie 
 						 wyjątkiem ValidationError gdy wpisane hasło przy tworzeniu obiektów nie znajduję 
 						 się w liście:
+						 #https://docs.djangoproject.com/en/4.0/ref/validators/
+							*w validators.py
 								from django.core.exceptions import ValidationError
 								my_lst = ['pdf','doc','svg']
 								def validate_MY(value):
 									if value not in my_lst:
 										raise ValidationError(f'{value} is not in list'
-						*wewnątrz models.py
+							*w models.py
 								from django.db import models
 								class Post(models.Model):
 									extension = models.CharField(max_length=50, validators = [validate_MY]
@@ -388,12 +399,12 @@
 							from django shortcuts import redirect
 							def detail(request, my_id):
 								return redirect(reverse('product_detail', kwargs={'id_link':my_id})
-			D*HttpResponseRedirect() - podanie dokłądnego linka w zwrotce (z MOŻLIWOŚCIĄ DYNAMIC URL):
+			D*HttpResponseRedirect() - do aktualnego linka dodaje to co wpisane- (używaj opcji z reverse()):
 							#dla urls.py: path("<int:id_link>/", views.detail, name='product_detail') 
 							from django.http import HttpResponseRedirect
 							def detail(request, my_id):
 								return HttpResponseRedirect('/{}'.format(my.id)
-				*z reverse() - z możliwością użycia DYNAMIC URLS:
+				*z reverse() - DYNAMIC URLS (jedyna opcja gdzie przy cofaniu strony formularz się nie odtwarza)
 							#dla urls.py: path("<int:id_link>/", views.detail, name='prod_detail') 
 							from django.http import HttpResponseRedirect
 							from djnago.urls import reverse
@@ -459,7 +470,8 @@
 	   A*PODSTAWY:
 			*templates tworzysz sam (musi być tak nazwany gdyż DJANGO domyślnie szuka katalogu 'templates')
 			*2 OPCJE przechowywania dokumentów html: 
-				   A)GŁÓWNY KATALOG TEMPLATES W ŚCIEŻCE BAZOWEJ. W settings.py głównej app/funkc.
+				   A)GŁÓWNY KATALOG TEMPLATES W ŚCIEŻCE BAZOWEJ (ale nie w głównej app/funkc):
+						#W settings.py głównej app/funkc.
 							TEMPLATES{
 								'DIRS':[  os.path.join(BASE_DIR, 'templates'),  ]
 								...}
