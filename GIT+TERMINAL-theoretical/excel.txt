@@ -1,0 +1,332 @@
+TIPY:
+----------------------------------------------------------------------------
+FORMULARZE:
+TABELE PRZESTAWNE (PIVOT TABLES):	
+WYKRESY PRZESTAWNE:
+FUNKCJE / FORMUŁY:
+	*STATYSTYCZNE
+	*LICZĄCE ELEMENTY
+	*MATEMATYCZNE
+	*MATEMATYCZNIE SPECJALNE
+	*LOGICZNE
+	*TEKSTOWE
+	*WYSZUKIWANIE
+	*DATY
+	*KSIĘGOWE
+WYKRESY PODSTAWOWE  / WYKRESY PRZEBIEGU W CZASIE:
+----------------------------------------------------------------------------
+FORMATOWANIE:
+FILTROWANIE i FRAGMENTATOR:
+SORTOWANIE:
+KOPIOWANIE:
+ZNAJDŹ i ZAMIEŃ | USUŃ DUPLIKATY:
+BLOKOWANIE NAGŁÓWKÓW:
+GRUPOWANIE:
+----------------------------------------------------------------------------
+DRUKOWANIE:
+FORMATY PLIKÓW - ROZSZERZENIA /UDOSTĘPNIANIE|ZABEZPIECZENIE HASŁEM SKOROSZYTU:
+PRACA NA WIELU ARKUSZACH
+SKRÓTY:
+EXTRA:
+----------------------------------------------------------------------------
+
+TIPY:
+	***DATA + DATA VALIDATION --> SPAWDZANIE POPRAWNOŚCI DANYCH podczas ich wpisywania. Możesz wybrać listę możliwych danych do wprowadzenia lub konkretny typ danych np date i odpowiedni zakres. 
+	***przydatne do WYSZUKAJ.PIONOWO / VLOOKUP:
+		*zamiana tekstu na liczby --> (występuję przy imporcie danych z innych źródeł), nie da się tego zrobić poprzez zwykłą konwersję na liczby dlatego najlepiej w inną komórkę wpisujesz '1' i poprzez 'wklej specjalnie'+'PRZEMNÓŻ' robisz przemnożenie danych przez 1
+		*skasowanie spacji z przodu przed tekstem-> CTRL+H I zamień ' '> nic
+	***USUŃ DUPLIKATY --> DANE -> usuń duplikaty (koło 'tekst jako kolumny')
+	***UKŁAD STRONY --> WYRÓWNANIE - zaznaczasz kilka wykresów i wyrównujesz je w pionie i np do lewej 
+	***PLIK --> OPCJE:
+			***FORMULY -> automatyczne oblicze formuł --> (zmieniasz ręczne na automatyczne) gdy nie chcesz za każdym razem odświeżać F9 żeby wyliczyło wynik. 
+	***łączenie wykresów -> CTRL+C i CTRL+V z jednego na drugi wykres. 
+	***przeciąganie kolumn lub wierszy Z KLAWISZEM SHIFT!!!
+	***WSTAWIANIE --> HIPERŁĄCZE --> DEFINIUJ HIPERŁĄCZE -> odwoływanie się do komórek w dokumencie
+
+----------------------------------------------------------------------------
+FORMULARZE:
+	https://www.youtube.com/watch?v=zMYkJ-7tn3g
+	*PODSTAWY:
+		**opcje tworzenia formularzy otwierasz poprzez: PLIK -> OPCJE -> Dostosowanie wstążki -> DEWELOPER 
+	*FORMANTY FORMULARZA --> 	DEWELOPER -> WSTAW:	
+				****kontrolki formularza (prostsze)
+				****kontrolki ActiveX (używane w VBA)
+	*Kontrolki formularza (+ Prawy -> Formatuj Formanty Formularza):
+		**POLE WYBORU (checkbox): 
+			***zaznaczasz łącze komórki czyli komórkę połączoną z formularzem (będzie pokazyważ PRAWDĘ przy zaznaczeniu i FAŁSZ przy odznaczeniu). 
+		**POLE KOMBI (rozwijana lista): 
+			***Zaznaczasz zakres wejściowy (czyli które elementy mają znaleźć się w rozwijanej liście (jeżeli mają to być nazwy kolumn z innej tabeli to musisz je przepisać do innej kolumny w pionie)) i wskazujesz łącze komórki czyli komórkę która będzie wyświetlać wybraną opcję z rozwijanej listy. Teraz możesz korzystać z tych wartośći w np: funkcji WYSZUKAJ.PIONOWO()
+		**POLE LISTA (lista typu area)
+			***Zaznaczasz zakres wejściowy (tak jak przy polu Kombi). Następnie wskazujesz łącze komórki (miejsce do zwrócenia numeru wyboru) i typ zaznaczenia (pojedyńcze/wielokrotne).
+		**POLE PRZYCISK POKRĘTŁA / PASEK PRZEWIJANIA (suwak góra/dół):
+			***Ustawiasz wartość maksymalną i zmianę przyrostową. Wskazujesz łącze komórki w którym możesz wpisać watość lub ją wyklikać suwakiem.
+				
+TABELE PRZESTAWNE (PIVOT TABLES):	
+	*PODSTAWY:
+		**INSERT -> PIVOT TABLES 
+		**u góry po prawej stronie pojawi się zakładka PIVOT TABLES z opcją modyfikacji tabeli przestawnej
+	*OGRANICZENIA PRZY ŻRÓDŁOWEJ TABELI Z DANYMI:
+		**każdy nagłówek jest inny
+		**tabela nie może mieć pustych wiersz ani kolumn
+		**nie mogą występować puste komórki ani komórki scalone --> dla komórek scalonych rozłączasz je, poprzez F5 zaznaczasz wszystkie puste komórki i następnie odwołujesz się do komórki w góre poprzez wpisanie komórki wyzej np '=C3' + CTRL+ENTER. (chcesz żeby każda pusta komórka odwoływała się do komórki wyżej). Ostatni etap to zastąpienie formuł wartościami tj '=C3' na wartości POPRZEZ KOPIUJ i WKEJ SPECJALNIE (WARTOŚCI)
+		**dane liczbowe muszą być liczbami (jeżeli nie będą to trzeba je zamienić poprzez wklej specjalnie + przemnóż *1) --> żeby sprawdzić czy wszystkie wartośći liczbowe na pewno sa liczbami to na paska na dole licznik musi się równać licznikowi wartości liczbowych. 
+
+	*POLA WIERSZY, WARTOŚCI, KOLUMN I FILTRA:
+		**możesz poszczególne kolumny dodać do pól: WIERSZY, WARTOŚCI, KOLUMN i FILTRÓW. Przenosząc kolumnę 'x' do PÓL WIERSZY i inne kolumny do PÓL WARTOŚCI będzie można zobaczyć sumę (i inne opcje) tych 'innych' kolumn w stosunku do poszczególnych zmiennych z  kolumny 'x'
+		**do PÓL WARTOŚCI możesz przenieść kilka razy tę samą kolumnę i poprzez 'VALUE FIELD SETTINGS' można ustawić: SUM, COUNT, AVERAGE, MAX, MIN, PRODUCT(mnożenie) itd.
+		**dla dat tabele przestawne mają możliośc grupowania po miesiącach, dniach...
+		**chcąc użyć tej samej kolumny danych w POLACH WIERSZY I KOLUMN nie da się tego zrobić ALE przy datach możesz zrobić grupowanie po różnych okresach i wtedy pojawią się tego okresy jakby były osobnymi kolumnami - dzięki temu możesz to rozdzielić. 
+	*DODATKI:
+		**NARZĘDZIA TABEL PRZESTAWNYCH -> ANALIZA -> POLA, ELEMENTY, ZESTAWY -> WSTAWIANIE POLA OBLICZENIOWEGO ---> pozwala dodać pole do tabeli przestawnych w którym można wpisać własną formułę.
+		**kolumny będące w polach wierszy można dodatkowo PRZESORTOWAĆ ;; PRZEFILTROWAĆ (value filter) względem kolumn znajdujących się w polach wartości i POGRUPOWAĆ względem pól liczbowych nadając granicę górną i dolną do grupowania wraz z wielkością przedziału. 
+		**przy zmianie danych tabele przestawne nie odświeżą się automatycznie --> trzeba je odświeżyć samemu (ODŚWIEŻ na obojętnie jakiej komórce)
+		**ustawienie formatowania liczb w tabeli przestawnej odpornego na zmiany w tabeli przestawnej (takiego że nie wróci do poprzedniej wersji formatowania) robisz poprzez podwójne kliknięcie na nazwę kolumny w tableli przestawnej i dobór formatowania
+WYKRESY PRZESTAWNE:
+	*PODSTAWY:
+		**INSERT -> PIVOT CHART
+		**wykres przestawny zawsze powstaje wraz z tabelą przestawną 
+		**można edytować dane z wykresu poprzez PRAWY -> FORMATUJ SERIE DANYCH oraz INSERT -> LINEAR CHART
+		**https://www.youtube.com/watch?v=HwKhiVwCuqw
+
+FUNKCJE / FORMUŁY:
+		**CZĘSTO UŻYWANE NA TESTACH:
+			***SZUKAJ.TEKST / FIND(find_text, within_text,[start_num)
+			***FRAGMENT.TEKSTU / MID(text, start_num, num_chars) 
+			***WYSZUKAJ.PIONOWO / VLOOKUP(lookup_value, table_array, array_col_index, range_lookup)	
+		**SUMY.CZĘŚCIOWE(...)/SUBTOTAL(...) --> OMIJA UKRYTE WIERSZE
+		**'fx' w lewym górnym rogu -> dostęp do wszystkich funkcji
+		**FORMULAS --> ŚLEDŹ POPRZEDNIKI / ŚLEDŹ ZALEŻNOŚCI (TRACE PRECEDENS) - poprzez strzałki wskazuję komórki wykorzystane we wskazanej formule (śledź poprzedniki) lub w których kolejnych komórkach wskazana komórka jest używana (śledź zależności) ->https://www.youtube.com/watch?v=yneWChbaZ38 
+		**funkcje matematyczne przy liczeniu (np: SUM) przy porównaniach (np MIN/MAX) lub przy liczeniu elementów (np AVERAGE) pomijają napisy i miejsca puste
+	*STATYSTYCZNE:	
+		**MIN/MAX / MIN/MAX(num:num)
+		**ŚREDNIA / AVERAGE(num:num) 
+		**MEDIANA / MEDIAN( num:num)
+		**WYST.NAJCZEŚCIEJ.WART / MODE.SNGL(num:num) -> dominanta
+		**POZYCJA / RANK(num, num:num, [rank_order: 0 lub 1]) -> zwraca numer pozycji w liście, największa na 1mc (rank_order=0, domyślnie) lub najmnięjsza na 1mc (rank_order=1) 
+	*LICZĄCE ELEMENTY:	
+		**ILE / COUNT(num:num) -> liczy komórki TYLKO z liczbami
+		**ILE.NIEPUSTYCH / COUNTA(num:num) -> liczy komórki z każdą treścią
+		**LICZ.JEŻELI(num:num; kryterium) 
+			***liczy komórki pod warunkiem że komórka równa się kryterium (dla liczby to musi być cudzysłów: LICZ.JEŻELI(A1:B8;">=80").
+	*MATEMATYCZNE:
+		**SUMA / SUM(num:num) -> (lewy ALT,'=') 
+		**SUMA.JEŻELI / SUMIF(criteria_range, criterium, valuesTOsum)   /
+		  SUMA.WARUNKÓW / SUMIFS(valuesTOsum, criteria_range1, criterium1,...)
+				****dla SUMY.WARUNKÓW i SUMY.JEŻELI podajemy w argumencie valuesTOsum tylko 1 kolumnę!!! jeżeli chciałbyś podac np 2 kolumny w tym argumencie to musiałbyś stowrzyć nową kolumnę która sumowałaby te liczby z tych dwóch poprzednich kolumn.
+		**SUMA.ILOCZYNÓW / SUMPRODUCT(array1, array2...) 
+				****mnoży element1 z tabeli1 z elementem1 z tabeli2 i tak każdy kolejny. Na samym końcu sumuje wyniki tych mnożeń.
+		**ZAOKR / ROUND(num;digit)
+		**MODUŁ.LICZBY / ABS(value)
+		**LOS / RAND() -> losuje wartośći od 0 do 1
+	*MATEMATYCZNIE SPECJALNE:
+		**SUMY.CZĘŚCIOWE / SUBTOTAL(func_number, num:num) 
+				****POZWALA OMINĄĆ UKRYTE WIERSZE
+				****w pierwszy argument wpisujesz numer funkcji (z podanej  poniższej strony) która ominie lub nie (w zależności od numeru) ukryte wiersze.
+				****DOSTĘPNE OPCJE FUNKCJI TO: ŚREDNIA, ILE.LICZB, ILE.NIEPUSTYCH, MAX, MIN, ILOCZYN, ODCH. STANDARDOWE PRÓBKI, ODCH. STANDARDOWE POPULACJI, SUMA, WARIANCJA PRÓBKI, WARIANCJA POPULACJI****https://support.microsoft.com/pl-pl/office/sumy-częściowe-funkcja-7b027003-f060-4ade-9040-e478765b9939
+	*LOGICZNE:
+		**JEŻELI / IF(logic,if_true,if_false)
+		**JEŻELI.BŁĄD / IFERROR(value, if_error)
+		**CZY.BŁĄD / ISERROR(value)
+		**ORAZ/LUB / AND/OR(logical;logical...)
+	*TEKSTOWE:
+		**& -> łączenie tekstów
+		**DŁ / LEN (text) -> liczy długośc tekstu w komórce
+		**LEWY/PRAWY / LEFT/RIGHT(text, digits)
+				****wyciagą podaną ilość znaków z lewej lub z prawej
+				****DANE->TEKST JAKO KOLUMNY - w przypadku podziału textu względem spacji/znaków_interpunkcyjnych itp. 
+				****np:wyciągnij nazwisko (dla przypadków z 2 imionami lub 1) 
+						=IF( ISERROR(FIND(" ",B25,FIND(" ",B25)+1)), RIGHT(B25,LEN(B25)-FIND(" ",B25)), RIGHT(B25,LEN(B25)-FIND(" ",B25,FIND(" ",B25)+1)) )
+		**FRAGMENT.TEKSTU / MID(text, start_num, num_chars) 
+				***wyciąga fragment tekstu od podanego znaku (liczone od 1)
+	*WYSZUKIWANIE:
+		**SZUKAJ.TEKST / FIND(find_text, within_text,[start_num)
+				****wskazuję od którego znaku pojawia się szukany tekst
+				****dodatkowo można podać numer znaku do rozpoczęcia szukania [liczone od 1]
+		**WYSZUKAJ.PIONOWO/WYSZUKAJ.POZIOMO / VLOOKUP/HLOOKUP(lookup_value, table_array, array_col_index, [range_lookup])	
+				****dla podanej komórki/szukanej wartości (lookup_value) wyszukuję jej odpowiednik w tabeli (table_array) będacej takim skorowidzem nazw i odpowiadjącym im innych nazw lub liczb np: cen. Następnie dla odpowiednika klucza zwraca odpowiednią wartość poprzez wpisanie numeru kolumny ze skorowidza (array_col_index) (licząc od jedynki) lub wpisując dokładną wartośc kolumny (np: F4). Trzeba jeszcze dodać (range_lookup) w postaci FALSE lub 0, wskazując tym że ma być znaleziona dokładnie taka wartość a nie przybliżona)
+				****dla kombinacji logicznych korzystaj z: 'IF', '&',  https://www.youtube.com/watch?v=i3BMuItCtM0&list=PLgU2XrNJjWbdNOf9HGOoBLN9Z5LSzcczH&index=2
+				****wyszukiwanie dla przedziału zamiast dla dokładnej wartości --> w 4 argumencie tj: [range_lookup] podajesz TRUE albo 1 i w wyszukiwaniu brana jest WARTOŚĆ z ZAOKRĄGLENIEM do NIŻSZEJ WARTOŚCI (żeby działało TABELA/SKOROWODZI MUSI BYĆ POSORTOWANA ROSNĄCO!!!)
+		**WYSZUKAJ / LOOKUP(lookup_value, array_indexes, array_results):
+				****dla podanej komórki/szukanej wartości (lookup_value) wyszukuję jej odpowiednik w tabeli którą tworzysz poprzez wskazanie obszaru będącego indexami dla skorowidza (array_indexes) i wskazaniu obszaru będącego wartościami im odpowiadającymi (array_results). 
+				****liczba array_indexes i array_results musi być taka sama ORAZ wartości musza być posortowane rosnąco po indexach skorowidza bo inaczej nie zwrócą prawidłowego wyniku.
+		**INDEKS + PODAJ.POZYCJĘ / INDEX(array, COL_num, ROW_num) + MATCH(lookup_value, num:num, [match_type])
+			***INDEX(array, MATCH(lookup_index,indexes_col, FALSE), MATCH(lookup_index, indexes_row, FALSE))
+				****używane dla skorowidza w postaci tablicy iloczynu kartezjańskiego (o indeksie pionowym(kolumnowym) i poziomym (wierszowym)) (gdy nie można użyć funkcji WYSZUKAJ.PIONOWO)
+				****PODAJ.POZYCJĘ stosujesz wewnątrz funkcji INDEX do zwrócenia danego indexu z pierwszej tabeli --> ŻEBY UZYSKAĆ DRUGĄ TABELĘ tworzysz formułe:		
+							=INDEX(
+							$AB$10:$AE$12, 
+							MATCH($BA22,$AA$10:$AA$12,0), MATCH(BB$21,$AB$9:$1E$9,0)
+							)
+				AA	AB	AC	AD	AE					BA	BB	BC	BD
+			   --------------------				   ----------------	
+			 9|	 	a	b	c	d				21|	 	b	d 	a
+			10|	x 	7	8	9	10				22| y	12	14	11
+			11|	y	11	12	13	14		-->		23|	z	16	18	15
+			12|	z	15	16	17	18				24|	x	8	10	7	
+		**WYBIERZ / CHOOSE(index_num, val1, val2) --> podobna do VLOOKUP ale na etapie tworzenia funkcji definiujesz słownik kluczy i wartości według schematu gdize klucze to inty od 1-254
+	*DATY:
+		**DZIŚ / TODAY() 
+				****podaję datę lub liczbę dni (zależy od formatowania)
+				****można odejmować od innej daty (różnica w postaci dni)	
+	*KSIĘGOWE:
+		**NPV,IRR,CARG > https://www.youtube.com/watch?v=dhjUjeUBAyM -od 20:00
+		
+WYKRESY PODSTAWOWE / WYKRESY PRZEBIEGU W CZASIE 
+	*NAJCZĘŚCIEJ WYSTĘPUJĄCE RZECZY:
+		*OŚ --> PRAWY + FROMATUJ OŚ > GRANICE;; JEDNOSTKI WYŚWIETLANIA ;; 
+		*LINIE SKALI --> ZAZNACZASZ + DELETE
+		*SŁUPKI --> PRAWY + FORMATUJ SERIĘ DANYCH > SZEROKOŚĆ ODSTĘPU
+			*DANE NAD SŁUPKAMI --> PR. NA SŁUPKU + DODAJ ETYKIETY DANYCH 
+			*LINIA TRENDU NA SŁUPKACH --> PR. NA SŁUPKU + DODAJ LINIE TRENDU 
+						--> PR. NA LINI TRENDU + FORMATUJ > WIELOMIANOWA 5ST
+	*PODSTAWY:
+		**INSERT + (COLUMN lub inne)(wcześniej zaznaczasz kolumnę z indeksami (wraz z pustą komórką w lewym górnym rogu) i kolumnę która cię interesuję (z nagłówkiem))
+		**mozna kopiować jak formatowanie i podmienić tylko dane do wyświetlenia
+		**wszystkie elementy da się modyfikowac klikając na nie
+	*PRAWY MYSZ, ZAZNACZ DANE:
+		*PUSTE KOMÓRKI jako POŁĄCZ PUNKTY DANYCH LINIĄ -> puste komórki w danych nie jako zera a jako gładkie połączenie 2óch najbliższych ze sobą
+		*POKAŻ DANE W UKRYTYCH WIERSZACH I KOLUMNACH -> przy ukryciu kolumn zostaną one też ukryte na wykresie
+	*INSERT + RECOMMENDED CHARTS:
+		**COMBI - na jednym wykresie może być klilka typów wykresów dla różnych kategorii
+	*WSTAWIANIE -> WYKRESY PRZEBIEGU W CZASIE --> LINIOWY/KOLUMNOWY
+		*ograniczenia takiego wykresu to to że nie ma skali 
+		*słuzy tylko do podglądu
+
+
+----------------------------------------------------------------------------
+FORMATOWANIE:
+	*FORMATOWANIE WARUNKOWE (CONDITIONAL FORMATTING)
+			***zaznaczasz obszar bez nazw kolumny/wiersza + (NARZĘDZIA GŁÓWNE -> FORMATOWANIE WARUNKOWE + ew: NOWA REGUŁA)
+			***możesz zrobic warunek w stosunku do wartości lub konkretnej komóki --> wtedy komórkę musisz miec w $ 
+			***formatowanie warunkowe jest nadrzedne wobec zwykłego formatowania
+			***usunięcie formatowania warunkowego --> NARZĘDZIA GŁÓWNE -> FORMATOWANIE WARUNKOWE -> WYCZYŚĆ REGUŁY z zaznaczonego obszaru
+			***MOŻLIWOŚĆI WIZUALNE: paski danych, skale kolorów, zestawy ikon - dla każdego 
+		**ZARZĄDZAJ REGUŁAMI (MANAGE RULES) --> sprawdzenie wszystkich reguł
+			***EDYTUJ REGUŁĘ -> możesz pokazać tylko formatowanie bez danych edycję reguły
+		**NOWA REGUŁA:
+			***FORMATUJ TYLKO KOMÓRKI ZAWIERAJĄCE
+				****ZAWIERAJĄCE BŁĘDY (błąd nadal jest ALE pozwala to go ukryć/podświetlić)
+	*FORMATOWANIE KOMÓREK: (NUMBER FORMAT)
+			***formatowanie całej tabeli / komórki --> (ctrl+a) + prawy przycisk myszy (formatuj komórki)
+		**LICZBY
+		**WYRÓWNANIE
+		**CZCIONKA
+		**OBRAMOWANIE
+			***przekreślona pusta komórka - wybór przekreślonego obramowania
+	*SUWAK na KOLUMNACH:	
+		**dostosowanie szerokości kolumn do najszerszej wartości komórki --> zaznaczasz kolumny i przy literach (z kolumn) podwójnie klikasz na suwak
+		**ustawienie tej samej szerokości dla wszystkich kolumn --> zaznaczasz kolumny i przy literach (z kolumn) przesuwasz suwak
+	*INNE:
+		**SZYBKIE FORMATOWANIE DOMYŚLNE --> zaznaczasz obszar i kafelek 'Formatuj jako tabelę' (w narzędziach głównych) 
+		**ZAWIJANIE TEKSTU --> w narzędziach głównych (do długich opisów w komórkach rozszeż komórkę, w miejscach enterów LEWY ALT + ENTER i zawiń tekst)
+		**SCAL I WYŚRODKUJ --> w narzędziach głównych
+		**UKRYJ / ODKRYJ WIERSZ - na wierszu prawy przycisk i  UKRYJ / ODKRYJ
+
+FILTROWANIE i FRAGMENTATOR:
+	*FILTROWANIE: 
+		**(klikasz na tabele) DANE, FILTRUJ (zaznaczasz lub odnaczasz (włącza się automatycznie dla wszystkich kolumn))
+		**klikając na filt) np WYCZYŚĆ FILTRY
+		**(klikając na kolejne filtry) FILR TEKSTU/FILTR LICZB -> możesz określić tekst jaki ma zawierać lub przedział liczb
+		**chcąc zsumować/policzyć itp komórki które są przefiltrowane używasz SUMY.CZEŚCIOWE(nr_funk, num:num), która dzięki odpowiedniemu numerowi funkcji
+		pominięzakrytę komórki 		LUB		filtrujesz każdą komórkę poprzez fragment tekstu z gwiazdkami np: ' =SUMA.JEŻELI(B11;"*sample*";E11) ' 
+	*FRAGMENTATOR: 
+		**zaznaczasz tabele (WSTAWIANIE-->TABELA) 
+		**PROJEKTOWANIE -> WSTAW FRAGMENTATOR tworzysz fragmentator czyli filtrowanie tylko specyficznych kolumn poprzez automatycznie utworzone pole do wyboru wartości ze wskanych kolumn
+		
+SORTOWANIE:
+	*SORTUJ I FILTRUJ
+			***(w narzędziach głównych) zaznaczasz wszystkie kolumny tabeli (a nie tylko kolumnę po której chcesz sortować), nie zaznaczasz nazw kolumn
+			***sortowanie dla bezpieczeństwa najlepiej robić na kopii wartości (poprzez WKEJ SPECJALNIE -> wartosci) a nie przy występowaniu formuł bo poprzez złe odwłoania cały arkusz może się popsuć. 
+		**DOMYŚLNE FUNKCJE --> sortują po pierwszej kolumnie
+		**SORTOWANIE NIESTANDARDOWE
+			***DODAJ POZIOM --> wybór po której kolumni będzie sortowanie, lub po kilku kolumnach jeżeli będzie ta sama wartość
+			***SORTOWANIE PO POZIOMIE --> OPCJE -> SORTUJ OD LEWEJ DO PRAWEJ
+			
+KOPIOWANIE:
+	**WIZUALNE:
+		***przeciąganie bez autoinkrementacji liczb/miesięcy --> przeciągnięcie z klawiszem CTRL
+		***kopiowanie formuły bez utraty formatowania (np pogrubień tekstu, koloru komórek) --> prawy klawisz myszy, i przeciągniecię krzyżyka + wypełnij bez formatowania
+	**TECHNICZNE:
+		***'$' i wklejanie komórek z formułami -> $ przed kolumną powoduję że kopiuję odniesienie do kolumn '=SUMA($A3:$A5)';; $ przed wierszem powoduję że kopiuję odniesienie do wierszy np: '=SUMA(A$3:A$5)';; Użycie obu powoduję skopiowania odniesienia do kolumn i wierszy: '=SUMA($A$3:$A$5)'
+		***WKLEJ SPECJALNIE:
+			****formaty --> kopiuję tylko formatowanie bez komórek i formuł (można użyć tez pędzla malarza w menu podręcznym)
+			****wklej łącze --> kopiuję odniesienia do komórek i formuł (jeżeli orginalne komórki zostaną zmienione to te skopiowane też. Wynik formuły zostanie zaktualizowany)
+			****przemnóż/podziel --> wybieram komórek przez którą chcę przemnożyc, kopiuję ją i wkeljam specjalnie z daną opcją w jakieś liście komórek modyfikując je poprzez to mnożenie/dzielenie
+			****transpozycja --> kopiowanie bez odniesienia z zamianą kolumn na wiersze (zamiana tabeli z pionowej na poziomą lub odwrotnie)
+		
+ZNAJDŹ i ZAMIEŃ | USUŃ DUPLIKATY:
+	*CTRL+H --> ZAMIEŃ (wcześniej wybierasz obszar gdzie będzie wyszukiwanie i zamienianie danych wartości)
+		**ZAMIANA WYBRANYCH ZNAKÓW Z KOMÓRKI A NIE CAŁOŚCI KOMÓRKI --> (domyślnie odznaczone dopasowanie całej zawartości komórki)(używane do kasowania niebotrzebnych znaków na puste znaki)
+		**ZAMIANA CAŁEJ KOMÓRKI (tylko przy pełnym dopasowaniu treści w komórce) --> CTRL+H -> OPCJE -> Dopasuj do całej zawartości komórki
+	*CTRL+F --> WYSZUKAJ na wybranym obszarze / tabeli / kilku arkuszach (CTRL i zaznaczasz konkretne arkusze)(OD-DO - zaznaczasz arkusz po lewej, SHIFT i arkusz po prawej)
+	*ZNAJDŹ i ZAMIEŃ --> (w narzędziach głównych):
+		** '?'- zastępuję każdy pojedyńczy znak
+		** '*'- zastępuję dowolny ciąg znaków
+	*USUŃ DUPLIKATY (tak jak DISTINCT) --> zaznaczasz tabelę + DATE + REMOVE DUPLICATES (usuwane są całe wiersze w tabeli w zależności od tego po jakich kolumnach wybierzesz szukanie wartości powtarzających się)
+
+BLOKOWANIE NAGŁÓWKÓW:
+		*BLOKOWANIE NAGŁÓWKÓW DLA WIERSZY+KOLUMN:
+			**WIDOK -> ZABLOKUJ OKIENKA (FREEZE PANS)(wcześniej wskazanie okienka w rogu między 1wszą kolumną a 1wszym wierszem LUB tylko 1wszej kolumny LUB 1wszego wiersza)
+		*PODZIAŁ NA KILKA 	
+			**WIDOK -> PODZIEL (podział na kilka podokien z zablokowanymi nagłókami)
+	
+GRUPOWANIE:
+	*GRUPOWANIE I ROZGRUPOWYWANIE:
+		**grupowanie --> zaznaczenie danych + DANE + GRUPUJ 
+		**rozgrupowanie --> zaznaczenie grupy + DANE + ROZGRUPUJ
+		**autogrupowanie --> DANE + GRUPUJ + AUTOKONSPEKT (grupowanie domyślne wg komórek składających się na formuły)
+		**całkowite rozgrupowanie --> Dane + ROZGRUPUJ = WYCZYŚĆ KONSPEKT
+	*można tworzyć wiele grup i podgrup
+	*widok z otwartymi ugrupowaniami i zamkniętymi --> w górnym lewym rogu 1 lub 2 (+ ewentualnie inne cyfry)
+	
+
+
+----------------------------------------------------------------------------
+DRUKOWANIE:
+	*PODGLĄD PODZIAŁU STRON (w prawym dolnym rogu) --> (CTRL+P/DRUKUJ nie wystarczy), wybierasz przestrzeń i odpowiednio dzielisz na strony do wydrukowania
+		**DODANIE KOLUMNY INDEXów / WIERSZA TYTUŁów na każdej stronie --> Układ strony -> Arkusz -> Zaznaczenie kolumny w 'Z lewej powtarzaj kolumny' / Zaznaczenie wiersza w 'U góry powtarzaj wiersze' (Po czym znowu dzilisz obszar do wydruku)		
+	*PODGLĄD WYDRUKU - CTRL+P/DRUKUJ
+		**ORIENTACJA STRONY --> Ustawienia Strony -> Arkusz -> Pozioma/pionowa
+		**STOPKA I NAGŁÓWEK --> Ustawienia Strony -> Nagłówek/Stopka
+
+FORMATY PLIKÓW - ROZSZERZENIA /UDOSTĘPNIANIE|ZABEZPIECZENIE HASŁEM SKOROSZYTU:
+	*ROZSZERZENIA:
+			***konwersja na inny typ rozszerzenia poprzez 'tryb zgodności' lub zapis w innym rozszerzeniu.
+		**XLS  - rozszerzenia plików EXCEL przed 2007 
+		**XLSX - BEZ MAKR rozszerzenia plików EXCEL po 2007
+		**XMLS - Z MAKRAMI rozszerzenia plików EXCEL po 2007
+	*UDOSTĘPNIANIE SKOROSZYTU -> https://www.youtube.com/watch?v=fuyeXcfUpcE
+	*ZABEZPIECZENIE HASŁEM    -> https://www.youtube.com/watch?v=9ZRuCdhRiCg
+
+PRACA NA WIELU ARKUSZACH
+	*ODWOŁANIE SIĘ DO KOMÓRKI W INNYM ARKUSZU -> ='Inny arkusz'!C5
+	*PLIKI MAJĄCE TAKĄ SAMĄ STRUKTURĘ:
+		**praca na tych samych obszarach we wszystkich arkuszach jednocześnie -> ZAZN. ARKUSZY(z CTRL'em / SHIFT'em) + OBSZARU (w jednym z nich) + CTRL+ENTER 
+				****możliwość wstawianie tych samych danych/fomuł oraz formatowania tak samo każdego arkusza jednocześnie:
+			***zaznaczenie ARKUSZA(z CTRL'em) daję skopiowanie arkusza
+			***zaznaczenie ARKUSZY(z SHIFT'em) jest od jednego arkusza do kolejnego, więc zaznaczone sa wszystkie arkusze znajdujące się od lewego do prawego. Przy wyciągnięciu jednego z arkuszów poza zakres nie będzię on już uwzględniany we formule pobierajcej dane z wyciągniętego arkusza (formatowanie i wstawione liczby zostaną)
+	
+SKRÓTY:
+	*PODSTAWY:	
+		*CTRL+Z; CTRL+Y --> COFNIJ i WYKONAJ PONOWNIE (cofnij cofanie)
+		*CTRL+F ;; CTRL+H --> znajdz i zamień
+		*F4 --> powtarza ostatnią czynność / wstawione przy tekście w komórce dodaje adresowanie bezwględne czyli znak $ (np: $J$17)
+	*ZAZNACZENIE / PRZESKOK / WYPEŁNIE / WSTAWIANIE:
+		*CTRL+SHIFT+'strzałka' --> zaznaczenie do końca tabeli 
+		*SHIFT+'strzałka' --> zaznaczenie pojedyńczych komórek obok siebie 
+		*CTRL+'strzałka' --> przeskok do ostatniej aktywnej komórki
+		*ZAZN. OBSZARU + CTRL+ENTER --> wypełnienie obszaru jedną wartością 
+		*CTRL+SHIFT+'=' --> wstawianie wiersza/kolumny do komórki
+	*PRZECHODZENIE MIĘDZY:
+		*CTRL+PAGEUP/PAGEDOWN --> przechodzenie między arkuszami EXCELa
+		*CTRL+TAB --> przechodzenie do innych aktywnych plików EXCEL
+		*'windows'+TAB --> przechodzenie między aktywnymi oknami
+	*WSTAWIANIE WARTOŚĆI/FORMUŁ:
+		*'=SUMA' --> lewy ALT + x + '=';
+		*PRAWY ALT+U --> wstawia znak EURO
+	
+EXTRA:
+	*DOSTOSOWANIE WSTĄŻKI (górnego paska z kartami narzędzi i innych) --> PLIK -> OPCJE -> Dostosowanie wstążki
+	*PASEK STANU (na dole) --> SUMA, ŚREDNIA, LICZNIK (można go zmienić-> Prawy + 'Dopasuj pasek stanu') 
+	
+	

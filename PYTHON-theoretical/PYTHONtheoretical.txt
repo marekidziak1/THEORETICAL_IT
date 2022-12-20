@@ -2647,23 +2647,11 @@ LOGGING INTERMEDIATE:	https://www.youtube.com/watch?v=p0A4CV4MWd0
 			*możesz też działać na wirtualce nie aktywując jej. Wtedy nie trzeba jej zamykaĆ żadną 
 			 komendą exit. Robisz to poprzez:
 							pipenv run python 		|  		pipenv run python script.py
-		*ODTWORZENIE WIRTUALKI NA OTRZYMANYM GOTOWYM PROJEKCIE:
-			*przy przekazywaniu komuś kodu ogólnie wirtulka nie ma znaczenia i jej się nie przesyłA. 
-			 Najważniejsze są pliki pipfile oraz pipfile.lock .Dzięki nim można można odtworzyć nową
-			 wirtualkę wraz ze wszystkimi potrzebnymi instalacjami i ich wersjami, których nazwy i wersje
-			 są zapisane w tychże plikach. W terminalu musisz być wewnątrz projektu i najpierw stworzyc
-			 wirtualkę a później odtworzyć wszystkie instalacje z pliku pipfile: 
-							pipenv shell
-							pipenv lock --requirements 	      | 		pipenv install
-			*możesz też odtworzyć instalacje z pliku pipfile.lock gdzie zamiast najnowszych wersji 
-			 będziesz miał dokładne wersje na których projekt jest stabilny (w ten sposób powinno się 
-			 to robić)
-							pipenv shell
-							pipenv install --ignore-pipfile			
 		*INSTALACJA, UPDATOWANIE:
 			*instalacja konkretnej paczki/modułu:
 				**używanej w produkcji końcowej aplikacji (będzie widoczne w pliku pipfile w kluczu 
-				  [packages]):
+				  [packages]) - gdy korzystasz z 'pipenva NIE WOLNO korzystać 'pipa' bo się to nie 
+				  zapisze w pliku 'pipfile':
 							pipenv install camelcase
 				**używanej tylko środowisku developerskim (tj przy np testach)( --dev):
 							pipenv install pytest --dev
@@ -2679,6 +2667,19 @@ LOGGING INTERMEDIATE:	https://www.youtube.com/watch?v=p0A4CV4MWd0
 			*odinstalowanie konkretnej paczki/modułu (oprócz tego że zostanie odinstalowany ze środowiska
 			 wirtualki to jeszcze zostanie usunięty z pliku pipfile (i automatycznie z pliku pipfile.lock)
 							pipenv uninstall camelcase
+		*ODTWORZENIE WIRTUALKI NA OTRZYMANYM GOTOWYM PROJEKCIE:
+			*przy przekazywaniu komuś kodu ogólnie wirtulka nie ma znaczenia i jej się nie przesyłA. 
+			 Najważniejsze są pliki pipfile oraz pipfile.lock .Dzięki nim można można odtworzyć nową
+			 wirtualkę wraz ze wszystkimi potrzebnymi instalacjami i ich wersjami, których nazwy i wersje
+			 są zapisane w tychże plikach. W terminalu musisz być wewnątrz projektu i najpierw stworzyc
+			 wirtualkę a później odtworzyć wszystkie instalacje z pliku pipfile: 
+							pipenv shell
+							pipenv lock --requirements 	      | 		pipenv install
+			*możesz też odtworzyć instalacje z pliku pipfile.lock gdzie zamiast najnowszych wersji 
+			 będziesz miał dokładne wersje na których projekt jest stabilny (w ten sposób powinno się 
+			 to robić)
+							pipenv shell
+							pipenv install --ignore-pipfile			
 		*ZMIANA WERSJI PYTHONA W PROJEKCIE (w wirtualce):
 			*najpierw zmieniasz numer wersji pythona w pliku pipfile a potem zatwierdzasz to przez komende:
 			 pipenv --python 3.8.2			(3.8.2 - czyli wpisujesz numer wersji którą chcesz i ponadto

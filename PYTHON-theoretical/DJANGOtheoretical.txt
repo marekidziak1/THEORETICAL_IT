@@ -1,8 +1,4 @@
-
-TEMPLATES: 
-	WSZYSTKIE KONSTRUKCJE:			https://docs.djangoproject.com/en/4.0/ref/templates/builtins/#
-	WRAZ Z FILTRAMI do edycji: 		https://docs.djangoproject.com/en/4.0/ref/templates/builtins/#built-in-filter-reference
-
+SPIS TREŚCI:
 ============================================================================================================
 =======II.PRZYKŁADY RÓŻNYCH APLIKACJI WYTWORZONYCH WE VIEWS.PY W KONKRETNYCH APP/FUNKCJONALNOŚCIACH=========
 ============================================================================================================
@@ -17,12 +13,13 @@ TEMPLATES:
 	3)STRONA PROFILU:
 	  **PROFILE OPCJA 1 - PRZESŁONIĘCIE KLASĄ AbstractBaseUser (kiedyś AbstractUser):
  	  **PROFILE OPCJA 2 - stworzenia klasy profile relacją jeden do jeden (OneToOneField) z klasą User
- 
+	4)RESETOWANIE HASŁA 
 ============================================================================================================
 ====================================================PODSTAWY================================================
 ============================================================================================================
 6. ELEMENTY ROZSZERZONE:
 	0)DODATKI:
+		*TWORZENIE NOWEGO FOLDERU
 		*DJANGO USER MODEL - from.django.contrib.auth.models import User
 		*DJANGO TEMPLATING LANGUAGE - (w html'u metody bez nawiasów)
 		*WYSZUKIWARKA HTML request.GET
@@ -35,8 +32,9 @@ TEMPLATES:
 	2)ZDJĘCIA UPLOADOWANE
 		A)PODSTAWY
 		B)RESIZING UPLOADOWANYCH ZDJĘĆ
-	3)RESTRICTED ROUTE
+	3)RESTRICTED ROUTE & PERMISSION ACCESS
 	4)FLASH MESSAGES
+	5)PAGINATION & FILTER w CLASS-BASED-VIEWS 
 5.ROZSZERZONE MODUŁY i FOLDERY w APP/FUNCKJONALNOŚCIACH:
   *1*SIGNALS (kontynuacja MODELS) oraz APPS.PY w danej app/funkc:
   *2*FORMULARZE i FORMS.PY (rozszerzenie VIEWS.PY)
@@ -396,6 +394,10 @@ TEMPLATES:
 	----------------------------------
 	  *)Gdy się logujesz to jest tworzona sesja czyli plik ciasteczek który zawiera session_id pozwalające 
 	    przy przechodzeniu na inne podstrony zachować iformacje o byciu zalogowanym. 
+	  *)przy tworzeniu funkcji związanych z logowaniem itp NIE WOLNO używać nazw funkcji takich jak:
+			*def login()
+			*def logout()
+			*def authenticate()
 	  *)Chcąc zamiast username'a logować się poprzez email korzystając z opcji 3 i 4 (AuthenticationForm 
 	    oraz LoginView) musisz wcześniej przesłonić Usera klasą AbstractUser i tam ustawić zmienne 
 		USERNAME_FIELD = 'email' ;; REQUIRED_FIELDS = []. (patrz więcej: https://docs.djangoproject.com/en/4.0/topics/auth/customizing/#django.contrib.auth.models.CustomUser)
@@ -481,7 +483,10 @@ TEMPLATES:
 								user = authenticate(request, username=username, password = password)
 								if user is not None:
 									login(request, user)
-									return redirect('home')
+									if 'next' in request.POST:
+										return redirect(request.POST.get('next'))
+									else:
+										return redirect('home')
 								else:
 									messages.error(request, 'username or password does not exist')
 						context={}                              #if request.method=="POST":
@@ -490,11 +495,14 @@ TEMPLATES:
 						logout(request)
 						return redirect('home')
 		3*TEMPLATES - zbudowanie formularza całkowice w HTML'u bez zmiennej 'form' przesyłanej z views.py:
-			a)strona html przeznaczona do logowania
+			a)strona html przeznaczona do logowania (WRAZ z przekierowaniem 'next'):
 					<form method='POST' action="">
 						{% csrf_token %}
 						<input type="text" name ="username" placeholder="Enter Username" />
 						<input type="password" name ="password" placeholder="Enter Password" />
+						{% if request.GET.next %}
+							<input type="hidden" name="next" value="{{request.GET.next}}">
+						{% endif %}
 						<input type="submit" value="login"/>
 					</form>
 			b)strona wyświetlająca linki do logowania i logout'u"
@@ -514,19 +522,25 @@ TEMPLATES:
 					from django.contrib.auth import login, logout
 					from django.contrib.auth.forms import AuthenticationForm
 					def login_view(request):
-						form= AuthenticationForm(request)
+						form= AuthenticationForm(request)	#przy przeciążeniu bez arg request
 						if request.method == "POST":
 							form = AuthenticationForm(request, data = request.POST)
 							if form.is_valid():
 								user =form.get_user()
 								login(request, user)
-								return redirect('home')
+								if 'next' in request.POST:
+									return redirect(request.POST.get('next'))
+								else:
+									return redirect('home')
 						return render(request, "accounts/login", {})
 		3*TEMPLATES - zbudowanie formularza w oparciu o zmienną 'form' przesłaną z views.py:
 			a)strona html przeznaczona do logowania
 					<form method='POST' action="">
 						{% csrf_token %}
 						{{ form }}
+						{% if request.GET.next %}
+							<input type="hidden" name="next" value="{{request.GET.next}}">
+						{% endif %}
 						<input type="submit" value="login"/>
 					</form>
 			b)strona wyświetlająca linki do logowania i logout'u"
@@ -975,9 +989,62 @@ TEMPLATES:
 						  </div>
 						{% endblock content %}	
 						
-	4)STRONY DO TWORZENIA POSTÓW:
-	-----------------------------
-	
+	4)RESETOWANIE HASŁA:
+	--------------------
+		*na swoim koncie gmail 
+			**musisz skonfigurować gmaila (w wyszukiwarce wpisz 'google app paswords'):
+							https://support.google.com/accounts/answer/185833?hl=pl		
+			**a w modelu User, email musi być taki sam jaki wpisujesz w pole do resetowania hasła
+		*w settings.py 
+			**robisz konfiguracje podając maila który będzie serwerem do wysyłania maili resetujących:
+							EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+							EMAIL_HOST = 'smtp.gmail.com'
+							EMAIL_PORT = 587
+							EMAIL_USE_TLS = True
+							EMAIL_HOST_USER = 'engineer2022db@gmail.com'
+							EMAIL_HOST_PASSWORD = 'nqqlcoiyoisejfir'	#musisz podać hasło jednorazowe 
+																		#a nie to do konta gmail
+		*w urls.py:
+			**dodajesz ścieżki którym przypisujesz class-based-views z django.contrib.auth. Ścieżki te 
+			  muszą mieć przypisany 3ci agument name wg odpowiedniego nazewnictwa by to działało)
+						from django.contrib.auth import views as auth_views
+						urlpatterns =[
+							path('reset_password/',auth_views.PasswordResetView.as_view(
+									template_name="accounts/password_reset.html"),
+									name="reset_password"),
+							path('reset_password/done/', auth_views.PasswordResetDoneView.as_view(
+									template_name="accounts/password_reset_done.html"), 
+									name="password_reset_done"),
+							path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(
+									template_name="accounts/password_reset_confirm.html"), 
+									name="password_reset_confirm"),
+							path('reset_password_complete/', auth_views.PasswordResetCompleteView.as_view(
+									template_name="accounts/password_reset_done.html"),  
+									name="password_reset_complete"),
+						]
+		*w templates - tworzysz pliki html dla każdej ścieżki:
+			**password_reset.html:
+							<h3>Password reset</h3>
+							<p>Forgotten your password? Enter your email address below</p>
+							<form method="post">
+								{% csrf_token %}
+								{{form}}
+								<input type="Submit" name="Send email">
+							</form>
+			**password_reset_done.html:
+							<h3>Password reset complete</h3>
+							<p>An email has been sent with instructions to reset your password</p>
+			**password_reset_confirm.html
+							<h3>Enter new password</h3>
+							<p>Please enter your new password twice</p>
+							<form method="post">
+								{% csrf_token %}
+								{{form}}
+								<input type="Submit" name="Update Password">
+							</form>			
+			**password_reset_complete.html
+							<h3>Password reset complete</h3>
+							<p>Your password has been set</p>
 	
 ============================================================================================================
 ====================================================PODSTAWY================================================
@@ -985,6 +1052,8 @@ TEMPLATES:
 6. ELEMENTY ROZSZERZONE:	
 	----------
 	0)DODATKI:
+		*TWORZENIE NOWEGO FOLDERU - przy tworzeniu jakiegokolwiek folderu dla projektu django musisz 
+		 utworzyć wewnątrz tego folderu pusty plik: '_init__.py'
 		*DJANGO USER MODEL:
 			*https://docs.djangoproject.com/en/4.0/ref/contrib/auth/
 				*OPCJA 1:
@@ -1017,7 +1086,7 @@ TEMPLATES:
 			 dołączając do linku zmienną wpisaną w atrybucie name ( 'q') wraz z wpisanym tekstem
 					<form method="GET" action="{% url 'home' %}">
 						<input type="text" name="q" placeholder="Search rooms..."/ >
-						<input type="submit" value="search">
+						<input type="submit" value="search"> 	#lub 	<input type="submit" hidden />
 					</form>
 				#po wciśnieciu ENTERa lub przycisku 'submit' zostanie wysyłany link:
 					127.0.0.1:800/?q=wpisany+mojText
@@ -1027,6 +1096,41 @@ TEMPLATES:
 					rooms = Room.objects.filter(topic__name__contains= q)
 				#request.GET.get('q') NIE MOże BYĆ RÓWNE 'None' dlatego dodajesz linijki:
 					request.GET.get('q') if request.GET.get('q')!=None else ''
+		*FILTROWANIE PO DANEJ KLASIE (biblioteka django-filters):
+			https://django-filter.readthedocs.io/en/stable/
+			1)INSTALACJA:
+						pip install django-filter
+				*w settings.py:
+						INSTALLED_APPS = [
+							...
+							'django_filters',
+						]						
+			2)DZIAŁANIE:
+				*we filters.py 
+					**tworzysz klasę na bazie klasy obiektu która będzie filtrowana w wyszukiwarce:
+						import django_filters
+						from .models import Order
+						from django_filters import DateFilter
+						class OrderFilter(django_filters.FilterSet):
+							start_date = DateFilter(field_name="date_created", lookup_expr='gte')
+							end_date = DateFilter(field_name="date_created", lookup_expr='lte')
+							class Meta:
+								model=Order
+								fields='__all__'
+								exclude = ['customer','date_created']		
+				*w templates:
+						<form method="get">
+							{{myFilter.form}}
+							<button type="submit">Filtering</button>
+						</form>
+				*we views.py:
+						from .filters import OrderFilter
+						def filtering(request):
+							orders = Order.objects.all()
+							myFilter = OrderFilter(request.GET, queryset=orders)
+							orders = myFilter.qs
+							context={'orders':orders, 'myFilter':myFilter}
+							return render(request, 'accounts/customer.html', context)
 		*OPEROWANIE CZASEM i DATAMI w DJANGO:
 			*w django:
 					from django.utils import timezone
@@ -1222,25 +1326,40 @@ TEMPLATES:
 									output_size= (300,300)
 									img.thumbnail(output_size) 			#zmiana wielkości zdjęcia
 									img.save(self.image.path)			#zapis nowego zdjęcia
-	-------------------
-	3)RESTRICTED ROUTE:
-		*WŁASNORĘCZNE restricted route:
+	---------------------------------------
+	3)RESTRICTED ROUTE & PERMISSION ACCESS:
+		1*RESTRICTED ROUTE:
+			*WŁASNORĘCZNE restricted route:
+					**bezpośrednio we VIEWS.PY:
 							#we views.py:
-								def function(request):
-									room=Room.objects.get(id=pk)
+								def registerPage(request):
 									if request.user.is_authenticated:
 										return redirect('home')
-									if request.user != room.host:
-										return HttpResponse('You are not allowed here')
+									else:
+										return redirect('login')
+									...
 							#w htmlu:
 								{% if request.user == r.host%}
 									<a href="{% url 'update-room' r.id %}">Update Room</a>
 									<a href="{% url 'delete-room' r.id %}">DELETE Room</a>
-								{% endif %}
-		*DEKORATOR @LOGIN_REQUIRED:
-			*wykorzystuję plik ciasteczek 'session_id' przechowujący informację o tym czy użytkownik jest 
-			 zalogowany. Jezeli pliku ciasteczek nie ma to użytkownik zostanie przeniesiony na inną 
-			 podstronę podaną w arg. @login_required lub w zmiennej LOGIN_URL w settings.py:
+								{% endif 
+					**własnoręczny dekorator:
+							#w decorators.py:
+								def unauthenticated_user(view_func):
+									def wrapper_func(request, *args, **kwargs):
+										if request.user.is_authenticated:
+											return redirect('home')
+										else:
+											return view_func(request, *args, **kwargs)
+									return wrapper_func
+							#we views.py:
+								@unauthenticated_user
+								def registerPage(request):
+									...
+			*DEKORATOR @LOGIN_REQUIRED:
+				*wykorzystuję plik ciasteczek 'session_id' przechowujący informację o tym czy użytkownik 
+				 jest zalogowany. Jezeli pliku ciasteczek nie ma to użytkownik zostanie przeniesiony na 
+				 inną podstronę podaną w arg. @login_required lub w zmiennej LOGIN_URL w settings.py:
 						*OPCJA 1:
 							#WE VIEWS.PY:
 								from django.contrib.auth.decorators import login_required
@@ -1255,14 +1374,80 @@ TEMPLATES:
 								@login_required
 								def function(request):
 									...
-			*dekorator @login_required bez podania strony w argumencie na którą ma byc przekierowanie 
- 			 oraz bez podania zmiennej LOGIN_URL w settings.py domyślnie przekierowuję na '/acounts/login/' 
-			*Gdy użytkownik będzie niezalogowany a będzie chciał przejśc na 'RESTRICTED ROUTE' np:'profile'
-			 to django automatycznie przeniesie na stronę logowania z dopiskiem w adresie strony 
-			 '?next=/profile/' czyli kolejnej strony na którą będzie przekierowanie po zalogowaniu.
-			*@login_required zadziała nie tylko dla linków na podstrony 'RESTRICTED ROUTE' ale także w 
-			 przypadku wpisania ścieżki w pasek wyszukiwarki.
-	-----------------
+				*dekorator @login_required bez podania strony w argumencie na którą ma byc przekierowanie 
+				 oraz bez podania zmiennej LOGIN_URL w settings.py domyślnie przekierowuję na 
+				 '/acounts/login/' 
+				*Gdy użytkownik będzie niezalogowany a będzie chciał przejśc na 'RESTRICTED ROUTE' np:
+				'profile' to django automatycznie przeniesie na stronę logowania z dopiskiem w adresie 
+				 strony '?next=/profile/' TJ kolejnej strony na którą będzie przekierowanie po zalogowaniu.
+				*@login_required zadziała nie tylko dla linków na podstrony 'RESTRICTED ROUTE' ale także
+ 				 w przypadku wpisania ścieżki w pasek wyszukiwarki.
+		2*PERMISSION ACCESS
+			A) wykorzystanie GROUP z klasy/modelu Group z django.contrib.auth.models
+				*w panelu administratora w domyślnym modelu 'Group' tworzysz nowe obiekty (grupy użytk.)
+				*każdemu użytkownikowi możesz przypisać daną grupę (wewnątrz obiektu użytkownika)
+				*w decorators.py tworzysz odpowiednie dekoratory (jeden albo/i drugi) i przypisujesz je 
+				 do funkcji we views.py:
+					*dekorator 1:
+						**w pierwszej funkcji przyjmuję parametr (będący listą nazw grup dopuszczonych 
+						  do wywołania funkcji) 
+						**w funkcji wewnętrznej przyjmuję funkcję do wywołania
+						**wewnątrz wrappera pobiera wszystkie grupy, sprawdza czy użytkownik należy do 
+						  któreś i jeżeli tak to wywołuję funkcje:
+							#W DECORATORS.PY:
+								def allowed_users(allowed_roles=None):
+									if allowed_roles == None:
+										allowed_roles= []
+									def decorator(view_func):
+										def wrapper_func(request, *args, **kwargs):
+											group = None
+											if request.user.groups.exists():
+												for group in request.user.groups.all()
+													if group.name in allowed_roles:
+														return view_func(request, *args, **kwargs)
+											return HttpResponse('You are not authorized')
+										return wrapper_func
+									return decorator
+							#WE VIEWS.PY:
+								@login_required(login_url='login')
+								@allowed_users(allowed_roles=['admin', 'customer'])
+								def products(request):
+									...
+					*dekorator 2 
+						**sprawdza czy dany użytkownik należy do grupy 'admin' poprzez elementy słownika
+						  request.user.groups.all() i atrybut 'name' dla tych elementów:
+							#W DECORATORS.PY:
+								def admin_only(view_func):
+									def wrapper_func(request, *args, **kwargs):
+										group = None
+										if request.user.groups.exists():
+											for group in request.user.groups.all():
+												if group.name == 'admin':
+													return view_func(request, *args, **kwargs)  
+										messages.info(request,'You are not authorized')
+										return redirect('user-page')
+									return wrapper_func		
+							#WE VIEWS.PY:
+								@login_required(login_url='login')
+								@admin_only
+								def products(request):
+									...
+				*we views.py - podczas tworzenia użytkownika dodajesz do niego domyslną grupę którą 
+				 pobierasz z modelu Group (django.contrib.auth.models import Group):
+							#WE VIEWS.PY:
+								def registerPage(request):
+									form = UserCreationForm()
+									if request.method=="POST":
+										form=CreateUserForm(request.POST)
+										if form.is_valid():
+											user = form.save()
+											username = form.cleaned_data.get('username')
+											group = Group.objects.get(name='my_customer')
+											user.groups.add(group)
+											return redirect('login')
+									context={'form':form}
+									return render(request, 'accounts/register.html', context)	
+			 
 	4)FLASH MESSAGES:
 		https://docs.djangoproject.com/en/4.0/ref/contrib/messages/#using-messages-in-views-and-templates
 		*WE VIEWS.PY:
@@ -1291,7 +1476,116 @@ TEMPLATES:
 						{% endfor %}
 					</ul>
 					{% endif %}
-
+	5)PAGINATION & FILTER:
+		1*PODSTAWY:
+			*pagination czyli dzielenie na strony 		
+			*wykorzystanie obiektu paginatora w konsoli shell (python manage.py shell):
+				***najpierw loadujesz dane z pliku json do bazy danych :										
+						import json
+						from blog.models import Post
+						with open('posts.json') as f:
+							posts_json=json.load(f)
+							for post in posts_json:
+								p=Post(title=post['title'], content=post['content'], 
+									   author_id = post['user_id'])
+								p.save()
+				***pózniej tworzysz obiekt 'paginetor' i wykorzystujesz jego atrybuty: 
+						from django.core.paginator import Paginator
+						posts=['1','2','3','4','5'] 
+						p = Paginator(posts, 2)
+						print(p.num_pages)							#zwróci: 3
+						for page in p.page_range:
+							print(page)								#zwróci: 1,2,3
+						print(p.page(1))							#zwróci: <Page 1 of 3>
+						print(p.page(1).number)						#zwróci: 1
+						print(p.page(1).object_list)				#zwróci: ['1', '2']
+						print(p.page(1).has_previous)				#zwróci: False
+						print(p.page(1).has_next)					#zwróci: True
+						print(p.page(1).next_page_number)			#zwróci: 2
+						print(p.page(1).previous_page_number)		#mógłbyś jeszcze odwołać się do 
+																	#poprzedniej strony gdyby istniała
+		2*PAGINATION i FILTROWANIE w CLASS-BASED-VIEWS (UserPostListView):															
+			0)CLASS-BASED-VIEWS We Views.py - UserPostListView(ListView):
+						class UserPostListView(ListView):
+							model=Post
+							template_name='blog/user_posts.html' 
+							context_object_name='posts'
+							paginate_by=5 
+							def get_queryset(self):
+								user = get_object_or_404(User, username=self.kwargs.get('username'))  
+								return Post.objects.filter(author=user).order_by('-date_posted')
+			A)PAGINATION
+			  ***We Views.py Pagination robisz poprzez pole 'paginate_by' do którego przypisujesz 
+				 odpowiednią wartość (ilośc postów dzielone wg podanej wartości)
+			  ***W Htmlu Pagination robisz poprzez 'paginate_by'. Ten atrybut nie da Tobie możliwości
+				 do przechodzenia przez dalszą ilość podzielonych postów ale możesz to zrobić 
+				 własnoręcznie poprzez wpisanie '?page=2':
+						http://127.0.0.1:8000/blog/?page=2
+				 Żeby móc przechodzić po stronach dynamicznie wykorzystaj atrybuty obiektu paginatora:
+						*num_pages 
+						*page_range  
+						*page(nr_str) 
+						*page(nr_str).number 
+						*page(nr_str).object_list 
+						*page(nr_str).has_previous 
+						*page(nr_str).has_next 
+						*page(nr_str).next_page_number 
+						*page(nr_str).previous_page_number															
+				 Powyższe atrybuty będziesz używał w plikach html poniżej listy wyświetlanych obiektów, 
+				 wystarczy że skopiujesz to co poniżej i ewentualnie wystylizujesz):
+						{% if is_paginated %}
+							{% if page_obj.has_previous %}
+								<a href="?page=1">First</a>
+								<a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+							{% endif %}
+							{% for num in page_obj.paginator.page_range %}
+								{% if page_obj.number == num %}
+									<a href="?page={{ num }}">{{ num }}</a>
+								{% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+									<a href="?page={{ num }}">{{ num }}</a>
+								{% endif %}
+							{% endfor %}
+							{% if page_obj.has_next %}
+								<a href="?page={{ page_obj.next_page_number }}">Next</a>
+								<a href="?page={{ page_obj.paginator.num_pages}}">Last</a>
+							{% endif %}
+						{% endif %}
+				 a tak jak poniżej wygląda po dodaniu renderowania w bootstrapie:
+						{% if is_paginated %}
+							{% if page_obj.has_previous %}
+								<a class="btn btn-outline-info mb-4" 
+											href="?page=1">First</a>
+								<a class="btn btn-outline-info mb-4" 
+								 href="?page={{ page_obj.previous_page_number }}">Previous</a>
+							{% endif %}
+							{% for num in page_obj.paginator.page_range %}
+								{% if page_obj.number == num %}
+									<a class="btn btn-info mb-4" 
+															href="?page={{ num }}">{{ num }}</a>
+								{% elif num > page_obj.number|add:'-3' and 
+															num < page_obj.number|add:'3' %}
+									<a class="btn btn-outline-info mb-4" 
+															href="?page={{ num }}">{{ num }}</a>
+								{% endif %}
+							{% endfor %}
+							{% if page_obj.has_next %}
+								<a class="btn btn-outline-info mb-4" 
+											href="?page={{ page_obj.next_page_number }}">Next</a>
+								<a class="btn btn-outline-info mb-4" 
+											href="?page={{ page_obj.paginator.num_pages}}">Last</a>
+							{% endif %}
+						{% endif %}
+			B)FILTROWANIE:
+			  ***WE VIEWS.PY - filtrowanie robisz przez get_queryset() gdzie self.kwargs.get('username') 
+				 pobiera z paska przeglądarki (z protokołu GET) atrybut 'username':
+							def get_queryset(self):
+								user = get_object_or_404(User, username=self.kwargs.get('username'))  
+								return Post.objects.filter(author=user).order_by('-date_posted')
+			  ***W URLS.PY - tworzysz dynamiczny link do używania w HTMLu
+							path('user/<str:username>/', UserPostListView.as_view(), name='user-posts'),
+			  ***W HTMLu:
+							<a href="{% url 'user-posts' post.author.username %}">{{ post.author }}</a>	
+	
 5. ROZSZERZONE MODUŁY i FOLDERY w APP/FUNCKJONALNOŚCIACH:
   *1*SIGNALS (kontynuacja MODELS) oraz APPS.PY w danej app/funkc:
 		*W APPS.PY:
@@ -2675,7 +2969,9 @@ TEMPLATES:
 						class PostDeleteeView(DetleteView):
 							model = Post
 							succes_url= '../'
-							
+	 
+
+			
 4. PODSTAWOWE MODUŁY i FOLDERY w APP/FUNCKJONALNOŚCIACH:
 	*1*module MODELS.PY 
 		*https://docs.djangoproject.com/en/4.0/intro/overview/#design-your-model

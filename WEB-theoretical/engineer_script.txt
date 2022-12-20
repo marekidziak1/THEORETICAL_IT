@@ -1,0 +1,342 @@
+===========================================================================================================
+================================METODY PROGRAMOWANIA, ZAGADNIENIA PODSTAWOWE===============================
+===========================================================================================================
+26. Konstrukcja obiektów i zarządzanie pamięcią operacyjną w Javie i C++.
+	**W momencie wywołania konstruktora tworzonemu obiektowi przypisywane jest odpowiednie miejsce w 
+	   pamięci. 
+	1*W Javie podział na konstruktor parametrowy (stworzony przez użytkownika) oraz konstruktor domyślny 
+	  (bezparametrowy), zdefiniowany przez kompilator jeżeli w kodzie nie będzie dostępny żaden inny.
+	 *W Javie zarządzanie pamięcią przez Garbage collector, który identyfikuje obiekty już nieużywane, 
+	  czyli takie, do których program nie ma dostępu przez żadne referencje, i usuwa je z pamięci.
+	2*W C++ podział na konstruktory: parametrowy (utworzony przez użytkownika), domyślny (bezparametrowy),
+	  konstruktor kopiujący i konstruktor konwertujący.
+	 *W C++ programista jest zmuszony do manualnego zwalniania pamięci przy użyciu destruktora.
+27. Rola klas, interfejsów i mixinów w programowaniu na przykładzie języka Java.
+	1*Klasa w Javie to opisanie jakiegoś bytu za pomocą zestawu pól oraz metod. Słowo 'class' i 
+	  poprzedzający ją identyfikator dostępu. 
+	2*Interfejsy stanowią wzór dla klas implementujących je i zawierają PRZEDE WSZYSTKIM abstrakcyjne
+ 	  metody, które muszą zostać zaimplementowane przez klasę.
+	3*Mixin to klasa zawierająca metody do wykorzystania przez inne klasy, bez potrzeby dziedziczenia po nim
+28. Pojęcie dziedziczenia na przykładzie języków Java i C++.
+	**Dziedziczenie powoduje przekazanie swoich pól oraz metod do klas dziedziczących. Klasa dziedzicząca 
+	  jest nazywana klasą pochodną a ta z której następuje dziedziczenie — klasą bazową.
+	**W Javie poprzez słóko 'extends'.W C++ poprzez dwukropk e(W C++ możliwe dziedziczenie wielokrotne)
+29. Istota i zastosowania polimorfizmu na przykładzie języków Java i C++.
+	**Polimorfizm jest to różne zachowanie tak samo nazwanych metod w czasie wykonywania programu.
+		1)class Osoba --> metoda: przywitaj sie()
+		  class Dziecko extends Osoba --> zmieniona metoda przywitaj się()
+		  Po przejściu przez listę Osob na której znajduję się dziecko dla dzieka zwróci przesłoniętą metodę 
+		2)public void doSomething(List <String> inputList)  ---> można przekazać zarówno ArrayListe jak i 
+																 LinkedListę gdyż obie dziedziczą po List
+30. Użycie tablic oraz innych struktur danych w Javie i C++. Java Collections Framework.
+	1*W Javie tablice są obiektami, nazwa tablicy to zmienna będąca referencją do obiektu-tablicy.
+					public class Test {
+						public static void main(String[] args) {
+							int[] a = {1, 2, 3, 4 };
+							or (int i=0; i<a.length; i++) System.out.println(a[i]);
+						}
+					}
+	2*Collections Framework jest zbiorem kolekcji (obiektem, który grupuje elementy danych) z podziałem na:
+			● listy (List --> list) 
+			● zbiory (Set --> set)
+			● mapy (Map --> Dictionary)
+			● kolejki (Queue + Deque --> FIFO)
+	  Kolekcje zawierają Algorytmy kolekcyjne które są metodami wykonującymi użyteczne operacje 
+	  obliczeniowe na kolekcjach (np. sortowanie i wyszukiwanie).
+31. Programowanie współbieżne ? mechanizmy i narzędzia na przykładzie języka Java.
+	**Przetwarzanie współbieżne - przetwarzanie oparte na współistnieniu wielu wątków lub procesów
+	**Wątki uruchomione na tym samym procesorze są przełączane w krótkich przedziałach czasu, co sprawia 
+	  wrażenie, że wykonują się równolegle
+		 Pierwszy sposób tworzenia i uruchamiania wątku
+			1. Zdefiniować własną klasę dziedziczącą Thread (np. class Timer extends Thread)
+			2. Przedefiniować odziedziczoną metodą run(), podając w niej działania, które ma wykonywać wątek
+			3. Stworzyć obiekt naszej klasy (np. Timer timer = new Timer(...);
+			4. Wysłać mu komunikat start() (np. timer.start()) 
+		 Drugi sposób tworzenia i uruchamiania wątku
+			1. Zdefiniować klasę implementującą interfejs Runnable (np. class X implements Runnable).
+			2. Dostarczyć w niej definicji metody run (co ma robić wątek).
+			3. Utworzyć obiekt tej klasy (np. X x = new X(); )
+			4. Utworzyć obiekt klasy Thread, przekazując w konstruktorze referencję do obiektu utworzonego 
+			   w p.3 (np.Thread thread = new Thread(x);).
+			5. Wywołać na rzecz nowoutworzonego obiektu klasy Thread metodę start (thread.start();
+	**Skoordynowanie interakcji pomiędzy wątkami uzyskuje się za pomocą metod klasy Object:
+			- wait
+			- notify
+			- notifyAll
+32. Typy i metody sparametryzowane (generics) w Javie. Szablony  (templates) w C++.
+		**odpowiednikiem generics'ów w c++ sa szablony
+				class SomeClass<T>{
+				 //pola i metody
+				}
+		**W ostrych nawiasach podany jest parametr <T>, który może być wykorzystywany do definicji typów 
+		  zmiennych, czy tablic
+		**Wykorzystywane są przede wszystkim tam, gdzie liczy się uniwersalność. Zamiast tworzyć 
+		  przykładowo metodę w 10 przeciążonych wersjach różnych typów, która oprócz przyjmowania 
+		  parametrów innych typów robi dokładnie to samo, można uzyskać ten sam efekt, definiując jedną 
+		  metodę uogólnioną.
+33. Lambda-wyrażenia i interfejsy funkcyjne w języku Java.
+		**lambdy jak klasy tymczasowe zawierające jedną metodę
+		**Factor factor = a -> a * a
+34. Przetwarzanie strumieniowe (środki pakietu java.util.stream). --> KLASA STREAM
+	**przetwarzanie danych w postaci strumieni, które są jednorazowe użytku (ż każde jego użycie musi być 
+	  zakończone operacją terminalną (zamykającą strumień). Dzięki temu przetwarzanie dużych zbiorów 
+	  danych może być dużo szybsze.
+35. Narzędzia programowania operacji wejście-wyjścia w języku Java.
+	**Java do operacji wejścia-wyjścia wykorzystuje strumienie. Domyślnie użytkownik ma dostęp do trzech 
+	  standardowych strumieni:
+			• System.out – strumień wyjścia
+			• System.in – strumień wejścia
+			• System.err – strumień diagnostyczny
+	  Ponadto strumienie w klasie java.io: FileInputStream oraz FileOutputStream
+===========================================================================================================
+========================================ALGORYTMY I STRUKTURY DANYCH=======================================
+===========================================================================================================
+21. Szacowanie złożoności algorytmów, klasy złożoności problemów algorytmicznych.
+	1*Szacowanie złożoności algorytmów - wyznaczyć zbiór operacji dominujących (najczęsciej dominujących) 
+	  oraz określić rozmiar danych wejściowych 
+	2*Klasy złożoności problemów algorytmicznych - Notacja dużego O:
+		● Stałą Θ(1) i Logarytmiczną Θ(log n) i liniowa 0(n) --> NAJWOLNIEJSZE
+		● Silnia Θ(n!) –-> NAJSZYBSZA
+22. Najważniejsze algorytmy wyszukiwania i sortowania, przegląd i zastosowania.
+	1*WYSZUKIWANIE:	
+		*wyszukiwanie liniowe - Sprawdzanie kolejno elementów, aż do znalezienia właściwego elementu,
+		 złożoność 0(n) -> bardzo wolne
+		*wyszukiwanie binarne - zakładamy że zbiór do przeszukiwwania jest posortowany, dzięki temu częśc
+		 wartości odrzucamy (przykażdym konlejnym kroku odrzucamy 1 z połówek)
+	2*SORTOWANIE:	
+		*Selection sort, bubble sort, Insertion sort , Merge sort - WOLNIEJSZE
+		*Quicksort - "dziel i zwyciężaj". Algorytm wykorzystuje funkcję Partition, uktóra stawia wszystkie 
+		 elementy mniejsze lub równe po lewej stronie, a wszystkie elementu większe po prawej stronie 
+		 tego elementu i rekursywnie robi to samo działając na podzielonym zbiorze - NAJSZYBSZE
+23. Charakterystyka i zastosowania podstawowych struktur danych: stos, kolejka, kolejka priorytetowa, 
+    struktura Find-Union, słownik.
+	**Stos - LIFO – last in, first out ;; wkładania (push) i usuwania elementów (pop)
+	**Kolejka - FIFO – first in, first out. ;; 
+		**kolejka priorytetowa - kolejka, która nadaje elementom priorytet. Na wyjściu nie dane któe
+		  oczekują najdłużej tylko dane o największym priorytecie. 
+	**Fin-union - dynamiczne zbiory rozłączne. Jeden duży zbiór danych dzieli się na mniejsze, rozłączne 
+	  zbiory, które identyfikowane są poprzez zdefiniowany atrybut zwany reprezentantem
+	**Słownik - inaczej też mapa, dane w postaci klucz - wartość (słownik wukorzystywane do indeksowania 
+	  w drzewach binarnych
+24. Drzewa binarne i drzewa n-arne w algorytmice. Charakterystyka, sposoby implementacji i zastosowania.
+	1*PODZIAŁ DRZEW:
+		**BINARNE - drzewo, w którym stopień każdego wierzchołka jest nie większy od 3. (Może mieć 1dno 
+		  lub 2je dzieci)
+		**n-arne - drzewo, w którym każdy rodzic ma co najwyżej n dzieci
+	2*PRZEGLĄDANIE DRZEWA BINARNEGO:
+		**Metoda "wszerz" - Algorytm BFS - przeglądaniu wierzchołków drzewa poziomami (używa do tego kolejki)
+		**Metoda "najpierw w głąb" - Algorytm DFS - przeglądaniu wierzchołków drzewa wzdłuż gałęzi od
+  		  korzenia do liści drzewa. (używa do tego stosu)
+	3*ODMIANY DRZEW BINARNYCH:
+		**BST: Binarne drzewo poszukiwań - lewe poddrzewo każdego węzła zawiera wyłącznie elementy o 
+		  kluczach mniejszych niż klucz węzła
+		**BSP Binary space partitioning -  rekurencyjnym dzieleniu danej przestrzeni na zbiory wypukłe
+		**KOPIEC BINARNY - tablicowa struktura danych 
+	4*ZASTOSOWANIE DRZEW :
+		**W ML i NLP
+		**w eksploracji danych
+25. Algorytmy rekurencyjne vs algorytmy iteracyjne, porównanie i omówienie podstawowych założeń 
+    konstrukcyjnych.
+	**REKURENCJA – odwoływanie się funkcji do samej siebie. Bardzo szybkie ale pobiera wiele pamięci RAM
+	  np.: wyliczenie wartości silni bądź n-tej wartości ciągu Fibonacciego.
+	**ITERACJA -wielokrotne powtarzanie tej samej instrukcji (albo wielu instrukcji) w pętli FOR lub WHILE
+===========================================================================================================
+======================================INŻYNIERIA OPROGRAMOWANIA - UML======================================
+===========================================================================================================
+36. Zarządzanie projektem budowy oprogramowania: rodzaje działań, dobór metodyki
+	1*PODZIAŁ METODYKI NA 2 ASPEKTY PROWADZENIA PROJEKTU:
+		**wytwarzanie produktu (definiuje techniczne, inżynierskie aspekty wytwarzania produktu) 
+		**zarządzanie projektem (jak będzie organizowany i prowadzony abstrahując od użytych narzędzi)
+	2*PODZIAŁ NA METODYKI CIĘŻKIE I LEKKIE:
+		**CIĘŻKIE - znaczna liczba niezbędnej dokumentacji projektowej oraz sformalizowane procesy 
+		  raportowania. Stosowane w dużych projektach.
+		**zwinne/LEKKIE - mniej formalizmów łatwiejszy kontakt między członkami zespołów. W małych 
+		  projektach. Metodyki te nie starają się przewidzieć wszystkich ewentualności. 
+	3*Cykl życiowy oprogramowania:
+		● Określenie wymagań i Analiza:
+		● Projektowanie:
+		● Implementacja/konstrukcja: 
+		● Testowanie
+		● Dokumentacja
+		● Instalacja
+		● Przygotowanie użytkowników, akceptacja, szkolenie
+	4*Kontekst pozatechniczny - aspekt ekonomiczny, otoczenie zewnętrzne ( dostawcy/konkurencja/związki 
+	  zawodowe), uwarunkowania prawne/geograficzne/polityczne
+37. Język UML – charakterystyka oraz sposób wsparcia różnorodnych modeli danych.
+	1*UML - język służący do specyfikowania,  obrazowania i dokumentowania składowych systemu.
+	2*ZESTAWY DIAGRAMÓW:
+		● diagram przypadków użycia - funkcjonalności dla danych użytkowników
+		● diagram klas - struktura danych
+		● diagram stanów;
+		● diagram aktywności
+38. Wzorce projektowe oraz ramy programistyczne (frameworks) – charakterystyka, przykłady, zastosowania.
+	1*Wzorce projektowe - to wielokrotnie powtórzone (powtarzające się) i pozytywnie zweryfikowane 
+	  schematy rozwiązań często spotykanych problemów projektowych. Dzieki nim pisanie lepszych, 
+	  bardziej skalowalnych, mniej narażonych na błędy programów.
+				PODZIAŁ NA:	
+					**Konstrukcyjne: tworzenie obiektów,
+						***SINGLETONE (kontrolowanie dostępu)
+					**Strukturalne: zarządzanie strukturą obiektów
+						***DECORATOR (uzupełnienie o dodatkowe właściwości)
+					**Behawioralne: zachowanie obiektów i komunikacja między nimi.
+						***ITERATOR (Nawigacja)
+	2*FRAMEWORK - szkielet do budowy aplikacji (definiowanie struktury i mechanizm działania)
+39. Zapewnienie jakości oraz testowanie oprogramowania – normy, metody, kryteria
+	1*Zapewnienie Jakości Oprogramowania (ZJO) - wzorzec działań potrzebnych do potwierdzenia że produkt 
+	  jest zgodny z  ustanowionymi wymaganiami technicznymi. Zamiast sprawdzać wszystkie obszary sprawdza 
+	  się tylko te o szczególnej ważności.
+	2*Metody kontroli i zapewnienia jakości:
+		Testy A/B
+		Testowanie eksploracyjne
+		Continuous integration (CI) i Continuous Delivery (CD)
+		Test-driven development (TDD) 
+		Test jednostkowy
+40. Rodzaje, metody specyfikowania oraz rola wymagań w procesie wytwarzania oprogramowania.
+	1*Wymagania możemy podzielić na:
+		**wymagania funkcjonalne (co dane oprogramowanie ma być w stanie wykonać) (określnie rodzajów
+  		  użytkowników)
+		**niefunkcjonalne (ograniczenia, przy których system musi realizować swoje funkcje) (zgodnośc z 
+		  jakąs normą)
+	2*Metody specyfikowania wymagań:
+		**Język naturalny
+		**Język naturalny strukturalny
+		**Diagramy przypadków użycia: poglądowy sposób przedstawienia akto
+===========================================================================================================
+============================================SYSTEMY OPERACYJNE=============================================
+===========================================================================================================
+56. Klasyfikacja systemów operacyjnych.
+	*System operacyjny (ang. operating system, skrót OS) – oprogramowanie zarządzające systemem 
+	 komputerowym, tworzące środowisko do uruchamiania i kontroli zadań. Zajmuję się:
+		· planowaniem oraz przydziałem czasu procesora poszczególnym zadaniom,
+		· kontrolą i przydziałem pamięci operacyjnej dla uruchomionych zadań,
+		· synchronizacją zadań i komunikację pomiędzy nimi.
+	*PODZIAŁ ze względu na:
+		*sposób przetwarzania (bezpośrednie/pośrednie) 
+		*liczbę wykonywanych programów (jeden proces/wiele procesów)
+		*lczbę użytkowników (dla 1 usera/wielu)
+		*interfejs użytkownika (systemy tekstowe/graficzne)
+57. Problem szeregowania procesów/wątków w systemach operacyjnych.
+	**Proces (nazywany też czasem zadaniem) to wykonujący się program
+	**Blok kontrolny procesu - rekord zawierający zestaw informacji o stanie procesu
+	**Planowanie procesów poprzez wskazywaniu procesu, któremu ma być w danej chwili przydzielony procesor
+	**Procesy nieaktywne czekają na przydział procesora w kolejkach
+	**Przełączanie kontekstu - zmiana wykonywanego procesu wiąże się ze złożonymi operacjami zapisania 
+	  stanu obliczenia poprzedniego procesu i odtworzenia stanu obliczeń nowego procesu. Selekcji procesu, 
+	  który ma przejść do stanu aktywny, dokonuje odpowiedni proces systemowy. Nazywamy go PLANISTĄ.
+	**WĄTKI - W ramach procesu można powołać do życia kilka lżejszych struktur
+	**STRATEGIE PLANOWANIA:
+		*FCFS (First-Come, First-Served) 
+		*SJF (Shortest-Job-First)
+		*SRTF (ang. Shortest-Remaining-Time-First) "najpierw zadanie o najkrótszym POZOSTAŁYM czasie"
+58. Problem synchronizacji procesów/wątków w programach komputerowych oraz Przedstaw jakie wsparcie w tym 
+    zakresie oferują systemy komputerowe i operacyjne.'
+	**Problem synchronizacji wątkó:
+		*Pojedyncze operacje muszą być "zatomizowane", tzn. tylko jeden proces może na raz modyfikować
+		 współdzieloną strukturę danych,
+	**WSPARCIE:tylko 1 proces w danym momencie może działac na: semaforze albo w kolejce albo na monitorze.
+	  Procesy ustawiane w kolejce FIFO.
+		*SEMAFORY
+		*KOLEJKI KOMUNIKATÓW 
+		*MONITORY
+59. Mechanizmy obsługi pamięci operacyjnej wykorzystywane w systemach operacyjnych
+	**Przydział ciągły - każdy proces ma przydzielony spójny fragment pamięci fizycznej.
+	**Przydzielanie wielu obszarów o ustalonej wielkości.
+	**Segmentacja(technika zarządzania pamięcią, polegająca na przydzielaniu procesom wielu spójnych 
+	  obszarów pamięci różnej wielkości, zwanych segmentami.
+	**Stronicowanie(technika zarządzania pamięcią, polegająca na podzieleniu na kawałki równej 
+	  wielkości pamięci logicznej procesów (strony) i pamięci fizycznej (ramki); strony pamięci logicznej 
+	  mogą być w dowolny sposób rozmieszczone w ramkach pamięci fizycznej.
+
+60. Istota mechanizmu pamięci wirtualnej - wady i zalety tego rozwiązania:
+	*Pamięć wirtualna jest techniką umożliwiającą wykonywanie procesów, pomimo że nie są one w całości 
+	 przechowywane w pamięci operacyjnej.
+	*ZALETY:
+		**system operacyjny może wykonywać większą liczbę procesów
+		**więcej procesów może być wykonywanych w tym samym czasie) → lepsze wykorzystanie procesora
+	*WADY:
+		**jest ona o wiele wolniejsza niż przy bezpośrednim korzystaniu z pamięci fizycznej,
+===========================================================================================================
+============================================SIECI KOMPUTEROWE==============================================
+===========================================================================================================
+41. Usługi i protokoły warstwy aplikacji na przykładzie protokołu HTTP.
+	*HTTP (ang. Hypertext Transfer Protocol) - sposób komunikowania się komputerów ze sobą
+	*określa formę żądania klienta i formę odpowiedzi serwera.
+	*najpopularniejszy port przypisany do HTTP to port 80. Na tym porcie serwer nasłuchuję połączenia 
+	 przychodzące. Na żadanie klienta wysyła potwierdzenie otrzymania a następnie właściwą odpowiedź.
+	*Protokół zakłada wykorzystanie metod (get, post, put, head, delete), nagłówków i faktycznej treści
+42. Usługi warstwy transportu na przykładzie protokołu TCP
+	*Warstwa sieci jest odpowiedzialna za logiczną komunikację pomiędzy hostami
+	*Warstwa transportowa jest odpowiedzialna za logiczną komunikację pomiędzy procesami aplikacji 
+	 działającymi na różnych hostach (uzupełnia warstę sieci):
+		**nadawca dzieli komunikat aplikacji na segmenty, przekazuje segmenty do warstwy sieci;
+		**odbiorca łączy segmenty w komunikat, 
+	*TCP jest protokołem połączeniowym. Główną zaletą tego protokołu jest niezawodność, którą gwarantuje 
+	 konieczność wysłania potwierdzenia przez hosta odbierającego dane, zanim zostanie przesłany kolejny 
+	 segment.
+43. Protokoły rutingu warstwy sieci na przykładzie protokołu OSPF.
+	OSPF (ang. Open Shortest Path First) „pierwszeństwo ma najkrótsza ścieżka” - protokół trasowania 
+	oparty na analizie stanu łącza. Charakteryzuje się dobrą skalowalnością, wyborem optymalnych ścieżek, 
+	Korzysta z algorytmu Dijkstry.
+44. Usługi warstwy łącza na przykładzie protokołu Ethernet lub protokołów z rodziny 802.11 (WiFi).
+	Warstwa łącza jest odpowiedzialna za komunikację ramek między węzłami sieci (hostami, ruterami, 
+	switchami). 
+45. Metody ochrony informacji stosowane w bankowości Internetowej.
+	- szyfrowane połączenia SSL
+	- autoryzacja mobilna/SMS
+	- monitoring transakcji
+	- wysyłanie powiadomień
+	- login i hasło, PIN
+===========================================================================================================
+================================================MATEMATYKA=================================================
+===========================================================================================================
+1. Całka nieoznaczona, oznaczona, zastosowanie i techniki obliczania:
+	**całkowanie jest operacją odwrotną do wyliczania pochodnej
+	**Całka nieoznaczona funkcji f w pewnym przedziale (a,b)) to zbiór wszystkich funkcji pierwotnych 
+	  tej funkcji -Całkowanie przez części lub Całkowanie przez podstawienie.
+	**Całka oznaczona - Intuicyjnie całka oznaczona to pole powierzchni między wykresem funkcji f (x) w 
+	  pewnym przedziale [a,b] a osią odciętych,
+2. Wielomian i szereg Taylora funkcji rzeczywistej
+	**Wielomian Taylora (w punkcie x0) przybliża wartość funkcji poprzez przybliżanie wartości jej 
+	  kolejnych pochodnych.
+	**Szereg Taylora to suma nieskończonej ilości wyrazów należących do wielomianu Taylora. Rozwinięcie 
+	  wielomianu w szereg Taylora pozwala na obliczenie wartości całki lub pochodnej w przypadku, gdy 
+	  mamy trudności z wyliczeniem ich wartości.
+3. Układy równań liniowych: różne metody rozwiazywania, liczba rozwiązań.
+	**Warunki rozwiązywalności układu równań opisuje twierdzenie Kroneckera-Capellego:
+			Układ m równań liniowych z n niewiadomymi ma rozwiązania, jeśli rząd macierzy głównej jest 
+			równy rzędowi macierzy rozszerzonej.
+	**Metody rozwiązywania:  Wzory Cramera i metoda eliminacji Gaussa
+4. Wartości własne macierzy i ich zastosowanie w informatyce.
+	**Obliczanie wartości własnych macierzy jest możliwe tylko na macierzach kwadratowych, czyli takich 
+	  które mają taka samą liczbę kolumn oraz wierszy
+	**Zastosowanie:
+		· Wyznaczenie wektorów własnych
+		· Algorytmy wykorzystywane przez wyszukiwarki np. PageRank (Google).
+5. Grafy i ich typy, metody reprezentacji grafów.
+	**Graf to struktura matematyczna służąca do przedstawiania i badania relacji między obiektami. W 
+	  uproszczeniu graf to zbiór wierzchołków. Typy: zooreintowane, proste, multigrafy, regularny, pełny,
+	  dwudzielny, spójny i niespójny. 
+6. Relacje binarne, własności i metody reprezentacji
+	**Dowolny podzbiór r produktu kartezjańskiego X×Y nazywamy relacją dwuargumentową (binarną) w X×Y.
+7. Zasada indukcji matematycznej -> metoda dowodzenia twierdzeń o liczbach naturalnych, które są 
+   prawdziwe dla nieskończonej liczby przypadków
+8. Twierdzenie Bayesa – twierdzenie teorii prawdopodobieństwa. Stosujemy głównie wtedy, gdy znamy wynik 
+   doświadczenia i pytamy o jego przebieg. Objaśnienia:
+		P(A) - prawdopodobieństwo zdarzenia A
+		P(B) – prawdopodobieństwo B 
+		P(A|B) – prawdopodobieństwo zdarzenia A o ile zajdzie zdarzenie B
+		P(B|A) - prawdopodobieństwo zdarzenia B o ile zajdzie zdarzenie A
+9. Testowanie hipotez statystycznych:
+	**Hipoteza statystyczna jest to przypuszczenie dotyczące nieznanej własności rozkładu 
+	  prawdopodobieństwa badanej cechy populacji.
+		**Hipoteza zerowa to hipoteza testowana w celu jej ewentualnego odrzucenia, oznaczana przez H0. 
+		**Hipoteza alternatywna to hipoteza, która będzie przyjęta, jeśli odrzucimy hipotezę zerową, 
+		  oznaczana przez H1 Hipotezy H0 i H1 muszą się nawzajem wykluczać (nie mogą być jednocześnie 
+		  prawdziwe). 
+10. Wyznaczanie przedziałów ufności.
+	**Przedział ufności to przedział liczbowy, w którym z pewnym prawdopodobieństwem mieści się nasza 
+	  szukana wartość. Przedział ufności na poziomie ufności 1–α dla parametru t to  przedział, w 
+	  którym na (1−α)⋅100% leży wartość parametru t. 
+	**Im większy poziom ufności tym szerszy przedział – skoro chcemy mieć większą pewność, że wartość
+	  parametru leży w naszym przedziale to musimy go zwiększyć.
+

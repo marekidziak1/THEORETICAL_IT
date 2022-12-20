@@ -68,7 +68,7 @@ INSTRUCTION IF/ELSE:		if [   <warunek>   ]; then			  		  |		<owner>:<groupOwner>
 							else								 		  |chmod <(u,g,o,a)+/-(r,w,x)> f/dir
 								polecenie2						 		  |				[change mode file]
 							fi									  		  |_________________________________|
-INSTRUCTION CASE:			case "<zmienna>" in								
+INSTRUCTION CASE:			case "<zmienna>" in							   get-history  (all console output)
 							  "wzorzec1") polecenie1 ;;							
 							  "wzorzec2") polecenie2 ;;							
 							  "wzorzec3") polecenie3 ;;						

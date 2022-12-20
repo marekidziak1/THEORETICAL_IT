@@ -1,0 +1,22 @@
+problem badawczy - pytanie określające jakość i wymiar pewnej niewiedzy oraz cel i granice pracy naukowej
+Populacja statystyczna - zbiór przedmiotów o pewnych cechach, które mogą zainteresować badacza. 
+	*Zmienna (X) - symbol reprezentujący dowolną cechę, liczbę lub liczebność populacji statystycznej
+		*zmienna jakościowa - zmienna niekwantyfikowalna (brak możlwiości oceny zmiennej) np płęć
+		*zmienn porządkowa - zmienna z podziałem na kategorie - np oceny w szkole
+		*zmienna ilościowa - zmienna z możliwością zmierzenia
+hipoteza - stwierdzenie które trzeba potwierdzić
+	*Test t-Studenta - metoda do weryfikacji hipotez statystycznych, czy średnie wartości interesującej nas zmiennej w dwóch grupach (populacjach) różnią się od siebie w sposób istotny statystycznie czy też nie. 
+statystyka opisowa - opis danych zebranych w badaniu
+	Miary położenia:
+		*średnia arytmetyczna - loraz (wynikiem dzielenia) zsumowanej wartości wszystkich badanych zmiennych oraz liczebności badanej populacji.
+		*mediana - wartość środkowa (drugi kwartyl)
+		*dominanta - najczęśniej pojawiający się element
+		*kwartyle - 3 (dolny (25%), środkowy(mediana - 50%), górny (75%))
+	Miary zróżnicowania - stopien rozproszenia wartości cechy wokół wartości miar tendencji centralnej
+		*odchylenie standardowe - o ile średnio, wartości zmiennej w badanej populacji, odchylają się od średniej arytmetycznej wartości badanej zmiennej. Zalicza się do miar rozproszenia (zmienności, dyspersji)
+		*współczynnik zmienności - służy do badania stopnia zróżnicowania lub jednorodności zmiennych badanej populacji. We wzorze bierz pod uwagę odchylenie standardowe i średnią arytmetyczną. 
+		*kurtoza - czy większość z uzyskanych wyników ma wartość podobną do średniej arytmetycznej. We wzorze bierze pod uwagę średnią arytmetyczną i odchylenie standardowe
+	Miary asymetrii - Informują one o symetrii lub asymetrii rozkładu
+		*współczynnik rozkłądu asymetrii
+	Miary koncentracji – Informują one o nierównomierności rozdysponowania wartości cechy w populacji
+		*Współczynnik Giniego

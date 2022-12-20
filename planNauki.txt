@@ -1,30 +1,87 @@
+PLAN NAUKI:
+*Główne założenie - perfekcyjnie nauczyć się podstaw bo potem nie będzię na nie czasu 
+============================ PYTHON DEVELOPER	
+docker:
+    *Docker Tutorial for Beginer - youtube tutorial with mosh
+	*Kubernetes Tutorial for Beginer
+Django:
+    *Corey Shaffer - DJANGO 13-17 -> deploying
+	*Coding entrepreneurs - DJANGO REST FRAMEWORK https://www.youtube.com/watch?v=c708Nf0cHrs
+    *codingentrepreneurs - DJANGO 60-91 (zrobić GIT CLONE 59) https://www.youtube.com/watch?v=SlHBNXW1rTk&list=PLEsfXFp6DpzRMby_cSoWTFw8zaMdTEXgL
+git: 
+	*git intermediate freecode camp - https://www.youtube.com/watch?v=e2IbNHi4uCI&t=1s
+	*git advanced freecodecamp - https://www.youtube.com/watch?v=Uszj_k0DGsg&t=1s
+============================ DATA:
+sql: 
+0|0 *powtórka i ćwiczenia sql KBD and RBD+SBD 
+1|8	*postgres basics -> youtube
+1|12*postgres ->corey shafer
+1|13*tutorials point -> python postgres
+	*tutorials point ->python sqlite
+------------
+EXCEL
+***wymienić logging na lambdę z context managerem i wywalić cały dział iteratorów z generatorami do intermediate. Z intermediate przerzucić do PYTHONtheretical 
+	cały dział API | JSON | XML | CSV | DATABASE | BAZY DANYCH w miejsce iteratorów z generatorami. 
+------------
+MATEMATYKA:
+	STATYSTYKA
+	PRAWDOPODOBIEŃSTWO
+------------
+PYTHON DATA:
+	NUMPY
+	SCIPY
+	PANDAS
+	MACHINE LEARNING
+------------
+============================ OGÓLNE:
+python:
+1|4 *Corey Shafer (INTERMEDIATE)(52, 53, 54, 55,      57 76, 90, 91,92       122, 123, 124, 125)
+1|5 *text-Programmizz: Object & class ;; Adavaced Topics :: Date & Time
+1|7 *Python engineer --> intermediate python course freecode camp 
+2|9 *12 projects
+1|11*Free Code camp/dr chuck - python
+ 	*
+ 	*
+4|17*coding entrepreneurs OD 10 ODCINKA
+4|19*COREY SHAFER - PRE-ADVANCED- (10,11,12,15, 16, 17, 46,         59, 60, 61, 62, 63, 101, 102, 103, 104, 107, 109 110, 111 126, 127, 139, 140, 141, 142, 143)
 
--------------------------------------------------
 1. Beautiful Soup
 2. Selenium
 3. Scrappy
--------------------------------------------------
-1. DJANGO
-2. FLASK
--------------------------------------------------
--------------------------------------------------
--------------------------------------------------
-1. MATEMATYKA:
-	*STATYSTYKA
-	*PRAWDOPODOBIEŃSTWO
-	*
--------------------------------------------------
-NUMPY
-SCIPY
-PANDAS
-MACHINE LEARNING
--------------------------------------------------
 
+ 
+===========================================================================================================
+===========================================================================================================
+===========================================================================================================
+Zrobione:
+1.Kanał o wszystkim - python
+2.W3 school - python 
+3.Hackerrank - Python exercises
+4.Hackerrank - Regular expresions exercises
+5.Hackerrank - Sql, query exercises
+6.Kanal o wszystkim - html i css
+7.Kanal o wszystkim - javascipt basics
+8.Socratica - python intermediate
+9.Corey shaffer - basics + oop
+10.Django Tutorial for Beginer - tutorial with mosh
+11.kurs GIT - overment - https://www.youtube.com/watch?v=D6EI7EbEN4Q&list=PLjHmWifVUNMKIGHmaGPVqSD-L6i1Zw-MH
+12.GIT - Git and GitHub for Beginners - Crash Course - FREECODECAMP: https://www.youtube.com/watch?v=RGOj5yH7evk&t=48s
+13.Corey Shafer (PRE-INTERMEDIATE) (13,14,18,19,20,21,22,23,26,27,28,29,30,32,35 36,37,38,39,45,47,48,49,51)
+14.Bash tutorial   https://www.youtube.com/watch?v=ZtqBQ68cfJc
+15:5 simple python project - tech with tim https://www.youtube.com/watch?v=DLn3jOsNRVE
+16:Corey Shaffer - DJANGO 1-12	https://www.youtube.com/watch?v=UmljXZIypDc&list=PL-osiE80TeTtoQCKZ03TU5fNfx2UY6U4p
+17:freecodecamp -  django web framework: https://www.youtube.com/watch?v=F5mRW0jo-U4
+18.techwithtim - DJANGO TUTORIAL: https://www.youtube.com/watch?v=sm1mokevMWk
+19.Academind Shawrzmueller - DJANGO: https://www.youtube.com/watch?v=t7DrJqcUviA
+20.clever programmer - DJANGO with documantation: https://www.youtube.com/watch?v=cI3FOYIMSYE
+21.Traversy media - Django Crash Course - https://www.youtube.com/watch?v=PtQiiknWUcI
+22.codingentrepreneurs - DJANGO - (1-60) https://www.youtube.com/watch?v=SlHBNXW1rTk&list=PLEsfXFp6DpzRMby_cSoWTFw8zaMdTEXgL
+23.codemyAPI - django rest framework - https://www.youtube.com/watch?v=QaY4t7UOgVM&list=PLCC34OHNcOtoYO3FuoCEt9r7AbfuDKse_
+24.codingwithMitch - django rest framework - https://www.youtube.com/watch?v=44qdTGbWY8c&list=PLgCYzUzKIBE9Pi8wtx8g55fExDAPXBsbV
+25.ParwizForogh - django rest framework - https://www.youtube.com/watch?v=B38aDwUpcFc
+26.dennis ivy - django management site - https://www.youtube.com/watch?v=xv_bwpA_aEA&list=PL-51WBLyFTg2vW-_6XBoUpE7vpmoR3ztO
 
-
-
-
-
+6950 / 1715 
 
 
 

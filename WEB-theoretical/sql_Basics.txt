@@ -1,15 +1,237 @@
-
-LEFT JOIN
-RIGHT JOIN
-COUNT(1) / COUNT(1121212) (OBOJĘTNIE)
-dla NULL - nie może być WHERE cos = NUll 
-						TYLKO 
-						WHERE cos IS NULL
-
-
-
-
-
+101* PODSUMOWANIE BAZ DANYCH:
+	I.Podstawowe cechy relacyjnych baz danych:
+		1*Założenia modelu relacyjnego:
+			*dane zapisywane jako TABELE
+			*w tabeli występują KOLUMNY zawierające dane określonego typu
+			*w KOMÓRCE TABELI znajduję się pojedyńcza wartość - atomowa, niepodzielna.
+		2*RELACJA jako podzbiór ILOCZYNU KARTEZJAŃSKIEGO (zbiór wszystkich par uporządkowanych (x,y)
+ 		  oznaczony AxB, gdzie x należy do A i y należy do B. Iloczyn kartezjański nie jest przemienny)
+		  Reprezentacją relacji jest dwuwymiarowa tabela złożona z kolumn (pól) i wierszy (rekordów).
+		3*Założenia w relacyjnej bazie danych - 13 postulatów Codd'a (od 0 do 12) zawierających m.in:
+			**Kolumna ma swoją nazwę i zawiera dziedzinę będącą zbiorem wartości, występujących w kolumnie.
+			**Wiersz reprezentuje jeden rekord informacji np. osobę.
+			**Na przecięciu wiersza i kolumny znajduje się pojedyncza (atomowa) wartość(mogąca być NULLem)
+			
+			**Nie istotna jest kolejność wierszy i kolumn. 
+			**Liczba kolumn jest z góry ustalona.
+			**Mamy 3 poziomy abstrakcji (fizyczny, logiczny, użytkowy):
+				*Poziom fizyczny – zbiór plików z danymi i z indeksami.
+				*Poziom logiczny (koncepcyjny) – zbiór tabel, perspektyw i indeksów.
+				*Poziom użytkowy – widoki na dane i programy, którymi posługuje się użytkownik.
+	II.Diagram związków encji oraz zasady prawidłowego projektowania schematów bazy danych:
+		1*Diagram związków encji jest MODELEM STRUKTURY DANYCH. Jest UPROSZCZENIE OPISYWANEGO OBIEKTU 
+		  bazodanowego (jak i rzeczywistego) Diagram MA POSTAĆ GRAFICZNĄ, ułatwiającą ZROZUMIENIE STRUKTURY
+		  BAZY (dotyczy to zwłaszcza związków zachodzących pomiędzy obiektami)
+				**ANALIZA WSTĘPNA jako zidentyfikowanie wszystkich obiektów.
+				**DIAGRAM ZWIĄZKÓW ENCJI jako modele obiektów oraz istniejących między nimi zależności. 
+		2*ZASADY PROJEKTOWANIA DIAGRAMU:
+				**poprawność modelu - jest zgodny z rzeczywistością;
+				**kompletność modelu - żaden element modelu danych nie został pominięty;
+				**brak wad typu redundancja (powtórzenia tej samej informacji);
+		3*Elementy diagramów związków encji:
+			**Encja - to byt o którym chcemy przechowywać informacje (tabela)
+			**Związek – powiązanie występujące pomiędzy dwoma encjami.
+			**Atrybut – właściwość encji
+			**Klucz – zbiór atrybutów danej encji, których wartości jednoznacznie identyfikują każdą 
+			  instancję tej encji.
+	III.Mechanizm współbieżności pracy wielu użytkowników w systemie zarządzania bazami danych.
+		1*Transakcja jest ciągiem instrukcji (odczytów i zapisów) wykonywanych jako całość. 
+		 *Serwer uzyskuje współbieżność poprzez takie przeplatanie odczytów i zapisów różnych 
+		  transakcji, aby efekt był taki sam jakby transakcje były wykonywane niezależnie od siebie. 
+		2*Aksjomaty współbieżnego wykonywania transakcji ACID:
+			**ATOMICITY (atomowość) - albo wszystkie instrukcje w transakcji albo żadna
+			**CONSISTENCT (spójność) - po wykonaniu transakcji stan bazy danych powinien być spójny
+			**ISOLATION (izolacja) - wynik działania transakcji powinien być taki sam, jakby od chwili 
+			  rozpoczęcia transakcji nie działała na wspólnych danych żadna inna transakcja.
+			**DURABILITY (trwałość) - dane zatwierdzone przez transakcję powinny być dostępne nawet w 
+			  sytuacji awarii oprogramowania lub sprzętu.
+		3*Podstawowe mechanizmy spełniające ACID:
+				*BLOKADY - ograniczają działanie innych transakcji na zablokowanym obiekcie. 
+				*DZIENNIKI - opisują działanie transakcji. W oparciu o ten opis można wycofać transakcję, 
+				 jak i odtworzyć stan bazy w przypadku awarii.
+				*MIGAWKI -  przechowywanie wielu wersji tych samych rekordów. Przykład to: transakcja 
+				 działa na migawce, a więc stanie rekordów z pewnego punktu w czasie. 
+		4**ANOMALIE przy przeplataniu transakcji i POZIOMY IZOLACJI eliminujące te anomalie:
+			**USTAWIENIE poziomu izolacji 
+				*domyślnie: Read commited); Będzie dotyczyło tylko bieżącego połączenia z DB.
+				*by zmienić poziom izolacji wpierw trzeba wyłączyć domyslnego AUTOCOMMITA poprzez:
+							SET IMPLICIT_TRANSACTIONS ON
+				 (COMMIT do zatwierdzania transakcji, ROLLBACK do wycofywania transakcji)
+				*nie należy ustawiać najwyższego poziomu izolacji 'na wszelki wypadek' gdyż to wpływająca
+				 na szybkośc bazy danych. Należy się zastanowić które anomalie są dla nas akceptowalne:
+							SET TRANSACTION ISOLATION LEVEL READ COMMITTED
+				*sprawdzenie aktualnego poziomu izolacji:
+							DBCC USEROPTIONS	 			
+			**Dostępne poziomy izolacji i występujące w nich anomalie.
+				Poziom izolacji		Niezatwierdzony odczyt		Niepowtarzalny odczyt	  Fantomy
+				Read Uncommitted			TAK							TAK					TAK
+				Read Committed				NIE							TAK					TAK
+				Repeatable Read				NIE							NIE					TAK
+				Serializable				NIE							NIE					NIE
+						(SERIALIZABLE wymaga commita nawet po select'cie)
+				**SNAPSHOT - MIGAWKOWY SYSTEM IZOLACJI (mechanizm wielowersyjności):
+					*serwer pracuję na migawce (wykorzystuję mechanizm wielowersyjności) przez co nie 
+					 zakłada blokad do momentu zakończenia transakcji (przydatne przy długich transakcjach 
+					 które w innych przypadkach mogłyby zbyt długo blokować bazę danych).
+					*W przypadku gdyby ktoś po drodze zmodyfikował dane transakcja z poziomem snapshot 
+					 zwróci błąd przy próbie zatwierdzenia.
+			**ANOMALIE występujące dla różnych poziomów izolacji:
+				*niezatwierdzony odczyt 'dirty read' - drugi użytkownik odczytuje infrmacje która 
+				 została zmieniona przez pierwszego użytkownika bez zatwierdzenia (pierwszy użytkownik 
+				 może wycofać te operacje a wtedy pierwszy oglądał coś czego nie powininen).
+							Transakcja 1:    R(A), W(B)                Rollback
+							Transakcja 2:                    R(B)
+				*niepowtarzalny odczyt - pierwszy użytkownik odczytuję informacje, drugi w tym czasie 
+				 modyfikuję ją izatwierdza. Gdy pierwszy użytkownik znowu odczyta informacje to wyświetla 
+				 mu się zmodyfikowana informacja. Dwa rózne odczyty w tej samej transakcji.				
+							Transakcja 1:     R(A)                            R(B), Commit
+							Transakcja 2:              R(A), W(B), Commit
+				*fantom - rekord, którego nie było w momencie, gdy transakcja rozpoczynała swoje 
+				 działanie. Zwróci wynik którey nie będzie aktualny w stosunku doaktualnej bazy 
+				 danych. (drugi robi selecta przed insertem pierwszego). Dotyczy tylko INSERTÓW:
+							Transakcja 1:     R(A)		W(B)--COMMIT
+							Transakcja 2:     R(A)------------COMMIT
+	IV.Podstawowe obiekty, konstrukcje i znaczenie języka SQL:
+		1*Podstawowe obiekty:
+			*Serwer - zawiera w sobie wszystkie komponenty odpowiedzialne za pracę systemu bazodanowego.
+				Realizuje procesowanie zapytań, zarządzanie składowaniem danych, dostępem.
+			*Baza danych - Każda baza, wraz ze wszystkimi danymi, które zawiera, jest składowana niezależnie, 
+				w przynajmniej dwóch plikach (pliku bazy i pliku logu transakcyjnego).
+			*Tabela – to definicja pewnej klasy obiektów które chcemy przechowywać. Zawiera zbiór elementów 
+				opisany za pomocą atrybutów (kolumn). Każdy atrybut (kolumna), jest określany typem danych.
+				Tabela to obiekt nadrzędny w stosunku do:
+					o kolumn - atrybuty, opisujące elementy przechowywane w tabeli
+					o kluczy - relacje do innych tabel
+					o ograniczeń (constraints) - zapewnienie integralności danych
+					o procedur wyzwalanych (triggers) – obiektów programistycznych do realizowaania cele
+						w moemcie wystąpienia jakiś warunków 
+					o indeksów i statystyk – obiekty poprawiające wydajność zapytań.
+					o i inne: schemat tabel, perspektywy, rekord, strona, funkcje, wyzwalacze, reguły.
+		2*SQL - strukturalny język zapytań wykorzystywany w RDBMS. składa się z 4 rodzajów poleceń:
+			**DDL (Data Definition Language) – język definiowania w bazie danych:
+				***CREATE - CREATE TABLE, CREATE DATABASE, CREATE INDEX - utowrzenie struktury
+				***DROP - DROP TABLE, DROP DATABASE, DROP INDEX - usunięcie struktury
+				***ALTER - ALTER TABLE ADD COLUMN  – zmiana struktury np: dodanie kolumny do tabeli
+			**DQL (Data Query Language) - pobranie danych z bazy (SELECT)
+			**DML (Data Manipulation Language) – język manipulowania danymi:
+				***INSERT – umieszczenie danych w bazie
+				***UPDATE – zmiana danych
+				***DELETE – usunięcie danych z bazy
+			**DCL (Data Control Language) - do zapewnienia bezpieczeństwa dostępu do danych
+				***GRANT - przyznanie praw (np. GRANT ALL PRIVILEGES ON EMPLOYEE TO PIOTR WITH GRANT 
+					OPTION - przyznanie wszystkich praw do tabeli EMPLOYEE użytkownikowi PIOTR z opcją 
+					pozwalającą mu nadawać prawa do tej tabeli)
+				***REVOKE – odebranie użytkownikowi praw
+				***DENY - zabronienie dostępu do danego prawa
+	V.Podstawowe zasady optymalizacji zapytań:
+		1*Indeks jest pomocniczą strukturą nakładaną na kolumnę lub grupę kolumn, służącą polepszaniu 
+		  efektywności wyszukiwania. 
+		 *Indeksy pogarszają efektywność operacji update, delete i insert.
+		 *Bez założonych indeksów serwer musi przejrzeć wszyskie strony z danymi dla danej tabeli a przy
+		  założonym indeksie na danej kolumnie serwer od razu skieruję się na stronę gdzie znajduję się 
+		  dana informacja
+		2*RODZAJE I BUDOWA:
+				*oparte na B+ drzewie w którym węzłem jest 8-kilobajtowa strona pliku zawierająca na 
+				 przemian klucze (wartości indeksowanej kolumny) i wskaźniki do kolejnej ze stron. 
+				 Zaczyna się od korzenia i idzie do liści.
+			*INDEKS POGRUPOWANY (clustered) 
+				**w tabeli można założyć tylko jeden. Strony z danymi są  na poziomie liści. Rekordy 
+				  są w nich posortowane względem klucza wyszukiwania. W SQL Serwerze domyślnie 
+				  zakładany na kolumnę klucza głównego. 
+				**w zapytaniach wymagających SORTOWANIA, któe są bardzo kosztowne: 
+				  (ORDER BY, GROUP BY, DISTINCT) oraz przy wyszukiwaniu ZAKRESOWYM (BETWEEN), gdyż 
+				  wystarczy znaleźć pierwszą wartość, a następnie przejść w poziomie po liściach 
+				  drzewa, czytając kolejne wartości.
+			*INDEKS NIEPOGRUPOWANY (non clustered) 
+				**w tabeli można założyć ich wiele (dokładnie 249 w MS SQL Na poziomie liści są 
+				  jedynie wskaźniki do stron z danymi, a dane trzymane są poza strukturą indeksu i 
+				  są nieuporządkowane.
+				**Dobrze sprawdzi się na kolumnach klucza obcego oraz kolumny często występujące w 
+				  warunku WHERE, szczególnie w zapytaniach zwracających pojedyncze rekordy.
+		3*GDZIE ZAKŁADAĆ INDEKSY:
+			*optymalizator zapytań widzi czy założone indeksy są wykorzystywane
+			*warto zakładać indeksy na:
+				***na klucze główne – indeks jest zakładany automatycznie i musi istnieć.
+				***na klucze obce - ZAWSZE SIĘ ZAKŁADA
+				***na kolumny, które często znajdują się w warunku WHERE 
+				***na kolumny, po których często sortujemy, czyli umieszczane w klauzuli ORDER BY, 
+				   jak również GROUP BY i DISTINCT.
+			*ogranicza się liczbę zakładanych indeksów gdy:
+				***tabela jest często aktualizowana – aktualizacja danych powoduje konieczność 
+				   aktualizacji indeksów, więc indeksy w tej sytuacji mogą zmniejszyć wydajność
+				***Na kolumnach, do których RZADKO odwołujemy się z warunkiem WHERE i po których 
+				   rzadko sortujemy
+				***Na kolumnach zawierających mało unikalne dane
+				***Unikaj stosowania podzapytań
+				***Unikaj stosowania kursorów, 
+				***Unikaj stosowania DISTINCT
+			*jak pisac zapytania by serwer użył INDEKSU -> tak by indeksowane kolumny użyte w wyrażeniu 
+			 w warunku WHERE były jak najmniej złożone:
+							#zamiast: 	SELECT * FROM emp WHERE sal * 12 = 12000
+							#zrób: 		SELECT * FROM emp WHERE sal = 1000
+			*informacje dotyczące indeksów:
+							Sp_help obiekt
+							Sp_helpindex obiekt
+		4*ZAKŁADANIE INDEKSU:
+			*w MSSQL: 
+							DB --> INDEXES --> NEW INDEX --> CLUSTERED INDEX/NONCLUSTERED INDEX 
+								*tylko index: 		 INDEX KEY COLUMNS - ADD
+								*z included columns: INDEX KEY COLUMNS - ADD + INCLUDED COLUMNS ADD
+			*w sql:
+							CREATE NONCLUSTERED INDEX nazwa ON tabela(kolumna)
+			***indeks możesz założyć na więcej niż 1 kolumnie - jest to wtedy INDEKS ZŁOŻONY. Jest to 
+			   przydatne gdy wyszukiwanie robisz po parach wartości. Pierwsza kolumna będzie bardziej 
+			   istotna od pozostałych. Serwer użyje indeksu tylko wtedy gdy w zapytaniu odwołamy się  
+			   do conajmniej 1szej kolumny. Max liczba kolumn w indeksie w MSSQL to 16. 
+			***Strategia "TYLKO INDEKS" - wszystkie kolumny w zapytaniu są indeksowane, dzięki temu
+			   serwer w ogóle nie sięga do stron z danymi - wszystkie dane zostaną odczytane z indeksu.
+			   Strategię "tylko indeks" możemy osiągnąć indeksem złożonym, założonym na wszystkich 
+			   kolumnach użytych w zapytaniu. 
+			***STRATEGIA "INCLUDED COLUMNS" - dołączenie do indeksu niepogrupowanych dodatkowych kolumn
+			   które nie wchodzą w skład klucza indeksu. W warunku w WHERE używasz tylko kolumny 
+			   zaindeksowanej a z 'included columns' możesz korzystać z w SELECT'cie:
+							#indeksujesz "Nazwisko" i dodajesz 'INCLUDED COLUMNS': IMIĘM DATA_UR:
+							SELECT Imie, Nazwisko, Data_ur FROM Osoba WHERE Nazwisko = 'Kowalski'
+		5*PIELĘGNACJA INDEKSÓW - po czasie indeksy ulegają fragmentacji czy listają sie nieoptymalne
+			*Można to sprawdzić w zakładce Fragmentation we właściwościach indeksu lub:
+							DBCC SHOWCONTIG (tabela, indeks)
+			 INTERESUJĄ NAS INFORMACJE:
+					**Total Fragmentation - przy przekroczeniu 10% powinno się przebudować indeks
+					**Depth(wysokośc drzewa) - powinno miec 2 do 3 poziomów
+					**Page fullness
+					**Pages(liczba stron)
+			*By zoptymalizować indeks można:
+				*ZREORGANIZOWAĆ INDEKS (gorszy efekt ale szybsze) -Reorganize w Management Studio lub
+							ALTER INDEX nazwa ON tabela REORGANIZE.
+				*ZBUDOWAĆ INDEKS OD POCZĄTKU (lepsze ale kosztowniejsze) -Rebuild w Management Studio
+							ALTER INDEX nazwa ON tabela REBUILD
+				 lub usuwając stary i budując nowy:
+							CREATE NONCLUSTERED INDEX nazwa
+							ON tabela(kolumna)
+							WITH DROP_EXISTING
+		6*DODATKI:
+			*PODGLĄD PLANU WYKONANIA ZAPYTANIA:
+				*włączasz ikonę: 
+						INCLUDE ACTUAL EXECUTION PLAN
+					SQL:(
+						SET STATISTICS IO ON
+						SET STATISTICS TIME ON
+				*użytkownik nie decyduje jak będzie wykonane zapytanie - by sprawdzić czy indeks 
+				 zostanie użyty czy nie trzeba włączyć opcję: wyświetlenie planu wykonania zapytania. 
+				*OPCJE OPERACJI:
+					**TABLE SCAN - (NIEPOŻĄDANE przy WHERE) - odczytano wszystkie wiersze tabeli. 
+								Sugeruję to że powinno się rozważyć założenie indeksu. 
+					**INDEX SEEK - (POŻĄDANE) - został użyty indeks
+					**INDEX SCAN - (NIEPOŻĄDANE dla WHERE, POŻĄDANE dla SORTOWANIA przy użyciu indeksu)
+								Przy WHERE warto rozważyc założenie ząłożenie innych indeksów.
+					**NESTED LOOPS - złączenie z użyciem pętli
+					**MERGE JOIN - złączenie metoda scalania		  
+============================================================================================================
+============================================================================================================
+============================================================================================================
+============================================================================================================
+============================================================================================================
+============================================================================================================
 				
 100* SILNIKI BAZODANOWE:
 	1*MySQL:
@@ -39,6 +261,7 @@ dla NULL - nie może być WHERE cos = NUll
 				source ŚcieżkaWzglednaNazwaPliku 
 			 (najlepiej umieścić już sobie ten plik w katoalogu bin to wystarczy że wpiszesz tylko nazwę 
 			 pliku)
+			
 			
 	2* ORACLE - SQL SERVER (PL/SQL):
 		1* SQLDEVELOPER - program do zarządzania bazami danych w ORACLE (do pobrania w folderze matejewski)
@@ -70,114 +293,1593 @@ dla NULL - nie może być WHERE cos = NUll
 	3* SQLITE:		
 		Foregin Key - przy tworzeniu tabeli w Sqlite nie trzeba przypisywać kolumnie żę jest FOREIGN KEY
 		
-	4* MSSQL: 
-		1* MANAGEMENT STUDIO - program do zarządzania bazami danych w Mssql.
-		2* RÓŻNICE W STOSUNKU DO INNYCH SILNIKÓW:
-			A) KONKATENACJA (znak: '+' ):
-				*możemy łączyć stały tekst z wybraną tręścią:
-					SELECT ‘nazwisko: ’ + ename FROM emp
-				*możemy łączyć tekst z liczbami ale trzeba je przekonwertować na tekst:
-					SELECT ename +  CONVERT(VARCHAR,sal)  FROM emp
-			B) zamiast LENGTH funkcja LEN 
-		3* FUNKCJE SPECYFICZNE:
-			1) ISNULL(wartość, zamienić_na) :
-				*zamiana null'a na dowolną wartość	
-			2) DATEDIFF(DATE, data1, data2) – 
-				*oblicza różnicę między datami:
-				*Przykład: różnica w czasie (wskaż gościa który miał najdłuższą rezerwacje):
-					SELECT g.* FROM Gosc AS g 
-					INNER JOIN Rezerwacja AS r ON g.IdGosc = r.IdGosc
-					ORDER BY DATEDIFF(Date, DataOd, DataDo) DESC
-					LIMIT 1;
+	4* MSSQL + MANAGEMENT STUDIO:
+		100* RÓŻNICE W STOSUNKU DO INNYCH SILNIKÓW:
+			x1* RÓŻNICE:
+				A) KONKATENACJA (znak: '+' ):
+					*możemy łączyć stały tekst z wybraną tręścią:
+								SELECT ‘nazwisko: ’ + ename FROM emp
+					*możemy łączyć tekst z liczbami ale trzeba je przekonwertować na tekst:
+								SELECT ename +  CONVERT(VARCHAR,sal)  FROM emp
+				B) zamiast LENGTH funkcja LEN 
+			x2* FUNKCJE SPECYFICZNE:
+				1) ISNULL(wartość, zamienić_na) :
+					*zamiana null'a na dowolną wartość	
+				2) DATEDIFF(DATE, data1, data2) – 
+					*oblicza różnicę między datami:
+					*Przykład: różnica w czasie (wskaż gościa który miał najdłuższą rezerwacje):
+								SELECT g.* FROM Gosc AS g 
+								INNER JOIN Rezerwacja AS r ON g.IdGosc = r.IdGosc
+								ORDER BY DATEDIFF(Date, DataOd, DataDo) DESC
+								LIMIT 1;
 			3) DATEPART(datepart, date)
 				*zwraca część daty date (year, month, day itd.) wyspecyfikowaną w pierwszym argumencie
 			4) LIMIT/TOP:
 				*zamiast klauzuli LIMIT lub FETCH FIRST masz 'TOP numbers;'
+			5) CAST(myColumn as float) oraz CEILING zamiast CEIL
+								select cast(ceiling(avg(cast(salary as float)) - 
+								avg(cast(replace(salary, '0', '') as float))) 
+								as int) from employees;
+		7*DODATKI 
+			1*INNE OPCJE ADMINISTRACYJNE:
+				1**LOG SHIPPING - automatyczne, regularne wykonywanie kopii zapasowej dziennika transakcji,
+				   która jest automatycznie odtwarzana na serwerach zapasowych. Pozwala na łatwe 
+				   skonfigurowanie zapasowych serwerów które w przypadku awarii mogą przejąć zadania serwera 
+				   głównego lub stworzenie serwerów odciążających (gdzie bazy są tylko do odczytu). 
+				   2 warianty:
+						**No recovery mode - baza w któej odtwarzane dziennika pozostaje w trybie no 
+						  recovery a więc nie ma możliwości wysyłania do niej zapytań.
+						**Standby mode - baza, w której odtwarzane są dzienniki, pozostaje w trybie tylko 
+						  do odczytu. Są możliwe SELECTy ale nie modyfikacje.  
+				2**MIRRORING - automatycznie synchronizuję jedną zapasową bazę danych na innej instancji 
+				   serwera. Synchronizacja jest ciągła i wymaga stałego połąćzenia między serwerami. W 
+				   razie awarii zapasowa baza danych może automatycznie przejąć rolę bazy głównej ale w
+				   trakcie działania bazy głównej nie mam ożliwości pracy z zapasową bazą.
+				3**REPLIKACJA - możemy definiować, które obiekty (tabele, procedury składowane, perspektywy)
+				   będą replikowane. Możliwe jest skonfigurowanie rozproszonej bazy danych tak, aby możliwa 
+				   była praca nie tylko ze źródłową bazą, lecz również w dowolnym węźle:
+						**artykuł - pojedyncza tabela (lub zbiór jej wierszy albo kolumn), perspektywa lub 
+						  procedura składowana przeznaczona do replikacji 
+						**publikacja - jeden lub kilka artykułów pochodzących z wybranej bazy danych, 
+						  udostępnione innym węzłom w środowisku replikacji.
+					a)Typy serwerów w środowisku replikacji (publikator może być jednocześnie 
+					  subskrybentem dla innego publikatora (i odwrotnie)):
+						**Publikator – serwer, na którym przechowywana jest jedna lub wiele publikacji, 
+						  które zamierzamy rozpropagować.
+						**Dystrybutor – serwer, na którym została zlokalizowana systemowa baza danych 
+						  Distribution. Zawiera wszystkie zmienione dane, które oczekują na rozpropagowanie.
+						  Użytkownicy nie korzystają z niej bezpośrednio. Jeden dystrybutor może obsługiwać
+						  wiele publikatorów i rozsyłać dane do wielu subskrybentów.
+						**Subskrybent – serwer, który pobiera dane od publikatora poprzez dystrybutor i 
+						  przechowuje je w swojej bazie danych, udostępniając je użytkownikom. 
+					b)Modele replikacji:
+						**Centralny publikator – jeden centralny serwer, pełniący jednocześnie rolę 
+						  publikatora i dystrybutora dla wielu subskrybentów, np. centrala firmy rozsyła 
+						  dane do oddziałów.
+						**Centralny publikator ze zdalnym dystrybutorem – podobna konfiguracja do 
+						  poprzedniej, z tym że dystrybutor znajduje się na oddzielnym serwerze, dzięki 
+						  czemu nie obciąża głównego serwera zadaniami związanymi z dystrybucją danych
+						**Centralny subskrybent – wiele serwerów publikujących wysyła dane do jednego, 
+						  centralnego subskrybenta, np. centrali firmy.
+						**Publikujący subskrybent – dane są najpierw przesyłane do serwera pełniącego rolę 
+						  subskrybenta, publikatora i dystrybutora, który przesyła je dalej, do wielu 
+						  subskrybentów.
+					c)Metody realizacji subskrypcji:
+						**Push – publikator wysyła dane poprzez dystrybutor do subskrybenta.
+						**Pull – subskrybent pobiera dane z dystrybutora i decyduje, kiedy dane są 
+						  synchronizowane.
+					d)Rodzaje replikacji:
+						**Replikacja migawkowa (Snapshot) - raz na jakiś czas robiona jest migawka i 
+						  wysyłana do subskrybentów u których dane są nadpisywane
+						**Replikacja transakcyjna (Transactional) – Polega na śledzeniu i przechwytywaniu 
+						  przez publikator wszystkich zmian typu INSERT, UPDATE, DELETE i zachowywaniu ich 
+						  w dystrybucyjnej bazie danych.
+						**Replikacja scalająca (Merge) – Najbardziej skomplikowany typ replikacji. Daje 
+						  możliwość wprowadzania zmian zarówno na publikatorze, jak i na każdym 
+						  subskrybencie.
+				4**WYSZUKIWANIE PEŁNOTEKSTOWE Full-Text Search -  pozwala znacznie przyspieszyć i ułatwić 
+				   wyszukiwanie w dużych polach typu CHAR, VARCHAR, TEXT lub BINARY. Djąe większą wydajnośc 
+				   niż operator LIKE. Przydatne przy tworzeniu wyszukiwarek. 
+					**Na serwerze trzeba włączyć usługę SQL Server FullText Search
+					**Dla wybranej bazy danych trzeba włączyć opcję wyszukiwania pełnotekstowego:
+									sp_fulltext_database 'enable'
+					**Tabela, na której chcemy użyć tej opcji, musi mieć założony unikalny indeks na 
+					  kolumnie niedopuszczającej NULL (może być to indeks domyślny na kluczu głównym)
+					**Dla każdej bazy danych, w której chcemy użyć wyszukiwania pełnotekstowego, musimy 
+					  założyć tzw. katalog (Catalog).Opcję tworzenia katalogów znajdziemy w Management 
+					  Studio w gałęzi Storage i Full Text Catalogs.
+					**Najczęściej używane funkcje pozwalające na wykorzystanie indeksu pełnotekstowego to:
+						***CONTAINS(kolumna, 'wyraz') – zwraca logiczną wartość "prawda", gdy w dowolnym 
+							miejscu w polu znajduje się szukany wyraz.
+									SELECT * FROM wiadomosc WHERE CONTAINS(tresc, 'wyraz')
+						***FREETEXT(kolumna, 'treść') – zwraca logiczną wartość "prawda", gdy co najmniej 
+							jeden z szukanych wyrazów znajdzie się w polu, niezależnie od kolejności.
+					**przy używaniu indeksów pełnotekstowych trzeba je aktualizować:
+						***Całkowite (Full) – buduje indeks od początku, może być bardzo czasochłonne.
+						***Przyrostowe (Incremental) – wymaga, aby w tabeli była założona kolumna typu 
+							Timestamp.
+						***Aktualizacyjne (Update) –wymaga włączonej opcji śledzenia zmian -Change Tracking
+					**Indeksy pełnotekstowe przechowywane są w osobnych plikach, tzw. Full Text Catalogs.
+					  a nie w plikach '.mdf' ,'.ndf'
+				5**Skrypty administracyjne - Skrypty możemy generować dla wybranego obiektu, klikając na 
+				   nim prawym przyciskiem myszy i wybierając opcję Script... .Możemy też generować skrypt 
+				   dla wszystkich obiektów danego typu z wybranej bazy danych, używając opcji Tasks i 
+				   Generate Scripts
+				6*KORZYSTANIE Z PERSPEKTYW SYSTEMOWYCH:
+									SELECT 'GRANT SELECT ON ' + name + ' TO abc' FROM sys.tables
+						sys.filegroups – informacje na temat grup plików
+						sys.database_files – informacje na temat plików bazy danych
+						sys.indexes – informacje na temat indeksów
+						sys.sysusers – informacje na temat użytkowników bazy danych
+						sys.tables – informacje na temat tabel bazy danych
+						sys.objects – informacje na temat wszystkich obiektów bazy danych
+				7*BULK COPY - dostępne z poziomu wiersza poleceń, import i eksport bazy danych:
+					*z poziomu systemu administracyjnego:
+									bcp baza_danych..tabela out plik.txt -c -T
+					*z poziomu SQL:
+									BULK INSERT baza_danych..tabela FROM 'c:\plik.txt'
+				8*DATABASE MAIL - narzędzie do wysyłania emaili (wymagane jest podłączeni własnego emaila)
+				
+			2*MONITOROWANIE:
+				1**EVENT VIEWER - MONITOROWANIE poprzez SYSTEMOWY DZIENNIK ZDARZEŃ:
+					**wewnątrz systemu WINDOWS w USŁUGI -> DZIENNIK ZDARZEŃ lub w ADMINISTRARIVE TOOLS -> 
+					  APPLICATIONSz najdują się zdarzenia dotyczące pracy systemu operacyjnego oraz serwera 
+					  baz danych. W logach zapisywane są błędy i zaplanowane zdarzenia. w gałęzi 
+					  APPLICATIONS znajdują się działy: 
+						*INFORMATION - informacje o poprawnym wykonaniu zaplanowanego zdarzenia 
+						*WARNING - ostrzeżenia
+						*ERROR - błędy
+					**inne miejsce dziennika to w MS SQLu w Management -> Management Studio -> SQL Server 
+					  Logs oraz dla SQL Server Agent w gałęzi SQL Server Agent -> Error Logs.
+				2**PROFILER -  podgląd w czasie rzeczywistym zdarzeń związanych z pracą serwera bazy danych
+					**Najczęstszym zastosowaniem jest przechwytywanie instrukcji SQL wykonywanych przez 
+					  użytkowników i Wyszukiwanie błędów wraz z monitorowaniem pracy aplikacji. Ponadto
+					  można monitorować użycie bazy danych.
+					**Po uruchomieniu narzędzia Profiler wybieramy opcję New Trace i robimy start. Po 
+					  wszystkim zapisujemy wszystko w pliku z rozszerzeniem '.trc'.
+				3**PERFORMANCE - (w ADMINISTRATIVE TOOLS -> monitorowanie wydajności). Narzędzie to pozwoli 
+				   nam na szukanie zależności między wartościami liczników związanych z funkcjonowaniem 
+				   serwera SQL, a wydajnością podstawowych komponentów komputera (pamięć RAM, obciążenie 
+				   procesora, obciążenie dysku twardego)
+						*Databases – Transactions/sec – liczba transakcji wykonanych na sekundę
+						*SQL Statistics – Batch Requests/sec – liczba wywołań SQL na sekundę
+						*General Statistics – User Connections – liczba połączeń użytkowników
+						*Locks – Lock Waits/sec –liczba transakcji oczekujących na zwolnienie blokad na sek.
+						*Plan cache – Cache Hit Ratio – współczynnik określający, jak często plan wykonania 
+						 zapytania został znaleziony w pamięci cache, dzięki czemu nie musiał być tworzony 
+						 od początku. Im wartość bliższa 100%, tym lepiej
+						*Buffer Manager – Buffer cache hit ratio – współczynnik określający, jaki procent 
+						 stron został znaleziony w buforze w stosunku do stron, które musiały być pobrane 
+						 z dysku.
+						*Buffer Manager – Page reads / sec – liczba stron odczytanych z dysku na sekundę.
+						*Buffer Manager – Lookups / sec – liczba poszukiwanych stron w buforze, a więc 
+						 odczytów logicznych.
+				4**ALERTS i OPERATORS  - (Management Studio w gałęzi SQL Server Agent) - jak ma zareagować 
+				   serwer na zajście pewnych zdarzen oraz, które osoby mogą otrzymywać powiadomienia o 
+				   alarmach. (Operatorów nie należy mylić z użytkownikami (User) lub kontami logowania 
+				   (Login) - Jest to tylko zbiór informacji kontaktowych)
+				
+		6*AUTOMATYZACJA CZYNNOŚCI:
+			1*PODSTAWY:
+				**SQL Server Agent - musi być ta usługa włączona aby serwer mógł automatycznie uruchamiać 
+				  zaplanowane zadania (domyślnie usługa wyłączona - można ustawić na automatyczne 
+				  uruchomienie przy uruchomieniu systemu)
+				**Informacje na temat zaplanowanych zadań są przechowywane w systemowej bazie danych Msdb
+			2*MAINTANCE PLANS (do automatyzacji czynności administracyjnych) (gałąź Management):
+				*RODZAJE:
+					**Maintenance Plan Wizard - utworzenie planu w trybie kreatora. 
+					**New Maintenance Plan - utworzenie planu przy pomocy edytora graficznego. (czerwony X 
+					  sugeruję że zadanie nie jest poprwanie skonfiguroawne i trzeba je edytowac) (ma więcej
+					  możliwości niz Maintance Plan Wizard) 
+						***po dodaniu zdarzenia możemy je łączyć strzałkami i określić typ strzalki:
+							*Success – powiązane zadanie uruchomi się tylko wtedy, gdy poprzedzające 
+								zadanie zakończy się sukcesem.
+							*Failure – powiązane zadanie uruchomi się tylko wtedy, gdy poprzedzające 
+								zadanie zakończy się błędem.
+							*Completion – powiązane zadanie uruchomi się po poprzedzającym zadaniu, 
+								niezależnie od tego, czy zakończyło się ono z błędem czy bez.
+				*OPCJE DO ZAPLANOWANIA TO:
+					*Sprawdzenie integralności bazy.
+					*Zmniejszenie rozmiarów plików (Shrink)
+					*Pielęgnacja indeksów (opcje Reorganize i Rebuild)
+					*Aktualizacja statystyk
+					*Czyszczenie historii – serwer przechowuje w bazach systemowych historię wykonywania
+						kopii zapasowych, wykonywania zadań (jobs) i planów. Możemy czyścić stare wpisy.
+					*Uruchomienie zadania (job)
+					*Wykonanie kopii zapasowej baz danych (pełnej, różnicowej lub dziennika transakcji)
+					*Usuwanie plików, np. starych kopii zapasowych.		
+					*(w trybie edytora graficznego): uruchomienie dowolnego kodu Transact-SQL.
+				*Aby uzyskać informacje na temat historii wykonań, należy użyć opcji View history.	
+			3**JOBS (automatyzacja czynności w serwerze baz danych):
+				*zaplanowane zadanie może składać się z wielu kroków (steps). W tym przypadku nie mamy 
+				 jednak graficznego narzędzia czy kreatora pozwalającego na zdefiniowanie sposobu 
+				 wykonania zadania. Treść kroku musimy zdefiniować, wpisując kod.
+				*Istnieje kilka rodzajów kroków. Najczęściej jest to wywołanie skryptu Transact-SQL. 
+				 Ponieważ każda czynność, którą możemy wykonać na serwerze, ma swój odpowiednik w postaci 
+				 komend języka T-SQL.
+			4**PODSUMOWANIE:
+				*Maintenance Plans umożliwiają "wyklikanie" typowych czynności administracyjnych bez 
+				 potrzeby pisania kodu.
+				*Jobs pozwalają na definiowanie zadań innych niż tylko wykonanie kodu na serwerze, np. 
+				 uruchomienie zewnętrznego programu lub komendy systemu operacyjnego. Zawartość zadania 
+				 będziemy jednak musieli wpisać z poziomu kodu.
+
+		5*KOPIE ZAPASOWE DB:
+			1*ZASADAY DO STRATEGII WYKONYWANIA KOPII ZAPASOWYCH:
+				*Jak często i w jakich godzinach zmieniają się dane
+				*Jak duża jest baza danych
+				*Jak ważne są dane
+				*Z jakim przestojem jesteśmy w stanie pogodzić się w przypadku awarii (zbyt skomplikowane
+				 strategie kopii zapasowych są czasochłonne przy odtwarzaniu)
+			2*BACKUP w MSSQL:
+				1**PODSTAWY:
+					*Jeden plik może zawierać wiele kopii zapasowych (również z różnych baz)
+					*Pojedyncza kopia zapasowa dotyczy jednej bazy danych. Nie możemy więc „jednym 
+					 kliknięciem” wykonać kopii zapasowej całego serwera baz danych. 
+					*kopia zapsaowa zawiera wszystkie obiekty bazy: tabele, perspektywy, procedury 
+					 składowane, wyzwalacze, użytkowników wraz z uprawnieniami itd.
+					*użytkownicy (user) są pamiętani w konkretnej bazie danych, ale konta logowania (login) 
+					 są przechowywane w bazie systemowej master. W przypadku odtwarzania po awarii nie
+					 wystarczy więc odtworzyć naszej bazy danych. Konieczne będzie również przywrócenie 
+					 obiektów w bazie systemowej lub całej bazy master.
+					*UPRAWNIENIA DO WYKONYWANIA KOPII ZAPASOWYCH mają:
+							Sysadmin (rola na poziomie serwera)
+							Db_owner (rola na poziomie bazy danych)
+							Db_backupoperator (rola na poziomie bazy danych)
+							Użytkownik, który otrzymał prawo Backup database dla danej bazy
+				2*OPCJE TWORZENIA KOPII ZAPASOWYCH:
+				  **Kopię zapasową możemy wykonać bezpośrednio do wskazanego pliku lub użyć zdefiniowanego 
+					na serwerze urządzenia, tzw. backup device.  UTWORZENIE BACKUP DEVICE: 
+									#(gałąź Server Objects, Backup devices) 
+									#sql: sp_addumpdevice 'disk', 'nazwa', 'c:\backup\plik.bak'
+						*bezpośrednio do pliku na dysku - pełny, różnicowy i dziennika transakcji:
+								BACKUP DATABASE nazwa_bazy TO DISK = 'c:\backup\plik.bak'
+								BACKUP DATABASE nazwa_bazy TO DISK = 'c:\backup\plik.bak' WITH DIFFERENTIAL
+								BACKUP LOG nazwa_bazy TO DISK = 'c:\backup\plik.trn'
+						*do nośnika (backup device) - pełny, różnicowy i dziennika transakcji:
+								BACKUP DATABASE nazwa_bazy TO device
+								BACKUP DATABASE nazwa_bazy TO device WITH DIFERENTIAL
+								BACKUP LOG nazwa_bazy TO device
+						*gdy wykonujemy backup do nośnika (backup device) albo do pliku domyślnie do 
+						 istniejącej kopii zapasowej zostanie dopisana kolejna. Wtedy przy odtwarzaniu 
+						 bazy musimy wskazać dokładną kopię. Możemy zamiast dopisywania nadpisać starą 
+						 kopię nową (w MsSql opcje append lub overrite). W sql:
+								*dopisanie do nośnika nowej kopii zapasową (opcja domyślna):
+										BACKUP DATABASE nazwa_bazy TO device WITH NOINIT
+								*z nadpisaniem:	
+										BACKUP DATABASE nazwa_bazy TO device WITH INIT
+						*Zawartość pliku z kopią zapasową łatwo sprawdzić przy użyciu opcji Restore 
+						 narzędzia Management Studio lub w SQL:
+										RESTORE HEADERONLY FROM DISK = 'ścieżka' 
+						*jeden backup możmy wykonać w kilku plikach/nośnikach --> jest to o wiele szybsze
+						 gdyż dochodzi do równoległego zapisu, jednakże z zasady nie powinno się tak 
+						 robić (w polu Destination trzeba zadbać o to by był 1 nośnik)
+				  **TYPY KOPII ZAPASOWYCH:
+						*Pełny (Full) – zawiera całą bazę danych.
+						*Różnicowy (Differential) – zawiera jedynie zmiany w stosunku do ostatniej PEŁNEJ 
+						 kopii zapasowej (a nie różnicowej)
+						*Dziennika transakcji (Tranasaction log) – kopia zapasowa dziennika transakcji 
+					*BACHUP PEŁNY i RÓŻNICOWY:
+						*dla małej bazy możemy pozwolić sobie na wykonywanie pełnej kopii ale dla ogromnej 
+						 DB może być koniecznie użycie innych rodzajów kopii
+						*W przypadku kopii zapasowej pełnej lub różnicowej możemy określić, że kopia
+ 						 dotyczy całej bazy danych (Database) albo tylko jej wybranych plików lub grup 
+						 plików (Files and filegroups).
+						*W ramce Destination i wskazujesz miejsce, gdzie ma być wykonany backup. Bardzo 
+						 ważne jest, aby ramka Destination zawierała wyłącznie jeden plik. Inaczej kopia 
+						 zapasowa zostanie wykonana w kilku częściach.
+					*KOPIA ZAPASOWA DZIENNIKA TRANSAKCJI 
+						*aby backup dziennika transakcji mógł być odtworzony, niezbędne jest wcześniejsze 
+						 odtworzenie pełnej kopii zapasowej (jeżeli po drodze pojawiły się różnicowe to 
+						 tylko ostatnia różnicowa)(potem wszystkie logu po ostatniej różnicowej)
+						*w momencie wykonywania kopii zapasowej dziennika transakcji jest on czyszczony 
+						 ze starych kopii
+						*backup dziennika transakcji powinno wykonywać się kilka razy dziennie między 
+						 backupami róznicowymi. 
+						*pozwala odtworzyć bazę do stanu z dowolnego punktu w czasie, nawet z dokładnością 
+						 do milisekund
+									RESTORE LOG nazwa_nazy 
+									FROM DISK = 'ścieżka' 
+									WITH STOPAT = '2008-03-17 23:55'
+						*Rozpoczynając transakcję, możemy utworzyć tzw. punkt roboczy, czyli miejsce, do
+ 						 którego w razie czego będziemy mogli odtworzyć bazę z dziennika, nie pamiętając 
+						 dokładnej daty i godziny:
+									BEGIN TRANASACTION nazwa WITH MARK
+							**Odtwarzanie do punktu roboczego:
+									RESTORE LOG nazwa_bazy FROM DISK = 'ścieżka' 
+									WITH STOPATMARK nazwa_punktu
+						*RECOVERY MODEL - do baz produkcyjnych zalecany jest typ FULL a tam gdzie nie 
+						 zależy nam na bezpieczeństwie (tj przy bazach raportowych, czy analitycznych)
+						 model Simple:
+							**Full – do dziennika są zapisywane wszystkie transakcje i są tam przechowywane 
+							  do momentu wykonania kopii zapasowej dziennika.
+							**Bulk logged – do dziennika nie są zapisywane operacje masowego kopiowania 
+							  takie jak BULK INSERT czy SELECT ... INTO. Możemy wykonywać backup 
+							  dziennika transakcji, lecz w razie awarii może być konieczne powtórzenie 
+							  operacji masowego kopiowania.
+							**Simple – po zatwierdzeniu i zapisaniu w pliku z danymi transakcje są 
+							  czyszczone z logu. Przy tym ustawieniu nie ma możliwości wykonywania kopii 
+							  zapasowej dziennika transakcji,
+				  **BACKUP SYSTEMOWYCH BAZ DANYCH:
+						*Jeżęli dane w jednych z poniższych baz systemowych są często zmieniane, warto 
+						 regularnie wykonywać kopie zapasowe danej bazy. Jeżeli nie to warto robić backup 
+						 tylko wtedy gdy zmieniają się dane w poszczególnej bazie:
+							*baza MASTER  - info na temat baz danych, kont logowania i innych obiektów na 
+							 poziomie serwera.
+							*baza MSDB - baza na temat zaplanowanych zadań i powiązanych z nimi obiektów.
+							*Tempdb – jest to baza, w której są przechowywane jedynie dane tymczasowe. Nie 
+							 ma sensu wykonywać jej kopii zapasowej.
+							*Model – jest to szablon bazy danych, używany przy tworzeniu nowych baz 
+							 użytkownika. 
+				3*ODTWORZENIE BAZY DANYCH:
+					***Przy odtwarzaniu bazy danych z kopii zapasowych różnego typu konieczne jest 
+					   zachowanie odpowiedniej kolejności:
+							*najpierw najnowszy backup pełny.
+							*W drugiej kolejności odtwarzamy najnowszy backup różnicowy (wystarczy tylko 
+							 najnowszy gdyż najnowszy backup różnicowy jest sumą wszystkich zmian od 
+							 ostatniego backupu pełnego. 
+							*Następnie odtwarzamy wszystkie po kolei kopie zapasowe dziennika transakcji, 
+							 wykonane po ostatniej odtworzonej kopii zapasowej (pełnej lub różnicowej).
+					***Przy odtwarzaniu bazy z kilku rodzajów kopii zapasowych bardzo istotne jest, aby 
+					   baza NIE PRZESZŁA procesu recovery. W jego trakcie są między innymi wycofywane 
+					   transakcje, które nie mogą być dokończone (na przykład po awarii) i baza jest 
+					   przygotowywana do pracy. Jeżeli baza przejdzie proces recovery, nie będziemy w 
+					   stanie odtworzyć na nią kolejnych kopii zapasowych. Zasada jest więc taka, że 
+					   odtwarzając kolejne kopie, włączamy opcję NORECOVERY, a dopiero przy ostatniej 
+					   odtwarzamy backup normalnie.
+							**przy użyciu backup device:
+								RESTORE DATABASE nazwa_bazy FROM backup_device
+								RESTORE DATABASE nazwa_bazy FROM backup_device WITH NORECOVERY
+							**przy użyciu pliku:
+								RESTORE DATABASE nazwa_bazy FROM DISK = 'ścieżka'
+								RESTORE DATABASE nazwa_bazy FROM DISK = 'ścieżka' WITH NORECOVERY
+									*SQL Server zapisuje w pliku z kopią zapasową informacje na temat 
+									 lokalizacji plików z danymi oraz dziennikiem transakcji oryginalnej 
+									 bazy i przy odtwarzaniu z użyciem pliku próbuje umieścić pliki w tym 
+									 samym miejscu. Gdy na docelowym serwerze dana ścieżka nie istnieje, 
+									 odtworzenie nie powiedzie się. Konieczna jest wtedy zmiana ścieżek, 
+									 pod którymi będą zapisane pliki bazy danych (przy odtwarzaniu:  
+									 zakładka Options i skorygowanie ścieżek wszystkich plików) lub SQL:
+												RESTORE DATABASE nazwa_bazy FROM DISK = 'ścieżka'
+												WITH MOVE nazwa_pliku TO 'ścieżka', 
+												MOVE nazwa_pliku2 TO 'ścieżka'
+		4*UPRAWNIENIA - KONTA, ROLE I SCHEMATY:
+				**Opcje:
+					GRANT – nadaje uprawnienia
+					DENY – zabrania dostępu, DENY zabrania dostępu i jest silniejsze niż GRANT.
+					REVOKE – czyści prawo lub zakaz dostępu
+				**Użytkownik, który otrzymał uprawnienia, domyślnie nie może przekazać ich dalej, lecz 
+				  możemy to zmienić, dodając klauzulę WITH GRANT OPTION.
+		  I.KONTA:
+			1*TWORZENIE KONT LOGOWANIA (gałąź Security / Logins) - (NA POZIOMIE SERWERA) ma służyć jedynie 
+			  do połączenia z instancją serwera. Nie daję jednak uprawnień do obiektów:
+					**dla użytkowników Windowa (Windows Authentication) nazwa konta logowania ma postać: 
+					  nazwa_komputera\nazwa_użytkownika lub nazwa_domeny\nazwa_użytkownika, gdzie nazwa 
+					  użytkownika jest loginem używanym w systemie Windows.
+								CREATE LOGIN nazwa FROM WINDOWS
+					**dla konta pamiętanego w serwerze SQL (SQL Server Authentication), możemy stworzyć 
+					  konto logowania, podając dowolny login i hasło.
+								CREATE LOGIN nazwa WITH PASSWORD = 'hasło'
+				*modyfikacja konta logowania:	
+								ALTER LOGIN – modyfikuje konto logowania
+								DROP LOGIN – usuwa konto logowania
+				*Poziom uprawnień nadawany dla konta logowania można zrobić tylko na poziomie SERWERA.
+				 Są to prawa administracyjne, pozwalające wykonać określone czynności na instancji serwera 
+			     bazy danych. Nie dotyczą konkretnych obiektów zawartych w bazach danych. (właściwości 
+				 instancji w Permissions) lub (właściwości konta logowania (zakładka Securables)):
+								GRANT Alter any database – pozwala na modyfikowanie ustawień dowolnej DB
+													Umożliwia również zakładanie i usuwanie baz danych.
+								GRANT Create any database – pozwala tylko zakładać nowe bazy danych.
+								GRANT Alter any login – pozwala modyfikować i zakładać konta logowania.
+								GRANT Connect SQL – pozwala na połączenie się z serwerem (domyślne)			  
+			2*TWORZENIE KONTA UŻYTKOWNIKA (gałąź Security / Users w wybranej bazie danych) - (NA POZIOMIE 
+			  KONKRETNEJ BAZY DANYCH):
+				*zaraz po stworzeniu konta logowania, można dla 1 loginu utworzyć 1 Usera dla danej bazy:
+								CREATE USER nazwa FOR LOGIN nazwa_konta
+				*modyfikacja konta użytkownika:
+								ALTER USER – modyfikuje użytkownika
+								DROP USER – usuwa użytkownika
+				*Poziom uprawnień nadawany dla konta użytkownika można nadac na poziomie: DB, obiektów 
+				 (tabel, procedur, perspektyw), dla roli, do schematu (właściwości wybranej bazy danych ->
+ 				 Permissions lub właściwości wybranego użytkownika -> Securables). Uprawnienia te nadajemy 
+				 dla każdej bazy z osobna. 
+				*UPRAWNIENIA NA POZIOMIE DB
+							**uprawnienia przypisujemy poprzez opcję GRANT:
+						  *PRZYKŁAD:
+								GRANT SELECT TO uzytkownik
+					**tworzenia i modyfikacji obiektów tej bazy (CREATE i ALTER dla danego typu obiektu):
+						Create table – pozwala tworzyć tabele.
+						Create view – pozwala tworzyć perspektywy.
+						Alter any user – pozwala tworzyć i modyfikować użytkowników.
+						Alter – pozwala tworzyć i modyfikować dowolne obiekty.
+					**wykonywania określonych czynności na bazie danych (np. BACKUP DATABASE czy SHOW PLAN):
+						Backup database – pozwala wykonywać kopię zapasową.
+						Backup log – pozwala wykonywać kopię zapasową dziennika transakcji.
+					**wykonywania instrukcji SQL (np. SELECT, EXECUTE) na wszystkich obiektach bazy:
+						Execute – pozwala wykonywać wszystkie procedury składowane w bazie.
+						Select – pozwala wykonywać instrukcję SELECT na ALL tabelach bazy.
+						Insert – pozwala wykonywać instrukcję INSERT na ALL tabelach bazy.
+						Update – pozwala wykonywać instrukcję UPDATE na ALL tabelach bazy.
+						Delete – pozwala wykonywać instrukcję DELETE na ALL tabelach bazy.
+						Show plan – pozwala wyświetlać plan wykonania zapytania.
+				*UPRAWNIENIA NA POZIOMIE OBIEKTÓW: 
+							**Uprawnienia przekazujemy poprzez zaznaczenie opcji GRANT. Użytkownik 
+							  otrzymujący prawa, będzie mógł je przekazać dalej (With Grant). 
+						  *PRZYKŁADY:
+								GRANT SELECT, INSERT ON tabela TO użytkownik
+								GRANT SELECT ON tabela (kolumna1, kolumna2) TO uzytkownik
+						Select – Dostępne dla tabel i perspektyw. Pozwala na instrukcje SELECT.
+						Insert – Dostępne dla tabel i perspektyw. Pozwala wstawiać wiersze.
+						Update – Dostępne dla tabel i perspektyw. Pozwala modyfikować rekordy.
+						Delete – Dostępne dla tabel i perspektyw. Pozwala usuwać wiersze.
+						Execute – Dostępne dla procedur składowanych. Pozwala na ich wykonywanie.
+						Alter – Pozwala na zmianę ich struktury (np. schematu tabeli).
+						Control – Daje pełne prawa do tego obiektu.
+						View definition – Pozwala oglądać definicję obiektu (np. kod procedury).
+			3*Konta Specjalne:
+				*Guest – konto, które istnieje w każdej DB, lecz domyślnie nie ma żadnych uprawnień.
+				*Dbo – właściciel bazy danych. Ma pełnie uprawnienia w bazie danych. Może przekazywać 
+				 swoje uprawnienia innym. Każde konto logowania należące do roli Sysadmin ma uprawnienia 
+				 Dbo w każdej DB
+		  II.ROLE 
+			1* Role jako grupy użytkowników, do których możemy nadawać uprawnienia tak samo, jak by byli 
+			   to normalni użytkownicy. Możemy dodawać użytkowników (user) lub nawet inne 
+			2* Tworzenie/Nadawanie Uprawnien - (gałąź Security / Roles w wybranej bazie danych) lub:
+								CREATE ROLE lub Sp_addrole – tworzy rolę
+								DROP ROLE lub Sp_droprole – usuwa rolę
+								ALTER ROLE – pozwala zmienić nazwę roli
+								Sp_addrolemember – dodaje użytkownika do roli
+								Sp_droprolemember – usuwa użytkownika z roli
+			3*WUBDOWANE ROLE NA POZIOMIE DB (gałąź Security / Roles / Database Roles):
+								Public – ma każdy użytkownik bazy danych. nie ma żadnych uprawnień.
+								Db_owner – ma pełne prawa administracyjne w danej bazie.
+								Db_accessadmin – zarządza użytkownikami i rolami.
+								Db_securityadmin – zarządza uprawnieniami obiektów.
+								Db_ddladmin – może wykonywać instrukcje CREATE, ALTER, DROP.
+								Db_backupoperator – może wykonywać kopię zapasową.
+								Db_datareader – może odczytywać dane ze wszystkich tabel.
+								Db_datawriter – może modyfikować dane we wszystkich tabelach.
+								Db_denydatareader – ma zabroniony (DENY) odczyt z tabel bazy danych.
+								Db_denydatawriter – zabrania (DENY) modyfikacji w tabelach
+			4*Role na poziomie serwera (konta logowania do instancji serwera a nie użytkownicy DB), 
+			  (gałąź i Security i Server Roles). Nie możemy tworzyć nowych ról tego typu. tylko wbudowane, 
+			  grupujące zestawy praw administracyjnych.
+								Sysadmin – ma pełne prawa administratora dla całej instancji.
+								Dbcreator – może tworzyć i modyfikować bazy danych.
+								Diskadmin – może zarządzać plikami.
+								Processadmin – może zarządzać procesami serwera.
+								Serveradmin – może wykonywać wiele czynności administracyjnych,
+								Securityadmin – zarządza kontami logowania.
+			  Aby dodać lub usunąć konto logowania (login) z tego typu roli, używamy procedur 
+								sp_addsrvrolemember i sp_dropsrvrolemember.
+		  III.SCHEMATY (gałąź Security / Schemas)
+				*Schemat jako kontener obiektów. Każdy obiekt należy do jakiegoś schematu (domyślnie dbo).
+				*Dzięki nim możemy zbiorowo nadawać uprawnienia do wielu obiektów.
+								CREATE SCHEMA nazwa
+				*zmiana schematu dla tabeli (tryb projektowania tabeli (opcja Design) -> zmiana schematu)
+								ALTER SCHEMA nowy_schemat 
+								TRANSFER dotychczasowy_schemat.obiekt
+				*Aby odwołać się do obiektu należącego do schematu innego niż domyślny dla tego użytkownika,
+				 należy nazwę obiektu poprzedzić nazwą schematu:
+								SELECT * FROM schemat.tabela
+		3*TRANSAKCJE:
+			1** PODSTAWY:
+				*przed pisaniem własnych transakcji pamiętaj o włączeniu opcji:
+								SET XACT_ABORT ON
+				 żeby w przypadku przerwania transakcji została ona wyłączona.
+				*ciąg instrukcji (odczytów i zapisów) wykonywanych przez jednego użytkownika jako całość
+				*instrukcje DML (DATA MODIFICATION LANGUAGE - INSERT, UPDATE, DELETE) oraz DDL (DATA 
+				 DEFINITION LANGUAGE - CREATE, ALTER, DROP) SĄ TRANSAKCJAMI.
+				*ACID:
+					*Aksjomaty współbieżnego wykonywania transakcji:
+						**Atomowość (atomicity) – albo wszystkie akcje wykonywane albo żadna.
+						**Spójność (consistency) – po transakcji stan bazy danych powinien być spójny.
+						**Izolacja (isolation) – wynik taki sam, jakby od chwili rozpoczęcia transakcji 
+						  nie działała na wspólnych danych żadna inna transakcja. 
+						**Trwałość (durability) – dane zatwierdzone przez transakcję dostępne nawet w 
+						  przypadku awarii
+					*PODSTAWOWE MECHANIZMY SPEŁNIAJĄCE ACID:
+						**BLOKADY - ograniczają działanie innych transakcji na zablokowanym obiekcie.
+						**DZIENNIKI - poprzez dziennik można cofnąć transakcję lub odtworzyć stan bazy z 
+						  przed awarii (po ponownym uruchomieniu serwer sprawdzi czy zrealizowały sie 
+						  jakieś transakcje nie do końca i da informacje że trzeba je cofnąć)
+						**MIGAWKI - przechowywanie wielu wersji tych samych rekordów. Przykład: Transakcja 
+						  działa na migawce, a więc stanie rekordów z pewnego punktu w czasie. Inne 
+						  transakcje nie widzą jej modyfikacji, ale też ta transakcja nie widzi modyfikacji 
+						  wykonanych przez innych, dzięki czemu nie przeszkadzają sobie.
+			2**ZATWIERDZANIE I WYCOFYWANIE TRANSAKCJI:
+				**COMMIT / ROLLBACK – zatwierdza/wycofuję transakcję
+				**Użytkownik może założyć własną transakcję, (w T-SQL):
+								BEGIN TRANSACTION lub krócej BEGIN TRAN
+					*a następnie ją zatwierdzić lub wycofać 
+								COMMIT TRANASACTION / ROLLBACK TRANSACTION
+				**WYŁĄCZENIE DOMYŚLNEJ opcji automatycznego zatwierdzania (autocommit):
+								SET IMPLICIT_TRANSACTIONS ON
+						**przy domyślnym poziomie izolacji powoduję to na innym połączeniu wstrzymanie 
+						  wywołania instrukcji SELECT do momentu scommitowania transakcji na pierwszym 
+						  połączeniu --> inne instrukcje typu INSERT, UPDATE, DELETE da się wykonywać 
+						  na innych połączeniach bez scommitowania gdyż serwer zakład blokady tylko na 
+						  poszczególne rekordy a nie całą tabelę. SELECT'a NIE DA SIĘ WYKONAĆ ponieważ 
+						  SELECT potrzebuje dostępu do całej tabeli.
+					*żeby włączyć z powrotem:
+								SET IMPLICIT_TRANSACTIONS OFF
+					*sprawdzenie włączenia/wyłączenia automatycznego zatwierdzania:
+								DBCC USEROPTIONS
+			3**SAVEPOINT - nazwane miejsce wewnątrz transakcji, do którego będziemy mogli ją wycofać.
+					*SAVE TRAN x - ustanowienie savepointa 'x'
+					*ROLLBACK TRAN x - ROLLBACK do momentu savepointa
+					*ROLLBACK TRAN / ROLLBACK - ROLLBACK do ostatniego commita (cofnięcie wszystkiego 
+																				łącznie z savepointem)
+								BEGIN TRAN
+								INSERT INTO Osoba (Id,Nazwisko) VALUES (1,‘Kowalski’) 
+								INSERT INTO Osoba (Id,Nazwisko) VALUES (2,‘Lenkiewicz’)
+								SAVE TRAN x
+								INSERT INTO Osoba (Id, Nazwisko) VALUES (3, ‘Nowak’) 
+								SELECT * FROM Osoba     -- widzimy 3 osoby
+								ROLLBACK TRAN x
+								SELECT * FROM Osoba     -- widzimy 2 osoby
+								ROLLBACK TRAN
+								SELECT * FROM Osoba     -- nie widzimy nikogo
+			4**POZIOMY IZOLACJI:
+				**Poziomy izolacji są ustanawiane dla danej sesji a nie serwera (domyślnie: Read commited)
+				**ANOMALIE występujące dla różnych poziomów izolacji:
+					*niezatwierdzony odczyt 'dirty read' - drugi użytkownik odczytuje infrmacje która 
+					 została zmieniona przez pierwszego użytkownika bez zatwierdzenia (pierwszy 
+					 użytkownik może wycofać te operacje a wtedy pierwszy oglądał coś czego nie 
+					 powininen). 'Dirty read' przy domyslnych ustawieniach nie jest możliwy.
+								Transakcja 1:    R(A), W(B)                Rollback
+								Transakcja 2:                    R(B)
+					*niepowtarzalny odczyt - pierwszy użytkownik odczytuję informacje, drugi w tym czasie 
+					 modyfikuję ją. Gdy pierwszy użytkownik znowu odczyta informacje to wyświetla mu się
+					 zmodyfikowana informacja. Dwa rózne odczyty w tej samej transakcji.				
+								Transakcja 1:     R(A)                            R(B), Commit
+								Transakcja 2:              R(A), W(B), Commit
+					*fantom - rekord, którego nie było w momencie, gdy transakcja rozpoczynała swoje 
+					 działanie. Zwróci wynik którey nie będzie aktualny w stosunku doaktualnej bazy 
+					 danych. (drugi robi selecta przed insertem pierwszego). Dotyczy tylko INSERTÓW:
+								Transakcja 1:     R(A)		W(B)--COMMIT
+								Transakcja 2:     R(A)------------COMMIT
+				**Dostępne poziomy izolacji i występujące w nich anomalie.
+					Poziom izolacji		Niezatwierdzony odczyt		Niepowtarzalny odczyt	  Fantomy
+					Read Uncommitted			TAK							TAK					TAK
+					Read Committed				NIE							TAK					TAK
+					Repeatable Read				NIE							NIE					TAK
+					Serializable				NIE							NIE					NIE
+							(SERIALIZABLE eymaga commita nawet po select'cie)
+				**USTAWIENIE poziomu izolacji - będzie dotyczyło tylko bieżącego połączenia z DB.
+					*nie należy ustawiać najwyższego poziomu izolacji 'na wszelki wypadek' gdyż to wpływająca
+					 na szybkośc bazy danych. Należy się zastanowić które anomalie są dla nas akceptowalne:
+								SET TRANSACTION ISOLATION LEVEL READ COMMITTED
+					*sprawdzenie aktualnego poziomu izolacji:
+								DBCC USEROPTIONS
+					*ACTIVITY MONITOR -> PROCESSES (prawym myszy na serwer i Activity Monitor w zakładce
+					 Procesess) - mając ustawione SET TRANSACTION ISOLATION LEVEL READ COMMITED dla 1ego 
+					 połączenia jeżeli zmodyfikujemy dane w 2gim połączeniu to dla 1ego połączenia przy 
+					 zapytaniu SELECT (które będzie nie wywoła się tak długo az 2gie połączenie da COMMITa)
+					 można zakończyć proces SELECTA poprzez 'kill process' (Activity Monitor).			 
+					
+				**SNAPSHOT - MIGAWKOWY SYSTEM IZOLACJI (mechanizm wielowersyjności):
+					*serwer pracuję na migawce przez co nie zakłada blokad do momentu zakończenia transakcji 
+					 (przydatne przy długich transakcjach które w innych przypadkach mogłyby zbyt długo 
+					 blokować bazę danych). W przypadku gdyby ktoś po drodze zmodyfikował dane transakcja
+					 z poziomem snapshot zwróci błąd przy próbie zatwierdzenia.
+					 aby włączyć migawkowy system izolacji:
+								ALTER DATABASE nazwa_bazy SET allow_snapshot_isolation ON
+								SER TRANSACTION ISOLATION LEVEL SNAPSHOT
+					*dopuki nie scommitujesz transakcji przy poziomie izolacji snapshot na innym połączeniu 
+					 bedziesz widział stare niezupdateowane dane z migawki.
+					*mechanizm migawkowy używa też wielowersyjności (dostępne w edycji Enterprise). Migawka
+					 jako statyczny obraz (snapshot) bazy danych tylko do odczytu (nie da się aktualizować) 
+					 zapisuję jedynie zmienione dane. Korzysta się w przypadku skomplikowanych analiz i 
+					 raportów. 
+			5**BLOKADY i LOCKING HINTS:
+				*Serwer automatycznie zakłada blokady w zależności od rodzaju instrukcji oraz ustawionego 
+				 poziomu izolacji. RODZAJE BLOKAD:
+				   *GŁÓWNE:
+					**Współdzielona, S (ang. shared lock) – daje transakcji współdzielony dostęp do 
+					  zasobu,np. kilka transakcji może jednocześnie odczytywać dane z tej samej tabeli. 
+					**Wyłączna, X (ang. exclusive lock) – daje transakcji wyłączny dostęp do obiektu. 
+					  Tylko jedna transakcja może mieć założoną wyłączną blokadę na obiekcie i w tym 
+					  czasie nie może być założonej żadnej innej blokady. Zakłada się ją na czas 
+					  modyfikacji danych.
+				   *POBOCZNE:
+					**U (update) – dodatkowy rodzaj blokady używany w celu zapobiegania zakleszczeniu.
+					**I (intent) – blokady intencyjne.
+					**Sch-S i Sch-M – używane przy operacjach zależnych od schematu tabeli.
+					**BU (bulk update) – używane przy operacjach typu „bulk copy” i TABLOCK hint.
+					**Key-range – używane przy poziomie SERIALIZABLE w celu zapobiegania fantomom.
+				*LOCKING HINTS jako wymuszenia założenia blokady w trakcie wykonywania pewnej instrukcji
+				 Używać tego wyłącznie w razie konieczności:
+								SELECT * FROM Osoba WITH (TABLOCKX)
+					*RODZAJE LOCKING HINTS:
+						HOLDLOCK   –   trzyma blokadę S do końca transakcji
+						NOLOCK     –   nie zakłada żadnych blokad
+						PAGLOCK    –   zakłada blokady na poziomie stron
+						READPAST   –   pomija zablokowane wiersze
+						ROWLOCK    –   wymusza użycie blokad wierszowych
+						TABLOCK    –   wymusza użycie blokad na poziomie tabeli
+						TABLOCKX   -   wymusza użycie blokady X na tabeli
+						XLOCK      –   wymusza użycie blokady X
+				**Domyślnie transakcja będzie czekać na zwolnienie blokad w nieskończoność. Możemy to 
+				  zmienić, określając po jakim czasie oczekująca instrukcja ma zostać przerwana. 
+								SET LOCK_TIMEOUT czas
+				**W zdecydowanej większości przypadków powinniśmy WŁĄCZAĆ opcję  XACT_ABORT zawsze przed 
+				  rozpoczęciem własnej transakcji (a więc przed BEGIN TRANASACTION), pisząc:
+								SET XACT_ABORT ON
+				  Określa ona, że gdy jedna z instrukcji w założonej przez użytkownika transakcji spowoduje
+				  jakikolwiek błąd, wycofywane są wszystkie instrukcje transakcji.
+			6**ACTIVITY MONITOR jako narzędzie do sprawdzania  zy i przez kogo transakcja działająca na 
+			   danym połączeniu jest blokowana (Blocked by) oraz czy blokuje innych (Head Block). (prawym 
+			   przyciskiem myszy na nazwę instancji serwera i wybierając Activity Monitor -> Processes
+			   Narzędzie przydatne, gdy chcemy znaleźć przyczynę i rozwiązać problem dotyczący blokowania
+			   
+		2*ZAKŁADANIE INDEKSÓW:
+			1**INDEKS - PODSTAWY:
+					*służy poprawie wydajności - działa jak skorowidz w książce
+					*indeks zakłada się na kolumnach (MsSQL pozwala zakładać indeksy też dla perspektyw)
+					*struktura danych, przechowywana obok tabeli w plikach z danymi (*.mdf lub .ndf)
+					*bez założonych indeksów serwer musi przejrzeć wszyskie strony z danymi dla danej 
+					 tabeli a przy założonym indeksie na danej kolumnie serwer od razu skieruję się na 
+					 stronę gdzie znajduję się dana informacja
+			2**RODZAJE I BUDOWA:
+					*oparte na B+ drzewie w którym węzłem jest 8-kilobajtowa strona pliku zawierająca na 
+					 przemian klucze (wartości indeksowanej kolumny) i wskaźniki do kolejnej ze stron. 
+					 Zaczyna się od korzenia i idzie do liści.
+				*INDEKS POGRUPOWANY (clustered) 
+					**w tabeli można założyć tylko jeden. Strony z danymi są  na poziomie liści. Rekordy 
+					  są w nich posortowane względem klucza wyszukiwania. W SQL Serwerze domyślnie 
+					  zakładany na kolumnę klucza głównego. 
+					**w zapytaniach wymagających SORTOWANIA, któe są bardzo kosztowne: 
+					  (ORDER BY, GROUP BY, DISTINCT) oraz przy wyszukiwaniu ZAKRESOWYM (BETWEEN), gdyż 
+					  wystarczy znaleźć pierwszą wartość, a następnie przejść w poziomie po liściach 
+					  drzewa, czytając kolejne wartości.
+				*INDEKS NIEPOGRUPOWANY (non clustered) 
+					**w tabeli można założyć ich wiele (dokładnie 249 w MS SQL Na poziomie liści są 
+					  jedynie wskaźniki do stron z danymi, a dane trzymane są poza strukturą indeksu i 
+					  są nieuporządkowane.
+					**Dobrze sprawdzi się na kolumnach klucza obcego oraz kolumny często występujące w 
+					  warunku WHERE, szczególnie w zapytaniach zwracających pojedyncze rekordy.
+			3**GDZIE ZAKŁADAĆ INDEKSY:
+				*optymalizator zapytań widzi czy założone indeksy są wykorzystywane
+				*warto zakładać indeksy na:
+					***na klucze główne – indeks jest zakładany automatycznie i musi istnieć.
+					***na klucze obce - ZAWSZE SIĘ ZAKŁADA
+					***na kolumny, które często znajdują się w warunku WHERE 
+					***na kolumny, po których często sortujemy, czyli umieszczane w klauzuli ORDER BY, 
+					   jak również GROUP BY i DISTINCT.
+				*ogranicza się liczbę zakładanych indeksów gdy:
+					***tabela jest często aktualizowana – aktualizacja danych powoduje konieczność 
+					   aktualizacji indeksów, więc indeksy w tej sytuacji mogą zmniejszyć wydajność
+					***Na kolumnach, do których RZADKO odwołujemy się z warunkiem WHERE i po których 
+					   rzadko sortujemy
+					***Na kolumnach zawierających mało unikalne dane
+					***Unikaj stosowania podzapytań
+					***Unikaj stosowania kursorów, 
+					***Unikaj stosowania DISTINCT
+				*jak pisac zapytania by serwer użył INDEKSU -> tak by indeksowane kolumny użyte w wyrażeniu 
+				 w warunku WHERE były jak najmniej złożone:
+								#zamiast: 	SELECT * FROM emp WHERE sal * 12 = 12000
+								#zrób: 		SELECT * FROM emp WHERE sal = 1000
+				*informacje dotyczące indeksów:
+								Sp_help obiekt
+								Sp_helpindex obiekt
+			4**ZAKŁADANIE INDEKSU:
+				*w MSSQL: 
+								DB --> INDEXES --> NEW INDEX --> CLUSTERED INDEX/NONCLUSTERED INDEX 
+									*tylko index: 		 INDEX KEY COLUMNS - ADD
+									*z included columns: INDEX KEY COLUMNS - ADD + INCLUDED COLUMNS ADD
+				*w sql:
+								CREATE NONCLUSTERED INDEX nazwa ON tabela(kolumna)
+				***indeks możesz założyć na więcej niż 1 kolumnie - jest to wtedy INDEKS ZŁOŻONY. Jest to 
+				   przydatne gdy wyszukiwanie robisz po parach wartości. Pierwsza kolumna będzie bardziej 
+				   istotna od pozostałych. Serwer użyje indeksu tylko wtedy gdy w zapytaniu odwołamy się  
+				   do conajmniej 1szej kolumny. Max liczba kolumn w indeksie w MSSQL to 16. 
+				***Strategia "TYLKO INDEKS" - wszystkie kolumny w zapytaniu są indeksowane, dzięki temu
+				   serwer w ogóle nie sięga do stron z danymi - wszystkie dane zostaną odczytane z indeksu.
+				   Strategię "tylko indeks" możemy osiągnąć indeksem złożonym, założonym na wszystkich 
+				   kolumnach użytych w zapytaniu. 
+				***STRATEGIA "INCLUDED COLUMNS" - dołączenie do indeksu niepogrupowanych dodatkowych kolumn
+				   które nie wchodzą w skład klucza indeksu. W warunku w WHERE używasz tylko kolumny 
+				   zaindeksowanej a z 'included columns' możesz korzystać z w SELECT'cie:
+								#indeksujesz "Nazwisko" i dodajesz 'INCLUDED COLUMNS': IMIĘM DATA_UR:
+								SELECT Imie, Nazwisko, Data_ur FROM Osoba WHERE Nazwisko = 'Kowalski'
+			5**PIELĘGNACJA INDEKSÓW - po czasie indeksy ulegają fragmentacji czy listają sie nieoptymalne
+			    *Można to sprawdzić w zakładce Fragmentation we właściwościach indeksu lub:
+								DBCC SHOWCONTIG (tabela, indeks)
+			     INTERESUJĄ NAS INFORMACJE:
+						**Total Fragmentation - przy przekroczeniu 10% powinno się przebudować indeks
+						**Depth(wysokośc drzewa) - powinno miec 2 do 3 poziomów
+						**Page fullness
+						**Pages(liczba stron)
+			    *By zoptymalizować indeks można:
+					*ZREORGANIZOWAĆ INDEKS (gorszy efekt ale szybsze) -Reorganize w Management Studio lub
+								ALTER INDEX nazwa ON tabela REORGANIZE.
+					*ZBUDOWAĆ INDEKS OD POCZĄTKU (lepsze ale kosztowniejsze) -Rebuild w Management Studio
+								ALTER INDEX nazwa ON tabela REBUILD
+				     lub usuwając stary i budując nowy:
+								CREATE NONCLUSTERED INDEX nazwa
+								ON tabela(kolumna)
+								WITH DROP_EXISTING
+			6**DODATKI:
+				*PODGLĄD PLANU WYKONANIA ZAPYTANIA:
+					*włączasz ikonę: 
+							INCLUDE ACTUAL EXECUTION PLAN
+						SQL:(
+							SET STATISTICS IO ON
+							SET STATISTICS TIME ON
+					*użytkownik nie decyduje jak będzie wykonane zapytanie - by sprawdzić czy indeks 
+					 zostanie użyty czy nie trzeba włączyć opcję: wyświetlenie planu wykonania zapytania. 
+					*OPCJE OPERACJI:
+						**TABLE SCAN - (NIEPOŻĄDANE przy WHERE) - odczytano wszystkie wiersze tabeli. 
+									Sugeruję to że powinno się rozważyć założenie indeksu. 
+						**INDEX SEEK - (POŻĄDANE) - został użyty indeks
+						**INDEX SCAN - (NIEPOŻĄDANE dla WHERE, POŻĄDANE dla SORTOWANIA przy użyciu indeksu)
+									Przy WHERE warto rozważyc założenie ząłożenie innych indeksów.
+						**NESTED LOOPS - złączenie z użyciem pętli
+						**MERGE JOIN - złączenie metoda scalania
+					*można sprawdzić łączny koszt operacji dyskowych (IO COST) najeżdząjąc myszą na obiekt 
+					 początkowy 'SELECT' ,sprawdzając Estimated Subtree Cost.
+					*koszt pokazywany w planie wykonania zapytania NIE będzie zależał od bieżącego 
+					 obciążenia serwera. Koszt dla tych samych danych i tego samego zapytania będzie 
+					 zawsze taki sam.
+					*INNY SPOSÓB MIERZENIA WYDAJNOŚCI:
+							SET STATISTICS IO ON
+									Scan count – liczba operacji scan
+									Logical reads – liczba odczytanych stron (z dysku i bufora)
+									Physical reads – liczba stron, które musiały być pobrane z dysku
+									Read-ahead reads – liczba stron pobranych do bufora	
+							SET STATISTICS TIME ON
+									Czas parsowania i kompilacji
+									Czas wykonania
+				*STATYSTYKI UŻYWANE PRZEZ OPTYMALIZATOR ZAPYTAŃ:
+					**Należy upewnić się, że opcje na poziomie bazy danych: Auto Create Statistics i Auto 
+					  Update Statistics są włączone w bazie danych. Są to ustawienia domyślne.
+					**WŁĄSCIWOŚCI STATYSTYK - gałąź Statistics ALBO sql:
+									DBCC SHOW_STATISTICS(tabela, indeks)
+					**Administrator może wymusić ręczną aktualizację statystyk, używając polecenia 
+					  UPDATE STATISTICS - aktulaizacja statystyk dla:
+								**tabeli - UPDATE STATISTICS tabela	
+								**indeksu - UPDATE STATISTICS tabela indeks
+								**tabeli z próbą 30% - UPDATE STATISTICS tabela WITH SAMPLE 30 PERCENT
+								**tabeli z próbą 100% - UPDATE STATISTICS tabela WITH FULLSCAN
+				*DATABASE ENGINE TUNING ADVISOR: 
+					*narzędzie, które na podstawie aktywności użytkowników w bazie danych, potrafi 
+					 zaproponować wskazówki dotyczące optymalizacji baz. 
+					*odpalasz narzędzie (osobny program) SQL SERVER PROFILER który nasłuchuje wykonywane 
+					 zapytania SELECT na bazie danych (wykonujesz na bazie zapytania). Zpisujesz 'trace' 
+					 czyli historię nasłuchu (FILE -> Save as -> TRACE FILE)
+					*odpalasz narzędzie DATABASE ENGINE TUNING ADVISOR (osobny program), w polu 'Workload'
+					 wgrywasz plik trace'u z sql server profiler'a. Zaznaczasz bazę danych w 'database for 
+					 workload analysis' oraz w 'Select database and tables to tune') i wciskasz guzik na
+					 panelu 'Start Analysis'. Generują się rekomendacje. Z prawej strony w 'definition'
+					 masz podgląd do wygenerowanego kodu sql danej rekomendacji. 
+				*PERSPEKTYWY:
+					**SQL Server nie oferuje możliwości korzystania w bezpośredni sposób z perspektyw 
+					  zmaterializowanych. Odpwiednik można zrobić samemu tworząc osobną tabelę
+					  zawierającą przeliczone dane. Aktualizacja danych w tabeli może być zaimplementowana 
+					  poprzez jakiś wyzwalacz. 
+					**Odpowiednikiem perspektyw zmaterializwoanych w MSSQL są indeksowane perspektywy:
+					  Aby z nich skorzystać należy założyć pogrupowany, unikalny indeks na jednej z 
+					  kolumn perspektywy. Warunki do założenia indeksu na perspektywie:
+							*perpektywa musi być założona z opcją ' SCHEMABINDING '
+							*w SELECTie nie można użyć funkcji agregujących (AVG, MIN, MAX) i znaku *
+							 Do tabeli odowłujemy się poprzez 2czesciową nazwę (ze schematem)
+							*Jeśli zapytanie perspektywy zawiera funkcje agregujące, to na liście SELECT 
+							 musi znaleźć się funkcja COUNT_BIG(*). Jest to funkcja analogiczna do COUNT, 
+							 lecz zwraca wynik typu BIGINT.
+							*Jeżeli w widoku użyta jest funkcja SUM, to jej argument nie może mieć 
+							 dopuszczalnej wartości NULL. Możliwe jest użycie funkcji ISNULL.
+							*Definicja perspektywy nie może zawierać podzapytania.
+							*Definicja perspektywy nie może zawierać: UNION, EXCEPT, INTERSECT, TOP,
+							 DISTINCT.
+							Zapytanie perspektywy nie może zawierać zewnętrznych złączeń i samozłączeń.
+						*PRZYKŁAD:
+							*utworzenie perspektywy:
+									CREATE VIEW podsumowanie WITH SCHEMABINDING AS
+									SELECT nr_dzialu, SUM(ISNULL(pracownik.pensja,0) + 
+												ISNULL(dzial.prowizja,0))AS wartosc, COUNT_BIG(*) AS ile 
+									FROM dbo.dzial
+									INNER JOIN dbo.pracownik ON pracownik.iddzial = dzial.iddzial
+									GROUP BY nr_dzialu									
+							*utworzenie indeksu na perspektywie:
+									CREATE UNIQUE CLUSTERED INDEX ind_pods ON podsumowanie.nr_dzialu
+							*zapytanie na perspektywie z użyciem indeksu:
+									SELECT * FROM podsumowanie WITH (NOEXPAND)
+				*FILLFACTOR - współczynnik określający w procentach jak będą wypełnione strony indeksu
+				 (ile zostanie wolnego miejsca na każdej stronie na ewentaulne nowe rekordy). Przy 
+				 domyślnych ustawieniach współczynnik ten dotyczy wyłącznie poziomu liści. Przy włączonej 
+				 opcji PAD_INDEX dotyczy również pozostałych węzłów.
+				
+		1*BAZA DANYCH:	
+			1**TWORZENIE DB (Parametry bazy danych możemy modyfikować poleceniem ALTER DATABASE):
+			  **w sql (podane foldery muszą istnieć by wykonanie polecenia się udało):
+						CREATE DATABASE Baza ON (
+						NAME = Baza_dat, 
+						FILENAME = 'e:\data\baza.mdf',
+						SIZE = 2MB,
+						MAXSIZE = UNLIMITED,
+						FILEGROWTH = 5MB)
+						LOG ON (
+						NAME = 'Baza_log',
+						FILENAME = 'f:\data\bazalog.ldf',
+						SIZE = 2MB,
+						MAXSIZE = UNLIMITED,
+						FILEGROWTH = 5MB)
+		      **management studio:
+				*GENERAL - Określasz nazwę DB i pliki. Dla każdego pliku powinniśmy określić jego rozmiar 
+				 początkowy (Initial Size) i sposób, w jaki plik będzie się rozrastał (Autogrowth) 
+			     (Najlepiej żeby rozrastał się rzadko (gdyż to przeciąza serwer) jednoczśnie nie powinno 
+				 się przydzielać zbyt dużo zasobów pamięci.
+				*OPTIONS - określasz RECOVERY MODEL (jak serwer będzie korzystał z dziennika transakcji):
+					**opcja Full - (dla baz gdzie priorytetem jest bezpieczeństwo danych) - w dzienniku 
+					  transakcji są wszystkie operacje wykonane na bazie
+					**opcja Bulk-logged - w dzienniku nie zostaną zapisane niektóre operacej jak np SELECT 
+					  czy BULK INSERT
+					**Simple - po zapisaniu działania transakcji do pliku informacje z dziennika są usuwane
+					  (pozwala zaoszczezić pamięc ale nie można wrócić do dowolnego punktu w czasie)
+			2**PROCEDURY SYSTEMOWE (znajdują się w bazie Master i bazach użytkowników). W dowolnej bazie
+			   można je znaleźć w: Programmability/Stored Procedures/System Stored Procedures
+					*sp_help obiekt – informacje na temat obiektu
+					*sp_helpdb nazwa_bazy – wyświetla informacje na temat bazy danych.
+					*sp_spaceused – wyświetla rozmiar bazy danych.
+					*sp_spaceused obiekt – wyświetla ilość miejsca zajmowanego przez obiekt (np. tabelę).
+					*sp_helptext obiekt – treść związana z obiektem (np. kod procedury składowanej)
+					*sp_helpindex obiekt – informacje na temat indeksów założonych na obiekcie
+					*sp_tables – wypisuje tabele bazy danych
+			3**ZMNIEJSZANIE ROZMIARU PLIKÓW (SHRINK) - w przypadku zmniejszenia ilośći danych w DB można 
+			   zmniejszyć plik i zwolnić nieużywaną przestrzeń dyskową dla systemu operacyjnego:
+					**w sql: DBCC SHRINKDATABASE(my_db) / DBCC SHRINKFILE(my_file)
+					**w Management Studio: my_db --> Tasks --> Shrink --> Database/Files
+				
+		0* Architektura systemu 
+			1**Niezbędne Instalacje - opcja: 'New installation or add features to an existing inst...':
+				**SQL FEATURE INSTALLATION:
+					*)Database Engine Services – silnik BD (niezbędne by utworzyć instancje serwera)
+						**)SQL Server Replication - replikacja serwera (niewymagane ale b. przydatne)
+						**)Full-Text Search - wyszukiwanie pełnotekstowe (niewymagane ale b. przydatne)
+					*)Management Tools (version complete) - narzędzia do administrowania serwerem 
+					  (instalowane zazwyczaj w innym miejscu niż serwerownia) 
+					*)Integration Services - do transformacji i integracji danych z różnych źródeł
+					*)Business Intelligence Development Studio - do pakietów Integration Services 
+				**INSTANCE CONFIGURATION - instancja jest osobnym serwerem baz danych, Każda ma swoje 
+				  bazy danych (w tym systemowe), procesy, pliki, itd...
+					*)Default instance – tylko jedna, odwoływanie się przez nazwę komputera Windowsowego
+					*)Named instance - wiele, odwoływanie się przez nazwa_komputera\nazwa_instancji
+				**DATABASE ENGINE CONFIGUTRATION - typy użytkowników mogący korzystać z serwera:
+					*)Windows authentication - z instancją będą mogli łączyć się użytkownicy z systemu 
+					  Windows i Active Directory
+					*)Mixed mode - powyźsi użytkownicy oraz użytkownicy, których konta zostały 
+					  zdefiniowane bezpośrednio na serwerze SQL
+						***podanie hasła dla konta sa (system administrator)
+			 **KONFIGURACJA INSTANCJI (domyślne ustawienia nie wymagają zmian):
+				**Użycie pamięci (zakładka Memory) - sprecyzowanie min/max RAM
+				**Użycie procesorów (zakładka Processors) 
+				**Sposób uwierzytelniania user'ów (zakładka Security) – Mixed mode lub Windows 
+				  authentication, jeżeli nie dokonaliśmy właściwego wyboru przy instalacji.
+				**Połączenia (zakładka Connections) – max równoległych połączeń do serwera, oraz 
+				  Timeout, czyli max czas wykonania zapytania przez usera
+				**Uprawnienia na poziomie serwera (zakładka Permissions) 
+			2**USŁUGI SERWERA - można uruchomić/zatrzymać niektóre usługi (by to zrobić: Narzędzie 
+			   SQL Server Configuration Manager oraz Opcja (services) w narzędziach administracyjnych
+			   systemu Windows):
+				**SQL Server (MSSQLSERVER) - zatrzymanie spowoduję że instancja serwera nie będzie 
+				  odpowiadała na żadania użytkowników.
+				**SQL Server Agent - automatyczne uruchamianie zaplanowanych zadań przez serwer
+				**Microsoft Distributed Transaction Coordinator– zarządza rozproszonymi transakcjami
+				**Microsoft Search – wyszukiwanie typu “full-text” 
+			3**NARZĘDZIA:
+				**Management Studio – graficzna konsola + uruchamianie poleceń w języku Transact-SQL
+				**Configuration Manager – zarządzanie usługami i bibliotekami sieciowymi serwera
+				**Profiler – monitorowanie pracy serwera.
+				**Books OnLine – dokumentacja i pomoc
+			4**BAZY DANYCH (Databases):
+				**MASTER - systemowa baza danych, zawierająca metadane (o kontach user'ów, DB's, i innych 
+				  obiektach serwera - w większości nie korzystamy z tej bazy)
+				**MODEL - szablon bazy danych dal każdej nowo tworzonej DB (odpowiednik template0 i 
+				  template1 w Postgresie). Jeżeli w model utworzysz jakieś procedury albo tabele
+				  to zostaną one powielone przy tworzeniu nowej DB)
+				**TEMPDB - informacje tymczasowe. Użytkownicy nie korzystają z tej bazy bezpośrednio
+				**MSDB – przechowuje informacje na temat zaplanowanych zadań. używamy jej, korzystając 
+				  z narzędzia Management Studio lub procedur systemowych.'
+				**DB uzytkowników - niesystemowych baz danych zakładanych przez user'ów			
+			5**FIZYCZNA ORGANIZACJA DANYCH NA DYSKU:
+				***KAŻDA BAZA DANYCH ZAWIERA:
+					**jeden podstawowy plik z danymi (.mdf) oraz ew dodatkowe pliki z danymi (*.ndf).
+					  Są tam przechowywane: tabele wraz z zawartością, definicje procedur składowanych, 
+					  wyzwalacze, uprawnienia i inne.
+					**plik z dziennikiem transakcji (transactional log -log transakcyjny) (*.ldf) - 
+					  transakcje są najpierw zapisywane do dziennika transakcji a potem w plikach z 
+					  danymi (zasada WAL:  Write-Ahead Logging) - dzięki temu jesteśmy w stanie wycofać 
+					  transakcje ROLLBACK'iem oraz zachować spójnośc danych po awarii.
+				***ZASADY ROZMIESZCZANIA plików na DYSKACH:
+						****przykładowa strategia wykorzystująca poniższe zasady:
+							Dysk 1 – system operacyjny 				Dysk 2 – pierwszy plik z danymi(dane)
+							Dysk 3 – drugi plik z danymi (indeksy,	Dysk 4 – dziennik transakcji
+											tabele często łączone)
+					**trzeba plik z danymi i dziennik transakcji umieszczać na oddzielnych dyskach 
+					  (dzięki temu większa wydajność gdyż serwer wykonuje operacje na plikach równolegle)
+					**można pliki baz danych wraz z dziennikiem transakcji umieszczać na innym dysku niż 
+					  system operacyjny (większa wydajność)
+					**można tabele często łączone umieścić w oddzielnych plikach ORAZ tabele i ich 
+					  indeksy na osobnych dyskach (równoległy dostęp da szybszy wynik zapytania)
+				***MACIERZE RAID - dla wyższej wydajności lub/i bezpieczeństwa danych w DB.
+					**RAID0 (stripping) – (większa wydajność ale Mniejsze bezpieczeństwo) - (odczyt i 
+					  zapis odbywa się równolegle na 2 dyskach ale awaria 1go z dysków powoduję że cała
+					  macierz jest niedostępna)
+					**RAID1 (mirroring) – (większe bezpieczeństwo mniejsza wydajność) - oba dyski są 
+					  lustrzaną kopią więc przy awarii jednego z dysków nie tracimy danych ale np. 
+					  macierz stworzona z dwóch dysków 500 GB będzie miała pojemność tylko 500 GB.
+					**RAID0+1 (mirroring i stripping) – łączy zalety RAID0 i RAID1 ale wymaga aż 4 dysków.
+					**RAID5 – (większa wydajność i bezpieczeństwo) - trzy dyski. Przy awarii jednego z 
+					  dysków jesteśmy nadal w stanie odtworzyć wszystkie dane z 2óch pozostałych.		
+				***GRUPY PLIKÓW (FILEGROUPS) - MS SQL Server nie pozwala na bezpośrednie określenie, do 
+				   którego pliku trafi obiekt jednakżę pozwala określić do której grupy plików ma 
+				   trafić dany obiekt - jest to tylko logiczna struktura nie wpływająca na to gdzie plik 
+				   będzie fizycznie zapisany na dysku. Properties --> opcja Design lub Modify na obiekcie: 
+						***Regular Data Space Specification – pozwala określić przekowywanie typowych 
+															danych obiektu.
+						***Text/Image Filegroup – pozwala określić przekowywanie danych z kolumn o dużych 
+															rozmiarach (np. Text, Image, VARCHAR(MAX)).
+
+	********************************************************************************************************
 	5* POSTGRES:
 			1)Podstawy:
-				*Wspiera ACID - atomowość, konsystencja izolacja, trwałość i MVCC
+				*Wspiera ACID - atomowość, konsystencja, izolacja, trwałość
+				*MVCC (multiversion concurency control)- nacisk na zapewnienie trwałości w momencie awarii
 				*NAZEWNICTWO w dokumentacji:
 					**CLUSTER - serwer bazy danych
-					**RELACJA - (tablica indexów)
-					**KROTKA/TUPLE - (wiersz)
-					**ATRYUBUT - (kolumna)
+					**RELATION - (tablica indexów)
+					**TUPLE (krotka) - (wiersz)
+					**ATTRIBUTE - (kolumna)
 					**PAGE - (data block)
 					**BUFFER - (page)
 				*POSTGRES na LINUXIE (NIE na WINDOWSIE - nie da się go tam dobrze zoptymalizować ponieważ 
 				 POSTGRES sciśle wspólłpracuję z systmemem (np przy cashowaniu danych)
 				*głównie używa się w terminalu ale także w narzędziu graficznym: POSTGRES ADMIN
-			2)ARCHITEKTURA:
-				*główny proces to POSTMASTER (który zajmuję się przyjmowaniem połączeń od użytkonwników)
-				*Shared Memory - pamieć RAM wykorzystywana przez bazę danych. Główy element to Shared 
-				 Buffer który przetrzymuję odpowiedzi dla częstych zapytań i to głównie jego będziemy 
-				 konfigurować. WAL buffer z kolei to podręczny buffor który przetrzymuję wstawiane i 
-				 update'owane dane zanim zostaną one zapisane w plikach (dane zostają zapisane w 
-				 plikach raz na jakiś czas ponieważ jest to operacja wolna)
-				*procesy
-				*pliki danych
-			3)Działanie - gdy przychodzi zapytanie SELECT najpierw sprawdzane są bufory, później cache 
-			  systemu operacyjnego a na samym końcu pliki z danymi
-			4)BUDOWA clustra (serwera)  windows: 'program files / postgresql / 14 / data' ;; 
-				*folder base - (lokalizacja tego folderu powinna być zapisana w zmiennej środowiskowej 
-				 $PG_DATA). Są tam przetrzymywane osobne bazy danych oraz bazy systemowe:
-						**template0
-						**template1
-						**postgresql
-				*foldery ze statystykami i plikami konfiguracyjnymi
-			5)Folder BIN - narzędzia służące do zarządzania POSTGRES'em windows - 
-			  'program files / postgresql / 14 / bin' ;;  linux:  'bin'. Najważniejsze to psql.exe 
-			6)KONFIGURACJA:
-				**pgtune --> strzona w internecie do wytworzenia plików DO KONFIGURACJI (ważne jest 
-				  dobranie DB Type --> 'Online Transaction processing system (appka) albo Warehouse 
-				  magazine (hurtowania danych), total memory (1/4 RAMU dostępnego (16Gb)), number of 
-				  CPU --> 4 ; number of connections --> ~100 (nie więcej niż 120)
-				**postgresql.conf - w folderze 'data' musisz skonfigurować:
-						***shared_buffers (domyślnie ustawienie na 128Mb -> USTAW NA 1/4 RAMu)
-						***Maintance_work_mem = (USTAW na 5% pamięci RAM)
-						***work_mem - (4-64MB) do sortowania
-						***Max_connections (ustaw na 100)
+				*POSTGRESA po instalacji trzeba odpowiednio skonfigurować gdyż wersja bazowa jest tylko 
+				 do uruchamiania się. Nie nadaje się to do pracy produkcyjnej. 
+				*w pgAdminiew DATABASES/my_database/language/plpsql można doinstalować język do pisania
+				 zapytań (np Pythona)
+				*PGAUDIT - zewnętrzne narzędzie do pobrania które zbiera historie wszystkich zapytań.
+			2)BUDOWA I DZIAŁANIE TECHNICZNE:
+				A)ARCHITEKTURA:
+					*główny proces zarządzający to POSTMASTER (który zajmuję się przyjmowaniem połączeń 
+					 od użytkonwników)
+					*Shared Memory - pamieć RAM wykorzystywana przez bazę danych. Składa sie m.in z:
+						**Shared Buffer (główy element kontenera SHARED MEMORY) (głównie on jest
+ 						  konfigurowany) Przetrzymuję odpowiedzi dla częstych zapytań 'SELECT' (najpierw 
+						  ten buffor zostanie sprawdzony zanim pobierze dane z dysku(pobranie z dysku to 
+						  kosztowniejsza operacja)
+						**WAL buffer(Write ahead lock buffer) - podręczny buffor który przetrzymuję 
+						  wstawiane i update'owane dane zanim zostaną one zapisane w plikach (dane zostają 
+						  zapisane w plikach raz na jakiś czas ponieważ jest to operacja wolna)
+					*procesy
+						**WAL Writer - proces do zapisywania w plikach (na dysku) insertowane/updateowane
+						  dane. Ponieważ jest to wolny proces robi to raz na jakiś czas (gdy zostanie 
+						  stworzona do tego page(strona))
+						**Checkpointer - raz na jakiś czas sprawdza WAL buffers i WAL Writer'em zapisuje
+						  wszystkie insertowane/updatowane dane do plikow bWal Files
+						**WWriter - raz na jakiś czas Writer zapisuję wszystko zmiany już w docelowych 
+						  plikach bazy danych (na dysku)
+						**Stats collector - zbiera statystyki by móc optymalizować zapytania  
+						**Autovacuum Launcher - porządkuje dane na dysku (gdy trzeba np przebudować indeks)
+					*pliki danych, pliki WAL, Log files,
+				B)Działanie:
+				  **zapisywanie danych:
+					*dane w Postgresie najpierw są zapisywane jako instrukcje w WAL BUFFERZE, jak jest 
+					 on przepełniony to dane są zapisywane na 'stronach' ('page') które są najmniejszą 
+					 jednostką do zapisu(8 kb). 
+					*przy rozszerzaniu bazy horyzontalnie (poprzez dokładanie nowych serwerów) przy 
+					 zapisie występuję schemat master-slave -> zapis jest nie na jednym z serwerów
+					 tylko na serwerze master który zapisuję dane na jednym z serwerów i informuję inne 
+					 serwery że ma taką informacje u siebie. 
+				  **zapytania SELECT:
+					*przy rozpoczęciu pracy przez użytkownika gdy przychodzi pierwsze rządanie to z puli 
+					 wątków jest przydzielony wątek dla użytkownika który obsługuję jego żądania 
+					*zapytanie SELECT najpierw sprawdzane są bufory, później cache systemu operacyjnego
+					 a na samym końcu pliki z danymi
+					*zapytania -> sprawdzany jest typ zapytania, zaptanie rozłożone jest na części 
+					 pierwsze (tworzy się drzewo zapytań). Następnie optymalizator zapytań optymalizuję 
+					 te zapytanei (generowane są plany wykonania zapytania z oszacowanym kosztem i 
+					 wykonywany jest ten plan któy ma najniższy koszt) (w innych bazach danych można 
+					 wymusić by został podjęty jakiś inny plan wykonania zapytania a w Postgre'sie nie 
+					 miżna tego zrobić)
+					*w Postgresie przy wielu serwerach dla jednej bazy danych log balancer przekieruję 
+					 zapytanie do odpowiedniego serwera (na którym znajdują się poszukiwane dane)
+				C)BUDOWA clustra (kilka baz danych)(w windows: 'program files / postgresql / 14 / data')
+				  (lokalizacja tego folderu data powinna być dodana jako zmienna środowiskowa PG_DATA
+				  w zmiennych środowiskowych)
+						*folder base - są tam przetrzymywane osobne bazy danych oraz bazy systemowe:
+							**template0 - nie ruszamy tej bazy (jest to awaryjna baza gdy zepsujemy cos 
+									w ogólnym szablonie template1
+							**template1 - jest to szablon dla wwszystkich baz danych, tzn że każa nowo
+									utworzona baza danych będzie miałą wszystko to co ma baza template1
+							**postgresql
+							**moja_sample_db_1 (moja 1 przykładowa baza danych)
+							**moja_sample_db_2 (moja 2 przykładowa baza danych)
+						*foldery ze statystykami i plikami konfiguracyjnymi
+						*na poziomie pjedyńczej bazy danych w pgAdminie 
+								**w DATABASES/my_database/language/plpsql można doinstalować język do 
+								  pisania skryptów/zapytań (np Pythona)
+								**Event Triggers - na poziomie bazy danych można dodac triggera (nie tylko 
+								  na poziomie tabeli) - są to triggery do retartowania bazy danych/serwera
+				D)Folder BIN - narzędzia (MAŁE PROGRAMY) służące do zarządzania POSTGRES'em.(lokalizacja 
+				 tego folderu bin powinna być dodana do zmiennej środowiskowej $PATH (w windows->
+				 'program files / postgresql / 14 / bin' ;;  linux:  'bin'))	
+						*psql - Najważniejsze narzędzie, do komunikacji z bazą danych.
+			3)INSTALACJA I KONFIGURACJA: 
+				0*dodajesz zmienne środowiskowe:
+					*do Path dodajesz ścieżkę do folderu \bin:		   C:\Program Files\PostgreSQL\14\bin
+					*tworzysz zmienną PGDATA iwskazujesz folder \data: C:\Program Files\PostgreSQL\14\data
+				1*w data/postgresql.conf (plik gdzie są określone wszystkie parametry --> konfigurujesz
+				  gdyż domyślnie Postgres odpali się nawet na czymś co ma mało pamięci a wtedy nie będzie
+				  odpowiednio funkcjonalne) Musisz skonfigurować:
+						***shared_buffers (domyślnie ustawienie na 128Mb -> USTAW NA 1/4 RAMu urządzenia)
+						***Maintance_work_mem = (USTAW na 5% pamięci RAM) (przy tworzeniu indeksów, 
+						   operacji maintance,vacuum)
+						***work_mem - (4-64MB) (do sortowania)
+						***Max_connections (np = 100) (maksymalna liczba użytkowników sesji) 
 						***Efective_cache_size=(ustaw 50% RAMu)
-						***Max_wal_size
-						***Log_checkpoint=on
+						***Max_wal_size (maksymalna ilośc plikó wal do momentu wysłania ich na dysk)
+						***Log_checkpoint=on (dostaniemy info gdy checkpointy (zrzucanie plikó wal do 
+						    plików na dysku) będą odbywać się zbyt często (zbyt częste checkpointy mocno
+							spowalniają)
 						***Alter system set max_wal_size = 2GB
-			7)PSQL --> chcąc otworzyć psql'a poprzez konsolę POWERSHELL musisz wziąć pod uwagę to że 
-			  automatycznie psql będzie automatycznie chciał zalogować się użytkownikiem Windowsowym 
-			  dlatego używasz instrukcji:
-							psql -U postgres
-			  inne parametry przy uruchamianiu: '-h' jako hostname,'-p' port, '-d' database
-							psql -h <hostname> -p <port> -U <user> -d <database>
-			  chcąc zalogować się jako inny użytkownik niż postgres trzeba wskazać też bazę danych
-							psql -U <hostname> -d <database>
-			  warto też wyświetlać czas by sprawdzac ile wykonują się dane skrypty (-c command)
-							psql - U postgres -c "select current_time"
-			8)KOMENDY:
-			  '\?' - help
-			  '\h <komenda>' - help dla danej komendy
-			  '\q '- quit
-			  '\du' - display user
-				*Postgresql tworzy nam domyślnego użytkownika z uprawnieniami administratora- 'postgres'
-				*W Postgres'ie rola i użytkownik to to samo
-			  '\l' - list databases
-			  '\l+' - list databases with extra info
-			  '\x' - change displaying table to vertical/horizontal mode
-			  '\dt' - display table (wyświetla relacje)
-			  '\c <database>' - change database
-			  '\timing' - wyświetla czas wykonania zapytania
-			  '\conninfo' - display info
-			  '\wath' -co 2 s będzie wykonywać się dana komenda (w celu sprawdzenia czy w czasie 
-			   występują błędy)
-			  
-			  
-			  
-			  
-			  
+					**https://pgtune.leopard.in.ua --> strona w necie do wytworzenia plików DO KONFIGURACJI 
+					  (ważne jest dobranie zmiennej DB Type --> 'Online Transaction processing system 
+					  (appka) albo Warehouse magazine (hurtowania danych), total memory (wpisz 1/4 RAMU
+					  dostępnego (16Gb)), number of CPU --> 4 ; number of connections --> ~100 (nie 
+					  więcej niż 120)
+				2*(niewymagane) initdb (bin/initdb.exe) --> służy do inicjalizacji 'clustra' (czyli 
+				  wszystkich baz danych) gdzie wskazujesz parametry '-D' (lokalizacja clustra), 
+				  '-X' (lokalizacja dla plików WAL, '-E' (kodowanie). (Ogólnie robisz to tylko raz w shellu) 
+								initdb -D "D:\...scieżka" 								#windows
+								initdb –D /postgres/data –X /postgres/wal –E=UTF8 -W	#linux
+				  na linuxie jeszcze podłączylibyśmy skrypt który restartowałby postgresa przy kazdym 
+				  uruchumieniu serwera:
+								Systemctl deamon-reload​
+								Systemctl start postgresql​
+								Systemctl status
+				3*(niewymagane) w data/pg_hba.conf (jest to firewall --> tutaj określamy hosty (kto może 
+				  dostać się do bazy, domyślnie jest tylko localhost(127.0.0.1))
+			4)PSQL (bin/psql.exe)
+				1*START PSQL --> chcąc otworzyć psql'a poprzez konsolę POWERSHELL musisz wziąć pod 
+				  uwagę to że automatycznie psql będzie automatycznie chciał zalogować się użytkownikiem 
+				  Windowsowym dlatego wskazujesz użytkownika 'postgres' który jest domyślnym użytkownikiem
+				  posiadającym uprawnienia administratorskie):
+								psql -U postgres 					#(pass: (postgres/my_common_to_all))
+					*inne parametry przy uruchamianiu: '-h' jako hostname,'-p' port, '-d' database
+								psql -h <hostname> -p <port> -U <user> -d <database>
+						**w zmiennych środowiskowych można ustawić domyślne zmienne któe POSTGRES będzie
+					      używał przy uruchamianiu: PGHOST, PGPORT, PGDATABASE, PGUSER, PGPASSWORD
+					*chcąc zalogować się jako inny użytkownik niż postgres trzeba wskazać też bazę danych
+								psql -U <hostname> -d <database>			
+													### create database test1
+													### create user 'my_user' with password 'my_pass'
+													### psql -U my_user -d test1
+					*(-c command) - można odpalić postgresa i otworzyć jakąs komende:
+								psql -U postgres -c "select * from test1"
+					*(-f file) - można odpalić skypt z danego pliku
+								psql -U postgres -f "D:\..."
+						**warto też wyświetlać czas przed i po by sprawdzac ile wykonują się dane skrypty 
+								psql -U postgres -c "select current_time" -f "D:\..." -c "select 
+																							current_time"
+					*(-L load) - zwrotkę z selects można załadować do podanego pliku z rozszerzeniem .log
+								psql -U postgres -f "D:\..." -c "select current_time" -L my_file.log
+					*exit - wyjście z psql'a
+				2*KOMENDY PSQL: 	#(operacje sqlowe kończymy średnikiem)		
+				 *basics:
+				  '\?' - help
+				  '\h <komenda>' / \h <komenda_Sql> - help dla danej komendy
+							\h create user
+				  '\q '- quit
+				  '\du' - display user/display role - wskazuje role, upraw. i do jakiej roli należy user
+							*Postgresql tworzy nam domyślnego użytkownika z upr. admina - 'postgres'. 
+							*W Postgres'ie użytkownik otrzymuje role. (czyli można utworzyc standardową
+							 rolę dla wielu użytkowników np 'manager' ale każdy użytkownik tez ma role 
+							 jako ten jeden użytkownik np użytkownik 'Jan22' ma role 'Jan22'. Tę rolę 
+							 'Jan22' można też przypisać innemu użytkownikowi.
+						SELECT * FROM pg_catalog.pg_user - zamiast \du
+				  '\dt' - display table (wyświetla relacje(tabele))
+					    '\dt my_schema.*' - display all tables for my_schema
+				  '\dn' - display schemas (wyświetla schematy)
+				  '\dp' - display privileges (wyświetla uprawnienia jakie ma aktualny użytkonik do 
+						  obiektów bazy danych w danym schemacie (domyślnie public)
+						'\dp my_schema.* - display privileges for all objects of my_schema
+						SELECT grantee, privilege_type FROM information_schema.role_table_grants WHERE 
+						table_name='my_table’ - komenda zamiast '\dp' do wykorzystania w pg_adminie 
+				  '\i <sciezka_do_pliku> - odpalenie komendy z pliku
+				  '\x' - change displaying table to vertical/horizontal mode (\x --> \l ;; \x --> \l)
+				 *databases:
+				  '\c <database>' -connect database (to change database) -odpowiada USE <database> w MSSQL
+				  '\c <database> <username>' - change database and user simultaneously
+				  '\l' - list databases
+				  '\l+' - list databases with extra info
+				 *others:
+				  '\timing' - włącza/wyłącza wyświtlanie czasu wykonania zapytania
+				  '\watch' -co 2s wykonuję się ostania wpisana komenda (żeby sprawdzić czy w czasie
+							 występują błędy - do monitorowania)
+				  'select * from pg_stat_activity' - pokazuję tabelę statystyk aktywności
+				  'create database kopia template my_db' - kopiuje bazę jako template - tylko superuser
+							może skopiować baże jako template (superuserem jest domyślnie postgres)
+				  *****PRZYKŁADY z użyciem SQL'a:
+								psql -U postgres						#zalogowanie się userem postgres 
+																		#na domyślną bazę postgres
+								create user marek with password 'marek'	#utworzenie konta z hasłem 
+								\du										#	\display users
+								create database my_db owner marek		#utoworzenie db dla ownera marek
+								\l										#	\list databases
+								\c my_db marek	 						#	\connect to my_db as marek
+								create table my_table (id int)			#utworzenie tabeli w bazie my_db
+								\dt										#	\display tables in my_db
+								\c my_db postgres						#połączenie do tej samej bazy 
+																		#jako inny user (user postgres)
+								select * from my_table					#mimo że nie jesteś onwnerem
+																		#to masz dostęp do tabel z bazy
+								\c postgres marek 					
+								drop database my_db 					#jako owner może usunąć swoją db
+								
+				3*PASSWORDS in PSQL:
+					*komendami:
+					  'set password_encryption='scram-sha-256' - ustalenie opcji encryption password
+					  'alter user my_username encrypted password 'my_new_password' - ustawianie nowego 
+								hasła (Przy tego typu operacjach hasło będzie widoczne w historii psql'a 
+								więc trzeba wyczyścić historię psql'a poprzez: 
+								
+					  '\password' - przy tej komendzie hasło nie będzie widoczne
+					*plikiem '.pgpass' - plik tekstowy wg formatu: Host:port:dbname:user:password 
+					 (10.10.10.11:5432:my_database_name:kuba:kuba), który odpalasz poprzez:
+								vi .pgpass
+								chmod 0600 .pgpass
+				4*SERVICE FILE - używane przy częstym logowaniu się psql'a, pozwala od razu po włączeniu-
+				  pslql'a być zalogowany jako użytkownik -> tworzysz plik tekstowy: 'pg_service.conf'
+ 				  w ścieżce etc/pg_service.conf we formacie:
+								[UAT1]
+								host=10.10.10.11
+								port=5432
+								dbname=databasename
+				  od tego momentu będziesz mógł się logowac poprzez:
+								psql service=UAT1 my_username
+				5*NAWANIE UPRAWNIEŃ, ROLE, SCHEMATY i DODATKI:
+				  ***NADAWANIE UPRAWNIEŃ:
+					A**PODSTAWY:
+						0***blokada schematu public w nowoutworzonej bazie danych (schemat public w danej 
+						    bazie jest domyślnie dostępny dla wszystkich):
+								*albo poprzez zablokowanie dostępu do bazy:
+									REVOKE ALL ON DATABASE my_databse FROM public 
+								*albo poprzez zablokowanie dostępu do schematu public:
+									REVOKE ALL ON SCHEMA public FROM public
+								*ewentualnie można zablokowac tworzenie tabeli:
+									REVOKE CREATE ON SCHEMA public FROM public 
+						1***składnia - https://www.postgresql.org/docs/13/sql-grant.html:
+							*GRANT ... TO 
+								GRANT UPDATE ON TABLE my_schema.my_table TO my_role
+												#w tym przypadku moze być bez słowka TABLE: 
+								GRANT UPDATE ON ALL TABLES IN SCHEMA my_schema TO devteam;
+												#uprawnienia dotyczą poszczególnych obiektów bazy jak 
+												#tabele, procedury, trigery (jednak nie samego schematu)
+							*REVOKE ... FROM	- DENY nie istnieje, korzystasz z REVOKE 
+								REVOKE UPDATE ON TABLE my_table FROM my_role
+								REVOKE ALL ON TABLE my_table FROM my_role
+												#w tych przypadkach moze być bez słowka TABLE
+								REVOKE ALL ON TABLES IN SCHEMA my_schema FROM devteam;
+						2***WYŚWIETLENIE UPRAWNIEŃ UŻYTKOWNIKA:
+							**display privileges (wyświetla uprawnienia jakie ma aktualny użytkownik do 
+							  obiektów schematu w  danej bazy danych (tej na której aktualenie jesteśmy):
+								\dp				#domyślnie schemat public
+								\dp	my_schema.*			
+							**poniższa komenda zamiast '\dp' do wykorzystania w pg_adminie zamiast psqlu:
+								SELECT grantee, privilege_type FROM information_schema.role_table_grants 
+										WHERE table_name='my_table’
+						3***PRZYZNAWANIE UPRAWNIEŃ - może tylko superuser:
+								\c my_db postgres
+						4***owner danego obiektu bazy danych ma domyślne uprawnienia do usunięcia danego 
+							obiektu (DROP) jednakże nie ma inncy uprawnień (takich jak choćby SELECT dla 
+							tabeli) - INNE UPRAWNIENIA KTÓRE MOŻNA NADAĆ:
+								*SELECT
+								*INSERT 	- oprócz tego uprawnienia trzeba nadac uprawnienie do 
+											  SELECTA oraz przy wstawianiu danych lub ich modyfikacji 
+											  jest wymagane uprawnienie do SEKWENCJI (odpoweidzialne
+											  za generowanie nowych kluczy głónych (funkcja nextval) 
+								*UPDATE		- oprócz tego uprawnienia trzeba nadac uprawnienie do 
+											  SELECTA oraz przy wstawianiu danych lub ich modyfikacji 
+											  jest wymagane uprawnienie do SEKWENCJI
+								*DELETE 	- oprócz tego uprawnienia trzeba nadac uprawnienie do 
+											  SELECTA
+								*TRUNCATE 	- czyszczenie tabel
+								*REFERENCES - możliwośc tworzenia związków między tabelami m.in: FK
+								*TRIGGER 	- tworzenie i uruchomienie wywalaczy
+								*EXECUTE 	- tworzenie i uruchomienie procedury/funkcji
+								*CONNECT 	- łączenia się z tabelą (sprawdzane razem z plikiem pg_hba.conf)
+								*USAGE 		- działanie na schemacie
+								*CREATE 	- tworzenie tabel
+								*TEMPORARY 	- tworzenie tabel tymczasowych
+					B**BAZOWA KOLEJNOŚĆ PRZYZNAWANIA UPRAWNIEŃ (do bazy -> do schematu -> do obiektu): 
+							*uprawnienia do odczytu - najpierw przyznajesz uprawnienia do łączenia z 
+							 bazą, później do użytkowania schematu a na końcu do odczytu na konkretnym 
+							 schemacie/tabeli:
+							*uprawnienia ownera bazy danych nie dają mu możliwości operowania na niej,
+							 czyli ownerowi też trzeba przyznać uprawnienia do odczytu, update'u itp
+							 Jedyne domyślne uprawnienie ownera to możliwość zdropowania bazy danych. 
+						1*Przyznanie uprawnień do połączenia się z bazą danych - CONNECT (automatycznie
+						   nadawane wszystkim użytkownikom), (sprawdzane przez plik pga_hba.conf): 
+								GRANT CONNECT ON DATABASE my_database TO my_role
+						2*Przyznanie uprawnień widoczności schematu i do operowania na nim - USAGE 
+						 (plus jeżeli będziesz chciał nadać uprawnienia do INSERTów to jeszcze CREATE):
+								GRANT USAGE ON SCHEMA my_schema TO my_role
+								GRANT USAGE, CREATE ON SCHEMA my_schema TO my_role
+						3*Przyznanie uprawnień do pracy na schemacie/tabeli - SELECT, INSERT, itp.
+							*tylko dana tabela:
+								GRANT SELECT ON TABLE my_schema.my_table to my_role	
+							*dla wszystkich tabel w schemacie:
+								GRANT SELECT, INSERT, ON ALL TABLES IN SCHEMA my_schema TO my_role
+						4*PRZYZNANIE UPRAWNIEŃ DO SEKWENCJI (WYKORZYSTYWANE W INSERT i UPDATE przy 
+						  generowaniu nowych kluczy głównych):
+								GRANT USAGE ON ALL SEQUENCES IN SCHEMA my_schema TO read_write_role
+						5*PRZYZNANIE UPRAWNIEŃ DO wszystkich obiektów które powstaną w przyszłości 
+						  (normalnie uprawnienia nadawane są do aktualnie istniejących obiektów)
+								ALTER DEFAULT PRIVILEGES IN SCHEMA my_schema GRANT SELECT, INSERT, 
+									UPDATE, DELETE ON TABLES TO my_role 	#do przyznanych uprawnień
+								ALTER DEFAULT PRIVILEGES IN SCHEMA my_schema GRANT USAGE ON SEQUENCES
+									TO my_role								#do sekwencji
+					C**PRZYZNAWANIE ROZSZERZONYCH UPRAWNIEŃ:
+						0*PRZYZNANIE AKTUALNYCH UPRAWNIEŃ DO OBIEKTÓW KTÓRE POWSTANĄ W PRZYSZŁOŚCI:
+								ALTER DEFAULT PRIVILEGES IN SCHEMA my_schema GRANT SELECT, INSERT, 
+									UPDATE, DELETE ON TABLES TO my_role 	
+								ALTER DEFAULT PRIVILEGES IN SCHEMA my_schema GRANT USAGE ON SEQUENCES
+									TO my_role								#do sekwencji
+						1*PRZYZNANIE WSZYSTKICH UPRAWNIEŃ do wszystkich tabel W DANYM SCHEMACIE:
+								GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA my_schema TO my_role
+								GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA my_schema TO my_role
+									#sekwencje są wykorzystywane przy wstawianiu/modfikacji rekordów w DB
+						2*PRZYZNANIE WSZYSTKICH UPRAWNIEŃ do BAZY DANYCH:
+								GRANT ALL PRIVILEGES ON DATABASE my_database TO my_role
+					D**PRZYZNAWANIE UPRAWNIEŃ ROLI SUPERUSERA:
+						0*zmiana ownera:
+								ALTER TABLE my_table OWNER TO new_owner
+						1*przyznanie/odebranie uprawnień do bycia superuserem:
+								ALTER USER my_user WITH SUPERUSER
+								ALTER USER my_user WITH NOSUPERUSER
+						2*dany user może/nie_może kopiować bazy jako template (uprawnienie CREATE do 
+						 tworzenia db):
+								ALTER USER my_role CREATEDB
+								ALTER USER my_role NOCREATEDB			
+						3*dany user moze/nie moze tworzyć użytkowników/roli zmieniac uprawnienia do roli:
+								ALTER USER my_role CREATEROLE;
+								ALTER USER my_role NOCREATEROLE;
+				  ***ROLE 
+					A**PODSTAWY:
+						*są tworzone (tak samo jak użytkownicy) na poziomie całego serwera (clustra)
+						 (a nie tak jak w innch serwerach sql gdzie role są tworzone na poziomie 
+						 pojedyńczej bazy danych)
+								\du 								#wyświetlenie wszystkich ról
+								SELECT * FROM pg_catalog.pg_user	#szczegółowe wyświetlenie ról
+						*można stworzyć rolę dla jakieś grupy (np devteam) lub rolę dla konkretnego
+						 usera --> rola usera i rola dla danej grupy to ten sam typ obiektu i różnią 
+						 się tylko tym że rola dla usera ma uprawnienia CONNECT (do łączenia się z DB)
+								\c test1 postgres			#musisz być podłączony jako superuser by móc 
+															#dodawać role (domyślny superuser = postgres)
+								CREATE USER marek	/
+								CREATE ROLE marek			#dwie instrukcje tworzące  ten sam obiekt
+						*role systemowe zaczynające się od 'pg_' dają upranienia administratorskie
+					B**PRZYZNAWANIE UPRAWNIEŃ DO ROLI:
+						*przyznanie roli (np grupowej) do użytkownika:
+								GRANT my_group_role TO marek
+						*przyznanie upranień do roli --> patrz NADAWANIE UPRAWNIEŃ:
+							*dodanie uprawnień standardowych:
+								GRANT UPDATE ON TABLE my_table TO marek
+							*dodanie uprawnień SUPERUSERA - poprzez update danej roli:
+								ALTER ROLE marek CREATEDB;		#udodanie uprawnienia CREATE (tworzenie
+																#kopii bazy jako template dla roli marek)
+						*zmiana onwera danej tabeli:
+								ALTER TABLE my_table ONWER TO new_owner;
+					C**PODSTAWOWE ROLE (dobre praktyki)
+						1*READ_ROLE - rola z uprawnieniami do odczytu wszystkich obiektów z bazy danych:
+								CREATE ROLE read_role
+								GRANT CONNECT ON DATABASE my_database TO read_role
+								GRANT USAGE ON SCHEMA my_schema TO read_role
+								GRANT SELECT ON ALL TABLES IN SCHEMA TO read_role
+								ALTER DEFAULT PRIVILEGES IN SCHEMA my_schema GRANT SELECT ON TABLES 
+									TO read_role	- dzięki temu wszystkie tabele które powstaną w 
+													  przyszłości będą domyślnie dostępne dla roli
+						  **stworzenie użytkownika i przypisanie mu roli:
+								CREATE USER my_user_role WITH PASSWORD 'pass'
+								GRANT read_role TO my_user_role
+						2*READ_WRITE_ROLE - rola z uprawnieniami do odczytu, zpisu i modyfikacji:
+							**dodajesz uprawnienia CREATE na schemacie oraz uprawnienie do korzystania z 
+							  sekwencji (wraz z przyznaniem uprawnień na przyszłych obiektach):
+								CREATE ROLE read_write_role
+								GRANT CONNECT ON DATABASE my_database TO read_write_role
+								GRANT USAGE, CREATE ON SCHEMA my_schema to read_write_role
+								GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA my_schema 
+									TO read_write_role
+								ALTER DEFAULT PRIVILEGES IN SCHEMA my_schema GRANT SELECT, UPDATE, INSERT, 
+									DELETE ON TABLES TO read_write_role 
+								GRANT USAGE ON ALL SEQUENCES IN SCHEMA my_schema TO read_write_role
+								ALTER DEFAULT PRIVILEGES IN SCHEMA my_schema GRANT USAGE ON SEQUENCES
+									TO read_write_role		#sekwencje wykorzystywane przy INSERTACH
+						  **stworzenie użytkownika i przypisanie mu roli:
+								CREATE USER my_user_role WITH PASSWORD 'pass'
+								GRANT read_write_role TO my_user_role
+				  ***SCHEMATY:
+						*domyślnym schematem w danej bazie danych jest 'public' (w Mssqlu jest to 'dbo')
+						 do którego dostęp domyślnie ma każdy użytkownik/każda rola (wychodzi więc że
+						 każdy user ma dostęp do każdej bazy danych) POWINNO SIĘ TO WYŁĄCZYĆ DLA 
+						 KAŻDEJ BAZY DANYCH Z OSOBNA:
+							*albo poprzez zablokowanie dostępu do bazy:
+									REVOKE ALL ON DATABASE my_databse FROM public 
+							*albo poprzez zablokowanie dostępu do schematu public:
+									REVOKE ALL ON SCHEMA public FROM public
+					  *KOMENDY:
+						*schematy dotyczą danej bazy danych - może być wiele schematów w 1 bazie danych
+							**wyświetlenie wszystkich schematów:
+									\dn -display schemas (wyświetla schematy)
+							**wyświetlenie wszystkich tabeli dla danego schematu:
+									\dt my_schema.*
+							**wyświetlenie wszystkich tabeli dla wszystkich schematów:
+									\dt *.*
+							**utworzenie schematu i tabeli do schematu:
+									CREATE SCHEMA my_schema
+									CREATE TABLE my_schema.my_table(id INT, nazwisko varchar(100));
+							**przypisanie nowego schematu do tabeli:
+									ALTER TABLE my_table SET SCHEMA new_schema
+							**nadanie uprawnień do użytkowania na schemacie --> patrz NADAWANIE UPRAWNIEŃ:
+									GRANT CONNNECT ON DATABASE my_database TO my_role
+									GRANT USAGE ON SCHEMA my_schema TO my_role
+													#reszta uprawnień -> patrz nadawanie uprawnień.
+						*stworzenie schematu z przypisaniem ownera (authorization):
+									CREATE SCHEMA my_new_schema AUTHORIZATION my_user
+							**stworzenie schematu o nazwie ownera schematu:
+									CREATE SCHEMA AUTHORIZATION my_user - Owner bazy danych może mieć 
+														uprawnienia do dropowania bazy a może nie mieć 
+														uprawnien do odczytywania z bazy. (ownerowi 
+														rzeba przyznać uprawnienia do odczytywania)
+						*ustawnienie innego domyślnego schematu niż 'public':
+									SET SEARCH_PATH TO new_schema - od tego momentu nie trzeba przed 
+														tabelą wpisywać new_schema gdyż jest to schemat 
+														domyślny. meta Komendy jak \dt (będzie wyświetlał 
+														tabele tylko dla domyślnie ustawionego schematu)
+						*ustawienie domyślnego schematu na public:
+									SET SEARCH_PATH TO DEFAULT
+					  *PG_ADMIN:
+						*w pgAdmin'ie mamy folder 'SCHEMAS' ma podział plików na:
+							**collations - związane z kolejnością sortowania wartośći tekstowych 
+							**domains - o pewnych własnych typach danych\
+							**foldery FTS (Full-Text-Search) do wyszukiwania pełnotekstowego
+							**foreign tables - zdalne tablice - jeżeli mamy 2 osobne fizyczne serwery 
+							  postgresa to możemy na jednym z nich utworzyć zdalną tabelke --> możemy 
+							  na niej wykonać normalne zapytanie Select (a pod spodem postgres wyśle 
+			   				  requesta do tej zdalnej bazy danych na 2gim serwerze). Wykorzystuję się 
+							  to w replikacji.
+							**functions (funkcje)
+							**procedurs (procedury składowane) 
+							**materialized Views - (perspektywy zmaterializowane)- by podnieść wydajność
+							  niektórych zapytań
+							**sequences (sekwencje) - służące do generowania id
+							**tables (tabele):
+								***columns (kolumny)
+								***constraints (ograniczenia)
+								***indexes (indeksy)
+								***RLS Policies (polityka zasad)
+								***Rules (zdefiniowane zasady) - mechanizm który pozwala nadpisać to
+								   w jaki sposób baza przetwarza zapytania SQL
+								***triggers (wyzwalacze)
+							**trigger functions (wyzwalacze)
+							**types (customowe typy danych)
+							**views (perspektywy)
+				  ***DODATKI:
+					A**TWORZENIE WŁASNEJ POLITYKi WIERSZY (ew PERSPEKTYWA) I NADAWANIE DO NICH UPRAWNIEŃ:
+						*ROW SECURITY POLICIES - na poziomie wierszy możemy dodać politykę jakie wiersze
+						 będą dostępne dla danego użytkownika (można to łatwo zastąpić tworząc perspektywę 
+						 z wyciętymi danymi przez odpowiedniego SELECTA i przekazać ją userowi) 
+								ALTER TABLE my_table ENABLE ROW LEVEL SECURITY
+								CREATE POLICY my_policy ON my_table TO my_role USING(my_col = my_value)
+							*użytkownicy mający dostęp superusera (amdmina) mogą wyłączyć daną politykę 
+							 dla swojego zapytania poprzez dodanie 'BYPASSRLS'
+						*UPRANIENIE DO PERSPEKTYWY (wyciętego kawałka danych), zamiast ROW SECURITY 
+						 POLICY i PRZEKAZANIE UPRAWNIEŃ UŻYTKOWNIKOWI DO DANEJ PERSPEKTYWY:
+								CREATE VIEW my_query AS
+									SELECT o.shipped_date, p.product_name, od.unit_price FROM orders o
+									JOIN order_details od ON o.order_id=od.order_id
+									JOIN products p ON od.product_id=p.product_id
+									WHERE o.customer_id='VINET';
+								GRANT SELECT ON my_query TO ExternalClient; 
+					B**SIMILAR TO - WYRAŻENIA REGULARNE wykorzystywane w zapytaniu SELECT:
+								SELECT * FROM my_table WHERE my_col SIMILAR TO '%(an|al)%'
+					C**SEKWENCJE  - wykorzystywane do generowanie nowych ID. Na obiekcie sekwencji 
+					   możemy uruchamiać takie funkcje jak: nextval (generowanie nowego id), curval, 
+					   setval (zresetowanie sekwencji i ustawienie co ile numerów ma być następne id)
+								CREATE SEQUENCE my_seq START 101  (sekwencja zaczynająca się od 101)
+								INSERT INTO my_table VALUES(nextval('my_seq'), my_another_val);
+								SELECT curval('my_seq')
+								SELECT setval('my_seq',10)	(ustawienie generowania sekwencji co 10)
+					D**DOMAIN - tworzenie własnych typów danych mających jakieś ograniczenia. 
+							1)	CREATE DOMAIN posint AS integer CHECK (VALUE>5);
+								CREATE TABLE my_table (id posint)
+								INSERT INTO my_table VALUES(3) 		#baza nie pozwoli na to wstawienie
+							2)  CREATE DOMAIN color VARCHAR(10) CHECK (VALUE IN('red', 'green', 'blue'))
+					E*CONSTRAINTS - CHECK - nadawanie więzów spójności na DB:
+							1)	CREATE TABLE my_table (my_id INTEGER, name TEXT, price NUMERIC 
+									CHECK (price>0));
+							2)	CREATE TABLE products(id INTEGER, name TEXT, 
+									price NUMERIC CHECK (price>0)),
+									discounted_price NUMERIC CHECK (discounted_price >0),
+									CHECK (price > discounted_price));
+				6*INDEKSY, OPTYMALIZACJA, PLAN WYKONANIA ZAPYTANIA:
+				  ***INDEKSY:	
+					1*INDEXY:
+						*PODSTAWY:
+							*index Hashowany przydaję się tylko w zapytaniach równościowych ale i tak
+							 powinno się z niego rzadko korzystać
+									CREATE INDEX my_index ON my_table USING HASH(my_column)
+							*ZWYKŁY INDEX (BTREE) wykorzystywany w zapytaniach równościowych, 
+							 większościowych sortowanie, DISTINCT, ORDER BY, GROUP BY. Wspiera też 
+							 operatory ISNULL, ISNOTNULL, BIGINT.
+									CREATE INDEX tab_id _index ON tab(id)
+								*KOMENDA INCLUDE jako 'included columns' - zainkludowana kolumna na 
+								 poziomie liści w B+ drzewie - przydaję się W STRATEGII INDEKS ONLY SCAN:
+									#dla zapytania: SELECT a,b FROM tab WHERE b='wartosc' ,tworzysz 
+									#index dla kolumny b oraz includojesz kolumne a na poziomie liści:
+									CREATE INDEX tab_b ON tab(b) INCLUDED(a) 
+								*INDEKS NA WIELU KOLUMNACH:
+									#dla zapytania: SELECT a,b FROM tab WHERE b='wartosc' and  a='wartosc'
+									#tworzysz index dla kolumn a i b:
+									CREATE INDEX tab_a_b ON tab(a,b)
+									#lub:
+									CREATE INDEX tab_a ON tab(a);
+									CREATE INDEX tab_b ON tab(b);
+								*Partial index:
+									CREATE INDEX tab_partial ON tab(a) WHERE a>30 AND a<60
+									CREATE INDEX tab_partial_b ON tab(b) WHERE b is not true
+							*CLUSTROWANIE INDEXU - dane przechowywane na stronach dyskowych po clustorwaniu
+							 zostają uporządkowane wg kolejności (w Mssql od razu tworzymy sclustowany 
+							 index a w postgresie najpierw tworzymy index a potem możemy go sclustrować):
+									CREATE INDEX index_name …
+									CLUSTER table_name USING index_name;
+							*FILLFACTOR - do indexów (ustawienie wolnego miejsca na indexie na przyszłe 
+							 dane - do często insertowanego indexu na 90 do rzadko modyfikowanego 100)
+									CREATE INDEX my_i ON table(col) WITH (FILLFACTOR=100)
+							*indexować można też funkcje ale tylko funkcje stabilne - tylko immutable 
+				  ***OPTYMALIZACJA I PLAN WYKONANIA ZAPYTANIA:
+					1*OPTYMALIZACJA:
+						*indexy nie zawsze warto stosoawać gdyż zajmują dużo miejsca na dysku, co wydłuża
+						 backup i odzyskiwanie kopii z dysku. Ponadto przy każdym insert'cie, update'cie
+						 trzeba zaktualizować indeks co również trwa więc warto skupić się najpierw na 
+						 poniższych konfiguracjach:
+						*czy baza OLTP (bazy transakcyjne-wielu użytkowników, lekkie transakcje) czy 
+						 OLAP (hurtownia danych, data lake - mało użytkowników, duże złożone transakcje)
+						 Dużo można zrobić już na samym poziomie pliku konfiguracyjnego (czy jest
+						 przeznaczona odpowiednia ilość pamięci RAM, shared buffered, work memory)
+						*czy zapytanie jest napisane optymalnie - czy wytępują jakieś automatycznie 
+						 wygenerowane zapytania (np: przez ORM) które stosują nadprogramowe konstrukcje
+						 typu, np: group by.
+						*skonfigurowanie postgersql.conf - konfiguracja raportowania błędów (sekcja 
+						 ERROR REPORTING AND LOGGING). Domyślnie wszystkie błędy są raportowane do 
+						 pliku 'standard output error' a możemy to zmienić do pliku np csv). 
+					2*PROGRAMY w folderze \bin DO OPTYMALIZACJI WYDAJNOŚCI SERWERA:
+						*pg_ctrl - Pozwala zarządzać instancją serwera. Po zmianie pliku postgresql.conf 
+						 trzeba zrestartować serwer i można to zrobić własnie w programie pg_ctrl
+									pg_ctrl restart
+						*pgbench - program do testowania wydajności naszego serwera (ma zapisane w sobie 
+						 kilka scenariuszy wykorzystywania bazy danych, odpalamy 1 z 4 scenariuszy i 
+						 zaczyna być imitowany ruch sieciowy (np: takiej jakby aplikacji bankowej))		
+									pg_bench -i -s 50 new_db	(-i -initialize, -s 50 -scale DB 50x16MB)
+									psql -d new_db
+						*slow query log - ustawienie zmiennej w pliku postgresql.conf które zapisuje
+						 w loggach wszystkie zapytania które będą łużej trwały niż np 5000ms
+									log_min_duration_statement = 5000
+					3*PLAN WYKONANIA ZAPYTANIA:	
+						*pokazuje jakie kroki optymalizator wybrał aby wykonać zapytanie. Na podstawie 
+						 tego powstanie plan wykonania zapytania dzięki któremu będziemy mogli stwierdzić
+						 czy zoptymalizować zapytanie czy nie (np.: czy dodać indeks)
+						*w pgAdminie przy zaznaczeniu zapytania i wybraniu przycisku 'EXPLAIN' lub 
+						 'EXPLAIN and ANALYZE' zostanie pokazany plan wykonania zapytania (z ew. 
+						 aktualizacją  statystyk. Mogę też wykonać to ręcznie poprzez wpisanie przed 
+						 zapytaniem 'explain analyze' 
+									EXPLAIN ANALYZE select * from student
+				7*PROGRAMY ŚCIŚLE ZWIĄZANE Z POSTGRESEM:
+				 ***PGADMIN4:
+						*wskazujesz folder bin w: FILES -> Preferences -> Binary Paths ->
+						 POSTGRESQL BINARY PATH (wybierasz i zapisujesz)
+				 ***PGBENCH - TESTOWANIE wydajnośći serwera:
+						#dla shared buffers =128 kB  orz dla shared buffers = 256MB (pg_conf)
+						pgbench -U postgres -c 10 -j 2 -t 10000 example
+				 ***PG_DUMP - backup:
+						psql -U postgres 
+						CREATE DATABASE dvdrental;
+						pg_dump -U postgres dvdrental > dvdRental.tar 
+												#(-U jako wskaznanie usera;;wskazanie istniejącej DB i 
+												#wskazanie pliku gdzie ma zapisać się backup)
+				 ***PG_RESTORE - odzyskiwaniu kopii zapasowej: (baza musi istnieć żeby móc ją zrestorować)
+						pg_restore -U postgres -d dvdrental dvdrental.tar	
+												#(-U jako wskaznanie usera;; -d jako wskazanie dbname)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 				
-			  
+				ALL(poszczególne):
+					EXCEPT ALL - odejmowanie
+					EXCEPT - odjęcie wymnożonych
+					INTERSEC ALL - nałożenie
+					INERSEC / UNION - mnożenie
+					UNOIN ALL - dodawanie
+				
+
+
+			EXTRA:
+				*.czy kopia zapasowa może zawierac procedury składowane i wyzwalacze? tak
+				*.czy wyższy poziom izolacji (np. serializable) poprawia wydajności DB? nie
+				2.użytkownik posiada schemat ale nie należy do niego (można nadać uprawnienie do
+				  schematu)
+				3.NIE można skonfigurować środowisko replikacji bez publikatora
+				4.SHRINK Może zmniejszyć fizyczny rozmiar pliku z dziennikiem transakcji
+				5.Dołączone kolumnty "included columns" ułatwiają użycie strategii "tylko indeks"
+				6.Istnieje możliwośd wykonania kopii zapasowej pojedynczego pliku bazy danych
+				7.Każdy użytkownik posiada domyślny schemat
+		
+		
+		
+				create or replace procedure transfer(
+				   sender int,
+				   receiver int, 
+				   amount dec
+				)
+				language plpgsql    
+				as $$
+				begin
+					-- subtracting the amount from the sender's account 
+					update accounts 
+					set balance = balance - amount 
+					where id = sender;
+
+					-- adding the amount to the receiver's account
+					update accounts 
+					set balance = balance + amount 
+					where id = receiver;
+
+					commit;
+				end;$$
+
+
+
+
+
+
+
+				
+				
+				
+				
+				
+				
+				
+				
+			 
+			   
+			   
+			   
+	6* BAZY NOSQL:
+		*nie spełniają wymogów ACID (atomowości, konsystencji, izolacji, trwałości)
+			*K-V (Amazon Dynamo)
+			*Dokumentowe (JSON, XML) (MongoDb, CouchDb)
+			*BigTable (Google, dane wersjonowane czasowe (dodawanie )
+			*Grafowe (Neo4j)
 			
 -----------------------------------------------------------------------------------------------------------
 -------------------------------------------------- SELECT -------------------------------------------------
 ZADANIA DO POWTÓRZENIA I UTRWALENIA SQL'a:			https://pja.mykhi.org/0sem/SBD/edux/zapytania.html
-3* SELECT (wszystkie podpunkty są w kolejności tego jak powinny występować): 
+3* SELECT (wszystkie podpunkty są w kolejności tego jak instukcje powinny występować): 
   --------------------------------------------------------------------------
   I.PODSTAWY:
 	1.BASICS  *  DISTINCT  AS  IS  columnName.*  DATEDIFF :
@@ -187,7 +1889,6 @@ ZADANIA DO POWTÓRZENIA I UTRWALENIA SQL'a:			https://pja.mykhi.org/0sem/SBD/edu
 				SELECT columnName1 FROM tableName WHERE columnName2 IS NULL
 		*AS
 				SELECT columnName1 AS name1, columnName2 AS name2 FROM tableName
-		  *aliasów
 		*DISTINCT		//jeżeli chcesz wybrać wszystkie wartości BEZ POWTARZANIA SIĘ z jednej kolumny albo 
 						  kilku ale wiesz że będą się powtarzać to użyj zaraz za SELECTEM slowa DISTINCT
 				SELECT DISTINCT columnName FROM tableName
@@ -219,8 +1920,9 @@ ZADANIA DO POWTÓRZENIA I UTRWALENIA SQL'a:			https://pja.mykhi.org/0sem/SBD/edu
 		2.2.IN 			podajesz dla jakiegoś zbioru
 				SELECT * FROM tableName WHERE columnName IN(v1, v2, v3)	   //jest w zbiorze (v1, v2, v3)
 				SELECT * FROM tableName WHERE columnName IN('textv1', 'textv2', 'textv3')	
-		2.3. BEETWEN ... AND ...
-				SELECT * FROM tableName WHERE columnName BETWEEN intValue AND intValue;
+		2.3. BEETWEN ... AND ...    /     NOT BEETWEN ... AND ... 
+				SELECT ename FROM emp WHERE sal BETWEEN 1000 AND 2000;
+				SELECT ename FROM emp WHERE sal NOT BETWEEN 1000 AND 2000;
 		2.4.LIKE  OR  _  % 
 		  *w SQLU nie istnieje klauzula NOT LIKE jak już to zaraz po WHERE możesz wpisać NOT 
 				SELECT * FROM tableName WHERE columnName LIKE 'textValue'
@@ -252,8 +1954,8 @@ ZADANIA DO POWTÓRZENIA I UTRWALENIA SQL'a:			https://pja.mykhi.org/0sem/SBD/edu
 	3.GROUP BY 
 	https://www.youtube.com/watch?v=lyE03M2GLA0 - opisane funkcje agregujące i klauzula GROUP BY
 	  *służy do grupowania wyników wyszukiwania dla podanej kolumny (np ilość pańśtw dla każdego kontynentu)
- 	   WYmaga użycia jakieś funkcjigrupującej/agregującej. Jeżeli masz użyć GROUP BY to najlepiej jakbyś 
-	   zaczął od WYOBRAŻENIA SOBIE wynikó takiej instrukcji:
+ 	   WYmaga użycia jakieś funkcji grupującej/agregującej. Jeżeli masz użyć GROUP BY to najlepiej jakbyś 
+	   zaczął od WYOBRAŻENIA SOBIE wyników takiej instrukcji:
 				SELECT columnName, SUM(colName2) FROM tableName GROUP BY columnName
 	  *posorutuję względem (unikalnych wartości/kategorii) z colName1 i dla każdej takiej kategorii 
 	   wyznaczy średnią 
@@ -274,6 +1976,7 @@ ZADANIA DO POWTÓRZENIA I UTRWALENIA SQL'a:			https://pja.mykhi.org/0sem/SBD/edu
 		  WHERE mozesz użyć ją za klauzulą HAVING (któa może powstać tylko przy GROUP BY):
 				SELECT columnName1 FROM tableName GROUP BY columnName1 HAVING COUNT(columnName2)>1
 		  NP.: 'Wybierz tylko te stanowiska, na których średni zarobek wynosi 3000 lub więcej.'
+				SELECT job, AVG(sal) FROM emp GROUP BY job HAVING AVG(sal)>=3000
 				SELECT job FROM emp GROUP BY job HAVING AVG(sal)>=3000
 		**LUB GDY chcesz dodatkowo PRZEFILTROWAĆ jakoś FUNKCJE AGREGUJĄCĄ za SELECTEM
 				SELECT columnName1
@@ -308,7 +2011,8 @@ ZADANIA DO POWTÓRZENIA I UTRWALENIA SQL'a:			https://pja.mykhi.org/0sem/SBD/edu
 				SELECT * FROM tableName WHERE columnName='textValue' ORDER BY columnName1 ASC, columnName2
 		*DESC (malejąco)
 				SELECT * FROM tableName ORDER BY columnName DESC 
-				
+		*porządkowanie po ostatnich literach (w tym wypadku po 4):
+				SELECT columnName FROM tableName ORDER BY RIGTH(columnName,4);
 	5.LIMIT 	//ogranicza wyniki do podanej ilosci w LIMITcie //będzie zawsze na samym końcu 
 				SELECT * FROM tableName WHERE columnName='textValue' 
 				ORDER BY columnName1 DESC, columnName2 LIMIT 5
@@ -338,8 +2042,14 @@ ZADANIA DO POWTÓRZENIA I UTRWALENIA SQL'a:			https://pja.mykhi.org/0sem/SBD/edu
 				WHERE k.Nazwa = 'Luksusowy';
 				
 		B)FUNKCJE WIZUALIZUJĄCE:
-			*CONCAT()			//łączy w jedną kolumne kilka podanych w argumencie oraz jakiś string 
-								//np ':'
+			*  ||   +			//wykorzystywane do konkatenacji kolumn w raz ze stringami (w MsSQL'u 
+								//trzeba pamiętać o konwersji typu numerycznego na textowy - w przypadku 
+								//konkatenacji kolumn operatorem konkatenacji jest  '+'  a nie  '||'  )
+				SELECT empno || ename AS employee FROM emp;
+				SELECT CONVERT(VARCHAR, empno) + ename AS employee FROM emp;				//w MsSQL'u
+				SELECT ename || ‘ pracuje w dziale nr ' || deptno FROM emp;
+				SELECT ename + ‘ pracuje w dziale nr ' + CONVERT(VARCHAR,deptno FROM emp;	//w MsSQL'u
+			*CONCAT()	 		//łączy w jedną kolumne kilka podanych w argumencie oraz jakiś string
 				SELECT CONCAT(columnName1, ':',columnName2) AS name, columnName3 FROM tableName
 			*UPPER()   LOWER()	//zwrocone wartośći mają powiekszone litery albo pomniejszone
 				SELECT CONCAT(upper(columnName1, ':',columnName2)) AS name, columnName3 FROM tableName
@@ -360,8 +2070,11 @@ ZADANIA DO POWTÓRZENIA I UTRWALENIA SQL'a:			https://pja.mykhi.org/0sem/SBD/edu
 				SELECT CEILING(AVG(columnNmae)) FROM tableName
 				
 		D) FUNKCJE TEKSTOWE:
-			*LENGTH(textfield)		//pozwala zmieżyć długość napisu w rekordzie 
-				SELECT LENGTH(yourtextfield) AS alias FROM tablename ORDER BY alias 
+			*LENGTH(textF)   LEN(textF)		//pozwala zmieżyć długość napisu w rekordzie											
+				SELECT LENGTH(yourtextfield) AS alias FROM tablename ORDER BY alias //Oracle i Mysql
+				SELECT LEN(yourtextfield) AS alias FROM tablename ORDER BY alias 	//MsSQL
+				SELECT ename FROM emp WHERE LENGTH(ename) = 4; 						//Oracle i Mysql
+				SELECT ename FROM emp WHERE LEN(ename) = 4;							//MsSQL
 			*LEFT(napis, ile_znaków) 		//zwraca określoną ilość znaków tekstu rozpoczynając od lewej
 			 RIGHT(napis, ile_znaków) 		//od prawej
 				SELECT LEFT(colName, 3) FROM tableName 
@@ -374,9 +2087,16 @@ ZADANIA DO POWTÓRZENIA I UTRWALENIA SQL'a:			https://pja.mykhi.org/0sem/SBD/edu
 			 TRIM(string)					//z obydwu stron tekst
 				SELECT LTRIM(colName) FROM tableName
 				
+		E) FUNKCJE SPECYFICZNE:
+			*ISNULL(MsSQL), NVL(Oracle), IFNULL(MySql) 		//gdy w kol. może pojawić się NULL a w instr.
+															//kol. jest wykorzystywana do obliczeń 
+				SELECT ename,(sal*12 + ISNULL(comm, 0) FROM emp;		//MsSQL
+				SELECT ename,(sal*12 + NVL(comm, 0) FROM emp;			//Oracle
+				SELECT ename,(sal*12 + IFNULL(comm, 0) FROM emp;		//MySql
+				
 	2* INSTRUKCJE WARUNKOWE (CASE) w SELECT'cie:
 	  *pamiętaj o odpowiedniej kolejności warunków i że jak jeden będzie dopasowany to reszta będzie 
-	   ominięta:
+	   pominięta:
 			SELECT columnName1, columnName2, 
 			CASE												 //konstrukcja to WHEN... THEN...
 				WHEN columnName3 < integer1 THEN 'etykietaName1' //można podać swoją etykietę
@@ -419,15 +2139,17 @@ ZADANIA DO POWTÓRZENIA I UTRWALENIA SQL'a:			https://pja.mykhi.org/0sem/SBD/edu
 						ON t1.foreignKey = t2.primaryKey	
 		*JOIN łączący wiele tabel:
 					SELECT Table1.columnName, Table2.columnName, Table3.columnName
-						FROM Table1 AS t1 FULL JOIN Table2 AS t2 RIGHT JOIN Table3 AS t3
-						ON t1.foreignKey=t2.primaryKey AND t2.foreignKey=t3.primaryKey
-		  LUB		SELECT Table1.columnName, Table2.columnName, Table3.columnName
 						FROM Table1 AS t1 
 						FULL JOIN Table2 AS t2 ON t1.foreignKey=t2.primaryKey 
 						RIGHT JOIN Table3 AS t3 Ont2.foreignKey=t3.primaryKey
-			*Pamietaj że JOINując tę samą tabele musisz wziąć pod uwagę w ONie kolejnosc porówanania
+			LUB	(ALE RACZEJ NIE:)
+					SELECT Table1.columnName, Table2.columnName, Table3.columnName
+						FROM Table1 AS t1 FULL JOIN Table2 AS t2 RIGHT JOIN Table3 AS t3
+						ON t1.foreignKey=t2.primaryKey AND t2.foreignKey=t3.primaryKey
+			*JOINOWANIE TABELI ZE SAMĄ SOBĄ:
+			 (Pamietaj że JOINując tę samą tabele musisz wziąć pod uwagę w ONie kolejnosc porówanania
 			 klucza obcego i głównego (klucz obcy ędzie zawsze pierwszy). 
-				np Sprawdź ilu podwładnych ma każdy kierownik.
+				**Sprawdź ilu podwładnych ma każdy kierownik.
 					SELECT e2.empno, e2.ename, COUNT(e1.empno) FROM emp e1
 						INNER JOIN emp e2 ON e1.mgr = e2.empno
 						GROUP BY e2.empno, e2.ename
@@ -464,22 +2186,26 @@ ZADANIA DO POWTÓRZENIA I UTRWALENIA SQL'a:			https://pja.mykhi.org/0sem/SBD/edu
 			**DZIAŁA JAK DODAWANIE ZBIORÓW - czyli wybierasz wszystko co jest w dwóch zbiorach.		
 		  *LEFT JOIN 
 			**NIE pominie NULLów dla tabeli która znajduję się po PRAWEJ! stronie JOINa 
+			**dla rekordów z lewej tabeli ktróre nie będą miały powiązań z prawą tabelą wypiszę dane z 
+			  lewej tabeli a w miejscu dla danych z prawej wypiszę nulle
 			**zostaną wyświetlone wszystkie rekordy z tabeli stojącej po lewej stronie słowa JOIN wraz
 			  z tymi rekordami z prawej strony JOINA których klucze główne będą występować jako klucze
 			  obce w tabeli z lewej strony. 
 			**przy łączeniu tabel nie pominie żadnych wierszy które mogłyby zawierać wartość NULL lub 
 			  zawierać jakąś niezgodność przy łączeniu tabel (która skutkuje przypisaniem wartości NULL) 
-			  ALE tylko w tablicy która znajduję sie po lewej stronie LEFT JOINa.	
+			  ALE tylko w tablicy która znajduję sie po prawej stronie LEFT JOINa.	
 			**DZIAŁA JAK MNOŻENIE ZBIORÓW WRAZ Z DODANIEM ZBIORU TEGO Z LEWEJ - czyli wybierasz wszystko
 			  to co wspólne wraz z tym co znajduję się w lewym zbiorze.
 		  *RIGHT JOIN 
 			**NIE pominie NULLów dla tabeli która znajduję się po LEWEJ! stronie JOINa 
+			**dla rekordów z prawej tabeli ktróre nie będą miały powiązań z lewą tabelą wypiszę dane z 
+			  prawej tabeli a w miejscu dla danych z lewej wypiszę nulle
 			**zostaną wyświetlone wszystkie rekordy z tabeli stojącej po prawej stronie słowa JOIN wraz
 			  z tymi rekordami z lewej strony JOINA których klucze główne będą występować jako klucze
 			  obce w tabeli z prawej strony. 
 			**przy łączeniu tabel nie pominie żadnych wierszy które mogłyby zawierać wartość NULL lub 
 			  zawierać jakąś niezgodność przy łączeniu tabel (która skutkuje przypisaniem wartości NULL)
-			  ALE tylko w tablicy która znajduję sie po prawej stronie RIGHT JOINa.
+			  ALE tylko w tablicy która znajduję sie po lewej stronie RIGHT JOINa.
 			**DZIAŁA JAK MNOŻENIE ZBIORÓW WRAZ Z DODANIEM ZBIORU TEGO Z PRAWEJ - czyli wybierasz wszystko
 			  to co wspólne wraz z tym co znajduję się w prawym zbiorze.
 		  *NATURAL JOIN 						!!!!!!!!!!!!!!!!!
@@ -500,21 +2226,29 @@ ZADANIA DO POWTÓRZENIA I UTRWALENIA SQL'a:			https://pja.mykhi.org/0sem/SBD/edu
 					SELECT Ename FROM Emp WHERE Deptno <> 10
 			*UNION ALL – sumowanie bez usuwania duplikatów
 			*EXCEPT – różnica - wiersze zwracane przez pierwsze zapytanie, a nie zwracane przez drugie
-			 (w ORACLE MINUS) 
-					SELECT Deptno FROM Dept
-					EXCEPT
-					SELECT Deptno FROM Emp
+			 (w ORACLE, MySql operator MINUS) (w MsSQL i PostgreSQL operator EXCEPT)
+				****wypisz zawody występujące w dziale 10 ale nie wystęujące w dziale 30:
+					SELECT e1.job FROM emp e1 WHERE e1.deptno = 10 
+					EXCEPT 
+					SELECT e2.job FROM emp e2 WHERE e2.deptno =30;
 			*INTERSECT – część wspólna (wiersze zwracane w obu zapytaniach) (w zdaniach występuje jako 
-			 ZAROWNO)
-
-		
+			 ZAROWNO) (INTERSECT nie występuję w MsSQLu):
+				**wypisz zawody występujące zarówno w dziale 10 i 30:
+					SELECT e.job FROM emp e WHERE e.deptno = 10 
+					INTERSECT 
+					SELECT e.job FROM emp e WHERE e.deptno = 30;
+				**dla MsSQLa będzie to poprzez podzapytanie:
+					SELECT e1.job FROM emp e1 WHERE e1.deptno = 10 
+					AND e1.job IN (SELECT e2.job FROM emp e2  WHERE e2.deptno =30);	
 						
 	5* PODZAPYTANIA SQL (SUBQUERIES):
 		*za WHERE to podzapytanie musi zwrócić dokładnie jedną wartość więc musisz użyć funkcji grupujących
  		 np AVG() lub w klauzuli WHERE przefiltrować wyniki wyszukiwania do jednej zwracanej wartości:
 				SELECT * FROM tableName WHERE columnName1 > (SELECT AVG(columnName1) FROM tableName)
 				SELECT * FROM tableName WHERE columnName1 > (SELECT columnName1 FROM tableName WHERE id=1)
-			*ALL + SOME I ANY - możęsz określić czy wyszukane wartości w podzapytaniu mają być większe od 
+			   **znajdz LONG_W dla największego LAT_N mniejszego niż 10:
+				SELECT LONG_W FROM station WHERE LAT_N = (SELECT MAX(LAT_N) FROM station WHERE LAT_N<10);
+			*ALL + ANY (SOME) - możęsz określić czy wyszukane wartości w podzapytaniu mają być większe od 
 			 wszystkich czy od jakiejkolwik wartości (SOME i ANY oznaczają to samo czyli od jakiejkolwiek):
 				SELECT * FROM emp WHERE sal >= ALL (SELECT Sal FROM Emp WHERE Deptno=10)
 										#wybierzesz wszystkich pracowników których pensje są większe niż
@@ -522,8 +2256,13 @@ ZADANIA DO POWTÓRZENIA I UTRWALENIA SQL'a:			https://pja.mykhi.org/0sem/SBD/edu
 				SELECT * FROM emp WHERE sal >= ANY (SELECT Sal FROM Emp WHERE Deptno=10)
 										#wybierzesz wszystkich pracowników których pensje są większe niż
 										#pensje JAKIEGOKOLWIEK pracownika z działu 10
+				SELECT e1.* FROM emp e WHERE e1.sal > (SELECT e2.sal FROM emp e2 WHERE e1.mgr = e2.empno);
+										#Znajdz pracownikó zarabiających więcj niż ich kierownikowie:
 			*IN i NOT IN:
-				SELECT Dname FROM Dept WHERE Deptno IN (SELECT	Deptno FROM	Emp WHERE Job = 'CLERK');
+				SELECT dname FROM dept WHERE deptno NOT IN (SELECT deptno FROM emp);
+										#Znajdz departamenty w kórych nikt nie pracuję
+				SELECT dname FROM dept WHERE deptno IN (SELECT deptno FROM emp WHERE job = 'CLERK');
+										#znajdz departamenty w których praują CLERK'owie
 			*EXISTS + NOT EXISTS - Sprawdza główne zapytanie dla tych wynikó podzapytan które istnieją albo 
 			 nie istnieją. np:
 				SELECT DISTINCT	Dname FROM Dept WHERE 
@@ -541,7 +2280,9 @@ ZADANIA DO POWTÓRZENIA I UTRWALENIA SQL'a:			https://pja.mykhi.org/0sem/SBD/edu
 		*za FROM - możesz też użyć SUBQUERIES do zbioru za klauzulą FROM z którego będzie szukał ALE wtedy
  		 tenże zbiór MUSISZ OKREŚLIĆ ALIASEM za klauzulą AS (bez ALIASU nie będzie ci to działać:
 				SELECT colName1 FROM (SELECT * FROM tableName WHERE colName2>integerValue) AS aliasName
-				
+				SELECT deptno, w_dziale/l_pracownikow*100 AS procent FROM (SELECT COUNT(*) AS l_pracownikow 
+					FROM emp) a, (SELECT COUNT(*) AS w_dziale FROM emp GROUP BY deptno) b;
+										#wylicz procent pracowników w danym dziale w stosunku do wszystkich 				
   --------------------------------------------------------------------------			
   III.CIEKAWE SELECTY:
 		*różnica między ilośćią rekordów/obiektów miast w tabeli a unikalnymi miastami w tabeli:

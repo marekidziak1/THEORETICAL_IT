@@ -1,0 +1,807 @@
+5. ZAPIS DANYCH DO PLIKÓW:
+	1)CSV:
+			**odczyt:
+					df = pd.read_csv('survey.csv')
+			**zapis:
+					df.to_csv('data/india_survey.csv')
+		*TSV - TAB CSV (jako separator używasz tabulatora:
+			**odczyt:
+					df = pd.read_csv('survey.tsv', sep='\t')
+			**zapis:
+					df.to_csv('survey.tsv', sep='\t')
+	2)EXCEL:
+		*potrzebne bilioteki do pracy na plikach excel:
+					pip install wheel			#potrzebne do instalacji poniższych
+					pip install xlwt			#zapis do .XLS (stary format)
+					pip install openpyxl		#zapis do .XLSX (nowy format)
+					pip install xlrd			#pip install xlrd
+			**odczyt:
+					pd.read_excel('data/survey.xlsx', index_col='Respondent')
+			**zapis:
+					df.to_excel('survey.xlsx')
+	3)JSON:
+			**odczyt:
+					pd.read_json('data/india_survey.json')
+			**zapis w SCHEMACIE DOMYŚLNYM - słownik gdzie kolumny to klucze a 
+			  wartości to słownik z kluczami będacymi indexami i wartościami w 
+			  postaci komórek:
+					india_df.to_json('survey.json')
+			**zapis w SCHEMACIE gdzie każdy wiersz/rekord to słownik z kluczami 
+			  będącymi kolumnami i wartościami w postaci komórek (taki schemat nie 
+			  zapisuje INDEXU!!!):
+					df.to_json('survey_2.json', orient='records', lines=True)
+	4)SQL:
+		*do połączenia się z bazą danych SQLAlchemy - ORM dla Pythona (w przypadku 
+		 POSTGRESA trzeba jeszcze dodatkowo zainstalować psicopg2-binary):
+					pip install SQLAlchemy
+					pip install psicopg2-binary
+		*najpierw trzeba utworzyć połączenie z bazą danych SQL (zamiast dbuser i 
+		 dbpass powinno się mieć jakiś plik config ze zmiennymi)
+					from sqlalchemy import create_engine
+					import psycopg2
+					engine = create_engine('postgresql://dbuser:dbpass:5432/my_db')
+			**odczyt tabeli:
+					df = pd_read_sql('sample_table', engine, index_col='Respondent')
+			**odczyt wyekstraktowanej tabeli wg zapytania SQL:
+					df = pd_read_sql_query('SELECT * FROM sample_table', engine, index_col='Respondent')
+			**zapis:
+					df.to_sql('sample_table', engine, if_exists='replace')
+	5)CZYTANIE JAKIEGOKOLWIEK FORMATU Z LINKU URL:
+					df_from_url = pd.read_json('https://link/url')
+-------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------
+4. PRACA NA DATACH:
+	1)PODSTAWY:
+		*daty domyślnie ładują się jako Stringi:
+					df = pd.read_csv('data\ETH_1h.csv')
+					df.loc[0,'Date']							#'2020-03-13 08-PM'
+		*zmiana danych z datą ze Stringów na typ Date (Timestamp):
+			**trzeba podać formatowanie (tak jak w pythonie - ze strony: https://docs.python.org/3/library/datetime.html#strftime-and-strptime-behavior
+					df['Date'] = pd.to_datetime(df['Date'], format = '%Y-%m-%d %I-%p')
+					df.loc[0,'Date']				#Timestamp('2020-03-13 20:00:00')
+			*wyświetlenie  dnia tygodnia:
+					df.loc[0,'Date'].day_name()					#'Friday'
+		*ładowanie danych wraz ze zmianą typu kolumny na datę:
+			**stara opcja - pd.datetime.strptime(...):
+					df = pd.read_csv('data\ETH_1h.csv', parse_dates=['Date'], date_parser = lambda x: pd.datetime.strptime(x, '%Y-%m-%d %I-%p'))
+			**nowa opcja - datetime.strptime(...):
+					from datetime import datetime
+					df = pd.read_csv('data\ETH_1h.csv', parse_dates=['Date'], date_parser = lambda x: datetime.strptime(x, '%Y-%m-%d %I-%p'))
+		*różnice czasowe (odejmowanie dat (taka timedelta)):
+					df['Date'].max() - df['Date'].min() 		#Timedelta('986 days 
+																#09:00:00')
+		*FILTROWANIE PO DATACH
+			**zmiana indexu na kolumnę z datą -> można filtrować te daty jak index 
+			  domyślny czyli po slicingu (od do), przy czym nie trzeba wpisywać np 
+			  całej daty a wystarczy jej początek (slicing z przedziałami 
+			  obustronnie zamk.):
+					df.set_index('Date', inplace = True)
+					df['2020-01':'2020-02']	#wiersze z datami od Stycznia do Lutego 
+					df['2020':'2020']		#wiersze tylko z roku 2020
+			**można użyć tez loc[]/iloc[] (przy zmianie indexu na kolumnę z datą)
+			  (przedziały TEŻ są obustronnie zamk.):
+					df.loc['2020-01':'2020-01']
+					df.loc['2020':'2020']
+			**w przypadku gdyby data nie była indexem to zakres dat uzyskujesz tak 
+			  jak przy zwykłym filtrowaniu (z tym że nie musisz wpisywać pełnego 
+			  formatu - wystarczy początek):
+					#filt = (df['Date'] == '2019')		#ŹLE: zwróci tylko 1 komórkę
+														#zamiast wszystkich z 2019
+					filt = (df['Date'] >= '2019') & (df['Date'] < '2020')	
+					filt = (df['Date']>='2020-01') & (df['Date']<='2020-02')
+					df.loc[filt]
+	2)RESAMPLING: https://pandas.pydata.org/pandas-docs/stable/user_guide/timeseries.html#dateoffset-objects
+		*działa tylko na danych których indexem jest data
+					df.set_index('Date', inplace = True)
+		*resample tak jakby grupuję wiersze po wskazanym okresie czasowym (okresy 
+		 wskazane w linku powyżej) i na każdej grupie wierszy na wybranej kolumnej 
+		 jest wywoływana funkcja agregacyjna. [np: mimo że każdy wiersz ma index co 
+		 1 minutę to resample grupuję to wg dni i dla kolumny 'High' dla każdego 
+		 dnia wyszuka maxymalną wartość (ze wszystkich wierszy odpowiadającym 
+		 minutom)]:
+					highsOfTheEachDay = df['High'].resample('D').max()
+					highsOfTheEachDay						#Date
+															#2017-07-01    279.99
+															#2017-07-02    293.73
+															#2017-07-03    285.00
+															#2017-07-04    282.83
+		*można wywołać też to dla wszystkich kolumn (całej tabeli):
+					df.resample('W').mean()
+		*można wywołać też dla wielu kolumn różne funkcje agregujące:
+					df.resample('W').agg({'Close':'mean', 'High':'max', 
+													'Low':'min', 'Volume':'sum'})
+-------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------
+3.GROUPBY:
+  0.SKRÓT GROUPBY:
+	df.describe()
+	df['SocialMedia'].value_counts()
+	df.groupby(['Country', 'Hobbyist']).median()
+	df.groupby(['Country', 'Hobbyist'])['SocialMedia'].value_counts()
+	df.groupby(['Country','Hobbyist']).get_group(('Albania','No')).median()
+	df.groupby(['Country','Hobbyist']).get_group(('Afghanistan',
+								'No'))[['SocialMedia','Student']].value_counts()
+	df.groupby(['Country', 'Hobbyist'])['SocialMedia', 
+								'Student'].value_counts().loc[('Afghanistan','No')]
+	df.groupby(['Country', 'Hobbyist'])[['ConvertedComp',
+								'Age']].agg(['median', 'mean'])
+	df.groupby(['Country', 'Hobbyist'])[['ConvertedComp', 'Age']].agg(['median', 
+								'mean']).loc[('Afghanistan', 'No')]
+	df.groupby(['Country'])['LanguageWorkedWith'].apply(
+								lambda x: x.str.contains('Python').sum())
+-------------------------------------------------------------------------------------
+  1.PODSTAWY GROUPBY([...]):
+		**zwraca DataFrameGroupBy, grupuję dane (kolejność) w tabeli według 
+		  podanych kolumn (jak tabela przestawna). Można przejść po jego elementach 
+		  - kluczami będą pogrupowane kolumny a wartościami wszystkie wiersze w 
+		  kolejności tych pogrupowanych kolumn
+					df.groupby(['Country'])				
+					df.groupby(['Country', 'Hobbyist'])
+					df.groupby(['Country', 'Hobbyist'])['ConvertedComp'].median()
+									# index	  Country 	  Hobbyist   ConvertedComp 
+									#	  ------------------------------------------
+									# 4	 |	Afghanistan		No		   1000
+									# 6	 |	Afghanistan		Yes		    750
+									# 10 |	Afghanistan		Yes		   2300
+									# 19 |	Albania			No		   1200
+									# 27 |	Albania			Yes			800
+					for keys, values in df.groupby(['Country', 'Hobbyist']):
+						print(keys)
+						print(values)
+									#('Afghanistan', 'No')
+									#   index 	Salary 	 Country  		Hobbyist
+									# 	  4		 1000     Afghanistan	  No
+									#('Afghanistan', 'Yes')
+									#   index 	Salary 	 Country  		Hobbyist
+									# 	  6		  750     Afghanistan	  Yes
+									# 	  10	 2300     Afghanistan	  Yes
+	*groups - zwraca słownik krotki kluczy i listy wartości (jej indexów) 
+					df.groupby(['Country', 'Hobbyist']).groups
+									#{('Afghanistan', 'No'): [4], ('Afghanistan', 'Yes'): [6,10], ('Albania','No') :[19] ...}
+					for k, v in df.groupby(['Country', 'Hobbyist']).groups.items():
+						print(k)
+						print(v)	#('Afghanistan', 'No')
+									#Int64Index([4],dtype='int64', name='index')
+									#('Afghanistan', 'Yes')
+									#Int64Index([6.10],dtype='int64', name='index')
+	*get_group() - zwraca DataFrame w postaci przefiltrowanych wierszy z 
+		pogrupowanej tabeli. Działa tak samo jak filtr (tylko że wybiera rekordy po pogrupowanej tabeli zamiast przefiltrowywać ją)
+					df.groupby(['Country', 'Hobbyist']).get_group(('Albania', 'No'))
+									# index	  Country 	    Hobbyist	Salary 
+									#	   -------------------------------------
+									#  19 |	Albania			No			1200
+									#  27 |	Albania			Yes			 800
+									# działa tak samo jak:
+									# f = (df['Country']=='Albania') & 
+									#	 (df['Hobbyist']=='No')
+									#df.loc[f]		
+-------------------------------------------------------------------------------------
+  2.ROZSZERZENIE GROUPBY([...]) - METODY AGREGACYJNE:
+	1)WYKORZYSTANIE na NIEZAGREGOWANEJ TABELI:
+		a)poszczególnych metod agregacyjnych można użyć na całej tabeli która nie 
+		  jest zagregowana. Wtedy automatycznie wybierze tylko kolumny z liczbami 
+		  (będzie wycofane) (nie można korzystać z metody value_counts())
+					df.median()						#ConvertedComp    57287.0
+													#Age                 29.0
+				*describe() - metoda zwracająca podstawowe statystyki na całej 
+				 tabeli dla kolumn z liczbami. Zwróci: count (ilość), mean 
+				 (średnia), std (standard deviation), min, max, kwantyle: 25%, 50% 
+				 (mediana), 75%:
+					df.describe()	# CompTotal		ConvertedComp		Age
+									# count			5.582300e+04		79210.000000
+									# mean			1.271107e+05		30.336699
+									# std			2.841523e+05		9.178390
+									# min			0.000000e+00		1.000000
+									# 25%			2.577750e+04		24.000000
+									# 50%			5.728700e+04		29.000000
+									# 75%			1.000000e+05		35.000000
+									# max			2.000000e+06 		99.000000
+		b)poszczególnych metod można użyć na wybranej kolumnie. Wszystkie wartości 
+		  NaN zostaną zignorowane podczas obliczeń. 
+					df['ConvertedComp'].mean()		#średnia -> 127110.738
+					df['Hobbyist'].count()			#liczba wszystkich wystąpień
+					df['Hobbyist'].value_counts()	#liczba unikatowych wartości:
+													# Yes    71257
+													# No     17626
+													# Name: Hobbyist, dtype: int64
+	2)WYKORZYSTANIE na ZAGREGOWANEJ TABELI:
+			**zagregowana tabela też jest DataFrame'em i można użyć na niej metod   
+			  agregacyjnych tak sam jak w poprzednim punkcie. 
+		a)dla tabeli (nie można korzystać z value_counts())
+			**dla całej zaagregowanej tabeli:
+					df.groupby(['Country', 'Hobbyist']).median()
+									# Country		Hobbyist	ConvertedComp	Age
+									# Afghanistan	  No			4464.0		24.5
+									#  				  Yes			90000.0		25.0
+									# Albania		  No			14352.0		25.0
+									#				  Yes			10266.0		24.0 
+			**dla wybranego klucza w zaagregowanej tabeli:
+					df.groupby(['Country','Hobbyist']).get_group(
+														('Albania','No')).median()
+									# ConvertedComp     14352.0		
+									# Age                 25.0
+									# dtype: float64
+		b)dla poszczególnej kolumny/kilku kolumn -> [['SocialMedia', 'Student']] :
+			**dla kolumny z całej zaagregowanej tabeli:
+					df.groupby(['Country', 'Hobbyist'])['SocialMedia'].value_counts()
+									# Country       Hobbyist  SocialMedia   
+									# Afghanistan     No        Facebook       6
+									#  				 		    YouTube        2
+									#						    WhatsApp       2
+									#				  Yes       Facebook       7
+									#				  		    YouTube        7
+									# Albania         No        Facebook       5
+									#				  Yes       WhatsApp       14
+									#			 	 		    Facebook       11
+									#							Instagram      10
+			**dla wybranej kolumny/kolumn ( [['SocialMedia', 'Student']] ) w 
+			  zaagregowanej tabeli dla wybranego klucza (('Afghanistan','No')):
+					df.groupby(['Country','Hobbyist']).get_group(('Afghanistan',
+									'No'))[['SocialMedia','Student']].value_counts()
+									# będzie to samo co gdybyś użył:
+									# filt = (df['Country'] == 'Afghanistan') & 
+									#					(df['Hobbyist'] == 'No')
+									# df.loc[filt]['SocialMedia'].value_counts()
+									# Facebook    No                4
+												  Yes			    2
+									# YouTube     No                1
+												  Yes			    1
+									# WhatsApp    Yes				2
+			**dla wybranej kolumny/kolumn w zaagregowanej tabeli ALE ze wskazanym 
+			  kluczem na samym końcu poprzez atrybut loc['columnName'] :
+					df.groupby(['Country', 'Hobbyist'])['SocialMedia', 
+								'Student'].value_counts().loc[('Afghanistan', 'No')]
+									# będzie to samo co gdybyś użył:
+									# filt = (df['Country'] == 'Afghanistan') & 
+									#					(df['Hobbyist'] == 'No')
+									# df.loc[filt]['SocialMedia'].value_counts()
+									# lub get_group()
+									# df.groupby(['Country','Hobbyist']).get_group(
+									# ('Afghanistan','No'))[['SocialMedia',
+									# 'Student']].value_counts()
+									# Facebook    No                4
+												  Yes			    2
+									# YouTube     No                1
+												  Yes			    1
+									# WhatsApp    Yes				2
+-------------------------------------------------------------------------------------
+  3.ROZSZERZENIE ZAAWANSOWANE GROUPBY([...]):
+	0) count() VS value_counts() 
+			df['Hobbyist'].count()			#liczba wszystkich rekordów w kolumnie
+			df['Hobbyist'].value_counts()	#liczba każdego unikalnego rekordu w col.
+	1) dla funkcji value_counts() można dodać atrybut normalize = True dzięki czemu 
+	   zostaną zwrócone procenty -> value_counts(normalize=True)
+					df.groupby(['Country','Hobbyist'])['SocialMedia','Student'].
+							value_counts(normalize=True).loc[('Afghanistan', 'No')]
+									# Facebook    No                0.4
+												  Yes			    0.2
+									# YouTube     No                0.1
+												  Yes			    0.1
+									# WhatsApp    Yes				0.2
+	2) metoda agg() - wiele metod agregacyjnych dla jednego zapytania (value_counts
+	   nie można używać z innymi metodami agregacyjnymi):
+					import numpy
+					df.groupby(['Country', 'Hobbyist'])[['ConvertedComp', 
+												'Age']].agg([numpy.median, 'mean'])
+						# Country	  Hobbyist		ConvertedComp		  	 Age
+						# 						median		mean		median	mean
+						# Afghanistan	No		4464.0		4148.00		24.5	29.37
+						# 				Yes		14364.0		134555.11	25.0	27.13
+						# Albania		No		14352.0		23174.60	25.0	27.07
+										Yes		10266.0		21498.47	24.0	24.72
+					df.groupby(['Country', 'Hobbyist'])[['ConvertedComp', 
+						  'Age']].agg(['median', 'mean']).loc[('Afghanistan', 'No')]
+					df.groupby(['Country', 'Hobbyist'])[['SocialMedia',
+													'Student']].agg('value_counts')	
+	3) str.contains - można też skorzystać z metody string sprawdzającej czy coś 
+	   jest zawarte w każdej komórce --> wtedy musisz użyć metody apply gdyż 
+	   pracujesz na DANYCH TYPU: SeriesGroupBy a nie Series:
+					df.groupby(['Country'])['LanguageWorkedWith'].apply(
+										lambda x: x.str.contains('Python').sum())
+									# używasz sum() zamiast count() żeby zsumowało 
+									# Tobie wszystkie pasujące wyniki (True jako 1)
+									# zamiast count() by policzyło Tobie wszystkie 
+									# elementy dla każdej grupy
+									#						Country
+									#						Afghanistan   	8
+									#						Albania    	  	23
+									#						Algeria			40
+									#						Andorra 		0
+	4) przedstawienie wyników - wykorzystanie pd.concat():
+			*utworzenie dwóch zmiennych typu Series (poprzez pobranie danych):
+					country_residents = df['Country'].value_counts()
+					country_uses_python=df.groupby(['Country'])['LanguageWorkedWith'
+								].apply(lambda x: x.str.contains('Python').sum())
+			*połączenie dwóch tabel typu Series (pierwsza tabela przejmie nazwę 
+			 drugiej kolumny 'LanguageWorkedWith'):
+					#import pandas as pd
+					python_df = pd.concat([country_residents, country_uses_python], 
+														axis='columns', sort=False)
+			*zmiana nazw kolumn:
+					python_df.rename(columns={'Country':'NumRespondents', 
+							'LanguageWorkedWith':'NumKnowsPython'}, inplace = True)
+			*dołożenie kolumny: 
+					python_df['pctKnowsPython'] = (python_df['NumKnowsPython']/
+														python_df['NumRespondents'])
+-------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------
+
+2.MODYFIKACJA KOMÓREK:
+  1)PODSTAWY:
+	 **PODMIANA WARTOŚCI - robisz poprzez przipsanie lub metody:
+			*nazwy kolumn:
+					df.columns = ['first', 'last', 'email']
+					df.rename(columns={'first':'First name'}, inplace=True)
+			*Wartości:
+					df.loc[2, ['First name', 'email']] = ['Matty', 'ms@gmail.com']
+					df.loc[(df['email'] == 'ms@gmail.com'), 'last'] = 'Gato'
+					#plus metody replace i map
+	 **WYWOŁANIE METODY NA WSZYSTKICH KOMÓRKACH W DANEJ KOLUMNIE:
+			*na Stringach:
+					df['Symbol'].str.lower()				#str.lower()
+					df['Symbol'].apply(str.lower)			#apply
+					df['Symbol'].apply(lambda x: x.lower())	#apply i lambdy
+			*na Datach (nie działa opcja apply(dt.day_name)):
+					df['Date'].dt.day_name()
+					### df['Date'].apply(dt.day_name) (NIE DZIAŁA!)
+					df['Date'].apply(lambda x: x.day_name())
+	 **UŻYWANE METODY --> (Będziesz przede wszystkim korzystał z APPLYMAP do funkcji 
+	   na danych i REPLACE do podmiany danych --> patrz pkt3):
+			*wywołanie funkcji na danych:
+				  APPLYMAP -> będącymi obiektami DateFrame
+				  APPLY    -> będącymi obiektami Series
+			*podmiana wartość w komórkach na obiektach Series:
+				  MAP      -> wartości których nie ma jako klucze w słowniku 
+				  			  zostają podmienione na 'NaN'
+				  REPLACE  -> wartości których nie ma jako klucze w słowniku 
+							  zostają NIEZMIENIONE
+  2)DODAWANIE/USUWANIE KOLUMN i WIERSZY:
+	A)KOLUMNY:
+		a)Dodanie nowej kolumny:
+			**z wszystkimi komórkami w kolumnie o jedej wartości
+					df = df.assign(my_pro='NAN')
+			**z każdą komórką w kolumnie o różnej wartości (musi być dokładnie tyle 
+			  komórek ile jest indexów - inaczej błąd)
+					df = df.assign(my_profit=[4000, 20000, 30000])
+										# 	first	last	email		  my_profit
+										# 0	Marek	Dziak	md@gmail.com  4300
+										# 1	Anna	Nacz	an@gmail.com  20000
+										# 2	Lukas	Lipka	ll@gmail.com  30000
+		b)Dodanie kolumny na bazie innych kolumn (nie wolno używać notacji z kropką)
+					df['fullname'] = df['first']+' '+ df['last']  # NIE df.fullname
+		c)Podział kolumny na inne kolumny:
+					df[['first','last']] = df['fullname'].str.split(' ',expand=True)
+		d)Usuwanie kolumny/kolumn:
+					df.drop(columns=['first','last'], inplace = True)
+	B)WIERSZE:
+		a)Dodanie wiersza 
+			**komórki dla kluczy które nie zostaną wprowadzone dostaną wartość NaN
+			**klucz który nie będzie istnieć zostanie dodany jako nowa kolumna
+			**są 2 metody - concat i append (append ma zostać wycofana)
+					df = df.append({'first':'Johny'}, ignore_index=True)
+					df = pd.concat([df, pd.DataFrame([{'first':'Al', 
+											'last':'Geno'}])],ignore_index=True)
+		b)Dodanie całej tabeli do tabeli:
+			**komórki dla nie tych samych kolumn w tabelach dostaną wartość NaN:
+			**są 2 metody - concat i append (append ma zostać wycofana)
+					df = df.append(df2, ignore_index=True, sort=False)
+					df = pd.concat([df, df2], ignore_index=True)
+										# 	first	last	email			profit
+										# 0	Marek	Dziak	md@gmail.com	NaN
+										# 1	Anna	Nacz	an@gmail.com	NaN
+										# 2	Lukas	Lipka	ll@gmail.com	NaN
+										# 3	Ewela	Mus		NaN				400.0
+										# 4	Kal		Dziak	NaN				399.0
+		c)Usuwanie wiersza:
+			**na podstawie indexu (błąd jeżeli index/indexy nie istnieją):
+					df.drop(index=3, inplace=True)
+					df.drop(index=[1,2], inplace=True)
+			*na podstawie przefiltrowanych danych: 
+					filt = df['last']=='Dziak'
+					df.drop(index=df[filt].index, inplace=True)
+  3)CZYSZCZENIE DANYCH z NaN oraz ZMIANA TYPU WARTOŚCI:
+		A)SPRAWDZENIE CZY są wartośći NaN w tabeli:
+					df.isna()			#	first	last	email	age
+										# 0	False	False	False	False
+										# 1	False	True	False	False
+										# 2	False	False	False	False
+		B)USUNIĘCIE WIERSZY(INDEXÓW)/KOLUMN gdzie w jakiejkolwiek/we wszystkich 
+		  kolumnach jest NaN/None w podanych kolumnach (subset)
+		  dropna(axis ='index/rows/columns', how='any/all', subset=['col1','col2']) 
+		  
+					df.dropna()  	/ 	 df.dropna(axis='index', how='any')
+					df.dropna(axis='rows', how='any') 	 #gdy w jakiejkolwiek komórce 
+														 #w wierszu jest NaN / None 
+														 #to wiersz zostaje usunięty
+					df.dropna(axis='columns', how='all') #gdy we wszystkich komórkach
+														 #w kolumnie jest NaN / None
+														 #to kolumna zostaje usunięta
+					df.dropna(axis='rows', how='any', subset=['first', 'last'])
+														 #gdy w jakiejkolwiek komórce
+														 #w kolumnach 'first'/'last'
+														 #pojawi się NaN / None to 
+														 #wiersz zostaje usunięty
+		C)ZAMIANA STRINGÓW na wartości NaN/None:
+					import numpy as np
+					df.replace('Missing', np.nan, inplace=True)
+		D)WYPEŁNIENIE wartości NaN/None na inną wartość:
+					df.fillna(0, inplace=True)
+					df['email'].fillna('M, inplace=True)
+		E)SPRAWDZENIE TYPÓW WARTOŚCI i ZAMIANA TYPÓW WARTOŚCI - NaN jest domyślnie
+		  typem float i w funkcjach agregacyjnych przy obliczeniach nie jest brany pod uwagę ALE by móc skorzystać z tych funkcji agregacyjnych to inne dane w kolumnie też muszą być typem float i NIE MOGĄ BYĆ np int (intigerem)
+			  **zwrot typów wartości dla danej kol (Object - Stringi/dane mieszane)
+					df.dtypes
+			  **zwrot wszystkich unikalnych wartośći w danej kolumnie
+					df['YearsCode'].unique()
+			  **zamiana typu wartości:
+					df['YearsCode'] = df['YearsCode'].astype(float)
+					df['YearsCode'].mean()				 #teraz można użyć mean()
+  4)METODY:	
+	*APPLYMAP()
+	    a*wywołuję funkcję na wybranych danych
+		b*działa na obiektach klasy DataFrame, nie działa na obiektach klasy Series
+		c*NA CAŁEJ TABELI - każda komórka w tabeli zostanie zmieniona 
+					df = df.applymap(str.lower)   		/ 
+					df.loc[:,:] = df.loc[:,:].applymap(str.lower)
+														# 	first  last  email
+														# 0 marek  dziak md@gmail.com
+														# 1 anna   nacz  an@gmail.com
+														# 2 lukas  lipka ll@gmail.com
+		d*można wybrać całą kolumnę (lub kilka) lub cały wiersz (lub kilka) lub 
+		  komórkę w tabeli (lub kilka) ale trzeba użyć specjalnej składni w loc[] 
+		  zawierającej nawiasy[] wewnątrz nawiasów[]:
+					df.loc[:,['email']] = df.loc[:,['email']].applymap(str.upper)
+														#df['email'] - nie zadziała 
+														#	email
+														# 0	MD@GMAIL.COM
+														# 1	AN@GMAIL.COM
+														# 2	LL@GMAIL.COM
+					df.loc[[2],:] = df.loc[[2],:].applymap(labda x: x.upper())
+														# 	first  last  email
+														# 2 LUKAS  LIPKA LL@GMAIL.COM
+					df.loc[[0],['email']] = df.loc[[0],['email']].applymap(str.upper)
+														# 	 email		
+														# 0 MD@GMAIL.COM	
+			  ***również zadziałą na przefiltrowanych danych ale trzeba pamiętajać
+				 o specjalnej składni podwójnych nawiasów[]
+					def my_update(email):
+						return email.upper()
+					filt = (df['last']=='Dziak')
+					df.loc[filt,['email']].applymap(my_update)
+	*APPLY()
+		a*wywołuję funkcję na wybranych danych
+		b*działa na obiektach klasy Series, nie działa na obiektach klasy DataFrame  
+		c*Działa tylko na POJEDYŃCZYCH kolumnach i POJEDYŃCZYCH wierszach. 
+		d*Nie działa na POJEDŃCZYCH komórkach chyba że zostaną one przedstawione
+		  w formie Series: df.loc[0,['first']] zamiast df.loc[0,'first']. Nie można 
+		  wybrać kilku komórek (nawet w jednej kolumnie) bo będzie to już DataFrame) 
+					df.loc[:,'email'] = df.loc[:,'email'].apply(str.lower) 
+					df['email'] = df['email'].apply(str.upper)
+											#.apply(lambda x: x.upper())
+											#.str.upper()
+														# 0    MD@GMAIL.COM
+														# 1    AN@GMAIL.COM
+														# 2    LL@GMAIL.COM
+														# Name: email, dtype: object
+					df.loc[0] = df.loc[0].apply(str.lower)
+										#.apply(lambda x: x.lower())
+										#.str.lower()
+														# first    marek
+														# last     dziak
+														# email    md@gmail.com
+														# Name: 0, dtype: object
+					df.loc[0,['first']] = df.loc[0,['first']].apply(str.lower)
+														# first    marek
+														# Name: 0, dtype: object
+			  ***również działa na przefiltrowanej kolumnie ale musi to by obiekt
+				 Series (nie może być podwójnego nawiasu[] w miejscu kolumny):
+					def my_update(email):
+						return email.lower()
+					filt = (df['last'] == 'Dziak') 
+					df.loc[filt, 'email'] = df.loc[filt,'email'].apply(my_update)
+														# 0    md@gmail.com
+														# Name: email, dtype: object
+		c*zadziała też na całej tablicy ale będącej w formie obiektu Series (działa
+		  na wszytkich kolumnach realizując funkcje na każdej kolumnie z osobna)
+					df.apply(lambda x: x.min())			# wybierze najmniejszą
+														# wartośc z każdej kolumny
+														# first    Anna
+														# last     Dziak
+														# email    an@gmail.com
+														# dtype: object
+	*MAP():
+		a*pozwala zamienić wartości komórek (traktując je jako klucze w słowniku) 
+		  na innne wartości (będące wartościami dla kluczy w słowniku)
+		b*resztę wartości komórek które nie wystepują jako klucze w słowniku funkcja 
+		  map() zmienia na 'NaN'
+		c*działa tylko dla obiektów typu Series - pozwala zamieniać wartości tylko 
+		  dla pojedyńczej kolumny, pojedyńczego wiersz lub pojedyńczej komórki 
+		  (gdzie trzeba pamiętać o podwójny nawiasie[] ALE tylko w miejscu kolumny):
+					df.loc[:,'last'] = df.loc[:,'last'].map({'Dziak':'Czak'})   / 
+					df['last'] = df['last'].map({'Dziak':'Czak'})
+														 #  0     Czak
+														 #	1     NaN
+														 #	2     NaN
+														 #	Name: last, dtype: object
+					df.loc[0] = df.loc[0].map({'Dziak':'Czak','Jozek':'Wark'})
+														 # first     Wark
+														 # last      Czak
+														 # email     NaN
+														 # Name: 0, dtype: object
+					df.loc[0,['last']] = df.loc[0,['last']].map({'Dziak':'Czak'})  
+														 # last      Czak
+														 # Name: 0, dtype: object
+			  ***również działa na przefiltrowanej kolumnie ale musi to by obiekt
+				 Series (nie może być podwójnego nawiasu[] w miejscu kolumny):
+					filt = (df['email'] == 'md@gmail.com') 
+					df.loc[filt, 'last'] = df.loc[filt,'last'].map({'Dziak':'Czak'})
+														 # 0    Czak
+														 # Name: last, dtype: object
+	*REPLACE():
+		a*pozwala zamienić wartości komórek (traktując je jako klucze w słowniku) 
+		  na innne wartości (będące wartościami dla kluczy w słowniku)
+		b*resztę wartości komórek które nie wystepują jako klucze w słowniku ZOSTAJE 
+		  TAKA SAMA - funkcja replace() nie zamienia na 'NaN'.
+		c*działa tylko dla obiektów typu Series - pozwala zamieniać wartości tylko 
+		  dla pojedyńczej kolumny, pojedyńczego wiersz lub pojedyńczej komórki 
+		  (gdzie trzeba pamiętać o podwójny nawiasie[] ALE tylko w miejscu kolumny):
+					df.loc[:,'last'] = df.loc[:,'last'].replace({'Dziak':'Czak'})
+					df['last'] = df['last'].replace({'Dziak','Czak'})
+														 # 0     Czak
+														 # 1     Nacz
+														 # 2    Lipka
+														 # Name: last, dtype: object
+					df.loc[0] = df.loc[0].replace({'Marek':'Garek', 'Dziak':'Czak'})
+														 # first    Garek
+														 # last     Czak
+														 # email    md@gmail.com
+														 # Name: 0, dtype: object
+					df.loc[0,['last']] = df.loc[0,['last']].replace({'Dziak':'Czak'})
+														 # last     Czak
+														 # Name: 0, dtype: object
+			  ***również działa na przefiltrowanej kolumnie ale musi to by obiekt
+				 Series (nie może być podwójnego nawiasu[] w miejscu kolumny):
+					filt = (df['email'] == 'md@gmail.com') 
+					df.loc[filt,'last']=df.loc[filt,'last'].replace({'Dziak':'Czak'})
+														 # 0    Czak
+														 # Name: last, dtype: object
+-------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------
+
+1.PODSTAWOWE KOMENDY:
+	A) ODCZYT PLIKU:
+		1)odczyt danych z pliku csv:
+				import pandas as pd
+				df = pd.read_csv('sciezka/do/plikucsv.csv')
+		ZZ)odczyt danych z dodatkowymi funkcjami:
+			*odczyt danych ze zmianą indexu na inną kolumnę:
+				df = pd.read_csv('sciezka/plikucsv.csv', index_col='email')
+				
+	B)INDEXY:
+		*w Pandasie index nie musi być unique(chociaż zazwyczaj jest). 
+		*numer wiersza to nie index.Index można zmienić na inną kolumnę. 
+		*po zmianie indexu 'iloc' będzie działał bo jest po nr. wierszy
+				df.set_index('email') 			  		 # jednorazowa zmiana
+				df.set_index('email',inplace=True)	 	 # zmiana na stałe
+				df.reset_index(inplace=True)	 		 # zmiana na domyślny index
+	
+	C) DANE i INFO o DANYCH:
+		*rozmiar tabeli (atrybut shape)"
+				df.shape
+		*informacje o danych i typach danych:
+				df.info()
+		*wyświetlenie wszystkich kolumn (atrybut columns):
+				df.columns
+				
+		*WYŚWIETLANIE WIERSZY (atrybuty iloc, loc):
+			X1)*po numerze wiersza (numer wiersza to nie to samo co numer 	
+				indexu) (atrybut iloc - integer loc)(nr wierszy od 0):
+				a)pojedyńczy wiersz
+					df.iloc[2]							 # first    Lukas
+														 # last     Lipka
+														 # email    ll@gmail.com
+														 # Name: 2, dtype: object
+				b)kilka wierszy (musi byc podwójny nawias):
+					df.iloc[[0,2]] 			    		 #	 first	last	email
+														 # 0 Marek	Dziak	md@..
+														 # 2 Lukas	Lipka	ll@..
+				c)kilka wierszy ale tylko wybrane kolumny (liczone od 0):
+					df.iloc[[0,2],1]			 		 # 0 Dziak
+														 # 2 Lipka
+														 # Name: last, dtype: object
+					df.iloc[[0,2],[0,2]]		 		 #	 first	email
+														 # 0 Marek	md@gmail.com
+														 # 2 Lukas	ll@gmail.com
+				d)wszystkie wiersze ale wybrane kolumny:
+					df.iloc[:,[2,0]] 			 		 #	   email		first
+														 # 0 md@gmail.com	Marek
+														 # 1 an@gmail.com	Anna
+														 # 2 ll@gmail.com	Lukas
+				e)SLICING - kilka wierszy (od do) - slicing bez nawiasów [] 
+				  i włączający ten ostatni wiersz (ale nie włączający ostatniej kolumny - inaczej niż w 'loc'):
+					df.iloc[0:2,[0,2]]			 		 #	 first	email
+														 # 0 Marek	md@gmail.com
+														 # 1 Anna 	an@gmail.com
+														 # 2 Lukas	ll@gmail.com
+					df.iloc[0:2,0:3]				 	 #	 first  last   email
+														 # 0 Marek  Dziak  md@gm...
+														 # 1 Anna   Nacz   an@gm...
+														 # 2 Lukas  Lipka  ll@gm...
+		    X2)*po nazwie indexu (a nie po nr wiersza):
+				a)pojedyńczy wiersz
+					df.loc[2]					 		 # first    Lukas
+														 # last     Lipka
+														 # email    ll@gmail.com
+														 # Name: 2, dtype: object
+				b)kilka wierszy (musi byc podwójny nawias):
+					df.loc[[0,2]] 			     		 #	 first	last	email
+														 # 0 Marek	Dziak	md@..
+														 # 2 Lukas	Lipka	ll@..
+				c)kilka wierszy ale tylko wybrane kolumny (po nazwie kolumny 
+				 można wpisać dowolną kolejność kolumn):
+					df.loc[[0,2],'last']		 		 # 0 Dziak
+														 # 2 Lipka
+														 # Name: last, dtype: object
+					df.loc[[0,2],['email','first']]	 # email		first
+														 # 0 md@gmail.com	Marek
+														 # 2 ll@gmail.com	Lukas
+				d)wszystkie wiersze ale wybrane kolumny:
+					df.loc[:,['email','first']] 		 #	   email		first
+														 # 0 md@gmail.com	Marek
+														 # 1 an@gmail.com	Anna
+														 # 2 ll@gmail.com	Lukas
+				e)SLICING - kilka wierszy (od do) - slicing bez nawiasów [] 
+				  i włączający ten ostatni wiersz/tę ostatnią kolumnę:
+					df.loc[0:2,['email':'first']]		 # 	 email			first
+														 # 0 md@gmail.com	Marek
+														 # 1 an@gmail.com	Anna 
+														 # 2 ll@gmail.com	Lukas
+					df.loc[0:2,'first':'email]			 #	 first  last   email
+														 # 0 Marek  Dziak  md@gm..
+														 # 1 Anna   Nacz   an@gm..
+														 # 2 Lukas  Lipka  ll@gm..
+		    X3)*odczyt wierszy po SLICINGu:
+				a)dla domyślnego indexu zwróci przedział zamknięty z lewej strony 
+				  i otwarty z prawej:
+					df[2:3]								 # wyświetli tylko 2 wiersz
+					df[2:5]								 # wyświetli wiersze 2,3,4
+				  można użyć tez loc[]/iloc[] (przedziały są obustronnie zamknięte)
+					df.loc[2]
+					df.loc[2:4]
+				b)przy zmianie indexu na kolumnę z datą można filtrować te daty jak 
+				  index domyślny czyli po slicingu (od do), przy czym nie trzeba 
+				  wpisywać np całej daty a wystarczy jej początek:
+					df.set_index('Date', inplace = True)
+					df['2020-01':'2020-02']	#wiersze z datami od Stycznia do Lutego 
+					df['2020':'2020']		#wiersze tylko z roku 2020
+				  można użyć tez loc[]/iloc[] (przedziały TEŻ są obustronnie zamk.)
+					df.loc['2020-01':'2020-01']
+					df.loc['2020':'2020']
+				  w przypadku gdyby data nie była indexem to zakres dat uzyskujesz 
+				  tak jak przy zwykłym filtrowaniu:
+					filt = (df['Date']>='2020-01') & (df['Date']<='2020-02')
+					df.loc[filt]
+	D)FILTROWANIE:
+		1*PODSTAWY:
+			*nie wolno dać nazwy 'filter' do zmiennej 
+					filt = (df['last'] == 'Dziak') 
+					filt								 # 0     True
+														 # 1    False
+														 # 2    False
+														 # Name: last, dtype: bool
+			*zwrócenie danych (wszystkich wierszy gdzie jest True):
+				**df[...] - tak jakbyś wywoływał KOLUMNĘ 
+					df[filt] / df[(df['last'] =='Dziak')]
+				**df.loc[...] - tak jakbyś wywoływął wiersze/komórkę
+					df.loc[filt]
+					df.loc[filt, 'first']
+			*OPERATOR ZAPRZECZENIA: '~' 
+					df.loc[~filt]
+			*SPÓJNIKI LOGICZNE: '&', '|':
+					filt1= ((df['last'] == 'Nacz') & (df['first'] == 'Anna'))
+					filt2= ((df['last'] == 'Nacz') | (df['first'] == 'Marek'))
+			*Narzędzie PORÓWNIANIA: '>','<','==','!=':
+					above_average_salary = (df['Salary'] > 70000)
+		2*FUNKCJE:
+			*isin(list):
+					countries = ['United States', 'India', 'United Kingdom']
+					filt = df['Country'].isin(countries)
+					df.loc[filt,'Lang'] 			  	# pokazuję tylko col. Lang
+														# z przefiltrowanymi danymi
+			*str.contains('string', na=False) - dla filtrowania stringów 
+			 (trzeba dodać 2gi arg na=False żeby nie wyrzucało błędów)
+					filt = df['Lang'].str.contains('Python', na=False)
+					df.loc[filt,['Country','Lang']] 	# pokazuję tylko 2 kolumny
+														# z przefiltrowanymi danymi
+					df.loc[filt, 'LanguageWorkedWith']
+	E)SORTOWANIE i LIMIT SOTUJĄCY
+		1*Sortowanie po indexie:
+					df.sort_index(inplace=True)					 #rosnące na stałe
+					df.sort_index(ascending=False, inplace=True) #malejące na stałe
+		2*Sortowanie po wartościach:
+			*po 1 kolumnie (rosnąco i malejąco i na stałe):
+					df.sort_values(by='last')		
+					df.sort_values(by='last', ascending=False)	
+					df.sort_values(by='last', ascending=False, inplace=True)
+			*po wielu kolumnach - liczba elem. w liście dla 'ascending' musi 
+			 odpowidać l. elem. w liście dla 'by':
+					df.sort_values(by=['last', 'first'], ascending=False, 	
+																inplace=True)
+					df.sort_values(by=['last', 'first'],
+					ascending=[False,True], inplace=True)
+		3*LIMIT SORTUJĄCY - największe/najmniejsze wartosci z limitem np.10:
+			*na pojedyńczej kolumnie:
+					df['ConvertedComp'].nlargest(10)
+			*na całej tabeli wzgledem danej kolumny 
+					df.nsmallest(10,'ConvertedComp')
+-------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------
+**dobre tutoriale pandasa na 'data school'											
+1.DATAFRAME:
+	A)Dane jako obiekt DataFrame (słownik z kluczami jako kolumny i wartościami jako 
+	  komórki) (taki słownik można zamienić na DataFrame i można dostać się do jego 
+	  poszczególnych komórek):
+				people = {
+					"first": ['Marek', 'Anna', 'Lukas'],
+					"last": ['Dziak', 'Nacz', 'Lipka'],
+					"email": ['md@gmail.com','an@gmail.com','ll@gmail.com']
+				}
+				df = pd.DataFrame(people)
+				df
+		*Series - 1wymiarowa tabela - zwrócenie poszczególnej kolumny (lepiej używać 
+		 formy z nawiasami bo jest możliwośc że nazwa kolumny może miec taką samą 
+		 nazwę jak atrybut/metoda DataFrame'u):
+				df['last']		/				 	# 0	Dziak
+				df.last							 	# 1	Nacz
+													# 2	Lipka
+				type(df['last']) / type(df.last) # pandas.core.series.Series
+		*DataFrame - 2wymiarowa tabela - zwrócenie kilku kolumn (musi być 
+		 podwójny nawias bo inaczej KeyError):
+				df[['first', 'last']]		 		# 0 Marek	Dziak
+													# 1	Anna	Nacz
+													# 2	Lukas	Lipka
+				type(df1[['first', 'last']])  		# pandas.core.frame.DataFrame
+	B)Wyświetlenie danych:
+		*wszystkich:
+				df
+		*bezwzględnie wszystkich (w liczbie kol/wierszy wpisujesz max liczbę) 
+				pd.set_option('display.max_columns', 85)
+				pd.set_option('display.max_rows', 3000)
+				df
+		*pierwszych/ostatnich 5ciu/podanej liczby wierszy:
+				df.head()
+				df.tail()
+				df.head(12)
+				df.tail(12)
+		*poszczególnej kolumny / kilku kolumn:
+				df['last']		
+				df[['last', 'email']]					 #musi byc podwójny nawias	
+	
+0.INSTALACJA i otwarcie JUPYTER LAB:
+	A)INSTALACJA w terminalu:
+				pip install pandas 
+				pip install notebook
+				pip install jupyterlab
+	B)JUPYTER NOTEBOOK:
+		a)W TERMINALU będąc w folderze z danymi otwarcie poprzez:
+				jupyter notebook
+		  i automatyczne przejście na stronę 
+				http://localhost:8888/notebooks/...
+		  po zakończeniu pracy plik z rozszerzeniem .ipynb zostanie zapisany
+		b)SKRÓTY JUPYTER NOTEBOOKa:
+			*RUN komórki ---> SHIFT + ENTER
+			*Restart and Run ----> Kernell -> Restart and Run all
+			
+			
+		
+	
