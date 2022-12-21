@@ -1,0 +1,123 @@
+TO DO: 
+	*TEAMS -> D&I -> GENERAL -> 06.MANUALS -> Work Instructions -> Transit tiem, KPI-Trainings
+	*TEAMS -> D&I -> GENERAL -> 06.MANUALS -> Cargo Wise One -> CW1 szkolenie 
+	*ONE NOTE - MANUALS/TRAININGS 
+
+
+
+
+
+MANUALS/TRAININGS LOGISTICS 
+	**logic of the shipments journey
+	**TERMS:
+		*DETENTION VS DEMURAGE: 
+			DETENTION (DET) - czas podjęcia pustego kontenera do momentu załadowannia go ORAZ czas podjęcia rozładowanego konenera do momentu jego kolejnego wykorzystania
+			DEMURAGE (DMG) - czas przeniesienia PEŁNEGO kontenera na statek od momentu jego załadowania ORAZ czas zdjęcia PEŁNEGO kontenera ze statku do momentu jego rozładowania.
+		*VVOC (vessel-operating-common-carrier) vs NVOOC (non-vessel-operating-common-carrier)
+			VVOC to przewoźnik (carrier) posiadający swoją flotę statków (fleet of vessels) 
+			NVOCC to firma spedycyjna - pośrednik między klientem (merchant) a przewoźnikiem (carrier). NVOCC zbiera wszystkie przesyłki 
+		*customs (odprawa celna), customs broker (DSV - upoważniona firma przez klienta do zajęcia się odprawą)
+		*bill of lading (dokument przewozowy)
+		*letter of credit - gwarantuję wypłatę środków w przypadku zachowania warunków przewozu
+		*CONSOLIDATION (grupowanie przesyłek do kontenera)
+		
+
+
+PODSTAWOWY RAPORT - KOLUMNY:
+	MODE:
+		*sposób transportu -> Air, Sea, Courier, Rail, Road
+		*w CW1 ->Basic Registration
+	EQUIPMENT:
+		*jaki rodzaj transportu użyty:
+			**LSE - powietrzny -, przesyłka nieskonsolidowana do kontenera
+			**FCL - morski Full Container Load (kontener nie musi byc wypełniony po brzegiale został użyty cały do przesyłki
+			**LCL - morski Less Than Container Load 
+			**BB - non containerized cargo
+	TYPE:
+		*typ konsolidacji przesyłek:
+			STD - standardowy
+			BCE
+			ASM
+	SHIPMENT ID:
+		*podstawowa unikalna jednostka w potaci numeru przesyłki 
+		*numer przesyłki może wystąpić w wielu wierszach -> wtedy wiadomo że jest skonsolidowana (wtedy EQUIPMENT jest ustawiony na FCL (Full Container Load))
+		*Przesyłki Air & Sea zaczynają się od 'S' 
+	ISMASTER / LEAD:
+		*gdy przesyłka jest skonsolidowana I SKŁADA SIĘ Z WIELU WIERSZY to czy dany wiersz jest tym głównym wierszem gdzie m.in jest zawarta kwota płatności
+	HAWB / HABL - list przewozowy
+	MASTERBILL - numer dokumentu kontraktu między spedytorem a przewoźnikiem
+	CONSOL ID:
+		*numer odwołujący się do samego transportu (etap od portu do portu)
+		*w CW1 - Details -> Consol Details
+	Container:
+		*numer kontenera (składający się z 4 znaków i  cyfr)
+		*liczone w TEU gdzie 1 TEU = 20 stóp, jeżeli kontenera ma wielkośc 42 stóp to TEU = 2,1
+	SHIPMENT REF:
+		*numer do wewnętrznych systemów klienta - nieużywany przez nas)
+		*w CW1 -> Basic-> o Management Link -> Order Ref
+	<ZAKŁADKA PICKUP>:
+		*miejsce odbioru
+		*ID, NAME, CITY, STATE, POSTCODE, UNLOCO (United Nation Location Code - międzynarodowy numer konkretnego miejsca na świecie)
+		*PICKUP ID może mieć 8 znaków (wtedy jest to kod transportowy) lub 10 znaków (wtedy jest to kod bilingowy, zaczyna się od 64 i jest to numer w Sapie na który można wystawic fakturę)
+	<ZAKŁADKA SHIPPER (Consignor)>:  
+		*nadawca towaru
+		*ID, NAME, CITY, STATE, POSTCODE, UNLOCO (United Nation Location Code)
+		*w CW1 znajduję sie w zakładce Additional Detail /Basic Registration
+	POL / POD - PORT OF LOADING / DISCHARGE 
+		*port załadunku i rozładunku 
+		*składją sie z kodów UNLOCO - (United Nation Location Code - międzynarodowy numer konkretnego miejsca na świecie)
+	<ZAKŁADKA CONSIGNEE>:
+		*odbiorca towaru
+		*ID, NAME, CITY, STATE, POSTCODE, UNLOCO (United Nation Location Code)
+	<ZAKŁADKA DELIVERY>:
+		*miejsce dostawy
+		*ID, NAME, CITY, STATE, POSTCODE, UNLOCO (United Nation Location Code)
+	NOTIFY ID + NAME - dodatkowe info 
+	LOCAL CLIENT ID + NAME:
+		*firma która skontaktowała sie z DSV a propos przewozu towaru
+		*w jednej komórce może byc więcej firm wtedy id może nie być w kolejności w stosunku do name
+	VOYAGE/FLIGHT - numer lotu / rejsu
+	CARRIER - przewoźnik
+	PIECES - sztuki towaru
+	PIECES UNIT - (PALLETES (PLT), PIECES (PCE), BOXES (BOX), ...)
+	WEIGHT - waga brutto całego towaru
+	WEIGHT UNIT
+	VOLUME
+	VOLUME UNIT
+	CHARGEABLE - co jest brane pod uwagę przy rozliczeniu (waga albo np m3)
+	GOODS DESCRPTION - opis produków
+	SERVICE LEVEL - warunki dostawy (w CW1 w Basic Registration)
+	INCOTERMY:
+		*3 literowe kody, kto (nadawca, odbiorca) jest za dane koszta odpowiedzialny 
+		*używamy tylko do weryfikacji kto jest odpowiedzialny za opłacanie transportu z portu do portu
+		*kody zaczynające sie od C, D - consignee (odbiorca/nabywca) ponosi koszty 
+		*kody zaczynające się od E, F - shipper/consignor (nadawca/sprzedający) ponosi koszty
+	<DATES>
+	  ESTIMATED PICKUP DATE (CPE)- data przewidywanego odbioru towaru od nadawcy przez DSV 
+	  ACTUAL PICKUP DATE (PKU) - data odbioru towaru od nadawcy przez DSV 
+	  CARGO RECEIVED DATE (DLF)- data przywieznia towaru przez klienta do TERMINALA DSV (gdy PICKUP DROPMODE = DLV) (w CW1 pole Interim Receipt)
+	  ...													(4 poniżej w CW1 w konsoli w Routingu)
+	  ETD - estimated time of departure -dotyczy środka transportu z portu do portu a nie przesyłki
+	  ATD - actual time of departure -dotyczy środka transportu z portu do portu a nie przesyłki
+	  ETA - estimated time of arrival -dotyczy środka transportu z portu do portu a nie przesyłki
+	  ATA - actual time of arrival -dotyczy środka transportu z portu do portu a nie przesyłki
+	  ...
+	  ESTIMATED DELIVERY DATE (CDE) - data przewidywanego przywiezienia towaru do odbiorcy przez DSV 
+	  ACTUAL DELIVERY DATE (DLV) - data odbioru towaru od nadawcy przez DSV 
+	  CARGO DELIVERY DATE (CARGO HANDOVER DATE (HND,Z70)) - data odbioru towaru przez klienta z TERMINALA DSV (gdy DELIVERY DROPMODE = CCX)
+	  ...	
+	  SHIPMENT ETD - shipment estimated time of departure
+	  SHIPMENT ETA - shipment estimated time of arrival
+												(to nas bardziej interesuję od zwyłej ETA/ETD. różni sie tym ze dzięki nim możemy wyciągnąc ekstrakt z danych)
+	DEBTOR 
+		*DEBTOR, DEBTOR NAME, INVOICE NUMBER, INVOICE NAME, INVOICE DATES, 
+		*numer organizacji + faktur która zostaje obciążona kosztami
+	<<KOSZTY W 7 KOLUMNACH>>
+	PICKUP DROPMODE --> jeżeli ustawione DLV to klient (nadawca) sam dostarcz towar do terminala DSV
+	DELIVERY DROPMODE --> jeżeli ustawione na CCX to klient (odbiorca) sam odbiera towar z terminala DSV
+	SHIPMENT TYPE:
+		*ACTUAL - zwykła przesyłka
+		*FINANCIAL JOB - dodatkowe rozliczenie finansowe a nie fizyczna przsyłka
+		*DUMMY SHIPMENT - testowe dane 
+	  
+		
