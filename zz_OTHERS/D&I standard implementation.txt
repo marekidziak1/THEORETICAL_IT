@@ -1,0 +1,18 @@
+BUSSINESS_REVIEW -> Implementation Process 
+	*0. PLIK KOLEJKOWY na DI_Queue_0.1.working -> przenosisz do IN PROGRESS
+	*1. W DMS'ie - Request Form -> filled request form arrives to D&I (dms)
+		**request form should include: Customer, Customer Type, Requester, Approver's Name, Cost Center, Division, Product Type, Report Financial Visibility, Country, Reporting Currency, Organization ID, Standard Data Quality, Frequency, Preffereddays for reular production, Preferred first draft deadline, comments		
+	*2. Check if client exist in Customer Overview (plik excel) wyszukując 
+		OrganizationID
+	*3. Setting up ODW 
+		*2.1 Air&S ea ODW Database
+			***to download data for report use DEBTOR IDs/acocuntID/organizationID
+			***in CW1 id starts with 64 (with these number customer ould be invoiced)
+			***if report contain data from CargoLink apart from id provide country Code (where specific company is located)
+			***For the purpose of setting up QV -> Open A&S Debtor Base File located 
+				Password is qweasd \\i26674\Shared_drives\M_PL.ISS.GAS.QV_Report\QVConfig\Account_List\ISSCDebtorsMerged.xlsx 
+			***Fill 6 columns with data: 
+				*Name [localreports wit country suffix (Shell_US), Light Reporting add _Light/LightLocal suffix, BOTH local and light add _Lightlocal_US], Code [paste from AO as text with aphostrophe], Type, CW1_Name, Added by, Timestamp ) 
+	*chcąc zobaczyć kody w CW1 wklejasz kod OrganizationID z DMSów do wizzql który tworzy Tobie wygenerowany kod sql do filtrowania w CW1: http://wizzql.dsv.com/views/index.php  (kopiujesz numery w jednej kolumnie bez przecinków)
+	*w CW1 filtrujesz dane w CUSTOM SQL Filter, zaznaczasz wszystko (CTRL+A), PRAWY->ACTIONS-> export columns to excel (teraz kopiujesz te dane do bazy Debt)
+	

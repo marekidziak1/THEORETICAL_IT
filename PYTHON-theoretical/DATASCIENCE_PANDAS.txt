@@ -668,7 +668,7 @@
 														 # 2 ll@gmail.com	Lukas
 				e)SLICING - kilka wierszy (od do) - slicing bez nawiasów [] 
 				  i włączający ten ostatni wiersz/tę ostatnią kolumnę:
-					df.loc[0:2,['email':'first']]		 # 	 email			first
+					df.loc[0:2,['email','first']]		 # 	 email			first
 														 # 0 md@gmail.com	Marek
 														 # 1 an@gmail.com	Anna 
 														 # 2 ll@gmail.com	Lukas
@@ -684,8 +684,6 @@
 				  można użyć tez loc[]/iloc[] (przedziały są obustronnie zamknięte)
 					df.loc[2]
 					df.loc[2:4]
-				b)slicing na obiekcie Series:
-					
 				c)przy zmianie indexu na kolumnę z datą można filtrować te daty jak 
 				  index domyślny czyli po slicingu (od do), przy czym nie trzeba 
 				  wpisywać np całej daty a wystarczy jej początek:
