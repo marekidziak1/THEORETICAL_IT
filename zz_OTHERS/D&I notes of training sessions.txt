@@ -1,6 +1,9 @@
 TO DO: 
-	*TEAMS -> D&I -> GENERAL -> 06.MANUALS -> Work Instructions -> Transit tiem, KPI-Trainings
+
+	*TEAMS -> D&I -> GENERAL -> 06.MANUALS -> Work Instructions -> Work_Instruction_Standard_Implementations_20220531
 	*TEAMS -> D&I -> GENERAL -> 06.MANUALS -> Cargo Wise One -> CW1 szkolenie 
+	*TEAMS -> D&I -> GENERAL -> 06.MANUALS -> Cargo Wise One -> How to schedule reports in CW1
+	*TEAMS -> D&I -> GENERAL -> 06.MANUALS -> Work Instructions -> Transit tiem, KPI-Trainings
 	*ONE NOTE - MANUALS/TRAININGS 
 
 

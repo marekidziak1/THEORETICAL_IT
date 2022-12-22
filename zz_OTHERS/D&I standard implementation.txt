@@ -1,18 +1,42 @@
 BUSSINESS_REVIEW -> Implementation Process 
+	****https://dsvcorp.sharepoint.com/:w:/r/teams/DITeam/Shared%20Documents/General/06_Manuals/Work%20Instructions/Work_Instruction_Standard_Implementations_20220531.docx?d=w9c2fb84932af4e31a2dae5fb07bb2e13&csf=1&web=1&e=CkxCmJ
 	*0. PLIK KOLEJKOWY na DI_Queue_0.1.working -> przenosisz do IN PROGRESS
 	*1. W DMS'ie - Request Form -> filled request form arrives to D&I (dms)
 		**request form should include: Customer, Customer Type, Requester, Approver's Name, Cost Center, Division, Product Type, Report Financial Visibility, Country, Reporting Currency, Organization ID, Standard Data Quality, Frequency, Preffereddays for reular production, Preferred first draft deadline, comments		
-	*2. Check if client exist in Customer Overview (plik excel) wyszukując 
-		OrganizationID
+	*2. Check if client exist in Customer Overview (plik excel):
+		*file://dsv.com/corp/department/kam/04_GASS/04_Department/Customer%20Overview/CRDQ-MonthlyReportOverview_20180822.xlsm
+		*\\i26674\Shared_drives\K_kam\04_GASS\04_Department\Customer Overview -> CRDQ-MonthlyReportOverview_20180822
 	*3. Setting up ODW 
-		*2.1 Air&S ea ODW Database
-			***to download data for report use DEBTOR IDs/acocuntID/organizationID
-			***in CW1 id starts with 64 (with these number customer ould be invoiced)
-			***if report contain data from CargoLink apart from id provide country Code (where specific company is located)
-			***For the purpose of setting up QV -> Open A&S Debtor Base File located 
-				Password is qweasd \\i26674\Shared_drives\M_PL.ISS.GAS.QV_Report\QVConfig\Account_List\ISSCDebtorsMerged.xlsx 
-			***Fill 6 columns with data: 
-				*Name [localreports wit country suffix (Shell_US), Light Reporting add _Light/LightLocal suffix, BOTH local and light add _Lightlocal_US], Code [paste from AO as text with aphostrophe], Type, CW1_Name, Added by, Timestamp ) 
-	*chcąc zobaczyć kody w CW1 wklejasz kod OrganizationID z DMSów do wizzql który tworzy Tobie wygenerowany kod sql do filtrowania w CW1: http://wizzql.dsv.com/views/index.php  (kopiujesz numery w jednej kolumnie bez przecinków)
-	*w CW1 filtrujesz dane w CUSTOM SQL Filter, zaznaczasz wszystko (CTRL+A), PRAWY->ACTIONS-> export columns to excel (teraz kopiujesz te dane do bazy Debt)
-	
+		*2.1 Air&Sea ODW Database 
+			A** WIZZQL: chcąc pobrać dane z CW1 do raportu w CW1 wklejasz kod DEBTOR IDs/acocuntID/organizationID z DMSa do wizzql który tworzy Tobie wygenerowany kod sql do filtrowania w CW1: http://wizzql.dsv.com/views/index.php  (kopiujesz numery w jednej kolumnie bez przecinków i ustawiasz filtry na Modules: ORGANIZATIONS, Filters: Organization #)
+			B** W CW1: (Maintain-> Master Data-> Organization) filtrujesz dane w CUSTOM SQL Filter, zaznaczasz wszystko (CTRL+A), PRAWY->ACTIONS-> export columns to excel 
+				*in CW1 id starts with 64 (with these number customer could be invoiced)
+				*if report contain data from CargoLink apart from id provide country Code (where specific company is located)
+			C** excel DEBTOR (ISSCDebtorsMerged) - wyeksportowane dane otwierasz w excelu i przepisujesz do bazy Debtor (resztę uzupełniasz) w pliku excel (For the purpose of setting up QV)
+					*A&S (Air&Sea) Debtor Base File location: 
+						(Password is qweasd) \\i26674\Shared_drives\M_PL.ISS.GAS.QV_Report\QVConfig\Account_List\ISSCDebtorsMerged.xlsx
+					*SHEET1 tab-> Fill 6 columns with data: 
+						**Name [localreports wit country suffix (Shell_US), Light Reporting add _Light/LightLocal suffix, BOTH local and light add _Lightlocal_US] 
+						**Code [debtor IDs / account IDs / organization IDs received from Account Owner - as text with aphostrophe]
+						**Type:
+							***TOP200 – for Business Review and customized reports
+							***Light (for global reports) & Lightlocal (for local 
+							   reports) - for Shipment+Spend reports
+							***discontinued types(niekontynuowane wpisywane typy (dla istniejących kont nadal używasz tych nazw): 
+								****DSV(before for customized reports) 
+								****specific projects (for instance: RoadDK, Adidas)
+						**CW1_Name - organization name from CW1
+						**Added by - ?
+						**Timestamp - data dodania do pliku excelowego
+					*ChangeLog tab -> fill columns:
+						**Date of modification - date the code added or modified
+						**Action – status Added/ Changed/ Removed  
+						**Company – fill the Name from Sheet1  
+						**Amount – give an amount of codes (added to specified Name)
+						**ASF updated – if add/change/remove codes THEN ASF update  
+						**Comment – if is needed  
+				**Save file and copy it into the location:  
+												ftp://ftp.esb.dsv.com/Incoming/
+korzystanie z nich na globalu:
+	ASF- tool do generowania umow (1ka zeby wygenerowalo) -> zwróci folder z plikiem oraz miejsce na sharepointcie gdzie trzeba to przeciągnąć. 
+	SRG - generwanie raportow (BR)
