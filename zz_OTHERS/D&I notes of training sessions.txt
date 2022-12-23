@@ -93,8 +93,8 @@ PODSTAWOWY RAPORT - KOLUMNY:
 	INCOTERMY:
 		*3 literowe kody, kto (nadawca, odbiorca) jest za dane koszta odpowiedzialny 
 		*używamy tylko do weryfikacji kto jest odpowiedzialny za opłacanie transportu z portu do portu
-		*kody zaczynające sie od C, D - consignee (odbiorca/nabywca) ponosi koszty 
-		*kody zaczynające się od E, F - shipper/consignor (nadawca/sprzedający) ponosi koszty
+		*kody zaczynające sie od C, D - shipper/consignor (nadawca/sprzedający) ponosi koszty
+		*kody zaczynające się od E, F - consignee (odbiorca/nabywca) ponosi koszty 
 	<DATES>
 	  ESTIMATED PICKUP DATE (CPE)- data przewidywanego odbioru towaru od nadawcy przez DSV 
 	  ACTUAL PICKUP DATE (PKU) - data odbioru towaru od nadawcy przez DSV 
