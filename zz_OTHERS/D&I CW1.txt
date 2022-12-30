@@ -1,15 +1,16 @@
-**Company, Branch and Department:
-		**COMPANY dają możliwość zalogowania się z innych lokalnych krajów. 
-		**Nie ma to znaczenia dla shipment'ów ale dane finansowe są w różnych miejscach do kórych trzeba się zalogować lokalnie. 
-		**KODY tych miejsc sa skrótami krajów +liczba (może byc kilka kodów do kraju wtedy chcać znaleźć dane fin. trzeba przeklikać wszystkie kody z danego kraju np PL1, PL2). (Zazwyczaj dane finansowe te których szukamy są w tym numerze company gdzie w branchu wyświetla się pełna nazwa miasta bez cyferek). Wyjątki kodów to:
+*SZKOLENIE: \\i26674\Shared_drives\K_kam\08_D&I\06_Manuals - moved to teams\CargoWise One\CW1 Szkolenie-20220126_124245-Meeting Recording
+*Company, Branch and Department:
+		**przestawienie się na inne COMPANY/BRANCH --> CTRL + SHIFT + B
+		**COMPANY dają możliwość zalogowania się z innych lokalnych krajów. Nasz company i branch: xxx + x28
+		**Nie ma to znaczenia dla shipment'ów ale dane finansowe/faktury (zakładka BILLING) są w miejscu gdzie trzeba się zalogować lokalnie tzn: wzgledem kraju który jest odpowiedzialny za towar w miejsu dostawy.
+		**KODY (w COMPANY) tych miejsc sa skrótami krajów +liczba (może byc kilka kodów do kraju wtedy chcąc znaleźć dane fin. trzeba przeklikać wszystkie kody z danego kraju np PL1, PL2). (Zazwyczaj dane finansowe te których szukamy są w tym numerze company gdzie w branchu wyświetla się pełna nazwa miasta bez cyferek). Wyjątki kodów to:
 			EWR - Stany Zjednoczone (US Newark)
 			YTO - Kanda (Torronto)
 			SYT - Australia (Sydney)
-		**przestawienie się na inny branch --> CTRL + SHIFT + B
-* WYCIĄGANIE EKSTRAKTÓW (KOPIOWANIE WYFILTROWANYCH DANYCH) --> CTRL + A + PRAWY --> ACTIONS > Data Transfer > Export Visible Columns To Excel
+*WYCIĄGANIE EKSTRAKTÓW (KOPIOWANIE WYFILTROWANYCH DANYCH) --> CTRL + A >PRAWY >ACTIONS >Data Transfer >Export Visible Columns To Excel
 *POTRZEBNE ZAKŁADKI W UŻYCIU (F3 gdy chcesz rozwinąć dane pole):
-	**FORWARDING-Wybór shipmentu:
-		**OPERATE --> FORWARDING --> Forwarding --> Shipments (28:00)
+	**FORWARDING-Wybór shipmentu (28:00):
+		**OPERATE --> FORWARDING --> Forwarding --> Shipments (Numer Shipmentu jest nadrzędny w wyszukiwaniu w stosunku do innych filtrów )
 		**BASIC REGISTRATION +ADDITIONAL DETAIL:
 		  *MODE:
 			***TRANSPORT - SEA / AIR / ...
@@ -19,14 +20,14 @@
 		  DETAILS:
 			***HOUSE BILL - list przewozowy (musi byc podany by przeszło)
 			***Origin/Destination (nie sugerować się tymi danymi bo moga być nie właściwe) 
-			***ETD/ETA - Estimated Time of Departure/Arrival (muszą być podane by przeszło ALE nie sugerować się tymi danymi bo moga być nie właściwe) 
+			***ETD/ETA - Estimated Time of Departure/Arrival (muszą być podane by operacyjnie przeszło ALE nie sugerować się tymi danymi bo moga być nie właściwe -> patrzeć na daty w zakładach PICKUP i DELIVERY) 
 			***Weight, Volume, Chargeable, Packs 
 			***INCOTERMS (umowa między stronami kiedy odpowiedzialność i płatności za towar przechodzą między kupującym a sprzedającym) (C,D-SHIPPER; E,F-CONSIGNEE)
 			***SERVICE LEVEL (określenie czy DoorToDoor/PortToDoor, czy w odpowiedniej temp, czy przesyłka ma iść w expresie)
 		  *NOTIFY PARTY - (jak CC w emailu tzn.: do wiadomości/w kopii)
 		  *REFERENCES NUMBERS (1:05:00):
 			**RODZAJE:
-				*LAI: Reference - LANE ID (kolumna F)
+				*LAI: Reference - LANE ID (kolumna F w excelu)
 				*DTT: Reference - Booking ID (kolumna G)
 				*CRN: Reference Number - Type 03 (kolumna H)
 				*SPT: Reference - Spot Quote (kolumna I)
@@ -36,36 +37,38 @@
 				*DNO: Reference - Delivery Note Number (kolumna GY)
 				*NVA: NVA Reference (kolumna HA) - as a Y/N value
 				*VBU: Reference - VBU (kolumna HJ)
-		**ADDITIONAL DETAIL:
+		**ADDITIONAL DETAIL ():
 		  *JOB MANAGEMENT LINKS (consignee reference) 
 		  *Custom Fields:
 			**pola QA1 - do opisu opóźnień po stronie shippera
 			**pola QA2 - do opisu opóźnień u consignee
 		**ROUTING (konsola czyli rekord opisujący całą trasę statku)
-		  CONSOLE DETAILS:
+		  CONSOLE DETAILS: 
 			**TYPE - other - tylko dla wystawienia faktury a nie na transport (w tym przypadku transport sie nie odbedzie) rekord otrzyma status FINANCIAL JOB
 			**ETD/ETA/ATD/ATA - nie sugerowac się tymi danymi z routingu ze względu na to że mogą byc przewozy łączone (dużo leg'ów)
 			BOL - numer master billa
 		**RELATED SHIPMENT - przesyłka powiązana z innymi (skonsolidowana z innymi) lub będąca masterem czyli przesyłką nadrzędną dla skonsolidowanych przesyłek. (widoczne również w BASIC REGISTRATION w MODE W TYPE)
 		**PACKING -informacje o załadunku gdzie , do jakiego konteneru, z jakim numerem plomby. Można tez wpisać czy sa przewożone jakieś niebiezpieczne towary lub wymagające chłodzenia)
 		**PICKUP - odbiór towaru (skąd kiedy) - jeżeli w pickup drop mode będzie DLV to znaczy że transport do portu robił ktoś inny niź DSV. Wtedy w Interim Receipt Date jest podana data kiedy DSV przejeło kontrolę nad tym towarem. 
-		**DELIVERY - przywóz towaru do klienta (skąd kiedy) - jeżeli w delivery drop mode będzie CCX to ozancza że DSV oddło towaru na poziomu portu (a nie do drzwi consignee). Wtedy w kolejnej zakładce (WORKFLOW & TRACKING) w podzaładce Events (gdzie znajduję się cała historia towaru) szukasz kodu Z70 (HANDOVER RESPONSIBILITY OF CARGO)
-		**WORKFLOW & TRACKING 1:43:00 
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+		**DELIVERY - przywóz towaru do klienta (skąd kiedy) - jeżeli w delivery drop mode będzie CCX to ozancza że DSV oddało towar na poziomu portu (a nie do drzwi consignee). Wtedy w kolejnej zakładce (WORKFLOW & TRACKING) w podzaładce Events (gdzie znajduję się cała historia towaru) szukasz kodu Z70 (HANDOVER RESPONSIBILITY OF CARGO)[liczy się dla nas data EVENT TIME a nie POSTED TIME]
+		**WORKFLOW & TRACKING (1:42:30) 
+			*zakładka MILESTONES - dla operacyjnych informacje na jakim etapie transportu są dokumenty i towar
+			*zakładka EVENTS - wszystkie wydarzenia związane z towarem wypisane w kodach (EVENT TIME - data gdy faktycznie się to wydarzyło, POSTED TIME - data gdy ktoś to wpisał). EVENTS KODY:
+				**Z70 - HANDOVER RESPONSIBILITY OF CARGO - przekazanie towaru
+				**Z74 - HANDOVER OF DOCUMENTS - przekazanie dokumentów
+				**BKC - BOOKING CONFIRMED - (ew DATA ADDED) rozpoczęcie zlecenia
+				**CCC - CUSTOMS COMMENCED - rozpoczęcie kontroli celnej
+				**CLR - CUSTOMS CLEARED - zakończenie kontroli celnej
+				**Z06 - GENERIC INBOUD EVENT REFERENCE - (dodatkowe pole - ostateczne zdanie towaru)
+				**Z08 - STATUS REASON CODES - opóźnienie towaru
+		**BILLING (1:52:30) - informacje o fakturach:
+			*INVOICING -> local client = debtor  
+			*INVOICING -> job description - wystawienie faktury/korekty faktury --> jeżeli w Operations rep jest BXP to znaczy że trzeba zmienić company/branch by zobaczyć wszystkie faktury --> branch kraju który jest odpowiedzialny za towar/płatność przy jego odbiorze (zobaczysz to w INCOTERMACH - dla INCOTERMÓW C,D będzie to kraj Z którego wypłynął towar a dla INCOTERMÓW E,F będzie to kraj DO którego wpłynął towar) --> [ZMIANA COMPANY/BRANCHU POPRZEZ: CTRL + SHIFT + B i wpisanie odpowiedniego kodu do COMPANY] (danych z tej zakładki nie można użyć do raportowania -> do tego zakładka AR Invoices)
+			*AR INVOICES -> klikasz na fakturę prawym + VIEW -> Invoice Date
+		**ADDRESSES (1:59:00)
+			***CONTROLLING AGENT - dane biura które kontroluje transport
+			***CONTROLLING CUSTOMER
+		**LOGI --> całe info 
 	**FORWARDING-Pobranie raportów:
 		**OPERATE --> FORWARDING --> Forwarding -->Reports 
 	**FORWARDING-Konsola:

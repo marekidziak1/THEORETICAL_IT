@@ -1,5 +1,6 @@
 TO DO: 
-
+\\i26674\Shared_drives\K_kam\08_D&I\
+\\i26674\Shared_drives\K_kam\04_GASS\
 	*TEAMS -> D&I -> GENERAL -> 06.MANUALS -> Work Instructions -> Work_Instruction_Standard_Implementations_20220531
 	*TEAMS -> D&I -> GENERAL -> 06.MANUALS -> Cargo Wise One -> CW1 szkolenie 
 	*TEAMS -> D&I -> GENERAL -> 06.MANUALS -> Cargo Wise One -> How to schedule reports in CW1
@@ -114,7 +115,7 @@ PODSTAWOWY RAPORT - KOLUMNY:
 												(to nas bardziej interesuję od zwyłej ETA/ETD. różni sie tym ze dzięki nim możemy wyciągnąc ekstrakt z danych)
 	DEBTOR 
 		*DEBTOR, DEBTOR NAME, INVOICE NUMBER, INVOICE NAME, INVOICE DATES, 
-		*numer organizacji + faktur która zostaje obciążona kosztami
+		*numer organizacji + faktur która zostaje obciążona kosztami 
 	<<KOSZTY W 7 KOLUMNACH>>
 	PICKUP DROPMODE --> jeżeli ustawione DLV to klient (nadawca) sam dostarcz towar do terminala DSV
 	DELIVERY DROPMODE --> jeżeli ustawione na CCX to klient (odbiorca) sam odbiera towar z terminala DSV
