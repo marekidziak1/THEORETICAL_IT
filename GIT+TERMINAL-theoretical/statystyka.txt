@@ -8,7 +8,8 @@ hipoteza - stwierdzenie które trzeba potwierdzić
 	*Test t-Studenta - metoda do weryfikacji hipotez statystycznych, czy średnie wartości interesującej nas zmiennej w dwóch grupach (populacjach) różnią się od siebie w sposób istotny statystycznie czy też nie. 
 statystyka opisowa - opis danych zebranych w badaniu
 	Miary położenia:
-		*średnia arytmetyczna - loraz (wynikiem dzielenia) zsumowanej wartości wszystkich badanych zmiennych oraz liczebności badanej populacji.
+		*średnia arytmetyczna - iloraz (wynikiem dzielenia) zsumowanej wartości wszystkich badanych zmiennych oraz liczebności badanej populacji.
+		*średnia ważona - suma(wszystkich wartości * ich wag) / sumę wag --> suma całkowitej sprzedaży produktu: SUMA(cena* sztuki) / SUMA(sztuki)
 		*mediana - wartość środkowa (drugi kwartyl)
 		*dominanta - najczęśniej pojawiający się element
 		*kwartyle - 3 (dolny (25%), środkowy(mediana - 50%), górny (75%))

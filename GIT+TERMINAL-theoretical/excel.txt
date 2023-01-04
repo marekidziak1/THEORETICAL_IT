@@ -1,3 +1,7 @@
+============================================================================
+SZYBKA POWTÓRKA EXCELA -> 6 testów do przerobienia: https://www.youtube.com/watch?v=fS6nF60YBOE&list=PLgU2XrNJjWbdNOf9HGOoBLN9Z5LSzcczH&index=18
+============================================================================
+
 TIPY:
 ----------------------------------------------------------------------------
 FORMULARZE:
@@ -55,7 +59,7 @@ FORMULARZE:
 		**POLE WYBORU (checkbox): 
 			***zaznaczasz łącze komórki czyli komórkę połączoną z formularzem (będzie pokazyważ PRAWDĘ przy zaznaczeniu i FAŁSZ przy odznaczeniu). 
 		**POLE KOMBI (rozwijana lista): 
-			***Zaznaczasz zakres wejściowy (czyli które elementy mają znaleźć się w rozwijanej liście (jeżeli mają to być nazwy kolumn z innej tabeli to musisz je przepisać do innej kolumny w pionie)) i wskazujesz łącze komórki czyli komórkę która będzie wyświetlać wybraną opcję z rozwijanej listy. Teraz możesz korzystać z tych wartośći w np: funkcji WYSZUKAJ.PIONOWO()
+			***Zaznaczasz zakres wejściowy (czyli które elementy mają znaleźć się w rozwijanej liście (jeżeli mają to być nazwy kolumn z innej tabeli to musisz je przepisać do innej kolumny w pionie)) i wskazujesz łącze komórki czyli komórkę która będzie wyświetlać wybraną opcję z rozwijanej listy. Teraz możesz korzystać z łącza komórki jako numeru wybranego pola w rozwijanej liście i możesz użyć tego w np: funkcji WYSZUKAJ.PIONOWO()
 		**POLE LISTA (lista typu area)
 			***Zaznaczasz zakres wejściowy (tak jak przy polu Kombi). Następnie wskazujesz łącze komórki (miejsce do zwrócenia numeru wyboru) i typ zaznaczenia (pojedyńcze/wielokrotne).
 		**POLE PRZYCISK POKRĘTŁA / PASEK PRZEWIJANIA (suwak góra/dół):
@@ -67,20 +71,21 @@ TABELE PRZESTAWNE (PIVOT TABLES):
 		**u góry po prawej stronie pojawi się zakładka PIVOT TABLES z opcją modyfikacji tabeli przestawnej
 	*OGRANICZENIA PRZY ŻRÓDŁOWEJ TABELI Z DANYMI:
 		**każdy nagłówek jest inny
-		**tabela nie może mieć pustych wiersz ani kolumn
+		**tabela nie może mieć pustych wierszy ani kolumn
 		**nie mogą występować puste komórki ani komórki scalone --> dla komórek scalonych rozłączasz je, poprzez F5 zaznaczasz wszystkie puste komórki i następnie odwołujesz się do komórki w góre poprzez wpisanie komórki wyzej np '=C3' + CTRL+ENTER. (chcesz żeby każda pusta komórka odwoływała się do komórki wyżej). Ostatni etap to zastąpienie formuł wartościami tj '=C3' na wartości POPRZEZ KOPIUJ i WKEJ SPECJALNIE (WARTOŚCI)
 		**dane liczbowe muszą być liczbami (jeżeli nie będą to trzeba je zamienić poprzez wklej specjalnie + przemnóż *1) --> żeby sprawdzić czy wszystkie wartośći liczbowe na pewno sa liczbami to na paska na dole licznik musi się równać licznikowi wartości liczbowych. 
 
 	*POLA WIERSZY, WARTOŚCI, KOLUMN I FILTRA:
-		**możesz poszczególne kolumny dodać do pól: WIERSZY, WARTOŚCI, KOLUMN i FILTRÓW. Przenosząc kolumnę 'x' do PÓL WIERSZY i inne kolumny do PÓL WARTOŚCI będzie można zobaczyć sumę (i inne opcje) tych 'innych' kolumn w stosunku do poszczególnych zmiennych z  kolumny 'x'
-		**do PÓL WARTOŚCI możesz przenieść kilka razy tę samą kolumnę i poprzez 'VALUE FIELD SETTINGS' można ustawić: SUM, COUNT, AVERAGE, MAX, MIN, PRODUCT(mnożenie) itd.
-		**dla dat tabele przestawne mają możliośc grupowania po miesiącach, dniach...
-		**chcąc użyć tej samej kolumny danych w POLACH WIERSZY I KOLUMN nie da się tego zrobić ALE przy datach możesz zrobić grupowanie po różnych okresach i wtedy pojawią się tego okresy jakby były osobnymi kolumnami - dzięki temu możesz to rozdzielić. 
+		****możesz poszczególne kolumny dodać do pól: WIERSZY, WARTOŚCI, KOLUMN i FILTRÓW. Przenosząc kolumnę 'x' do PÓL WIERSZY i inne kolumny do PÓL WARTOŚCI będzie można zobaczyć sumę (i inne opcje) tych 'innych' kolumn w stosunku do poszczególnych zmiennych z  kolumny 'x'
+		****do PÓL WARTOŚCI możesz przenieść kilka razy tę samą kolumnę i poprzez 'VALUE FIELD SETTINGS' można ustawić: SUM, COUNT, AVERAGE, MAX, MIN, PRODUCT(mnożenie) itd. NIE DA SIĘ USTAWIĆ TYCH SAMYCH PÓl w POLACH WIERSZY i POLACH KOLUMN ALE da się ustawić te same pola w POLACH WIERSZY i POLACH WARTOŚCI lub POLACH KOLUMN i POLACH WARTOŚCI. 
+		****GRUPOWANIA PO PRZEDZIAŁACH lub PO DATACH  --> PRAWY na pierwszej kolumnie (indeksów dla WIERSZY) + GRUPUJ. Dla dat tabele przestawne mają możliwość grupowania po miesiącach, dniach... Chcąc użyć tej samej kolumny danych w POLACH WIERSZY I KOLUMN nie da się tego zrobić ALE przy datach możesz zrobić grupowanie po różnych okresach i wtedy pojawią się tego okresy jakby były osobnymi kolumnami - dzięki temu możesz to rozdzielić (klikasz PRAWY na tabeli przestawnej + GRUPUJ > wybierasz różne opcje czasowe)
+		
 	*DODATKI:
-		**NARZĘDZIA TABEL PRZESTAWNYCH -> ANALIZA -> POLA, ELEMENTY, ZESTAWY -> WSTAWIANIE POLA OBLICZENIOWEGO ---> pozwala dodać pole do tabeli przestawnych w którym można wpisać własną formułę.
-		**kolumny będące w polach wierszy można dodatkowo PRZESORTOWAĆ ;; PRZEFILTROWAĆ (value filter) względem kolumn znajdujących się w polach wartości i POGRUPOWAĆ względem pól liczbowych nadając granicę górną i dolną do grupowania wraz z wielkością przedziału. 
-		**przy zmianie danych tabele przestawne nie odświeżą się automatycznie --> trzeba je odświeżyć samemu (ODŚWIEŻ na obojętnie jakiej komórce)
-		**ustawienie formatowania liczb w tabeli przestawnej odpornego na zmiany w tabeli przestawnej (takiego że nie wróci do poprzedniej wersji formatowania) robisz poprzez podwójne kliknięcie na nazwę kolumny w tableli przestawnej i dobór formatowania
+		****chcąc odwołać się w innej tabeli do komórek w tabeli przestawnej musisz odchaczyć opcje 'WeźDaneZTabeli' ---> PRAWYnaTABELIprzestawnej -> ANALIZA TABELI PRZESTAWNEJ (na pasku) -> TABELA PRZESTAWNA (po prawej stronie) -> strzałka przy opcjach i odznaczasz 'generuj funkcje WeźDaneZTabeli'
+		****Pole obliczeniowe: NARZĘDZIA TABEL PRZESTAWNYCH -> ANALIZA -> POLA, ELEMENTY, ZESTAWY -> WSTAWIANIE POLA OBLICZENIOWEGO ---> pozwala dodać pole do tabeli przestawnych w którym można wpisać własną formułę z istniejących kolumn. 
+		****kolumny będące w polach wierszy można dodatkowo PRZESORTOWAĆ ;; PRZEFILTROWAĆ (value filter) względem kolumn znajdujących się w polach wartości i POGRUPOWAĆ względem pól liczbowych nadając granicę górną i dolną do grupowania wraz z wielkością przedziału. 
+		****ODŚWIEŻENIE FORMUŁ W TABELI PRZESTAWNEJ (F9) --> przy zmianie danych tabele przestawne nie odświeżą się automatycznie --> trzeba je odświeżyć samemu (ODŚWIEŻ na obojętnie jakiej komórce (F9))
+		****FORMATOWANIE LICZB W TABELI PRZESTAWNEJ ODPORNEGO NA ZMIANY w tabeli przestawnej (takiego że nie wróci do poprzedniej wersji formatowania) robisz poprzez PRAWY + USTAWIENIA POLA WARTOŚCI + FORMAT LICZB (w miejscu formuły trzeba kliknąć 'wstaw pole'))
 WYKRESY PRZESTAWNE:
 	*PODSTAWY:
 		**INSERT -> PIVOT CHART
@@ -110,14 +115,23 @@ FUNKCJE / FORMUŁY:
 			***liczy komórki pod warunkiem że komórka równa się kryterium (dla liczby to musi być cudzysłów: LICZ.JEŻELI(A1:B8;">=80").
 	*MATEMATYCZNE:
 		**SUMA / SUM(num:num) -> (lewy ALT,'=') 
+				****z funk. PRZESUNIĘCIE: =SUMA(A0:PRZESUNIECIE(A0,0,3)) (patrz inne)
 		**SUMA.JEŻELI / SUMIF(criteria_range, criterium, valuesTOsum)   /
 		  SUMA.WARUNKÓW / SUMIFS(valuesTOsum, criteria_range1, criterium1,...)
 				****dla SUMY.WARUNKÓW i SUMY.JEŻELI podajemy w argumencie valuesTOsum tylko 1 kolumnę!!! jeżeli chciałbyś podac np 2 kolumny w tym argumencie to musiałbyś stowrzyć nową kolumnę która sumowałaby te liczby z tych dwóch poprzednich kolumn.
+				****wykorzystanie funkcji tablicowych: SUMA i JEŻELI na zakresach:
+										  A	  B	 
+									  1  Kt1  1
+									  2  Kt2  5
+									  3  Kt2  6
+									  4  Kt1  9
+							=SUMA(JEŻELI(A1:A4="Kt1"; B1:B4; 0) 
+							**zwróci: 10 poprzez porównanie każdej komórki z zakresu i zsumowanie tych komórek z zakresu które odwołują się do skorowidza czyli B1 i B4.
 		**SUMA.ILOCZYNÓW / SUMPRODUCT(array1, array2...) 
 				****mnoży element1 z tabeli1 z elementem1 z tabeli2 i tak każdy kolejny. Na samym końcu sumuje wyniki tych mnożeń.
 		**ZAOKR / ROUND(num;digit)
-		**MODUŁ.LICZBY / ABS(value)
-		**LOS / RAND() -> losuje wartośći od 0 do 1
+		**MODUŁ.LICZBY / ABS(value) -> wartość bezwględna
+		**LOS / RAND() -> losuje wartości od 0 do 1	
 	*MATEMATYCZNIE SPECJALNE:
 		**SUMY.CZĘŚCIOWE / SUBTOTAL(func_number, num:num) 
 				****POZWALA OMINĄĆ UKRYTE WIERSZE
@@ -143,12 +157,13 @@ FUNKCJE / FORMUŁY:
 				****wskazuję od którego znaku pojawia się szukany tekst
 				****dodatkowo można podać numer znaku do rozpoczęcia szukania [liczone od 1]
 		**WYSZUKAJ.PIONOWO/WYSZUKAJ.POZIOMO / VLOOKUP/HLOOKUP(lookup_value, table_array, array_col_index, [range_lookup])	
-				****dla podanej komórki/szukanej wartości (lookup_value) wyszukuję jej odpowiednik w tabeli (table_array) będacej takim skorowidzem nazw i odpowiadjącym im innych nazw lub liczb np: cen. Następnie dla odpowiednika klucza zwraca odpowiednią wartość poprzez wpisanie numeru kolumny ze skorowidza (array_col_index) (licząc od jedynki) lub wpisując dokładną wartośc kolumny (np: F4). Trzeba jeszcze dodać (range_lookup) w postaci FALSE lub 0, wskazując tym że ma być znaleziona dokładnie taka wartość a nie przybliżona)
+				****dla podanej komórki/szukanej wartości (lookup_value) wyszukuję jej odpowiednik w tabeli (table_array) (w najbardziej skrajnej KOLUMNIE NA LEWO/WIERSZU U GÓRY) będacej takim skorowidzem nazw i odpowiadającym im innych nazw lub liczb np: cen. Następnie dla odpowiednika klucza zwraca odpowiednią wartość poprzez wpisanie numeru kolumny ze skorowidza (array_col_index) (licząc od jedynki) lub wpisując dokładną wartośc kolumny (np: F4). Trzeba jeszcze dodać (range_lookup) w postaci FALSE lub 0, wskazując tym że ma być znaleziona dokładnie taka wartość a nie przybliżona)
 				****dla kombinacji logicznych korzystaj z: 'IF', '&',  https://www.youtube.com/watch?v=i3BMuItCtM0&list=PLgU2XrNJjWbdNOf9HGOoBLN9Z5LSzcczH&index=2
+				****jeżeli WYSZUKIWANA WARTOŚĆ znajduję się w innej kolumnie niż najbardziej skrajna na lewo/ w innym wierszu niż ten na samej górze A ZWRACANA WARTOŚĆ znajduję się po lewej stronie tejże kolumny/powyżej górnego wiersza to skopiuj KOLUMNĘ ze zwracaną wartością na prawo / WIERSZ ze zwracaną wartością na dół 
 				****wyszukiwanie dla przedziału zamiast dla dokładnej wartości --> w 4 argumencie tj: [range_lookup] podajesz TRUE albo 1 i w wyszukiwaniu brana jest WARTOŚĆ z ZAOKRĄGLENIEM do NIŻSZEJ WARTOŚCI (żeby działało TABELA/SKOROWODZI MUSI BYĆ POSORTOWANA ROSNĄCO!!!)
 		**WYSZUKAJ / LOOKUP(lookup_value, array_indexes, array_results):
 				****dla podanej komórki/szukanej wartości (lookup_value) wyszukuję jej odpowiednik w tabeli którą tworzysz poprzez wskazanie obszaru będącego indexami dla skorowidza (array_indexes) i wskazaniu obszaru będącego wartościami im odpowiadającymi (array_results). 
-				****liczba array_indexes i array_results musi być taka sama ORAZ wartości musza być posortowane rosnąco po indexach skorowidza bo inaczej nie zwrócą prawidłowego wyniku.
+				****liczba array_indexes i array_results musi być taka sama ORAZ wartości musza być posortowane rosnąco po indexach skorowidza bo inaczej nie zwrócą prawidłowego wyniku ORAZ array_indexes musi znajdować się na LEWO 
 		**INDEKS + PODAJ.POZYCJĘ / INDEX(array, COL_num, ROW_num) + MATCH(lookup_value, num:num, [match_type])
 			***INDEX(array, MATCH(lookup_index,indexes_col, FALSE), MATCH(lookup_index, indexes_row, FALSE))
 				****używane dla skorowidza w postaci tablicy iloczynu kartezjańskiego (o indeksie pionowym(kolumnowym) i poziomym (wierszowym)) (gdy nie można użyć funkcji WYSZUKAJ.PIONOWO)
@@ -170,6 +185,15 @@ FUNKCJE / FORMUŁY:
 				****można odejmować od innej daty (różnica w postaci dni)	
 	*KSIĘGOWE:
 		**NPV,IRR,CARG > https://www.youtube.com/watch?v=dhjUjeUBAyM -od 20:00
+	*INNE:
+		**PRZESUNIĘCIE(komórka_bazowa, ilość_przesunięcia_w_DÓŁ_w_wierszach, ilość_przesunięcia_w_PRAWO_w_kolumnie)
+				****przesuwa od 'komórki_bazowej' w dół i/lub w prawo o dane wartości
+				****można wykorzystać też funkcje SUMA z PRZESUNIĘCIEM:
+										  A   B   C   D   E
+									  0   3	 12	 17  19  33
+									  1   4
+							=SUMA(A0:PRZESUNIĘCIE(A0,0,A1))
+							**zwróci SUMĘ od A0 do komórki przesuniętej o 3 w prawo czyli do D1. Wychodzi: (3+12+17+19=51)	
 		
 WYKRESY PODSTAWOWE / WYKRESY PRZEBIEGU W CZASIE 
 	*NAJCZĘŚCIEJ WYSTĘPUJĄCE RZECZY:
