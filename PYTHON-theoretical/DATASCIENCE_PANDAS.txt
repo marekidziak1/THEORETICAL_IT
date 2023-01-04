@@ -600,8 +600,16 @@
 				df.info()
 		*wyświetlenie wszystkich kolumn (atrybut columns):
 				df.columns
-				
-		*WYŚWIETLANIE WIERSZY (atrybuty iloc, loc):
+				list(df)								 #lista kolumn
+		*domyślny slicing:
+			**na obiekcie Series:
+					ser = pd.Series(lst)
+					ser[3:]										# od 3 wiersza	
+			**na obiekcie DataFrame:
+					df = pd.DateFrame(dct)
+					df[3:][:4]									# od 3 kolumny
+																# i od 4 wiersza
+		*WYŚWIETLANIE WIERSZY (atrybuty iloc, loc) (z użyciem slicingu):
 			X1)*po numerze wiersza (numer wiersza to nie to samo co numer 	
 				indexu) (atrybut iloc - integer loc)(nr wierszy od 0):
 				a)pojedyńczy wiersz
@@ -650,7 +658,7 @@
 					df.loc[[0,2],'last']		 		 # 0 Dziak
 														 # 2 Lipka
 														 # Name: last, dtype: object
-					df.loc[[0,2],['email','first']]	 # email		first
+					df.loc[[0,2],['email','first']]	 	 # email			first
 														 # 0 md@gmail.com	Marek
 														 # 2 ll@gmail.com	Lukas
 				d)wszystkie wiersze ale wybrane kolumny:
@@ -660,7 +668,7 @@
 														 # 2 ll@gmail.com	Lukas
 				e)SLICING - kilka wierszy (od do) - slicing bez nawiasów [] 
 				  i włączający ten ostatni wiersz/tę ostatnią kolumnę:
-					df.loc[0:2,['email':'first']]		 # 	 email			first
+					df.loc[0:2,['email','first']]		 # 	 email			first
 														 # 0 md@gmail.com	Marek
 														 # 1 an@gmail.com	Anna 
 														 # 2 ll@gmail.com	Lukas
@@ -676,7 +684,7 @@
 				  można użyć tez loc[]/iloc[] (przedziały są obustronnie zamknięte)
 					df.loc[2]
 					df.loc[2:4]
-				b)przy zmianie indexu na kolumnę z datą można filtrować te daty jak 
+				c)przy zmianie indexu na kolumnę z datą można filtrować te daty jak 
 				  index domyślny czyli po slicingu (od do), przy czym nie trzeba 
 				  wpisywać np całej daty a wystarczy jej początek:
 					df.set_index('Date', inplace = True)
@@ -746,8 +754,9 @@
 -------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------
-**dobre tutoriale pandasa na 'data school'											
-1.DATAFRAME:
+**dobre tutoriale pandasa na 'data school'		
+0* Why Pandas? ------> Pandas are used in conjunction with other libraries that are used for data science (matplotlib - plotting functions; numpy - functions, scipy - statistical functions; scikit-learn (machine learning alghoritms)
+1.DATA OBJECTS in PANDAS:
 	A)Dane jako obiekt DataFrame (słownik z kluczami jako kolumny i wartościami jako 
 	  komórki) (taki słownik można zamienić na DataFrame i można dostać się do jego 
 	  poszczególnych komórek):
@@ -786,8 +795,103 @@
 		*poszczególnej kolumny / kilku kolumn:
 				df['last']		
 				df[['last', 'email']]					 #musi byc podwójny nawias	
-	
-0.INSTALACJA i otwarcie JUPYTER LAB:
+	C)Różne opcje tworzenia Series i DataFrame:			
+		*SERIES:
+			**puste Series:
+					ser = pd.Series()							# Series([], dtype: 
+																# float64)
+			**Series z 1 wartości:
+					ser = pd.Series(0)							# 0    0
+					print(ser)									# dtype: int64
+			**Series z listy:
+					lst=['a','b']								# 0    a
+					ser = pd.Series(lst)						# 1    b
+					print(ser)									# dtype: object
+			**Series z tablic numpy'owych:
+					import numpy as np							# 0    g
+					data= np.array(['g','e','e'])				# 1    e
+					ser = pd.Series(data)						# 2    e
+																# dtype: object	
+		      *z przypisaniem indexów do wartości
+					data= np.array(['g','e'], index=[10,11])	# 10   g
+					ser = pd.Series(data)						# 11   e
+																# dtype: object	
+			**Series ze słownika:
+					dct = {'a':22, 'b':33}						# a    22
+					ser = pd.Series(dct)						# b    33
+																# dtype: int64
+			***FUNKCJE na SERIES (z przykładami)(na samym końcu strony) WRAZ Z BINARY
+			OPERATIONS (operacje binarne na kilku kolumnach (np dodawania tych samych
+			indeksów w danej kolumnie związanej z obiektem Series)
+			https://www.geeksforgeeks.org/python-pandas-series/
+		*DATAFRAME:
+			**pusty DataFrame:
+					df = pd.DataFrame()							# Empty DataFrame
+					print(df)									# Columns: []
+																# Index: []
+			**DataFrame z listy:
+					lst = ['g','e','e']							#	 0
+					df = pd.DataFrame(lst)						# 0  g
+					print(df)									# 1  e
+																# 2  e
+			**DataFrame z tablic numpy'owych:
+					import numpy as np							#    YY   ZZ
+					dicta = {'YY':np.array(["a", "b", "c"]),	# 0  a    10
+							'ZZ':np.array([10, 20, 30])}		# 1  b    20
+					df = pd.DataFrame(dicta)					# 2  c    30
+			**DataFrame ze słownika:
+					data = {'Name':['t', 'n', 'k'],				# 	Name   Age
+							'Age':[20, 21, 19]}					# 0  t     20
+					df = pd.DataFrame(data)						# 1  n     21
+																# 2  k	   19
+			***FUNKCJE na DATAFRAME'ach z przykładami (na samym końcu strony):
+			https://www.geeksforgeeks.org/python-pandas-dataframe/?ref=lbp
+	D)ITEROWANIE po danych:
+					dict = {'YY':["a", "b", "c"],
+							'ZZ':[10, 20, 30]}
+					df = pd.DataFrame(dict)
+		*PO KOLUMNIE - iteritems() - zwraca obiekt generatora składający się z nazwy  
+		 kolumny oraz obiektu Series zwracającego wartości kolumny
+					for i,j in df.iteritems():	
+						print(i, type(i))	# YY <class 'str'>
+						print(j, type(j))	# 0    a
+											# 1    b
+											# 2    c
+											# Name: AAA, dtype: object <class 'pandas.core.series.Series'>
+											# ZZ <class 'str'>
+											# 0    10
+											# 1    20
+											# 2    30
+											# Name: BBB, dtype: object <class 'pandas.core.series.Series'>
+		*PO WIERSZU - iterrows() - zwraca obiekt generatora składający się z numeru
+ 		 wiersza oraz obiektu Series zwracającego nazwy kolumn i wartości dla wiersza
+					for i, j in df.iterrows():
+						print(i, type(i))	# 0 <class 'int'>
+						print(j, type(j))	# YY     a
+											# ZZ    10
+											# Name: 0, dtype: object <class 
+											#'pandas.core.series.Series'>
+											# 1 <class 'int'>
+											# YY     b
+											# ZZ    20
+											# Name: 1, dtype: object <class 
+											#'pandas.core.series.Series'>
+											# 2 <class 'int'>
+											# YY     c
+											# ZZ    30
+											# Name: 2, dtype: object <class 'pandas.core.series.Series'>
+		*PO CAŁYCH WIERSZACH - itertuples() - zwraca obiekt map składający się z 
+		 obiektów <class 'pandas.core.frame.Pandas'>
+					for i in df.itertuples():
+						print(i)			# Pandas(Index=0, YY='a', ZZ=10) 
+						print(type(i))		# <class 'pandas.core.frame.Pandas'>
+											# Pandas(Index=1, YY='b', ZZ=20) 
+											# <class 'pandas.core.frame.Pandas'>
+											# Pandas(Index=2, YY='c', ZZ=30) 
+											# <class 'pandas.core.frame.Pandas'>
+											# Pandas(Index=3, YY='d', ZZ=40) 
+											# <class 'pandas.core.frame.Pandas'>
+0.INSTALACJA i otwarcie JUPYTER LAB + (anaconda):
 	A)INSTALACJA w terminalu:
 				pip install pandas 
 				pip install notebook
@@ -801,7 +905,11 @@
 		b)SKRÓTY JUPYTER NOTEBOOKa:
 			*RUN komórki ---> SHIFT + ENTER
 			*Restart and Run ----> Kernell -> Restart and Run all
-			
-			
+			*TAB --> podpowiedź możliwych funkcji do użycia
+			*SHIFT + TAB  --> podpowiedź funkcji wraz z dokuentacją
+		c)ANACONDA: https://www.geeksforgeeks.org/how-to-install-python-pandas-on-windows-and-linux/
 		
-	
+		
+		
+		
+		

@@ -1,0 +1,58 @@
+https://dsvcorp.sharepoint.com/:x:/r/teams/DITeam/Shared%20Documents/General/06_Manuals/Onboarding/
+CENNIK USŁUG - SHAREPOINT -> Welcome Letter to Account Owner
+DI_Queue_0.1_working -> plik który służy do rozdzielenia zadań i wskazania na jakim etapie znajduję się dany raport. Przekopiowujemy linijki z danymi zadaniem do karty określającej dan etap działania. W kartach Cancelled i Complete wypełniamy pola w zielonych kolumnach.  
+JIRA: 
+	1*PODSTAWY:
+		*https://jira.alm.dsv.com/ > Projects > D&I Implementation
+		*TEAMS > D&I TEAM > WIKI > JIRA
+		*raportowanie między sprintami
+		*zakładki po boku:
+			**backlog - wszystkie zaplanowane zadania wraz z sumą wszystkich godzin. 
+				***epici - implementacje czyli numer zgłoszenie i nazwa konta dla którego wykonujemy implementacje (z lewej strony można kliknąć na dany epic i wyświetlą się wszystkie zadania z nim związane)
+			**active sprints - statusy implementacji w danym momencie (zakładka górna prawa - Only my Issues)
+				***zaznaczenie ile godzin spedzonych nad danym tematem (prawy przycisk na kaflu + po prawej stronie LOG WORK) (logowanie godzin powoduję zmniejszenie godzin estimated)
+				***przerzucenie zadania do sekcji DONE bez zalogowania godzin spowoduję automatyczne wyzerowanie czasu estimated
+				
+DMS - DEVELOPMENT & IMPLEMENTATION SYSTEM:
+	1*PODSTAWY:	
+		*logowanie będąc w sieci DSV (lub VPN DSV) + tylko CHROME)
+		*agregat do zbierania zgłoszeń
+	2*ZAKŁADKI GŁÓWNE:
+		a*FAQ
+		b*REQUEST REPORTING SERVICES - zamawianie raportu przez AO:
+			*DSV Reports & Insights:
+				**DSV BUSINESS REVIEW - standardowy raport (cutoms nie jest dostępny)
+			*CUSTOMIZED REPORTING SOLUTIONS
+				**raport customizowany
+			*OTHER:
+				**AD-HOC - jednorazowy raport/usługa
+				**ADJUSTMENT - dostosowanie raportu który już robimy
+				**BS SUPPORT - zgłoszenie od osob z działu ISS (mailowy kontakt)
+				**DATA QUALITY PROCESS - data quality proces bez raportowania
+		c*IMPLEMENTATION CATALOGUE - wszystkie zgłoszenia od AO'ów
+	3*ZAKŁADKI PRZY POSZCZEGÓLNYM ZGŁOSZENIU w IMPLEMENTATION CATALOGUE:
+		**DSV BUSINESS REVIEW:
+			a)IMPLEMENTATION CARD (koszta i statystyki) + inne: CONTROL PANEL; CONVERSTATION; ATTACHEMENTS
+			b)REQUEST FORM:
+				*CUSTOMER TYPE: 
+					***Local - poszczególny kraj/oddział w kraju liczony w walucie lokalnej
+					***Global - firma globana liczona w USD, EUR lub DKK
+					***GCO - firma globalna z Top200 robiąca najwieksze obroty
+				*REQUESTER - z kim się kontaktować (nie musi być to ta sama osoba która wysłała zgłoszenie)
+				*APPROVER'S NAME - osoba zatwierdzająca zlecenie jeżeli raport kosztuje więcej niż 250 euro
+				*COST CENTER - kto ma zostac obciążony kosztami
+				*DIVISION - Air&Sea, Road lub Cross divisional (to i to)
+				*REPORT FINANCIAL VISIBILITY:
+					**GLOBAL VISIBILITY - widoczne wszystkie faktury dla kont podanych w zgłoszeniu
+					**LOCAL VISIBILITY - widoczne tylko faktury wystawione przez kraj wybran na liście krajów
+				*ORGANIZATION ID - numery kont dla których raport ma byc robiony (To account Owner ma podać numery to kont a nie my mamy za niego wyszukiwać to)
+				*STANDARD DATA QUALITY - czy klient chce by dane dodatkowo przeszły proces Data Quality (dotyczy tylko klientów lokalnych. Dla globalnych jest robione zawsze). W momencie gdy wprowadzamy dane do bazy debtorów to wysyłamy tez ticket do Data Quality żeby zrealizowali proces Data Quality)
+				*FREQUENCY - częstotliwość raportowania
+				*PREFFERED DAYS FOR REGULAR PRODUCTION - staramy się nie ustawiać raportów w pierwsze 5dni miesiąca gdyż mogą nie zawierac kompletnych danych finansowych (nie zafakturują się towary z ostatnich dni poprzedniego miesiąca) oraz 10 i 15 bo wtedy est ich najwięcej .Wtedy trzeba napisac do AO i poprosić o wydłużenie deadlinu (jest widoczne w FAQ) 
+				*Prefferred first Draft Deadline - nie istotne
+		**CUSTOMIZED REPORTING SOLUTIONS:
+			a)REQUEST FROM - różnice w stosunku do Basic Review:
+				*Courier - możliwość dodania przesyłek kurierskich
+				*Event Filter - możliwość zdecydowania czy klient chce mieć raport po ETD albo ETA - po jakich datach mamy brać daty graniczne w raportach
+				*OTP - on time performance (czy przesyłki dotarły na czas czy nie)
+				
