@@ -10,6 +10,7 @@
 *WYCIĄGANIE EKSTRAKTÓW (KOPIOWANIE WYFILTROWANYCH DANYCH) --> CTRL + A >PRAWY >ACTIONS >Data Transfer >Export Visible Columns To Excel
 *POTRZEBNE ZAKŁADKI W UŻYCIU (F3 gdy chcesz rozwinąć dane pole):
 	**FORWARDING-Wybór shipmentu (28:00):
+	
 		**OPERATE --> FORWARDING --> Forwarding --> Shipments (Numer Shipmentu jest nadrzędny w wyszukiwaniu w stosunku do innych filtrów )
 		**BASIC REGISTRATION +ADDITIONAL DETAIL:
 		  *MODE:
@@ -20,7 +21,7 @@
 		  DETAILS:
 			***HOUSE BILL - list przewozowy (musi byc podany by przeszło)
 			***Origin/Destination (nie sugerować się tymi danymi bo moga być nie właściwe) 
-			***ETD/ETA - Estimated Time of Departure/Arrival (muszą być podane by operacyjnie przeszło ALE nie sugerować się tymi danymi bo moga być nie właściwe -> patrzeć na daty w zakładach PICKUP i DELIVERY) 
+			***ETD/ETA (SHIPMENT ETA/SHIPMENT ETD) - Estimated Time of Departure/Arrival (muszą być podane by operacyjnie przeszło ALE nie sugerować się tymi danymi bo moga być nie właściwe -> patrzeć na daty w zakładach PICKUP i DELIVERY) (Z tych danych jest wyciągana data do raportu)
 			***Weight, Volume, Chargeable, Packs 
 			***INCOTERMS (umowa między stronami kiedy odpowiedzialność i płatności za towar przechodzą między kupującym a sprzedającym) (C,D-SHIPPER; E,F-CONSIGNEE)
 			***SERVICE LEVEL (określenie czy DoorToDoor/PortToDoor, czy w odpowiedniej temp, czy przesyłka ma iść w expresie)

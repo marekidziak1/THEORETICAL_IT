@@ -1,0 +1,19 @@
+BRka:
+	1: POLA wraz z odniesieniem do CW1:
+		A) WAŻNE SZCZEGÓŁY:
+			**CONSOL / KONSOLA -> w CW1 znajduję się albo w zakładce 'Basic Registration' albo w zakładce 'Additional Details'  pod nazwą 'CONSOLIDATION'
+		B) POLA (opiane też w ASF'ie):	
+			**Mode: 			Shipment => Basic Registration => Mode => Transport
+			**Equipment:		Basic Registration => Details => Container
+			**Type: 			Shipment=> Basic registration => Type
+			**Container Type: 	CONSOLE => Containers => Type 
+			**Is Master/Lead:	
+			**Shipment ID:		widoczne w lewym górnym rogu w CW1 (bardzo podobne do HouseBill (Basic Registration => Details => HouseBill) ale nie zawsze taki sam)
+			**HAWB/HBL:			Shipment => Basic Registration => Details => House Bill
+			**Master Bill		Shipment => Basic Registration/Additional Details => Consolidation Details
+			**Console ID		Shipment => Basic Registration/Additional Details => Consolidation Details =Reference
+			**Container #		CONSOLE => Containers => Container# LUB Shipment => Packing => Container#
+
+
+
+

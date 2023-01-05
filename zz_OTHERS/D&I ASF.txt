@@ -1,0 +1,56 @@
+ASF
+	1*CZYM JEST:
+		**ujednolicony dokument między nami a Account Ownerem (Jaki to jest klient, kto reprezentuję tego klienta (jaki AO), debtorzy dla klienta, opisy wszystkich raportów dla klienta)
+		**trzymany dla starych kont w: \\i26674\Shared_drives\K_kam\04_GASS\01_Accounts\Nazwa_Klienta\01 Contracts\01 ASF
+		**dla nowych kont plik jest przetrzymywany na sharepointc'ie/teamsach
+		**ASF wysyłmy do AO wraz z pierwszym draftem raportu
+	2*ZAKŁADKI:
+		**ASF MAIN - podstawowe informacje
+		**DATA QUALITY - wszystkie pola które sa walidowane względem procesu Data Quality
+		**DEBTOR IDS - tutaj powinny znajdowac się wszystkie konta Debtorów dodane w ramach raportu
+		**CHEANGELOG - informacje kto wprowadzał ostatnie zmiany
+		**REPORT DESCRIPION INDEX - lista wszystkich raportów dla klienta wraz z odnośnikiem do Report Description r (kolejnej zakładki)
+		**REPORT DESCRIPTION BR - opis raportu dla klienta:	
+			*opis każdego pola w raporcie wraz przykładem danych danego pola.
+			*w przypadku raoportu cusotmizowanego tę zakładkę robimy od zera dla klienta wykorzystując 'report description tool'
+	3*TWORZENIE:
+		*ASF TOOL - lokalizacja: \\i26674\Shared_drives\K_kam\08_D&I\02_Tools\17 ASF Tool
+		*dla nowego raportu MONTHLY, QUATERLY, YEARLY pierwszy raport zostanie zaimplmentowany 1 miesiąc po handoverze a raport DAILY, WEEKLY 1 tydzień po handoverze (informujemy  o tym też AO)
+		*po wypełnieniu poniższych zakładek chcąc wygenerować ASF'a w kolumnie ticks wpisujemy '1' (można w kilku wierszach dzięki czemu wygeneruję się kilka ASF'ów dla różnych klientów) + pczycisk CREATE ASF 
+			**na pytanie czy chcemy otworzyć serwer i TEAMs'y by przerzucić folder klienta z serwera na TEAMSy: klikamy 'TAK' --> automatycznie zostanie utworzony plik i struktura folderów na serwerze w lokalizacji:  \\i26674\Shared_drives\K_kam\08_D&I\02_Tools\17 ASF Tool\Tool\NewASFs\ <dzisiejsza data>  oraz \\i26674\Shared_drives\K_kam\08_D&I\02_Tools\17 ASF Tool\Tool\AllCreated\
+			**ponadto automatycznie otworzą się serwer (w lokalizacji: \\i26674\Shared_drives\K_kam\08_D&I\02_Tools\17 ASF Tool\Tool\NewASFs\) i Teams'y (w lokalizacji: CRDQ - Customer Reporting and Data Quality -> Documents > 01_Accounts) gdzie przeciągamy dane z tego serwera do Teams'ów (w tej lokalizacji) [w razie co Teamsy z lokalizacją można otworzyć poprzez macro znajdujące się w toolu: \\i26674\Shared_drives\K_kam\08_D&I\02_Tools\17 ASF Tool i wpisując tekst w wyszukiwarkę]
+			**ponadto na serwerze w lokalizacji:  \\i26674\Shared_drives\K_kam\04_GASS\01_Accounts\ zostanie utworzone konto z nazwą klienta gdzie będą wrzucone tylko 3 ostatnie foldery (06,07,08) dotyczące automatyzacji. (Jest umówione że wszystkie dokumenty i foldery związane z automatyzacjami są na SHAREPOINT'cie/TEAMS'ach a na serwerze tylko rzeczy dotyczące automatyzacji)
+			**w przypadku poprawy jakiś rzeczy najważniejsze jest to żeby poprawić je na Teamsach a nie na serwerze. Serwer służy tylko temu żeby wrzucić pierwszy draft BR'ki do folderu Implementation (Głownie ze względu na łatwośc wyszukiwania)
+		*ZAKŁADKI:
+			**ASF:
+				***ACCOUNT NAME - nazwa skopiowana z nazwy wpisanej w excela Debtor
+				***REPORT TYPE - BR /CUSTOMIZED /AD-HOC /ADJUSTMENT
+				***ACCOUNT TYPE: GLOBAL /GCO / LOCAL
+				***REPORT SCOPE: AS (Air&Sea) /CD (Cross Divisional) /RO (Road) - bierzesz z zakładki Division z dms'a
+				***COST CENTRE - możesz pobrac z dmsa poprzez skopiowanie lub specjalna formułe na żółtym tle ALE wynik tej formuły trzeba przekopiować jako tekst żęby przy odpalaniu nie ładowało sie zbyt długo
+				***REPORTING CURRENCY (specjalna składnia) 
+				***EVENT FILTER - dla BR'ek zawsze będzie to 'ETA'
+				***FREQUENCY - wyciągasz z DMS'a jak przy COST CENTRE
+				***TRANSPORT MODE - zawsze taki sam -> przeciągasz i wszystkie pola na prawo uzupełniasz '1'kami (chyba że jest to Road to tylko w kolumnie ROAD wpisujesz 1ke)
+				***ACOUNT OWNERS & ACOUNT OWNERS MAILS & ACOUNT OWNERS NAME
+				***INTERNAL DEADLINE & EXTERNAL DEADLINE - bierzemy z DMS'a
+				***DQ - (czy raport bierze udział w procesie DATA QUALITY) - konta GCO/GLOBAL zawsze biorą udział w procesie Data Quality. Przy kontach local patrzymy na DMS na pole STANDARD DATA QUALITY. Jeżeli jest YES to dajemy 'Generic', jeżeli jest 'No' to zostawiamy pole puste, a jeżeli jest dostosowywanie to 'Customized')
+				***Transit times (only BR Road) - zdefiniowane w DMS'ie w polu Product Type
+				***ADD FOLDER TO ACCOUNTS ON SERVER - jeżeli konto nie miało jeszcze żadnych raportów to zaznaczamy 'YES'
+	4*ASF dla konta które już ma jakieś raporty:
+		*przy tworzeniu nowego raportu dla istniejącego klienta nie tworzymy 2'óch ASF'ów tylko update'ujemy już istniejący poprzez utworzenie nowego ASFa i przerzucenie odpowiedniej załadki (Report Description) do starego ASF'u + uzupełniamy informacje w innych zakładkach:
+			**Debtor IDs dodajemy nowenumery kont Debtorów
+			**w changelogu info że dodano zakładkę i date (CTRL+;)
+			**w report description index dopisujesz link do nowego Report Description (kopiujesz link z góry i edytujesz hyperlink)
+		
+		
+		
+		
+		
+		
+		
+		??????????????????????????????
+		*dla nowego raportu MONTHLY, QUATERLY, YEARLY pierwszy raport zostanie zaimplmentowany 1 miesiąc po handoverze a raport DAILY, WEEKLY 1 tydzień po handoverze (informujemy  o tym też AO)
+		*jak nazywa sie to macro do wyszukiwania folderu na pliku 
+			
+		
