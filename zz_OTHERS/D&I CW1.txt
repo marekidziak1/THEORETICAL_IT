@@ -6,12 +6,11 @@
 		**KODY (w COMPANY) tych miejsc sa skrótami krajów +liczba (może byc kilka kodów do kraju wtedy chcąc znaleźć dane fin. trzeba przeklikać wszystkie kody z danego kraju np PL1, PL2). (Zazwyczaj dane finansowe te których szukamy są w tym numerze company gdzie w branchu wyświetla się pełna nazwa miasta bez cyferek). Wyjątki kodów to:
 			EWR - Stany Zjednoczone (US Newark)
 			YTO - Kanda (Torronto)
-			SYT - Australia (Sydney)
+			SYD - Australia (Sydney)
 *WYCIĄGANIE EKSTRAKTÓW (KOPIOWANIE WYFILTROWANYCH DANYCH) --> CTRL + A >PRAWY >ACTIONS >Data Transfer >Export Visible Columns To Excel
 *POTRZEBNE ZAKŁADKI W UŻYCIU (F3 gdy chcesz rozwinąć dane pole):
 	**FORWARDING-Wybór shipmentu (28:00):
-	
-		**OPERATE --> FORWARDING --> Forwarding --> Shipments (Numer Shipmentu jest nadrzędny w wyszukiwaniu w stosunku do innych filtrów )
+		**OPERATE --> FORWARDING --> Forwarding --> Shipments (Numer Shipmentu jest nadrzędny w wyszukiwaniu w stosunku do innych filtrów ale na duńskim branchu najlepiej pozbyć sie innych filtrów i zostawić tylko shipment (strzałka przy 'Find' + Shipment no.))
 		**BASIC REGISTRATION +ADDITIONAL DETAIL:
 		  *MODE:
 			***TRANSPORT - SEA / AIR / ...
