@@ -190,7 +190,8 @@
 				*describe() - metoda zwracająca podstawowe statystyki na całej 
 				 tabeli dla kolumn z liczbami. Zwróci: count (ilość), mean 
 				 (średnia), std (standard deviation), min, max, kwantyle: 25%, 50% 
-				 (mediana), 75%:
+				 (mediana), 75% (można dodać też swoje kwantyle w arg percentiles,
+				 można też dodać argument odpowiadjący za typ wyświetlonych danych):				 
 					df.describe()	# CompTotal		ConvertedComp		Age
 									# count			5.582300e+04		79210.000000
 									# mean			1.271107e+05		30.336699
@@ -200,6 +201,16 @@
 									# 50%			5.728700e+04		29.000000
 									# 75%			1.000000e+05		35.000000
 									# max			2.000000e+06 		99.000000
+					df.describe(percentiles = [.20, .55], include=['int']
+									# CompTotal			Age
+									# count			79210.000000
+									# mean			30.336699
+									# std			9.178390
+									# min			1.000000
+									# 20%			20.367400
+									# 50%			29.000000
+									# 55%			33.848000
+									# max			99.000000
 		b)poszczególnych metod można użyć na wybranej kolumnie. Wszystkie wartości 
 		  NaN zostaną zignorowane podczas obliczeń. 
 					df['ConvertedComp'].mean()		#średnia -> 127110.738
@@ -368,17 +379,25 @@
 					df = df.assign(my_pro='NAN')
 			**z każdą komórką w kolumnie o różnej wartości (musi być dokładnie tyle 
 			  komórek ile jest indexów - inaczej błąd)
+					df['address'] = [4000, 20000, 30000]			// LUB //
 					df = df.assign(my_profit=[4000, 20000, 30000])
-										# 	first	last	email		  my_profit
-										# 0	Marek	Dziak	md@gmail.com  4300
-										# 1	Anna	Nacz	an@gmail.com  20000
-										# 2	Lukas	Lipka	ll@gmail.com  30000
+								# 	first	last	email		  my_profit
+								# 0	Marek	Dziak	md@gmail.com  4300
+								# 1	Anna	Nacz	an@gmail.com  20000
+								# 2	Lukas	Lipka	ll@gmail.com  30000
+			**zainsertowanie kolumy w konkretnym miejscu:
+					df.insert(2, "Age", [21,22,23])
+								# 	first	last	age		email	    my_profit
+								# 0	Marek	Dziak	 21	  md@gmail.com  4300
+								# 1	Anna	Nacz	 22   an@gmail.com  20000
+								# 2	Lukas	Lipka	 23   ll@gmail.com  30000						
 		b)Dodanie kolumny na bazie innych kolumn (nie wolno używać notacji z kropką)
 					df['fullname'] = df['first']+' '+ df['last']  # NIE df.fullname
 		c)Podział kolumny na inne kolumny:
 					df[['first','last']] = df['fullname'].str.split(' ',expand=True)
-		d)Usuwanie kolumny/kolumn:
+		d)Usuwanie kolumny/kolumn (axis = 1)
 					df.drop(columns=['first','last'], inplace = True)
+					df.drop(['first','last'], axis=1, inplace = True)
 	B)WIERSZE:
 		a)Dodanie wiersza 
 			**komórki dla kluczy które nie zostaną wprowadzone dostaną wartość NaN
@@ -591,6 +610,9 @@
 		*po zmianie indexu 'iloc' będzie działał bo jest po nr. wierszy
 				df.set_index('email') 			  		 # jednorazowa zmiana
 				df.set_index('email',inplace=True)	 	 # zmiana na stałe
+				df.set_index(pd.Index([True, False, False, True], inplace = True)
+														 # zm. na stałe indexu dla 
+														 # tab. o określ. l. wierszy 
 				df.reset_index(inplace=True)	 		 # zmiana na domyślny index
 	
 	C) DANE i INFO o DANYCH:
@@ -610,8 +632,8 @@
 					df[3:][:4]									# od 3 kolumny
 																# i od 4 wiersza
 		*WYŚWIETLANIE WIERSZY (atrybuty iloc, loc) (z użyciem slicingu):
-			X1)*po numerze wiersza (numer wiersza to nie to samo co numer 	
-				indexu) (atrybut iloc - integer loc)(nr wierszy od 0):
+			X1)*po numerze wiersza i po numerze kolumny (numer wiersza/kolumny to 
+			nie to samo co numer indexu) (atrybut iloc - integer loc)(numery od 0):
 				a)pojedyńczy wiersz
 					df.iloc[2]							 # first    Lukas
 														 # last     Lipka
@@ -634,48 +656,49 @@
 														 # 1 an@gmail.com	Anna
 														 # 2 ll@gmail.com	Lukas
 				e)SLICING - kilka wierszy (od do) - slicing bez nawiasów [] 
-				  i włączający ten ostatni wiersz (ale nie włączający ostatniej kolumny - inaczej niż w 'loc'):
+				  nie włączający  ostatniego wiersza ani nie włączający ostatniej kolumny - inaczej niż w 'loc':
 					df.iloc[0:2,[0,2]]			 		 #	 first	email
 														 # 0 Marek	md@gmail.com
 														 # 1 Anna 	an@gmail.com
 														 # 2 Lukas	ll@gmail.com
-					df.iloc[0:2,0:3]				 	 #	 first  last   email
+					df.iloc[0:3,0:3]				 	 #	 first  last   email
 														 # 0 Marek  Dziak  md@gm...
 														 # 1 Anna   Nacz   an@gm...
 														 # 2 Lukas  Lipka  ll@gm...
-		    X2)*po nazwie indexu (a nie po nr wiersza):
+		    X2)*po nazwie indexu i po nazwie kolumn (a nie po numerach):
+					df.set_index(pd.Index=['a','b','c'], inplace=True)
 				a)pojedyńczy wiersz
-					df.loc[2]					 		 # first    Lukas
+					df.loc["c"]					 		 # first    Lukas
 														 # last     Lipka
 														 # email    ll@gmail.com
-														 # Name: 2, dtype: object
+														 # Name: c, dtype: object
 				b)kilka wierszy (musi byc podwójny nawias):
-					df.loc[[0,2]] 			     		 #	 first	last	email
-														 # 0 Marek	Dziak	md@..
-														 # 2 Lukas	Lipka	ll@..
+					df.loc[["a","c"]] 			     	 #	 first	last	email
+														 # a Marek	Dziak	md@..
+														 # c Lukas	Lipka	ll@..
 				c)kilka wierszy ale tylko wybrane kolumny (po nazwie kolumny 
 				 można wpisać dowolną kolejność kolumn):
-					df.loc[[0,2],'last']		 		 # 0 Dziak
-														 # 2 Lipka
+					df.loc[["a","c"],'last']		 	 # a Dziak
+														 # c Lipka
 														 # Name: last, dtype: object
-					df.loc[[0,2],['email','first']]	 	 # email			first
-														 # 0 md@gmail.com	Marek
-														 # 2 ll@gmail.com	Lukas
+					df.loc[["a","c"],['email','first']]	 #     email		first
+														 # a md@gmail.com	Marek
+														 # c ll@gmail.com	Lukas
 				d)wszystkie wiersze ale wybrane kolumny:
 					df.loc[:,['email','first']] 		 #	   email		first
-														 # 0 md@gmail.com	Marek
-														 # 1 an@gmail.com	Anna
-														 # 2 ll@gmail.com	Lukas
+														 # a md@gmail.com	Marek
+														 # b an@gmail.com	Anna
+														 # c ll@gmail.com	Lukas
 				e)SLICING - kilka wierszy (od do) - slicing bez nawiasów [] 
-				  i włączający ten ostatni wiersz/tę ostatnią kolumnę:
-					df.loc[0:2,['email','first']]		 # 	 email			first
-														 # 0 md@gmail.com	Marek
-														 # 1 an@gmail.com	Anna 
-														 # 2 ll@gmail.com	Lukas
-					df.loc[0:2,'first':'email]			 #	 first  last   email
-														 # 0 Marek  Dziak  md@gm..
-														 # 1 Anna   Nacz   an@gm..
-														 # 2 Lukas  Lipka  ll@gm..
+				  i włączający ostatni wiersz i ostatnią kolumnę (inaczej niż w iloc[])
+					df.loc["a":"c",['email','first']]	 # 	   email		first
+														 # a md@gmail.com	Marek
+														 # b an@gmail.com	Anna 
+														 # c ll@gmail.com	Lukas
+					df.loc["a":"c",'first':'email]		 #	 first  last   email
+														 # a Marek  Dziak  md@gm..
+														 # b Anna   Nacz   an@gm..
+														 # c Lukas  Lipka  ll@gm..
 		    X3)*odczyt wierszy po SLICINGu:
 				a)dla domyślnego indexu zwróci przedział zamknięty z lewej strony 
 				  i otwarty z prawej:
@@ -697,6 +720,14 @@
 				  tak jak przy zwykłym filtrowaniu:
 					filt = (df['Date']>='2020-01') & (df['Date']<='2020-02')
 					df.loc[filt]
+			X4)*po BOOLEAN MASK - tylko tych wierszy gdzie maska wskazuję True:
+				dict = {'name':["mar", "ewe", "luk", "kar"],
+						'degree': ["MBA", "BCA", "M.Tech", "MBA"]}
+				df = pd.DataFrame(dict, index = [0, 1, 2, 3])
+				print(df[[True, False, True, True]])			# 	name	degree
+																# 0	mar		MBA
+																# 2	luk		M.Tech
+																# 3	kar		MBA
 	D)FILTROWANIE:
 		1*PODSTAWY:
 			*nie wolno dać nazwy 'filter' do zmiennej 
@@ -795,6 +826,7 @@
 		*poszczególnej kolumny / kilku kolumn:
 				df['last']		
 				df[['last', 'email']]					 #musi byc podwójny nawias	
+
 	C)Różne opcje tworzenia Series i DataFrame:			
 		*SERIES:
 			**puste Series:
@@ -817,8 +849,8 @@
 					ser = pd.Series(data)						# 11   e
 																# dtype: object	
 			**Series ze słownika:
-					dct = {'a':22, 'b':33}						# a    22
-					ser = pd.Series(dct)						# b    33
+					dct = {'a':[22,24], 'b':[33,35]}			# a  [22,24]
+					ser = pd.Series(dct)						# b  [33,35]
 																# dtype: int64
 			***FUNKCJE na SERIES (z przykładami)(na samym końcu strony) WRAZ Z BINARY
 			OPERATIONS (operacje binarne na kilku kolumnach (np dodawania tych samych
@@ -834,6 +866,12 @@
 					df = pd.DataFrame(lst)						# 0  g
 					print(df)									# 1  e
 																# 2  e
+					lstOfLsts = [[1,2,3],[5,6,7],[7,8,9]], 
+					df = pd.DateFrame(lstOfLsts, columns = ['a','b','c']
+					print(df)									#    a   b   c 
+																# 0  1   2   3
+																# 1  4   5   6
+																# 2  7   8   9
 			**DataFrame z tablic numpy'owych:
 					import numpy as np							#    YY   ZZ
 					dicta = {'YY':np.array(["a", "b", "c"]),	# 0  a    10
