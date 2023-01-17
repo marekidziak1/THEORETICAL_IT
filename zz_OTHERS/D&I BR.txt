@@ -1,94 +1,30 @@
-BRka:
-	1: POLA wraz z odniesieniem do CW1:
-		A) WAŻNE SZCZEGÓŁY:
-			**CONSOL / KONSOLA -> w CW1 znajduję się albo w zakładce 'Basic Registration' albo w zakładce 'Additional Details'  pod nazwą 'CONSOLIDATION'
-			**wszystkie pola/kolumny do pola/kolumny Mode mają swoje formuły i są generowane na bazie pól z pkt B)
-			**jeżeli przesyłka ma więcej niż jeden kontener to w BR'ce w RAW DATA Shipment ID będzie w kilku wierszach
-		B) POLA (opisane ASF'ie, widoczne w BR'ce z odniesieniem do CW1):	
-			**Mode: 			Shipment => Basic Registration => Mode => Transport
-			**Equipment:		Basic Registration => Details => Container
-			**Type: 			Shipment=> Basic registration => Type
-			**Container Type: 	CONSOLE => Containers => Type 
-			**Is Master/Lead:	
-			**Shipment ID:		widoczne w lewym górnym rogu w CW1 (bardzo podobne do HouseBill (Basic Registration => Details => HouseBill) ale nie zawsze taki sam)
-			**HAWB/HBL:			Shipment => Basic Registration => Details => House Bill
-			**Master Bill		Shipment => Basic Registration/Additional Details => Consolidation Details
-			**Console ID		Shipment => Basic Registration/Additional Details => Consolidation Details =Reference
-			**Container #		CONSOLE => Containers => Container# LUB Shipment => Packing => Container#
-			**Shipment Ref.		Shipment => Additional details => Job management links => Order Ref.
-			**Pickup ID	[+: Pick-up Name, Pick-up City, Pick-up State, Pick-up Postcode, Pick-up Country] 		
-								Shipment => Pickup => Details => Pickup From
-			**Shipper ID [+: Shipper Name, Shipper City, Shipper State, Shipper Postcode, Shipper Country, Shipper UNLOCO]
-								Shipment => Basic Registration => Shipper
-			**PoL (Port of Loading, 5 letter UN location code, Use earlist value if shipment has moved on more than 1 consol)
-								CONSOLE => Details => 1st Load / Load Port
-			**PoD (Port of Discharge 5 letter UN location code, Use latest value if shipment has moved on more than 1 consol)
-								CONSOLE => Details => Last Disc / Discharge
-			**Consignee ID [+: Consignee Name, Consignee City, C. State, C. Postcode, C. Country, Consignee UNLOCO]		
-								Shipment=> Basic Registration => Consignee
-			**Delivery ID [+: Delivery Name, Delivery City, Delivery State, Delivery Postcode, Delivery Country, D. UNLOCO]
-								Shipment=> Delivery => Details => Deliver to
-			**Notify ID [+: Notify Name]
-								Shipment=> Basic Registration => Notify Party
-			**Local Client ID [+: Local Client Name] (nie patrz na Local Client w Basic Registration tylko ten w Billing - wykorzystywane czasami w lokalnych raportach jako identyfikator klienta)
-								Shipment=> Billing=> Local Client ID
-			**Voyage/Flight		CONSOLE=> Routing => Voyage / Flight Details => Flight/Voyage (do BR'ki zaciągany jest główny transport lub kilka głównych transportów
-			**Carrier			CONSOLE=> Details (z prawej strony)
-			**Pieces/Weight/Volume [+: Pieces Unit/ Weigth Unit/ Volume Unit] (dla Shipmentów OCEAN (gdzie Equipment = FCL, LCL, BCN) waga, pieces, volume jest brane z poziomu kontenera gdy jest więcej niż 1 kontener (Shipment=> Packing=> Packs (nazywają to PACKLINES)) a dla reszty typów Shipmentów waga jest brana z poziomu Shipmentu (Shipment=> Basic Registration=> Details =>Packs/Weight/Volume )
-								Shipment=> Basic Registration=> Details =>Packs/Weight/Volume   // 
-								Shipment=> Packing=> Packs   
-			**Chargeable/Chargeable Unit (logika przedstawiona dla pola 'Chargeable Weight' (wybierana większa wartość: albo kilogramy albo objętość x odpowiedni mnożnik (*1000))
-								Shipment=> Basic Registration=> Details =>Chargeable
-			**Loadmeter (używane tylko w przypadku presyłek Road'owych a nie w przypadku Air&Sea)
-								Shipment=> Basic Registration => Details => Loading Meters
-			**Goods Description / Service Level / Incoterm / 
-								Shipment=> Basic Registration => Details => Description / Service Level / Incoterm
-			**Estimated Pick-up Date / Actual Pick-up Date / Cargo Received Date (jeżeli w polu Drop Mode jest DLV to wtedy kolumny 'Estimated Pick-up Date' / 'Actual Pick-up Date' sa puste i wypełniona jest kolumna 'Cargo Received Date' w której wpisane są dane z Interim Receipt Date z CW1)
-								Shipment=> Pickup => Details => Pickup Details => Estimated Pickup / Actual Pickup   //
-								Shipment=> Pickup => Details => Pickup Details => Interim Receipt
-			**ETD/ATD/ETA/ETD 	CONSOLE => Details => Flight (dla przes. AIR) / Voyage (dla przes. SEA)=> ETD/ATD/ETA/ETD
-			**Estimated Delivery Date / Actual Delivery Date / Cargo Handover Date (jeżeli w polu Drop Mode jest CCX to wtedy kolumny 'Estimated Delivery Date' / 'Actual Delivery Date' sa puste i wypełniona jest kolumna 'Cargo Handover Date' w której wpisane są dane z przefiltrowanego TCI eventu Z70 cw1: (Shipment => Workflow&Tracking => Events => TCI event (Z70)))
-								Shipment=> Delivery => Details => Delivery Details => Estimated Delivery / Actual Delivery
-								Shipment => Workflow&Tracking => Events => TCI event (Z70) 
-			**Shipment ETD (First airport/port of loading)
-								Shipment=> Basic Registration => Details => ETD
-			**Shipment ETA (Last airport/port of discharge)
-								Shipment=> Basic Registration => Details => ETA
-			**BILLINGS -> <poniżej rozpisane>
-			**Pickup Drop Mode (jeśli DLV to widoczna kolumna Cargo Received Date (powyżej))	
-			**Deliv. Drop Mode (jeśli CCX to widoczna kolumna Cargo Handover Date (powyżej))
-			**Shipment Type 
-				***Financial JOB: - jeśli CONSOLE jest pusta LUB CONSOLE=>Consol Details=>Type = OTH LUB Basic_Registration=>Details=>Service Level = FIN to wtedy nie jest to Shipment tylko Financial Job 
-				***dummy Shipment: Basic Registration=> Reference Number Type będzie równy NVA. Z Extractu jest to usuwane i jest to widoczne tylko w CW1.
-		 *BILLINGS: 
-			**Debtor ID 		Shipment=> Billings=> Account    //
-								Shipment=> Billings=> <prawy na fakturze+View> => AR Invoices Summary=> Debtor Information
-			**Debtor Name 		
-								Shipment=> Billings=> Address    //
-								Shipment=> Billings=> <prawy na fakturze+View> => AR Invoices Summary=> Address
-			**Invoice Number (w cw1 będzie numer bez początkowych 2 liter określających kraj danej faktury ale w BR'ce i na fakturze papierowej będą dwie pierwsze litery skrótu danego kraju (i tutaj już nie ma wyjątków dla USA, Kanady i Australii (są 3 standardowe skróty: US, CA, AU)))
-								Shipment=> Billings=> Transaction Number   //
-								Shipment=> Billings=> <prawy na fakturze+View> => AR Invoices Summary=> Invoice Num.
-									### Shipment=> Billings=>Job Invoice Number odnosi się do Shipment ID 
-									### Shipment=> Billings=> <prawy na fakturze+View> => Line Summary=>Job(też Shipment ID)
-			**Invoice Dates		
-								Shipment=> Billings=> Invoice Date
-								Shipment=> Billings=> <prawy na fakturze+View> => AR Invoices Summary=> Invoice Date
-			**Charges Currency  
-								Shipment=> Billings=> Currency
-								Shipment=> Billings=> <prawy na fakturze+View> => AR Invoices Summary=> Exchange Rate
-			**Origin Charges (ORG) // Freght Charges (FRT) // Fuel/BAF Charges (FUEL/BAF) // Security Charges (SECURITY CAF) // Destination Charges (DST) // Other Charges (OTHER) // Duty/Tax Charges (DUTY/TAX) - wyszczególnione koszty z faktury kóre są zaciągane do BR'ki poprzez mapowanie kluczy grup (w postaci kodów zapisanych w pliku 'Charge Code ISCC Group') i wartości w grupie (w postaci kodów z CW1). Kody i wartości znajdują się w pliku: TEAMS => GENERAL => FILES => MANUALS => CARGO WISE ONE => charge_code_mapping.xlsx :  https://dsvcorp.sharepoint.com/:x:/r/teams/DITeam/Shared%20Documents/General/06_Manuals/CargoWise%20One/charge_code_mapping.xlsx?d=w87afafc0b3354e4c8cd7b26170caa1b7&csf=1&web=1&e=sTVHfX 
-				    ***wartość faktury za poszczególne usługi z kodami:
-								Shipment=> Billings=> <prawy na fakt.+View>=> Line Summ.=> <Amount dla wiersza z odp kodem>
-									### w szczegółach faktur kody DST i DEL są mapowane po kodzie DST 
-									### który odpowiada kolumnie Destination Charges w BR'ce
-				    ***całkowita wartość faktury:
-								Shipment=> Billings=> Invoice Amt				
-		  *****(dane finansowe w CW1 są widoczne na poziomie lokalnym tzn trzeba być na branchu/company kraju na który została wystawiona faktura (by to określić trzeba spojrzeć na INCOTERM i sprawdzić na kogo została wystawiona faktura (Incotermy zaczynające sie od 'c','d' dotyczą Shipper'a ;; Incotermy zaczynające się od 'e','f' dotyczą Consignee'go)). By zmienić branch Company to: CTRL+SHIFT+B będąc w początkowym oknie)
-		  *****(w CW1 nie wolno wysłać klientowi danych z zakładki 'Invoicing' -> dla klientów bierzemy dane TYLKO z zakładki 'AR INVOICES'
-		  *****(w Ar Invoices nie musza znajdowac sie tylko faktury dla klienta dla którego robimy raport, mogą być faktury dla wszystkich klientów biorących udział w przesyłce (wtedy np fracht+dostarczenie opłaca Consignee a przechowywanie towaru opłaca shipper (w zaleznośći od tego jakie są INCOTERMY)). By wybrać właściwe faktury dla klienta dla którego robimy raport trzeba wybrac te faktury gdzie w CW1 Account number (Billing=> AR Invoices=> Account) jest taki sam jak numery Debtor ID dla naszego klienta (numery podane w DMS'ie juz na początku procesu). Przy wyciąganiu extractu z ODW i tak wyciągną się tylko te faktury które mają Account takie same jak podane Debtor ID w DMS'ie.
-		  *****najeżdżając na fakturę + prawy można zobaczyć dane w CW1 (View) oraz w postaci pdf'a faktury (print+preview)
-		  *****Jeżeli klient napisze do nas dlaczego mimo tego że faktura została wystawiona to nie pojawiła sie w raporcie w sekcji RAW_DATA. Wtedy są takie 3 opcje:
-					***faktura mogła nie zostac wystawiona --> wtedy trzeba sie upewnić poprzez zalogowanie się na odpowiedni branch/company (sprawdzając Incotermy i która strona: shipper czy consignee jest obciążona fakturą z DSV) -> jeżeli faktury nie będzie to znaczy że nie została wystawiona na te numery debtorów które zostały podane w DMS'ie (AO nie wysłał wsystkich numerów Debtorów które powinniśmy dodać do bazy Debtorów)
-					***faktura może istnieź ale mogła zostac wystawiona po momencie wyciągnięcia extractu z ODW (czyli momentu gdy został utworzony raport) -> data wystawienia faktury jest widoczna w polu 'Post Date'
-					***faktura mogła zostać wystawiona na DSV jako pośrednika, który dopiero wysyła fakture na finalnego klienta --> wtedy nas to nie interesuję gdyż przygotowujemy raporty TYLKO gdzie faktury zostały wystawione na finalnego klienta/DebtorID. Nie raportujemy faktur wystawionych na inne spółki DSV.
+RAPORTY:
+	0*PROCES:
+		1.plik ISCC_Debtors.xsl pobiera dane z głównej bazy danych do ODW (ODW przetrzymuję wszystkie dane dotyczące shipmentów dla kont podanych w ISCC_Debtors)
+		2.z ODW wyciągamy ekstrakty z podanych danych (albo opcja automatyczna wykorzystująca SRG_tool albo opcja trudniejsza gdzie samemu wyciąga sę ekstrakty z danych)
+			**opcja automatyczna gdzie SRG Tool sam wyciąga ekstrakty z danych z ODW (wraz z utworzeniem raportu - wtedy trwa to 1 noc przeladowania serwera) 
+			**opcja gdzie sami wyciągamy ekstraky z ODW i potem korzystamy z SRG_toola do utworzenia raportu (opcja natychmiastowa)
+		3.z ekstraktów tworzy się raport poprzez SRG TOOL
+	1*SRG TOOL (wyciąganie ekstraktów + tworzenie BR)
+		**lokalizacja: \\i26674\Shared_drives\SRG_FA\CRDQ SRG Full Automation => SRG Panel v2.4
+		**BUTTON Manage Account List:
+			*Account Name - nazwa taka sama jak w pliku ISCC_Debtors
+			*Send Mail - no
+			*Local/Global - dotyczy tylko Report Financial Visibility z DMS'a
+			*Currency - dotyczy Reporting Currency z DMS'a
+		**BUTTON Add New Task + ADD TO QUEUE - uzupełniamy:
+			*Account - wybierasz nazwę Accounta na bazie nazwy Accounta wpisanej w buttonie Mangage Account List 
+			*Report Type -> (pole 'Product Tpe w dms'ie )patrzysz czy jest to raport tylko Air&Sea, czy Road czy Cross. 
+			*Pola ważne dla zespołu reportingu:
+				*Send Mail -> No (by zrobić draft a nie wysyłac maile systematycznie)
+				*Priority -> priorytet (1 - najwyższy)
+				*Schedule Date -> następny dzień roboczy
+				*Frequency -> tak jak w zgłoszeniu (chodź nie będzie to miało znaczenia przy draftcie)
+			*Data Source -> dla raporów opartych o CW1 / GIL z automatu wskakuję ścieżka jako miejsce do przechowywania ekstraktów z ODW (które SRG tool wyciągnie po 1 dniu roboczym wraz z automatycznym utworzeniem raportu)
+		**BUTTON Check Queue List:
+			**wszystkie raporty zaschedulowane na ten miesiąc (na samym dole jest ten który dodaliśmy do listy (widoczny po strzałce w dół)
+			*raport który nie ma wyciągniętych ekstraktów zostaje przełożony na kolejny dzień roboczy (aż ekstrakt zostanie pobrany)
+	2*PYTHON INTERFACE TOOL (wyciąganie estraktów z ODW)
+		*TEAMS->D&I TEAM->General->Wiki --> setup ODW APP on GLOBAL
+			
+			

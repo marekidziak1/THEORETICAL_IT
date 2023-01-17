@@ -1,0 +1,4 @@
+Microsoft’s BI stack: Azure SQL Database/Azure Synapse, Azure Analysis Services, ADF, DevOps, PowerBI
+Tabular Models - DAX Language.
+PowerShell Scripting.
+Big Data: Hadoop/Data Lake, Kafka, Databricks

@@ -1,32 +1,37 @@
 BUSSINESS_REVIEW -> Implementation Process 
 	****https://dsvcorp.sharepoint.com/:w:/r/teams/DITeam/Shared%20Documents/General/06_Manuals/Work%20Instructions/Work_Instruction_Standard_Implementations_20220531.docx?d=w9c2fb84932af4e31a2dae5fb07bb2e13&csf=1&web=1&e=CkxCmJ
-	*0. PLIK KOLEJKOWY na DI_Queue_0.1.working -> przenosisz do IN PROGRESS a gdy zrealizujesz do Completed (uzupełniasz tylko rekordy w zielonych kolumnach)
-	*1. W DMS'ie - Request Form -> filled request form arrives to D&I (dms)
-		**request form should include: Customer, Customer Type, Requester, Approver's Name, Cost Center, Division, Product Type, Report Financial Visibility, Country, Reporting Currency, Organization ID, Standard Data Quality, Frequency, Preffereddays for reular production, Preferred first draft deadline, comments		
+	**. Utwórz sobie dodatkowy plik gdzie statusujesz zgłoszenie - tzn na jakim etapie się znajduję. 
+	*0. PLIK KOLEJKOWY na DI_Queue_0.1.working -> przenosisz do IN PROGRESS tam gdzie potwierdzone koszty przez AO czyli (zielone w Request), reszte przesuwasz do góry - zamiast wycinania kopiowanie i usuwanie poprzednich. Gdy zrealizujesz BRkę to przenosisz do Completed (uzupełniasz tylko rekordy w zielonych kolumnach)
+	*1. W DMS'ie -Implementation Catalogue -> Request Form -> filled request form arrives to D&I (dms)
+		**sprawdzasz czy numery kodów debtorów ze zgłoszeń są takie same jak numery podane w mailach.
+		**request form powinien zawierac dokładnie sprecyzowane informacje: Customer, Customer Type, Requester, Approver's Name, Cost Center, Division, Product Type, Report Financial Visibility, Country, Reporting Currency, Organization ID, Standard Data Quality, Frequency, Preffereddays for reular production, Preferred first draft deadline, comments		
 	*2. Check if client exist in Customer Overview (plik excel):
-		*file://dsv.com/corp/department/kam/04_GASS/04_Department/Customer%20Overview/CRDQ-MonthlyReportOverview_20180822.xlsm
-		*\\i26674\Shared_drives\K_kam\04_GASS\04_Department\Customer Overview -> CRDQ-MonthlyReportOverview_20180822
+		*źródła:
+			*file://dsv.com/corp/department/kam/04_GASS/04_Department/Customer%20Overview/ ==> CRDQ-MonthlyReportOverview_20180822.xlsm
+			*(NIEAKTUALNE) \\i26674\Shared_drives\K_kam\04_GASS\04_Department\Customer Overview ==> CRDQ-MonthlyReportOverview_20180822 
+		*jeżeli klient już istnieje to trzeba sprawdzić w pliku numery debtorów (czy one już nie istnieją dla danego raportu (dokładnie te same i ta sama ilość))
 	*3. Setting up ODW 
 		*DZIAŁANIE/LOGIKA: Chcąc pobrac dane dotyczące shipmentów danej organizacji/podorganizacji będącej jedną ze stron transportu (pickup, shipper, consignee, delivery, notify party, local client or Debtor) musisz pobrać je z ODW. By to zrobić musisz uzupełnić plik excel ISSCDebtorsMerged tab SHEET1 (szczególnie kolumny Name i AccountID /OrganizationID /DebtorID) z którego ODW każdego wieczora po północy zaciąga informacje do zwrócenia danych shipmentow danej organizacji (pola w kolumnie OrganizationID) w odpowiednim pliku (nazwa wpisana w kolumnę Name).
 		*2.1 Air&Sea ODW Database PROCESS: 
-			A***   WIZZQL: chcąc pobrać dane danej organizacji /  podorganizacji z ODW do swoich raportów to wklejasz kod DebtorIDs/acocuntID/organizationID z DMSa do wizzql http://wizzql.dsv.com/views/index.php  (kopiujesz numery w jednej kolumnie bez przecinków i ustawiasz filtry na Modules: ORGANIZATIONS, Filters: Organization #, Organization Number). Wizzql tworzy wygenerowany kod sql do filtrowania w CW1 gdzie w (Maintain-> Master Data-> Organization) poprzez Custom Sql Filter wyszukuję Tobie nazwy organizacji w CW1 pasujące do tychże numerów organizacji. Kody w CW1 mogą być nieaktywne (a my robimy raporty również dla kodów aktywnych) dlatego trzeba ustawić dodatkowy filtr w CW1w postaci: 'ACTIVE STATUS: ALL' [Mógłbyś zamiast CUSTOM SQL FILTER w CW1 użyć 'Code start with' i wpisywać osobno kody (przy używaniu WARUNKU LOGICZNEGO 'OR' jest konieczność zaznaczenie tego samego koloru kategoriiw warunkach bez zaznaczonego koloru warunku CW1 traktuję to jako WARUEK 'AND')]
+			A***   WIZZQL: chcąc pobrać dane danej organizacji /  podorganizacji z ODW do swoich raportów to wklejasz kod DebtorIDs/acocuntID/organizationID z DMSa do wizzql http://wizzql.dsv.com/views/index.php  (kopiujesz numery w jednej kolumnie bez przecinków i ustawiasz filtry na Modules: ORGANIZATIONS, Filters: Organization #, Organization Number). Wizzql tworzy wygenerowany kod sql do filtrowania w CW1 gdzie w (Maintain-> Master Data-> Organization) poprzez Custom Sql Filter wyszukuję Tobie nazwy organizacji w CW1 pasujące do tychże numerów organizacji.
 			B***   W CW1: (Maintain-> Master Data-> Organization) filtrujesz dane w 'CUSTOM SQL Filter' + 'ACTIVE STATUS: ALL', zaznaczasz wszystko (CTRL+A), PRAWY->ACTIONS-> export columns to excel 
+				* Kody w CW1 mogą być nieaktywne (a my robimy raporty również dla kodów aktywnych) dlatego trzeba ustawić dodatkowy filtr w CW1w postaci: 'ACTIVE STATUS: ALL' [Mógłbyś zamiast CUSTOM SQL FILTER w CW1 użyć 'Code start with' i wpisywać osobno kody (przy używaniu WARUNKU LOGICZNEGO 'OR' jest konieczność zaznaczenie tego samego koloru kategorii w warunkach bez zaznaczonego koloru warunku CW1 traktuję to jako WARUEK 'AND')]
 				*gdyby Acount Owner podesłał kody OrganizationID dla DSV lub Panalpina, itp (czyli firm nie będących częścią organizacji klienta) to nie wolno uwzględniać ich w raporcie i trzeba to napisać AO zgodnie z FAQ w DMSie (sekcja ORGANIZATION ID - Can I use debtor IDs...?) (gdyż wtedy wzięłoby pod uwagę shipmenty nie należące dla klienta tlko np wszystkie shipmenty przechodzące przez np: port DSV)
 				*in CW1 id starts with 64 (with these number customer could be invoiced)
 				*if report contain data from CargoLink apart from id provide country Code (where specific company is located)
-			C***  excel CUSTOMER OVERVIEW:
-				**na sharepoint'cie 'customer overview'    lub: \\i26674\Shared_drives\K_kam\04_GASS\04_Department\Customer Overview       lub: https://dsvcorp.sharepoint.com/:x:/r/teams/CSS-CommercialSharedServices/Shared%20Documents/Department/Customer%20Overview/GAS%20Customer%20Overview%20202212.xlsx?d=w68ceb7c66aea485abe95a1a104aa4025&csf=1&web=1&e=5NsIrh
-				**wprowadzając jakiekolwiek zmiany w karcie SHEET1 dla konta które już jest raportowane powinny być konsultowane z osobami które już raportują dla tego konta
-				**przy wprowwadzaniu nowych kodów debtorów do karty SHEET1 w pliku ISSCDebtorsMerged sprawdź czy one już nie istnieją dla danego raportu (dokładnie te same i ta sama ilość) -> sprawdzasz w pliku customer overview
-			D***  excel DEBTOR (ISSCDebtorsMerged):
+			C***  excel DEBTOR (ISSCDebtorsMerged):
 				**nie zapisaywać tego pliku z pustymi wierszami albo z przefilrowanymi danymi. Nie filtrować po kolumnie Code tylko robić wyszukiwanie CTRL+F
 					*A&S (Air&Sea) Debtor Base File location: 
 						(Password is qweasd) \\i26674\Shared_drives\M_PL.ISS.GAS.QV_Report\QVConfig\Account_List\ISSCDebtorsMerged.xlsx
 					*SHEET1 tab:
-						*wyeksportowane dane z CW1 otwierasz w excelu i przepisujesz do bazy Debtor pole CW1 i Code w pliku excel (karta SHEET1) - resztę uzupełniasz)(For the purpose of setting up ODW). Wcześniej sprawdzasz czy dla podanego klienta masz wpisane te same numery organizacji / podorganizacji - jeżeli tak to oznacza że taki raport już istnieje i trzeba dopytać AO czy jest to ten sam raport czy może jakieś rozszerzenie. [sprawdasz czy nie jest tak że te wszystkie numery nie są dokładnie przypiasane do jakiegoś name'a (idenyfikatora) (musza być dokładnie te same - nie mniej i nie więcej))].
-						*Fill 6 columns with data: 
-							**Name [localreports with country suffix (Shell_US)(jeżeli w CW1 kody wskazują na jedno country to robisz dopisek kraju w nazwie a jeżeli kody wskazują na większą ilość krajów to znaczy że jest global i nie robisz dopisku w nazwie](używane do ustawienia ODW)(max 20 znaków i nie można użyć znaków specjalnych innych niż podkreślnik '_' oraz nie można końcówek typu gmbh/sa)
-							**Code [debtor IDs / account IDs / organization IDs received from Account Owner - as text with aphostrophe] (używane do ustawienia ODW)
+						*sprawdzasz czy dla danego klienta istnieje już ta sama liczba kodów wpisanych w plik (zaznaczasz kod -> prawy + 'Filtered by Selected Value)(może być juz generowany taki raport i AO się pomylił wysyłając zgłoszenie raz jeszcze LUB już kiedyś było tworzony taki raport jako Ad-Hoc LUB AO chcę rozszerzenia raportu dla tych samych numerów (wtedy robisz normalny raport) ---> by określić jedną z tych opcji sprawdzasz w DMSie inne zgłoszenia tego klienta (Implementation Catalogue -> Request Form) filtrując po Name dla danej firmy (wpisujesz Name z bazy Debtorów) 
+						*wyeksportowane dane z CW1 otwierasz w excelu i przepisujesz/uzupełniasz w pliku Debtor (karta SHEET1) (KOPIUJESZ JAKO WARTOŚCI/TEKST!!!)
+							**Name:
+								***niezależnie czy local czy global: max 20 znaków i nie można użyć znaków specjalnych innych niż podkreślnik '_' oraz nie można końcówek typu gmbh/sa
+								***w DMSie sprawdasz 'Customer Type' oraz 'Report Financial Visibility' i określasz zgodnie z tabelą ze standard implementation z jakim typem klienta masz do czynienia - czy z GLOBAL/GCO czy z LOCAL
+								***typ local będzie miał w końcówce nazwy country suffix np.: Shell_US
+								***jeżeli mimo tego że wg tabelki typ jes global a w CW1 kody wskazują na jedno country to dopytujesz AO czy na pewno wysłane kody są poprawne czy może customer type / Report financial visibility w zgłoszeniu było źle wpisane
+							**Code [debtor IDs / account IDs / organization IDs received from Account Owner ] - kody wklejasz jako tekst!!!!!
 							**Type:
 							  **NOWE PODEJŚCIE:
 								***TOP200 - zawsze dodajemy dla nowych kont
@@ -38,9 +43,9 @@ BUSSINESS_REVIEW -> Implementation Process
 								***discontinued types(niekontynuowane wpisywane typy (dla istniejących kont nadal używasz tych nazw): 
 									****DSV(before for customized reports) 
 									****specific projects (for instance: RoadDK, Adidas)
-							**CW1_Name - organization name from CW1
+							**CW1_Name - organization name from CW1 (dokładnie taka sama nazwa jak w CW1)
 							**Added by - 2 pierwsze litery imienia i nazwiska
-							**Timestamp - data dodania do pliku excelowego (CTRL +  )
+							**Timestamp - data dodania do pliku excelowego (CTRL + ;)
 							**Comment - nic(przy nowych) lub OPS lub Maintain
 					*old debtors numbers:
 						*jeżeli któryś z klientów zdecyduję że nie chce już raportów to wtedy zamiast usuwania linijek związanych z tym raportem/klientem w sheet1 przenosis to do old debtors numbers (zamiast CTRL+X na wyfiltrowanych wierszach robisz filter, kopiujesz i wklejasz do nowego pliku wyfiltrowane wiersze a w starym pliku rbisz prawy+DELETE ROW) ;; Oprócz tego przy zmianie danych trzeba uzupełnić zakładke changlog
@@ -58,7 +63,7 @@ BUSSINESS_REVIEW -> Implementation Process
 						*wpisujemy wyjątkowe przypadki gdzie musieliśmy wprowadzić konta pod nową nazwą ale które korzystaja z tej samej bazy debtorów/organizationID/acountID np Harman i Harman_Light (nie wykorzystywane)	
 					*Master Account:
 						*firmy pofragmentaryzowane na mniejsze podorganizacje życzą sobie żeby dodane kody do podorganizacji również były dodane do głównej organizcji (głównie w celach Data Quality)
-				**Save file and copy it into below locations + wait until it will disapear:  
+				**KOPIUJESZ (NIE PRZENOSISZ) plik do poniższych lokalizacji + wait until it will disapear:  
 						** ftp://ftp.esb.dsv.com/Incoming/
 						** ftp://qa.ftp.esb.dsv.com/Incoming/
 					**PASSY (żeby dostać się do tych serwerów trzeba raz zrobić: this pc -> computer -> add new network location i wpisać powyższe adresy serwów  dodaniem lo i ha ponizej):
@@ -66,11 +71,10 @@ BUSSINESS_REVIEW -> Implementation Process
 						Ha: HB&3bGAawYjNGVsyneqm@bW_
 					**jeżeli ftp/qa nie zadziała to pokaże że trzeba wpisac hasło ponownie --> jeżeli kilka razy to powtórzy to znak że trzeba napisać ticket do IT (cherwell)
 	*4 Debtor Maintance - AirSeaDebtorMeintenanceTool:
-		**LOKALIZACJA: \\i26674\Shared_drives\K_kam\08_D&I\02_Tools\15 Debtor Maintenance\AirSeaDebtorMeintenanceTool
-		**każde konto global/GCO dodane do pliku ISSCDebtorsMerged (w DMSie będzie info że konto jest global) musimy też dodać do pliku AirSeaDebtorMeintenanceTool v1.6 do karty Air&SeaKeyWords -> tam dodajemy z prawej strony nazwę konta i pod spodem słowa kluczowe związane z firmą I JEJ PODSÓŁKAMI po kórych będzie można filtrować: dla STELLANTIS wpisujesz Stellantis, Fiat, Masserati, Open, Automoile (nie wpisujemy tu nazw podspółek związanych z firmą - mają to byc typowe słowa kluczowe)
-		**w zakładce 'MailingList' też dodajesz to konto wraz z danymi AO
 		**PROCES PO CO TO JEST: raz na miesiąc, wyciągamy z CW1 listę wszystkich kodów które zostały stworzone w CW1 z zeszłym miesiącu (wyfiltrowane poprzez makro biorące dane z tego pliku z zakładek Air&SeaKeyWords i MailingList) i wysyłamy do wszystkich AO zajmujących sie klientami Global/GCO maile pt: 'w zeszłym miesiącu zostały stworzone te konta i moga być to konta należace do Twojego klienta - czy te kody mamy dodac do raportowania dla tego klienta?'
-	
-korzystanie z nich na globalu:
-	ASF- tool do generowania umow (1ka zeby wygenerowalo) -> zwróci folder z plikiem oraz miejsce na sharepointcie gdzie trzeba to przeciągnąć. 
-	SRG - generwanie raportow (BR)
+		**LOKALIZACJA: \\i26674\Shared_drives\K_kam\08_D&I\02_Tools\15 Debtor Maintenance\AirSeaDebtorMeintenanceTool
+		**każde konto global/GCO dodane do pliku ISSCDebtorsMerged (w DMSie wg tabelki wychodzi czy jest global) musimy też dodać do pliku AirSeaDebtorMeintenanceTool v1.6 do karty Air&SeaKeyWords -> tam dodajemy z prawej strony nazwę konta i pod spodem słowa kluczowe związane z firmą I JEJ PODSÓŁKAMI po kórych będzie można filtrować: dla STELLANTIS wpisujesz Stellantis, Fiat, Masserati, Open, Automoile (nie wpisujemy tu nazw podspółek związanych z firmą - mają to byc typowe słowa kluczowe)
+		**w zakładce 'MailingList' też dodajesz to konto wraz z danymi AO
+	*5 Mail do AO z draftem ASFa i draftem BRki (z SRG tool) - korzystanie z nich na globalu:
+		ASF - (osobny plik: D&I ASF) - tool do generowania umow (1ka zeby wygenerowalo) -> zwróci folder z plikiem oraz miejsce na sharepointcie gdzie trzeba to przeciągnąć. 
+		SRG - (osobny plik: D&I BR) - tool do generowania raportow (BR)

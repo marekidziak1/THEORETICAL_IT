@@ -38,7 +38,7 @@ DMS - DEVELOPMENT & IMPLEMENTATION SYSTEM:
 					***Local - poszczególny kraj/oddział w kraju liczony w walucie lokalnej
 					***Global - firma globana liczona w USD, EUR lub DKK
 					***GCO - firma globalna z Top200 robiąca najwieksze obroty
-				*REQUESTER - z kim się kontaktować (nie musi być to ta sama osoba która wysłała zgłoszenie)
+				*REQUESTER - z kim się kontaktować (AO)(nie musi być to ta sama osoba która wysłała zgłoszenie)
 				*APPROVER'S NAME - osoba zatwierdzająca zlecenie jeżeli raport kosztuje więcej niż 250 euro
 				*COST CENTER - kto ma zostac obciążony kosztami
 				*DIVISION - Air&Sea, Road lub Cross divisional (to i to)
