@@ -1,15 +1,22 @@
-BUSSINESS_REVIEW -> Implementation Process 
-	****https://dsvcorp.sharepoint.com/:w:/r/teams/DITeam/Shared%20Documents/General/06_Manuals/Work%20Instructions/Work_Instruction_Standard_Implementations_20220531.docx?d=w9c2fb84932af4e31a2dae5fb07bb2e13&csf=1&web=1&e=CkxCmJ
+QUICK ACCESS:
+		Account List (ISCC Debtors) => \\i26674\Shared_drives\M_PL.ISS.GAS.QV_Report\QVConfig\Account_List\
+		CRDQ SRG Full Automation (SRG) => \\i26674\Shared_drives\SRG_FA\CRDQ SRG Full Automation => SRG Panel v2.4
+		QV files (ekstrakty z ODW) => \\i26674\Shared_drives\K_kam\08_D&I\02_Tools\QV files 
+		17 ASF Tool (ASF tool) => \\i26674\Shared_drives\K_kam\08_D&I\02_Tools\17 ASF Tool
+		01_Accounts (ASFy klientów na serwerze do trzymania BRek) => \\i26674\Shared_drives\K_kam\04_GASS\01_Accounts 
+		
+BUSSINESS_REVIEW -> Implementation Process 	****https://dsvcorp.sharepoint.com/:w:/r/teams/DITeam/Shared%20Documents/General/06_Manuals/Work%20Instructions/Work_Instruction_Standard_Implementations_20220531.docx?d=w9c2fb84932af4e31a2dae5fb07bb2e13&csf=1&web=1&e=CkxCmJ
 	**. Utwórz sobie dodatkowy plik gdzie statusujesz zgłoszenie - tzn na jakim etapie się znajduję. 
 	*0. PLIK KOLEJKOWY na DI_Queue_0.1.working -> przenosisz do IN PROGRESS tam gdzie potwierdzone koszty przez AO czyli (zielone w Request), reszte przesuwasz do góry - zamiast wycinania kopiowanie i usuwanie poprzednich. Gdy zrealizujesz BRkę to przenosisz do Completed (uzupełniasz tylko rekordy w zielonych kolumnach)
 	*1. W DMS'ie -Implementation Catalogue -> Request Form -> filled request form arrives to D&I (dms)
 		**sprawdzasz czy numery kodów debtorów ze zgłoszeń są takie same jak numery podane w mailach.
 		**request form powinien zawierac dokładnie sprecyzowane informacje: Customer, Customer Type, Requester, Approver's Name, Cost Center, Division, Product Type, Report Financial Visibility, Country, Reporting Currency, Organization ID, Standard Data Quality, Frequency, Preffereddays for reular production, Preferred first draft deadline, comments		
+		**jeżeli preffered days for regular production jest przed 7th to klient może mieć niekompletne dane, o czym trzeba go poinformaować
 	*2. Check if client exist in Customer Overview (plik excel):
 		*źródła:
-			*file://dsv.com/corp/department/kam/04_GASS/04_Department/Customer%20Overview/ ==> CRDQ-MonthlyReportOverview_20180822.xlsm
+			*file://dsv.com/corp/department/kam/04_GASS/04_Department/Customer%20Overview/ ==> CRDQ-MonthlyReportOverview_20180822.xlsm (NIE GAS!!!)
 			*(NIEAKTUALNE) \\i26674\Shared_drives\K_kam\04_GASS\04_Department\Customer Overview ==> CRDQ-MonthlyReportOverview_20180822 
-		*jeżeli klient już istnieje to trzeba sprawdzić w pliku numery debtorów (czy one już nie istnieją dla danego raportu (dokładnie te same i ta sama ilość))
+		*jeżeli klient już istnieje to trzeba sprawdzić w pliku ISCC_Debtors numery debtorów (czy one już nie istnieją dla danego raportu (dokładnie te same i ta sama ilość))
 	*3. Setting up ODW 
 		*DZIAŁANIE/LOGIKA: Chcąc pobrac dane dotyczące shipmentów danej organizacji/podorganizacji będącej jedną ze stron transportu (pickup, shipper, consignee, delivery, notify party, local client or Debtor) musisz pobrać je z ODW. By to zrobić musisz uzupełnić plik excel ISSCDebtorsMerged tab SHEET1 (szczególnie kolumny Name i AccountID /OrganizationID /DebtorID) z którego ODW każdego wieczora po północy zaciąga informacje do zwrócenia danych shipmentow danej organizacji (pola w kolumnie OrganizationID) w odpowiednim pliku (nazwa wpisana w kolumnę Name).
 		*2.1 Air&Sea ODW Database PROCESS: 
@@ -27,6 +34,7 @@ BUSSINESS_REVIEW -> Implementation Process
 						*sprawdzasz czy dla danego klienta istnieje już ta sama liczba kodów wpisanych w plik (zaznaczasz kod -> prawy + 'Filtered by Selected Value)(może być juz generowany taki raport i AO się pomylił wysyłając zgłoszenie raz jeszcze LUB już kiedyś było tworzony taki raport jako Ad-Hoc LUB AO chcę rozszerzenia raportu dla tych samych numerów (wtedy robisz normalny raport) ---> by określić jedną z tych opcji sprawdzasz w DMSie inne zgłoszenia tego klienta (Implementation Catalogue -> Request Form) filtrując po Name dla danej firmy (wpisujesz Name z bazy Debtorów) 
 						*wyeksportowane dane z CW1 otwierasz w excelu i przepisujesz/uzupełniasz w pliku Debtor (karta SHEET1) (KOPIUJESZ JAKO WARTOŚCI/TEKST!!!)
 							**Name:
+								***nazwę tworzymy na podstawie DMS'a + CW1 (patrzymy na Country_iso_code)
 								***niezależnie czy local czy global: max 20 znaków i nie można użyć znaków specjalnych innych niż podkreślnik '_' oraz nie można końcówek typu gmbh/sa
 								***w DMSie sprawdasz 'Customer Type' oraz 'Report Financial Visibility' i określasz zgodnie z tabelą ze standard implementation z jakim typem klienta masz do czynienia - czy z GLOBAL/GCO czy z LOCAL
 								***typ local będzie miał w końcówce nazwy country suffix np.: Shell_US
@@ -63,7 +71,7 @@ BUSSINESS_REVIEW -> Implementation Process
 						*wpisujemy wyjątkowe przypadki gdzie musieliśmy wprowadzić konta pod nową nazwą ale które korzystaja z tej samej bazy debtorów/organizationID/acountID np Harman i Harman_Light (nie wykorzystywane)	
 					*Master Account:
 						*firmy pofragmentaryzowane na mniejsze podorganizacje życzą sobie żeby dodane kody do podorganizacji również były dodane do głównej organizcji (głównie w celach Data Quality)
-				**KOPIUJESZ (NIE PRZENOSISZ) plik do poniższych lokalizacji + wait until it will disapear:  
+				**KOPIUJESZ (NIE PRZENOSISZ) plik do poniższych lokalizacji + odświezasz aż it will disapear:  
 						** ftp://ftp.esb.dsv.com/Incoming/
 						** ftp://qa.ftp.esb.dsv.com/Incoming/
 					**PASSY (żeby dostać się do tych serwerów trzeba raz zrobić: this pc -> computer -> add new network location i wpisać powyższe adresy serwów  dodaniem lo i ha ponizej):

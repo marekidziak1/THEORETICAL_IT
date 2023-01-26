@@ -120,6 +120,7 @@
   0.SKRÓT GROUPBY:
 	df.describe()
 	df['SocialMedia'].value_counts()
+	df.groupby(['Country'] sort=False).sum()
 	df.groupby(['Country', 'Hobbyist']).median()
 	df.groupby(['Country', 'Hobbyist'])['SocialMedia'].value_counts()
 	df.groupby(['Country','Hobbyist']).get_group(('Albania','No')).median()
@@ -149,6 +150,10 @@
 									# 10 |	Afghanistan		Yes		   2300
 									# 19 |	Albania			No		   1200
 									# 27 |	Albania			Yes			800
+				#alternatywa ALE tylko do pogrupowania po jednej kolmnie!!!:
+						#df['ConvertedComp'].groupby(df['Country']).sum()
+				#z brakiem sortowania w kolumnie grupującej
+						#df['ConvertedComp'].groupby(df['Country'], sort=False).sum()
 					for keys, values in df.groupby(['Country', 'Hobbyist']):
 						print(keys)
 						print(values)
@@ -178,13 +183,13 @@
 									# działa tak samo jak:
 									# f = (df['Country']=='Albania') & 
 									#	 (df['Hobbyist']=='No')
-									#df.loc[f]		
+									# df.loc[f]		
 -------------------------------------------------------------------------------------
   2.ROZSZERZENIE GROUPBY([...]) - METODY AGREGACYJNE:
 	1)WYKORZYSTANIE na NIEZAGREGOWANEJ TABELI:
 		a)poszczególnych metod agregacyjnych można użyć na całej tabeli która nie 
 		  jest zagregowana. Wtedy automatycznie wybierze tylko kolumny z liczbami 
-		  (będzie wycofane) (nie można korzystać z metody value_counts())
+		  (będzie wycofane) (nie można użyć z metody value_counts() na całej tabeli)
 					df.median()						#ConvertedComp    57287.0
 													#Age                 29.0
 				*describe() - metoda zwracająca podstawowe statystyki na całej 
@@ -264,8 +269,8 @@
 									# WhatsApp    Yes				2
 			**dla wybranej kolumny/kolumn w zaagregowanej tabeli ALE ze wskazanym 
 			  kluczem na samym końcu poprzez atrybut loc['columnName'] :
-					df.groupby(['Country', 'Hobbyist'])['SocialMedia', 
-								'Student'].value_counts().loc[('Afghanistan', 'No')]
+					df.groupby(['Country', 'Hobbyist'])[['SocialMedia', 
+								'Student']].value_counts().loc[('Afghanistan', 'No')]
 									# będzie to samo co gdybyś użył:
 									# filt = (df['Country'] == 'Afghanistan') & 
 									#					(df['Hobbyist'] == 'No')
@@ -280,7 +285,25 @@
 												  Yes			    1
 									# WhatsApp    Yes				2
 -------------------------------------------------------------------------------------
-  3.ROZSZERZENIE ZAAWANSOWANE GROUPBY([...]):
+  3.GRUPOWANIE kolumn ZAMIAST WIERSZY:
+	*https://www.geeksforgeeks.org/combining-multiple-columns-in-pandas-groupby-with-dictionary/
+					import pandas as pd
+					dict = {"Movies":["The Godfather", "Fight Club", "Casablanca"],
+							"Week_1_Viewers":[30, 30, 40],
+							"Week_2_Viewers":[60, 40, 80],
+							"Week_3_Viewers":[40, 20, 20] };
+					df = pd.DataFrame(dict);
+					groupby_dict = {"Week_1_Viewers":"Total_Viewers",
+							"Week_2_Viewers":"Total_Viewers",
+							"Week_3_Viewers":"Total_Viewers",
+							"Movies":"Movies" }
+					df2 = df.groupby(by=groupby_dict, axis = 1).sum()	
+									#  	    Movies   	 Total_Viewers
+									# 0  The Godfather        130
+									# 1    Fight Club          90
+									# 2    Casablanca         140					
+-------------------------------------------------------------------------------------
+  4.ROZSZERZENIE ZAAWANSOWANE GROUPBY([...]):
 	0) count() VS value_counts() 
 			df['Hobbyist'].count()			#liczba wszystkich rekordów w kolumnie
 			df['Hobbyist'].value_counts()	#liczba każdego unikalnego rekordu w col.
@@ -293,8 +316,8 @@
 									# YouTube     No                0.1
 												  Yes			    0.1
 									# WhatsApp    Yes				0.2
-	2) metoda agg() - wiele metod agregacyjnych dla jednego zapytania (value_counts
-	   nie można używać z innymi metodami agregacyjnymi):
+	2) metoda agg() / aggregate() - wiele metod agregacyjnych dla jednego zapytania 
+	   (value_counts nie można używać z innymi metodami agregacyjnymi):
 					import numpy
 					df.groupby(['Country', 'Hobbyist'])[['ConvertedComp', 
 												'Age']].agg([numpy.median, 'mean'])
@@ -308,7 +331,29 @@
 						  'Age']].agg(['median', 'mean']).loc[('Afghanistan', 'No')]
 					df.groupby(['Country', 'Hobbyist'])[['SocialMedia',
 													'Student']].agg('value_counts')	
-	3) str.contains - można też skorzystać z metody string sprawdzającej czy coś 
+		**różne metody agregacyjne dla różnych kolumn:
+					df.groupby(['Country', 'Hobbyist'])[['ConvertedComp', 
+							'Age']].agg({'ConvertedComp':'median', 'Age':'mean'])
+						# Country	  Hobbyist	 ConvertedComp		Age
+						# 							median			mean
+						# Afghanistan	No			4464.0			29.37
+						# 				Yes			14364.0			27.13
+						# Albania		No			14352.0			27.07
+										Yes			10266.0			24.72
+	3) metoda transform() - pozwala na obliczenia na zgrupowanych rekordach gdzie 
+	   można wykorzystac funkcje agregujące:
+					df.groupby(['Country', 'Hobbyist'])[['ConvertedComp', 
+							'Age']].transform(lambda x: x-x.mean()/x.std())
+						# Country	  Hobbyist	 ConvertedComp		Age
+						# Afghanistan	No			 -345.0			-34
+						# 				Yes			   25.3			 23
+						# Albania		No			  752.0			 12
+										Yes			  987.8			 69
+	4) metoda filter() - pozwala filtrować zgrupowane dane:
+					df.groupby(['Country']).filter(lambda x: len(x) >4)
+						#wyświetli wszystkie dane grupowane po krajach gdzie dany 
+						#kraj występuję więcej niż 4 razy						
+	5) str.contains - można też skorzystać z metody string sprawdzającej czy coś 
 	   jest zawarte w każdej komórce --> wtedy musisz użyć metody apply gdyż 
 	   pracujesz na DANYCH TYPU: SeriesGroupBy a nie Series:
 					df.groupby(['Country'])['LanguageWorkedWith'].apply(
@@ -322,7 +367,7 @@
 									#						Albania    	  	23
 									#						Algeria			40
 									#						Andorra 		0
-	4) przedstawienie wyników - wykorzystanie pd.concat():
+	6) przedstawienie wyników - wykorzystanie pd.concat():
 			*utworzenie dwóch zmiennych typu Series (poprzez pobranie danych):
 					country_residents = df['Country'].value_counts()
 					country_uses_python=df.groupby(['Country'])['LanguageWorkedWith'
@@ -372,7 +417,7 @@
 				  			  zostają podmienione na 'NaN'
 				  REPLACE  -> wartości których nie ma jako klucze w słowniku 
 							  zostają NIEZMIENIONE
-  2)DODAWANIE/USUWANIE KOLUMN i WIERSZY:
+  2)DODAWANIE/USUWANIE KOLUMN, WIERSZY, TABEL:
 	A)KOLUMNY:
 		a)Dodanie nowej kolumny:
 			**z wszystkimi komórkami w kolumnie o jedej wartości
@@ -409,22 +454,19 @@
 		a)Dodanie wiersza 
 			**komórki dla kluczy które nie zostaną wprowadzone dostaną wartość NaN
 			**klucz który nie będzie istnieć zostanie dodany jako nowa kolumna
-			**są 2 metody - concat i append (append ma zostać wycofana)
+			**dla Dataframów są 2 metody - concat i append (append będzie wycofane)
 					df = df.append({'first':'Johny'}, ignore_index=True)
 					df = pd.concat([df, pd.DataFrame([{'first':'Al', 
 											'last':'Geno'}])],ignore_index=True)
-		b)Dodanie całej tabeli do tabeli:
-			**komórki dla nie tych samych kolumn w tabelach dostaną wartość NaN:
-			**są 2 metody - concat i append (append ma zostać wycofana)
-					df = df.append(df2, ignore_index=True, sort=False)
-					df = pd.concat([df, df2], ignore_index=True)
-										# 	first	last	email			profit
-										# 0	Marek	Dziak	md@gmail.com	NaN
-										# 1	Anna	Nacz	an@gmail.com	NaN
-										# 2	Lukas	Lipka	ll@gmail.com	NaN
-										# 3	Ewela	Mus		NaN				400.0
-										# 4	Kal		Dziak	NaN				399.0
-		c)Usuwanie wiersza:
+			**dodanie wiersza będącego elementem Series:
+					df1= pd.DataFrame(people ,index=[0, 1, 2])
+					s1 = pd.Series([4300, 20000,30000], name='my_profit')
+					df3 = pd.concat(df1, s1, axis=1)
+								# 	first	last    my_profit
+								# 0	Marek	Dziak     4300
+								# 1	Anna	Nacz	  20000
+								# 2	Lukas	Lipka	  30000	
+		b)Usuwanie wiersza:
 			**drop:
 				**na podstawie indexu (błąd jeżeli index/indexy nie istnieją):
 					df.drop(index=3, inplace=True)
@@ -444,7 +486,107 @@
 										# 	first	last	email			profit
 										# 2	Kal		Dziak	NaN				399.0	
 										# 3	Lukas	Lipka	ll@gmail.com	NaN
-			
+	C)TABELE - dodanie całej tabeli do tabeli:
+		x)APPEND() (ma zostać wycofane):
+					df = df.append(df2, ignore_index=True, sort=False)
+		a)pd.CONCAT() :
+			**argument ignore_index = True - indexy zostaną zignorowane a komórki 
+			  dla nie_tych_samych kolumn w tabelach dostaną wartość NaN:
+					df = pd.concat([df, df2], ignore_index=True)
+										# 	first	last	email			profit
+										# 0	Marek	Dziak	md@gmail.com	NaN
+										# 1	Anna	Nacz	an@gmail.com	NaN
+										# 2	Lukas	Lipka	ll@gmail.com	NaN
+										# 3	Ewela	Mus		NaN				400.0
+										# 4	Kal		Dziak	NaN				399.0
+			**argument join:
+					people = {
+						"first": ['Marek', 'Anna', 'Lukas'],
+						"last": ['Dziak', Nacz, 'Lipka']
+					}
+					additionals = {
+						"email": ['an@gmail.com','ll@gmail.com','ki@gmail.com'],
+						"age": [33, 34, 45]
+					}
+					df1 = pd.DataFrame(people, index =[0,1,2])
+					df2 = pd.DataFrame(additionals, index = [1,2,3])
+			  **join ='outer' (domyślnie) - wiersze o tych samych indeksach 
+				zostaną połączone a reszta NIE ZOSTANIE usunięta:
+					df3 = pd.concat([df1,df2])		 				#join='outer'
+										# 	first	last	email			age
+										# 0	Marek	Dziak	NaN				NaN
+										# 1	Anna	Nacz	an@gmail.com	33
+										# 2	Lukas	Lipka	ll@gmail.com	34
+										# 3	NaN		NaN		ki@gmail.com	45
+			  **join='inner' - wiersze o tych samych indeksach zostaną 
+				połączone a reszta ZOSTANIE usunięta:
+					df3 = pd.concat([df1,df2], join='inner')
+										# 	first	last	email			age
+										# 1	Anna	Nacz	an@gmail.com	33
+										# 2	Lukas	Lipka	ll@gmail.com	34
+		b)pd.MERGE() - łączenie tabel po kluczach będącymi osobnymi kolumnami
+			**argument how = ['left', 'rigth', 'inner', 'outer'] - tak jak w sql
+			  można określić jak moją się łączyć tabele (domyślnie inner) 
+			  (użyte w poniższych przykładach)
+			**argument on - klucze muszą mieć takie same nazwy kol w 2 tabelach:
+					data1 = {'key_P': ['K0', 'K1', 'K2'],
+							 'Name':['Jai', 'Princi', 'Gaurav']
+							}
+					data2 = {'key_P': ['K0', 'K1', 'K2', 'K3'],
+							 'Address':['Nag', 'Kan', 'Alla', 'Bannu']
+							}
+					df1 = pd.DataFrame(data1)
+					df2 = pd.DataFrame(data2) 
+					pd.merge(df1, df2, how='inner', on='key_P')								
+										# 	key_P	Name	Address
+										# 0	K0		Jai		Nag
+										# 1	K1		Princi	Kan
+										# 2	K2		Gaurav	Alla	
+			**argumenty left_on, right_on - pozwalają określić klucze (będące 
+			  odpowiednimu kolumnami)
+					data1 = {'key_P': ['K0', 'K1', 'K2'],
+							 'Name':['Jai', 'Princi', 'Gaurav']
+							}
+					data2 = {'key_P': ['s0', 's1', 's2', 's3'],
+							 'Address':['Nag', 'Kan', 'Alla', 'Bannu'],
+							 'key_F': ['K0', 'K0', 'K2', 'K6'],
+							}
+					df1 = pd.DataFrame(data1)
+					df2 = pd.DataFrame(data2) 
+					pd.merge(df1, df2, how='right', 
+											left_on='key_P', right_on='key_F')
+									#   key_P_x Name  key_P_y  Address  key_F
+									# 0	K0		Jai		s0		Nag		K0
+									# 1	K0		Jai		s1		Kan		K0
+									# 2	K2		Gaurav	s2		Alla	K2
+									# 3	NaN		NaN		s3		Bannu	K6	
+			****można użyć kilku kolumn jako klucze:
+					data1 = {'key_P1': ['K0', 'K1', 'K2'],
+							 'key_P2': ['L0', 'L1', 'L2'],
+							 'Name':['Jai', 'Princi', 'Gaurav']
+							}
+					data2 = {'key_P': ['s0', 's1', 's2', 's3'],
+							 'Address':['Nag', 'Kan', 'Alla', 'Bannu'],
+							 'key_F1': ['K0', 'K0', 'K2', 'K6'],
+							 'key_F2': ['L0', 'L6', 'L2', 'K9']
+							}
+					df1 = pd.DataFrame(data1)
+					df2 = pd.DataFrame(data2)	
+					pd.merge(df1,df2, how='left',left_on=['key_P1','key_P2'], 
+												 right_on=['key_F1','key_F2'])
+					# 	key_P1	key_P2	Name	key_P	Address	key_F1	key_F2
+					# 0	K0		L0		Jai		s0		Nag		K0		L0
+					# 1	K1		L1		Princi	NaN		NaN		NaN		NaN
+					# 2	K2		L2		Gaurav	s2		Alla	K2		L2
+			****zamiast pd.merge() możesz użyć na danej tabeli funkcji merge()
+					df3 = df1.merge(df2, how='outer', 
+											left_on='key_P', right_on='key_F')
+									#	key_P_x	Name	key_P_y	Address	key_F
+									# 0	K0		Jai		s0		Nag		K0
+									# 1	K0		Jai		s1		Kan		K0
+									# 2	K1		Princi	NaN		NaN		NaN
+									# 3	K2		Gaurav	s2		Alla	K2
+									# 4	NaN		NaN		s3		Bannu	K6
   3)CZYSZCZENIE DANYCH z NaN (np.nan) i None oraz ZMIANA TYPU WARTOŚCI:
 					import pandas as pd
 					import numpy as np

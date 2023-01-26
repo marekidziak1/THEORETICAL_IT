@@ -1,0 +1,38 @@
+ROAD + CARGO LINK:
+	*PODSTAWY CARGO LINKA:	
+		*Pulpit => Prawy => utwórz skrót: \\dsv.com\corp\UserSettings\NetApps\Reflection\IBM\PL\CL_Customs_BE.rsf
+		*poruszasz sie TABulatorem
+		*LOGIN i HASLO GŁÓWNE znajdują się na Teams'ach w sekcji WIKI/PASSWORDS
+		*ACCOUNTS do DEPARTAMENTU (trzeba zalogowac sie do konkretnego departamentu z danego kraju) -> \\i26674\Shared_drives\M_PL.ISS.GAS.QV_Report\QVConfig\Account_List => GASS_RD_AccountID w zakładce Country Prefixes znajdują się skróty danych krajów wpisywanych jako ACCOUNTS (w sekcji INVOICE SEARCH) 
+		*opcje z niebieskiego tła wywołuję się poprzez klawisze od F1 do F8
+	*CARGOLINK i debtory w GASS_RD_AccountID:
+		*Kody w CARGOLINKU 
+			**mają max 8 znaków:
+			**można je wyszukać logując sie wcześniej na dopowiedni departament (kody debtorów mogą ALE nie muszą znajdowac się na różnych branchach/departamentach (Accounts) dlatego trzeba dopytać AO o to by oprócz kodów podał kraj z którego pochodzą - by móc się zalogowąc na odpowiedni branch (ACCOUNTS))
+			**w CARGO LINKU wyszukujesz kody tylko po to żeby sprawdzić czy nie sa to kody dla DSV, Panalpiny i czy rzeczywiście należą do klienta. Robisz to poprzez:	Options: CUSTSRC => F6 => wpisanie numeru klienta			
+		*BAZA DEBTORÓW - plik GASS_RD_AccountID:
+			**wpisując kody od klienta w zakładce ALL COUNTRIES trzeba z przodu dodać prefix kraju (tego kóry poda nam AO) zgodnie z tabelą z zakładki Country Prefixes
+			**teoretycznie molibyśmy dodac kody debtorów z każdym prefixem kraju ALE pisze się do AO żeby podał dokładny kraj:
+					"Hello, Please provide the country to codes because I can't add these codes to Cargolink/Qlickview."
+			**kod wpisany do bazy debtorów musi mieć daną ilość znaków dla danego kraju (zgodnie z kolumną Number of Digits z zakładki Country Prefixes)-> jeżeli AO poda nam np: 4 znakowy kod który będzie prawidłowy to wyszukujemy prefix dla podanego przez AO kraju a pomiędzy wpisujemy '0' tak żeby ilość znakó zgadzała się z kolumną 'Number of Digits'.
+			**jeżeli dostaniesz 10 cyfrowy kod kraju z numerem 640 na początku to musisz obciąć te '640' i zastąpić je prefixem kraju podanego przez AO 
+			**w zakładce ALL Countries w kolumnie Type wpisywać GenericRD (lub jeżeli już konto istnieje to DSVRD) a w kolumnie Country wpisywać skrót Country z zakładki 'Country Prefixes' --> dla Wielkiej Brytanii wpisywać 'GB' zamiast 'UK'
+			**w zakładce CHANGELOG --> wpisywać ylko usuwane konta (które przenosisz wcześniej do zakładki old debtors numbers)
+			**w zakładce GASS_CusomerGroup_RepCurrency TRZEBA WPISAC nazwę konta i walutę w jakiej ma to być raportowane
+			**bazy Debtorów GASS_RD_AccountID nie trzba kopiować do FTP/QA -> wystarczy tylko zapisać be filtrów i pustych wierszy pomiędzy
+	*DATA QUALITY -> jeżeli klient jest GLOBAL/GCO lub jest local ale chcę mieć proces DQ to trzeba poinformować o nim department DQ (dqteam@dsv.com)
+	*ASF dla ROADu -> Report Scope: RD ;; Even Filter: Shipment Collect Date (taki pickup dla roadu) ;; Transport Mode: Road ;; Road : 1 ;;
+	*QLICKVIEW - wyciąganie ekstraktów z Cargo Linka: (1:05:00):
+		**USTAWIENIA:
+			***utworzony skrót na pulpicie: C:\Windows\System32\runas.exe /user:DSV\michal.walczak /savecred "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
+			***pass na Teams -> General -> Wiki -> Passwords: Michał QV 
+			**skrót do QLICKVIEW: SHAREPOINT => na dole w lewym rogu: Qlickview
+			**w ustawieniach przeglądarki zmieniasz miejsce zapisywania się ściągnaych ekstraktów:	  SETTINGS -> DOWNLOADS -> \\i26674\Shared_drives\K_kam\08_D&I\02_Tools\QV files
+		**raport GASS report.qvw ==> zakładka Starlight Layout
+			**z lewej strony Current Selections > 'Customer Group' i wybierasz nazwę swojego klienta (wpisanego w baze debrotów roadowych)
+			**u góry Shipment Collect Period wybierasz YEAR MONTH i zaznaczasz ostatnie 12 miesięcy
+			**eksportujesz dane poprzez 'Starlight layout ... hipments' + prawy > Send To Excel
+		**informacje dodatkowe:
+			**QLICKViEW może nie dać rady wypluć jakies ogromnej liczby ekstraktów. dlatego czasem sobie lepiej podzielić te ekstrakty na kilka mniejszych okresów np 4 miesiące
+		
+			

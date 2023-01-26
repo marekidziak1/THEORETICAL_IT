@@ -1,0 +1,61 @@
+OPSY:
+	1. Podstawy:
+		*opsy są rozdzielane przez Team Leadera danego dnia
+		*scheduler: Teams -> D&I Team -> General -> OPS_scheduler  (+dodatkowo mail z przypomnieniem danego dnia)
+		Przykłady:
+			*PROŚBA O ZAPRZESTANIE RAPORTU (USUNIĘCIE KLIENTA):
+				*instrukcja: TEAMS=>D&ITeam=>General=>06_MANUALS=>Work_Instructions=>Work_Instruction_Lost_client_removal)
+				*CUSTOMER OVERVIEW:
+					**Teams =>css COMERCIAL SHARED SERVICES => DEPARTMENT => FILES => CRDQ-MonthlyReportOverview_20180822.xlsm / file://dsv.com/corp/department/kam/04_GASS/04_Department/Customer%20Overview/ ==> CRDQ-MonthlyReportOverview_20180822.xlsm		
+					**sprawdzenie czy i jakie raporty są w regularnej produkcji dla danego klienta (filtrujesz plik po nazwie).Sprawdzasz:
+						**kolumna F (Report Name) - czy tylko BR czy też proces data quality. Jeżeli też proces data quality to musisz później dodatkowo poinformować team DQteam o wprowadzonych zmianach.
+						**kolumna V (Data Source) - sprawdzasz czy Air&Sea czy Road czy Cross i w jakim pliku musisz zrobić zmiany (w ISCC_Debtors czy w GASS_RD_AccountID)
+				*ISCC_Debtors / GASS_RD_AccountID:
+						***filtrujesz poprzez Name i przenosisz kody z zakładki Sheet1 do old debtors number (nie wolno robić tego przez CTRL+X tylko należy to skopiowac i wkleić jako wartości a nastpnie w zakładce Sheet1 usunąc te wiersze poprzez USUWANIE WIERSZY). W changelogu trzeba zapisac ile numerów zostało usuniętych i dla kogo.
+						***LOKALIZACJE:
+							**AIR & SEA ( \\i26674\Shared_drives\M_PL.ISS.GAS.QV_Report\QVConfig\Account_List\ISSCDebtorsMerged	):
+							(Password is qweasd) 
+							**ROAD ( \\i26674\Shared_drives\M_PL.ISS.GAS.QV_Report\QVConfig\Account_List\GASS_RD_AccountID ):
+								(dla roadów trzeba jeszcze usunąc wiersz z zakładki GASS_Customer_Group_Rep_Currency klienta by nie zaciągało waluty)
+				*Debtor Maintaince (tylko dla Air&Sea):
+					**\\i26674\Shared_drives\K_kam\08_D&I\02_Tools\15 Debtor Maintenance\AirSeaDebtorMeintenanceTool
+					**usunięcie w zamkładce mialinglist oraz main
+				*RODO (ASFy): 
+					**usunięcie informacji z ASFa o kliencie wraz z przeniesieniem całego folderu klienta do folderu inactive (w tej samej ścieżce) - trzeba to zrobić na serwerze i na TEMASACH/SHAREPOINT'cie:
+						***SHAREPOINT / TEAMS => CRDQ => Documents => 01_Accounts => nazwa_konta => ASF_... (edytuj za pomocą aplikacji desktopowej): zakładki title (zostawienie 2 literek AO) => w change logu (Name Correction)
+						***\\i26674\Shared_drives\K_kam\04_GASS\01_Accounts => nazwa_konta => ASF_...
+				*mail z odpowiedzią do zespołu reportingu -> z powierdzeniem i info dla DQteam w wiadomości jeżeli był proces data quality (do GAS.Support oraz do DQTeam)
+			*ZMIANA AO w raporcie:
+				*CUSTOMER OVERVIEW - sprawdzenie jakie raporty są robione dla danego klienta by ewentualnie wysłac info do zespołu DQteam o zmianie AO:
+						***Teams =>css COMERCIAL SHARED SERVICES => DEPARTMENT => FILES => CRDQ-MonthlyReportOverview_20180822.xlsm / file://dsv.com/corp/department/kam/04_GASS/04_Department/Customer%20Overview/ ==> CRDQ-MonthlyReportOverview_20180822.xlsm	
+				*ZMIANA NAZWY KLIENTA z ASFa (robimy tylko na TEMASACH/SHAREPOINT'cie):
+						***SHAREPOINT / TEAMS => CRDQ => Documents => 01_Accounts => nazwa_konta => ASF_... (edytuj za pomocą aplikacji desktopowej): zakładki title (zostawienie 2 literek AO) => w change logu (Name Correction)
+				*Debtor Maintaince:
+					**\\i26674\Shared_drives\K_kam\08_D&I\02_Tools\15 Debtor Maintenance\AirSeaDebtorMeintenanceTool
+					**zmiana w w zakładce mailing list dla danej firmy
+				*mail do zespołu reportingu z powierdzeniem i info dla DQteam w waidomości (do GAS.Support oraz do DQTeam)
+
+Poczta i Maile z AO:	
+	1.Good Practicies:
+		*wyszukiwanie zgłoszeń w skrzynce odbiorczej (GAS.Support) poprzez NUMER ZGŁOSZENIA
+		*REPLY ALL (dwie różowe strzałki)
+		*w CC wstawiasz skrzynkę ' G.SHA ISS.GAS.Support - DSV '
+		*Inbox -> Level 2 - To Do -> twoj_folder (Gdy skończysz to przenosisz do 'Level 3 - Solved')
+		*Favorites masz pod ręką wszystkie potrzebna skrzynki
+		*forma grzecznościowa taka sama jak pisze AO
+	2.Przykłady:
+		*sprecyzowanie numerów debtorów:
+				Hi Precillia, 
+				I need some new clarifications about your request #1888:
+					Deadline: you have selected Monday but for monthly reports we need fixed date – can we set up deadline for instance to 13th of the each month?
+					Accounts list / 64 codes: In table below you have not mentioned code: 6409739014 which was mentioned in request. Should we include this number as well as numbers in the below table? 
+				Looking forward for your feedback.
+		*dodanie numerów debtorów roadowych w A&S lub a&s w ROADZIE:
+			*adjustment albo customize report:
+				If road codes are from other system than Cargolink, please make a request for adjustment trough https://dms.pl.dsv.com/requestreportingservices.php.
+				We only use road codes from Cargolink to prepare standard BR reports.
+				Reports based on different road system are categorized as customized reports. 
+		*zmiany w BRce:
+				Unfortunately, it is not possible to compare full years in the business review report, because the data range is the last 12 months,  
+				if you want to increase the data range or add more dashboards, it would require a new request in DMS for customized report
+

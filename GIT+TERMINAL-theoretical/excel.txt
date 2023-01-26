@@ -156,6 +156,9 @@ FUNKCJE / FORMUŁY:
 		**SZUKAJ.TEKST / FIND(find_text, within_text,[start_num)
 				****wskazuję od którego znaku pojawia się szukany tekst
 				****dodatkowo można podać numer znaku do rozpoczęcia szukania [liczone od 1]
+		**X.WYSZUKAJ / XLOOKUP(lookup_value, search_table_/col_/row, return_table_/col_/row, [if_not_found], [match_mode]) 
+				****https://support.microsoft.com/en-us/office/xlookup-function-b7fd680e-6d10-43e6-84f9-88eae8bf5929
+				****działa tak jak VLOOKUP i HLOOKUP ale jest o wiele lepszy -> powyżej przykłady jak działa 
 		**WYSZUKAJ.PIONOWO/WYSZUKAJ.POZIOMO / VLOOKUP/HLOOKUP(lookup_value, table_array, array_col_index, [range_lookup])	
 				****dla podanej komórki/szukanej wartości (lookup_value) wyszukuję jej odpowiednik w tabeli (table_array) (w najbardziej skrajnej KOLUMNIE NA LEWO/WIERSZU U GÓRY) będacej takim skorowidzem nazw i odpowiadającym im innych nazw lub liczb np: cen. Następnie dla odpowiednika klucza zwraca odpowiednią wartość poprzez wpisanie numeru kolumny ze skorowidza (array_col_index) (licząc od jedynki) lub wpisując dokładną wartośc kolumny (np: F4). Trzeba jeszcze dodać (range_lookup) w postaci FALSE lub 0, wskazując tym że ma być znaleziona dokładnie taka wartość a nie przybliżona)
 				****dla kombinacji logicznych korzystaj z: 'IF', '&',  https://www.youtube.com/watch?v=i3BMuItCtM0&list=PLgU2XrNJjWbdNOf9HGOoBLN9Z5LSzcczH&index=2

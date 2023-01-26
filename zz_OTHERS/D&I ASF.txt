@@ -25,16 +25,16 @@ ASF
 			**ASF:
 				***ACCOUNT NAME - nazwa skopiowana z nazwy wpisanej w excela Debtor
 				***REPORT TYPE - BR /CUSTOMIZED /AD-HOC /ADJUSTMENT
-				***ACCOUNT TYPE: GLOBAL /GCO / LOCAL
+				***ACCOUNT TYPE: z DMSa Customer Type
 				***REPORT SCOPE: AS (Air&Sea) /CD (Cross Divisional) /RO (Road) - bierzesz z zakładki Division z dms'a
 				***COST CENTRE - możesz pobrac z dmsa poprzez skopiowanie lub specjalna formułe na żółtym tle ALE wynik tej formuły trzeba przekopiować jako tekst żęby przy odpalaniu nie ładowało sie zbyt długo
 				***REPORTING CURRENCY (specjalna składnia) 
 				***EVENT FILTER - dla BR'ek zawsze będzie to 'ETA'
 				***FREQUENCY - wyciągasz z DMS'a jak przy COST CENTRE
 				***TRANSPORT MODE - zawsze taki sam -> przeciągasz i wszystkie pola na prawo uzupełniasz '1'kami (chyba że jest to Road to tylko w kolumnie ROAD wpisujesz 1ke)
-				***ACOUNT OWNERS & ACOUNT OWNERS MAILS & ACOUNT OWNERS NAME
-				***INTERNAL DEADLINE & EXTERNAL DEADLINE - bierzemy z DMS'a
-				***DQ - (czy raport bierze udział w procesie DATA QUALITY) - konta GCO/GLOBAL zawsze biorą udział w procesie Data Quality. Przy kontach local patrzymy na DMS na pole STANDARD DATA QUALITY. Jeżeli jest YES to dajemy 'Generic', jeżeli jest 'No' to zostawiamy pole puste, a jeżeli jest dostosowywanie to 'Customized')
+				***ACOUNT OWNERS & ACOUNT OWNERS MAILS & ACOUNT OWNERS NAME - kopiujesz z Outlooka
+				***INTERNAL DEADLINE & EXTERNAL DEADLINE - bierzemy z DMS'a dzień generowanie raportów.
+				*!*DQ - (czy raport bierze udział w procesie DATA QUALITY) - konta GCO/GLOBAL zawsze biorą udział w procesie Data Quality. Przy kontach local w customer type patrzymy na DMS na pole STANDARD DATA QUALITY. Jeżeli jest YES to dajemy 'Generic', jeżeli jest 'No' to zostawiamy pole puste, a jeżeli jest dostosowywanie to 'Customized')
 				***Transit times (only BR Road) - zdefiniowane w DMS'ie w polu Product Type
 				***ADD FOLDER TO ACCOUNTS ON SERVER - jeżeli konto nie miało jeszcze żadnych raportów to zaznaczamy 'YES'
 	4*ASF dla konta które już ma jakieś raporty:

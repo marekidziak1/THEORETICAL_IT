@@ -6,25 +6,38 @@ RAPORTY:
 			**opcja gdzie sami wyciągamy ekstraky z ODW i potem korzystamy z SRG_toola do utworzenia raportu (opcja natychmiastowa)
 		3.z ekstraktów tworzy się raport poprzez SRG TOOL
 	1*SRG TOOL (wyciąganie ekstraktów + tworzenie BR)
-		**lokalizacja: \\i26674\Shared_drives\SRG_FA\CRDQ SRG Full Automation => SRG Panel v2.4
-		**BUTTON Manage Account List:
-			*Account Name - nazwa taka sama jak w pliku ISCC_Debtors
-			*Send Mail - no
-			*Local/Global - dotyczy tylko Report Financial Visibility z DMS'a
-			*Currency - dotyczy Reporting Currency z DMS'a
-		**BUTTON Add New Task + ADD TO QUEUE - uzupełniamy:
-			*Account - wybierasz nazwę Accounta na bazie nazwy Accounta wpisanej w buttonie Mangage Account List 
-			*Report Type -> (pole 'Product Tpe w dms'ie )patrzysz czy jest to raport tylko Air&Sea, czy Road czy Cross. 
-			*Pola ważne dla zespołu reportingu:
-				*Send Mail -> No (by zrobić draft a nie wysyłac maile systematycznie)
-				*Priority -> priorytet (1 - najwyższy)
-				*Schedule Date -> następny dzień roboczy
-				*Frequency -> tak jak w zgłoszeniu (chodź nie będzie to miało znaczenia przy draftcie)
-			*Data Source -> dla raporów opartych o CW1 / GIL z automatu wskakuję ścieżka jako miejsce do przechowywania ekstraktów z ODW (które SRG tool wyciągnie po 1 dniu roboczym wraz z automatycznym utworzeniem raportu)
-		**BUTTON Check Queue List:
-			**wszystkie raporty zaschedulowane na ten miesiąc (na samym dole jest ten który dodaliśmy do listy (widoczny po strzałce w dół)
-			*raport który nie ma wyciągniętych ekstraktów zostaje przełożony na kolejny dzień roboczy (aż ekstrakt zostanie pobrany)
+			**lokalizacja: \\i26674\Shared_drives\SRG_FA\CRDQ SRG Full Automation => SRG Panel v2.4
+			**BUTTON Manage Account List + ADD NEW:
+				*Account Name - nazwa taka sama jak w pliku ISCC_Debtors
+				*Send Mail - no
+				*Local/Global - dotyczy tylko Report Financial Visibility z DMS'a
+				*Currency - dotyczy Reporting Currency z DMS'a
+			**BUTTON Add New Task + ADD TO QUEUE - uzupełniamy:
+				*Account - wybierasz nazwę Accounta na bazie nazwy Accounta wpisanej w buttonie Mangage Account List 
+				*Report Type -> (pole 'Product Tpe w dms'ie )patrzysz czy jest to raport tylko Air&Sea, czy Road czy Cross. 
+				*Pola ważne dla zespołu reportingu:
+					*Send Mail -> No (by zrobić draft a nie wysyłac maile systematycznie)
+					*Priority -> priorytet (1 - najwyższy)
+					*Schedule Date -> następny dzień roboczy
+					*Frequency -> tak jak w zgłoszeniu (chodź nie będzie to miało znaczenia przy draftcie)
+				*Data Source -> dla raporów opartych o CW1 / GIL z automatu wskakuję ścieżka jako miejsce do przechowywania ekstraktów z ODW (które SRG tool wyciągnie po 1 dniu roboczym wraz z automatycznym utworzeniem raportu)
+		(wygenerowany raport pojawi się w ścieżce:  \\i26674\Shared_drives\SRG_FA\CRDQ SRG Full Automation\Outputs	)
+			**BUTTON Check Queue List:
+				**wszystkie raporty zaschedulowane na ten miesiąc (na samym dole jest ten który dodaliśmy do listy (widoczny po strzałce w dół)
+				*raport który nie ma wyciągniętych ekstraktów zostaje przełożony na kolejny dzień roboczy (aż ekstrakt zostanie pobrany)
 	2*PYTHON INTERFACE TOOL (wyciąganie estraktów z ODW)
-		*TEAMS->D&I TEAM->General->Wiki --> setup ODW APP on GLOBAL
-			
+		*TEAMS->D&I TEAM->General->Wiki --> setup ODW APP on GLOBAL - uruchamiasz pythona + wklejasz:
+				python "\\i26674\Shared_drives\K_kam\08_D&I\02_Tools\Python\01_Python_srcipts\ODW\interface.py"
+			**POLA:
+					*Customer - name który wpisaliśmy w bazę ISCC Debtors
+					*Zakresy - wszystkie Business Review są robione za ostatnie pełne 12 miesięcy.
+					*Account Type (Global/Local) - dane z DMSa z Report Financial Visibility (dla locala wyświetli się dodatkowe okno -> wpisyć tam 2 listerowy KOD)
+					*Data Filter (ETA/ETD) - dla Business Review zawsze jest to ETA
+					*Choose Location - Brki sa zwykle zapisywane w: \\i26674\Shared_drives\K_kam\08_D&I\02_Tools\QV files
+					*Choose Column List - dla BRek: Select All + Submit
+			  Wygenerowany estrakt będzie w folderze: \\i26674\Shared_drives\K_kam\08_D&I\02_Tools\QV files 
+		*SRG TOOL: \\i26674\Shared_drives\SRG_FA\CRDQ SRG Full Automation => SRG Panel v2.4
+			**wypełniasz wszystkie punkty tak jak w SRG tool ale tym razem zmienia się Data Source (zamiast domyślnego klikasz dla System 'cw1' + get path (usuwasz starą ścieżkię i podajesz sieżkę do ekstraktu w 'QV Files' ( \\i26674\Shared_drives\K_kam\08_D&I\02_Tools\QV files => twój_folder_ekstraktu=>ekstakt_BEZ_rozszerznie_QV)
+			**srg.pl.dsv.com - sprawdzenie wszystkich aktualnie robionych raportów przez SRG panel.
+			**wygenerowany raport BR pojawi się w: \\i26674\Shared_drives\SRG_FA\CRDQ SRG Full Automation\Outputs
 			
