@@ -1,0 +1,45 @@
+*https://dsvcorp.sharepoint.com/teams/DITeam/_layouts/15/stream.aspx?id=%2Fteams%2FDITeam%2FShared%20Documents%2FGeneral%2F06%5FManuals%2FCargoWise%20One%2FHow%20to%20schedule%20reports%20in%20CW1%2Emp4&referrer=Teams%2ETEAMS%2DELECTRON&referrerScenario=p2p%5Fns%2Dbim
+do ściągnięcia ekstraktu danych trzeba zaschedulować pobranie tych danych: reports forwarding -> wybieramy templatkę raportu (report name): Shipment Profile Report -> (Super without Financial Info):
+	a) PRIMARY FILTERS:
+		*Transport Mode (raczej zostawiamy puste pole traktowane jako całość)
+		*ETD - Estimated Time of Departure (wybieramy ETD lub ETA)
+		*ETA - Estimated Time of Arival (wybieramy ETD lub ETA)
+		*Shipement Registers - kiedy Shipment został zarejestrowany
+		*Consignor (Shipper)
+		*Consignee 
+	b) BROKER (żadko używana zakładka)
+	c) TRANSACTION (żadko używana zakładka)	
+		*Job Local Client (czasami jako filtr zamiast Shipper lub Consignee jest używane to pole)
+	d) RELATED PARTIES (żadko używana zakładka)
+	e) EXTRA INFO:
+		*Show extra Shipment Info (dla danej templatki extractu ("raportu") tutaj wyświetlą się wszystkie dodatkowe dane -> zaznaczamy Y lub N)
+		*Has Insurence (zawierające ubezpieczenie (dodatkowy filtr))
+		*Show Custom Attributes (dla pól customowych w raporcie)
+		*Show Pack Details (info dotyczące packingu czyli liczby palet itd)
+	f) ADDRESSES (filtry dotyczące Pickup, Notify, Delivery)
+	g) CUSTOM FIELDS (przykładowe pola: COMMENTS (US), QA1.2 ISSUE NOTES)
+	h) REFERENCE NUMBER (numery referencyjne które chcemy dodać do raportów np SVT, SSN, ONO)
+	i) EVENTS (w innej karcie CW1 filtrujemy Eventy (czyli jakies zmiane dokonane na shipmentcie np zmianę ETD) np: EST, lub Z06
+		*JsEvent01 - wpisujemy nazwę Eventu którą wyfiltrowaliśmy w innej karcie CW1 (nazwa ta będzie widoczna w 1 kolumnue (Event) np: EST)
+		*JsEventRef01 - wpisujemy '%' na początku i na końcu a w środku nazwę Referencji którą wyfiltorwaliśmy w innej karcie CW1 (nazwa ta będzie widoczna w 7 kolumnie Reference) np: %TYP-DDI% (jeżeli zależy nam na tym żby był to pierwszy event o danym kodzie to wpisujemy JSEventRef01 znak procenta %.
+	j) ADDITIONAL EVENTS 
+	k) TRIGGERS (tak samo jak dla Eventów z innej karty bierzemy dane z zakładki Triggers):  
+		*Trigger01 - wpisujemy dane z kolumny Event Code (z tej innej karty)
+		*Trigger Desc - wpisujemy dane z kolumny Description (z tej innej karty)(tak samo używamy pocentów przed i po wpisaniu danych: %...% (procenty działają jak 'jakikolwiek znak')
+	l) CONFIGURATION MANAGEMENT:
+		*Worksheet - wybieramy 'CSP with no Packing Details' jeżeli nie potrzebujemy danych dotyczących palet (ZALECANE). Jeżeli potrzebujemy informacji dotyczących packingu to wybieramy 'Customized Shipment Profile'  
+		*Show Columns in this Order (zostawiamy tylko te kolumny które nas interesują całą reszte 'Remove' z przyciśniętym klawiszem Enter)
+			**pola takie jak Shipment CustomField01 oznaczają pola wpisane w zakładce Custom Fields  w odpowiednim polu np CustomField01. 
+		*przy polu 'Save or Load Settings by Name' wybierasz button NEW (będący zapisaniem schematu wybierania extractu i następnie w okienku wpisujesz nazwe ekstaractu/raportu według schematu nazwy: 'CRDQ - nazwaFirmy - dodDane'
+		*Optional Templates (wybierasz jeszcze raz to co wybrałeś w polu 'Worksheet'
+		*button DELIVER:
+			*Type: wpisujesz np xlsx
+			*E-Mail Address: wpisujesz nsój adres email (CTRL+E)
+		*****gdybys chciał skopiowac ten samą templatkę tylko lekko cos pozmieniać np: wpisując inny numer debtora to w polu 'Save or Load Setings by Name' wybierasz z listy swoją templatkę a nastepnie klikasz 'NEW' i wpisujesz nową nazwe (wtedy pod tą nową nazwą zapisze się te same ustawienia schematu wyciąganych danych z tego starego ekstractu (+ zmiany których od tego momentu dokonasz)
+		*****dany template jest widoczny tylko dla kraju na którym jesteśmy zalogowani na CW1
+*Po stworzeniu takiego templatu ekstractu będziemy schedulowac ten ekstract -> przechodzimy do zakładki 'Scheduled Reports' i klikamy NEW. 
+	*Schedule Task Description warto wpisać tę samę nazwę co nazwa template'u z poprzedniego punktu.
+	*Recurence Pattern - jak często chcemy otrzymywać dany extract 
+		**Scheduled Run Time (godzina którą chcemy żeby raport wrzucił sie w kolejkę CTRL+T) (bierzemy pod uwagę strefę czasową UTC+2)
+	*Range Of Occurance (ustawiamy dzisiaj) + wybieramy 'No End Date'
+	*Receipents (17:30)

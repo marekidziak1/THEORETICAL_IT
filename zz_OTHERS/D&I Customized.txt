@@ -1,0 +1,83 @@
+0.Data Sources:
+	*CargoWise One, ODW -> dane Air&Sea (CW1 odświeżane co minute, a ODW odświeżane raz dziennie ALE ODW pozwala na pobranie danych finansowych Globalnie a cW1 trzebaby było przełączać się między branchami poszczególnych krajów gdzie przesyłka była zafakturowana). Rozszerzone dane finansowe można też pobrać poprzez osobe mającą dostęp (później te dane będą w: TEAMS -> CRDQ -> Financial Data - exctracts)
+	*CargoLink - dane Roadowe, (tylko dla poszczególnych krajów)
+	*External Data (DSV solutions, dane CO2, itp)]
+1.Typy customizowanych raportów:
+	*KPI (KEEP PREFORMANCE INDICATOR) (WYDAJNOŚĆ - na kiedy przesyłka miała byc dostarczona a kiedy została dostarczona):
+		*Actual vs ETA -czas dojazdu przesyłki kontra wysetymowany czas dotarcia przesyłki
+		*Actual vs Agreed - czas dojazdu przesyłki kontra umówiony czas dotarcia przesyłki
+		***Reason Codes (dlaczego opóźnienie miało miejsce):
+			*Reason Codes - DSV --> pochodzące DSV
+			*Reason Codes - Customer --> pochodzące od klienta
+	*Incidents - raporrt dotyczący tego co się stało że przesyłka nie została dostarczona. 
+	*SPEND Air & Sea (finansówka) (w standardowym ektrakcie mamy w pojedyńczym wierszu dane dotyczące danego kontenera). W finansówce możemy tam wpisać:
+		*Shipment level - w wierszach są poszczególne shipmenty
+		*Invoice Level -  w wierszach są poszczególne faktury
+		*Charge Code - w wierszach są poszczególne charge code'y
+		*spend Road / Cross (trudne zadanie gdyż w CARGOLINKU jest tylko Fracht i Vat ale możemy dodać jeszcze dane z zzewnetrznego źródła)
+	*IN TRANSIT - surowy daily raport. Klient chce widziec jak wyglądają jego przesyłki w trakcie przewozu (nie chodzi o przesyłki dostarczone)(robimy w oparciu o CW1)
+	*BROKERAGE - raport o opłatach celnych. Dane są zdecentralizowane i żeby otrzymac te dane to trzeba poprosić biuro z każdego danego kraju o przesłanie tychż danych. 
+	*************przykłady tych raportów: https://dsvcorp.sharepoint.com/teams/DITeam/Shared%20Documents/Forms/AllItems.aspx?csf=1&web=1&e=zKcCp7&cid=4cefc3b4%2D8805%2D4584%2D86eb%2D5a51165fb9d6&RootFolder=%2Fteams%2FDITeam%2FShared%20Documents%2FGeneral%2F07%5FProjects%2FMENU%20Card%20for%20Customized%20Reports%2FReport%20Types%20Examples&FolderCTID=0x0120004823691E77E283438E804AF5068A312D
+2. CAŁY PROCES:
+		*ZBIERANIE WYMAGAŃ
+		*TWORZENIE RAPORTU
+		*PRZEKAZANIE DO REPORTINGU (automatyzacja)
+	A) ZBIERANIE WYMAGAŃ
+		*DMS -> D&I QUEUE (asigning to person) -> JIRA (EPIC - automated tool) -> TIMELOG -> CONTACT with AO (email template):
+						“Dear 		[name of report requester],
+						I hope this message finds you well. I wanted to take a moment to update you on your request 		[request number] 		for report 		[report name] 		for 		[client name]		. I am pleased to inform you that your request will be processed within the next two weeks and I will be personally handling it.
+						To ensure that we deliver the best possible outcome, I would like to discuss the requirements with you. I will reach out to you next week to clarify any details that we may need in order to complete the report to your satisfaction.
+						Please let me know if you have any questions or concerns in the meantime.”
+		*INITIAL ANALYSYS:
+			*CHECK EMAILS RELATED TO THE REQUEST
+			*CHECK DMS
+			*CHECK NOTES IN D&I QUEUE
+			*CHECK "CUSTOMER OVERVIEW" if client has similar report
+			*ADDING CODES TO ACCOUNT LIST
+			*CREATE CLIENT FOLDER by creating ASF 
+		*IMPLEMENTATION DOCUMENT (client folder-> 01.contract -> 00 implementation document) (na samym końcu kopiuję ten plik poprzez skopiowanie zakładki i wklejam to do ASFa
+			**filtry raportu:
+				*report name -> nazwa z dms'a
+				*data filter -> ETD i ETA (klient może chcieć mieć to po innych datach ale robimy to głównie po tych datach)
+				*data scope -> ile w przód i ile w tył
+				*data level -> 1 wiersz to jeden container ;; 1 wiersz to jeden shipment ;; 1 wiersz to jeden invoice ;; 1 wiersz to jeden charcode ;; 1 wiersz to jeden order
+				*frequency -> daily/weekly/quaterly/yearly (dla daily dodać informacje: daily offline solution based on ODW data base, where data are updated once a day. The report will contains data form about 12 hours ago (if the report will be send about 11AM CET))
+				*deadline -> "every business date MON-FRI (excluded holidays in Philipines and Poland)"
+				*shipment clasification -> shipmenty są oznaczone jako: ACTUAL, DUMMY (pomyłki: w CW1 w polu reference wpisuję Y a w polu Active wpisuje N), FINANCIAL JOB (dotyczy finansowych rozliczeń ale nie jest shipmentem z punktu A do B) --> "Shipments identified as 'Dummy Shipments' are excluded from data set (Air&Sea rule: NVA Reference = Y, Active = N) Exclude only shipments with Service Level Code = FIN"
+				*captured data -> jakie dane są przechwytywane do raportu czyli w stosunku do jakich pól odwołują się organisation codes (jako shipper, consignee, notify party, local client itp -> ekstrakt z ODW zawiera wszystkie dane globalne ale tylko dla wybranych kolumn. Ekstrakt z CW1 zawiera wszystkie kolumny ale tylko dla niektórych stron transakcji będącymi organisation CODE. Te strony transakcji to: PICKUP, SHIPPER(CONSIGNOR), CONSIGNEE, DELIVERY. Z CW1 nie da się pobrac danych globalnie (nie przelogowując sie na inny branch) gdy klient wybierze że organisation code mają być stroną transakcji o nazwach: LOCAL CLIENT, NOTIFY PARTY, DEBTOR.  
+			**opisy kolumn + opisy grafów -> (jeżeli nie dostaniesz od AO przykładowych danych to na bazie podanych kodów musisz pobrać ekstrakt z ODW lub ekstrakt z CW1)
+					*column name
+					*column number
+					*example - wpisujesz 'shipment ID: ...'
+					*description (wpisujesz opis z ASFu lub informacje z CW1 (na dolnej belce w CW1) po najechaniu na dane pole)
+					*source (ODW)
+					*Report Name (dla source=ODW zostawiasz'-' a dla source=CW1 wpisujesz nazwę raportu (wyciąganego ekstraktu))
+					*Location in CW1 (ścięzka do pola w CW1 -> patrz plik od Gabrysi)
+					*Filled Name - dla CW1 co trzeba wpisać w polach żeby wyskoczyło
+					*Name In The Report - nazwa kolumny w ODW (ewentualnie nazwa kolumny po wyciągnieciu z CW1)
+					*Logic -?
+					*Depends on - czy zależy od jakiegoś kliknięcia w CW1
+					*If Null - Blank
+					*Comments - '-'
+				***niektóre kolumny będa w podstawowym ekstrakcie z ODW. Inne będą w ekstrakcie z CW1 np EVENTY (dostępne w: workflow & tracking -> Events + ewentualne filtry w postaci referencji)
+				***wykorzystanie ID toola (w WIKI). 
+						*****Dla choose column pokazuje nazwy kolumn w ODW (można wejśc głębiej i INFO pokaże nazwę kolumny dla ekstraktu z CW1)
+						*****Oprócz IMPLEMENTATION DOCUMENT ID TOOL wygeneruję zakładkę 'COVER' z tłumaczeniem logik (później należy ją wkleić do każdej iteracji regularnego raportu); 
+				***wykorzystanie dokumentu przesłanego od Gabrysi --> nazwy kolumn w ODW i odpowiadająca im ścieżka w CW1
+		*KICK OFF MEETING - wstępne pokazanie implementation document AO + wyjaśnienie niektórych wymagań
+			a) welcome letter + tłumaczenie jak wygląda proces tworzenia raportu str3
+			b) pokazuję w jakim pliku będą spisywane wymagania (implementation document) (plik będzie też udostępniony dla AO więc w komórkach zapisywać komentarze)(2 sekcje 1*: w jaki sposób filtrować raporty;; 2*: jakie kolumny) 
+		*SENDING 1ST DRAFT OF IMPLEMENTATION DOCUMENT (MAIL TEMPLATE)
+		*CHANGES TO IMPLEMENTATION DOCUMENT 
+		*2ND APPROVAL FOR IMPLEMENTATION DOCUMENT (MAIL TEMPLATE)
+		*SET UP DATA SOURCES (ZASCHEDULOWANIE RAPORTÓW(EKSTRAKTÓW) Z CW1)
+		*BUILDING REPORT, AUTOMATION
+		*GENERATE DRAFT & SEND TO APPROVAL -> CHANGES -> 2ND DRAFT TO APPROVAL
+		*UPDATE ASF:
+			*skopiowanie implementation document jako zakładka w ASFie i zupdateowanie jej nazwy
+			*w Report Description Index wpisać zupdatetowaną nazwę zakładki i ją podlinkować
+			*w Changelogu dodac informacje o dodaniu nowego raportu
+			*w Debtor ID sprawdic czy śa wszystkie kody
+		*GENERATE CHECKLIST -> INSTRUKCJA DLA REPORTINGU JAK WYKONAĆ CAŁY RAPORT -> JAKO ZAKŁADKA W ASFie:
+			*dla zaschedulowanych raportów w CW1 generujesz link Schedule reports -> Actions -> Copy Hyperlink to Clickboard
+		*HANDOVER

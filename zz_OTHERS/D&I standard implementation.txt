@@ -1,7 +1,7 @@
 QUICK ACCESS:
 		Account List (ISCC Debtors) => \\i26674\Shared_drives\M_PL.ISS.GAS.QV_Report\QVConfig\Account_List\
 		CRDQ SRG Full Automation (SRG) => \\i26674\Shared_drives\SRG_FA\CRDQ SRG Full Automation => SRG Panel v2.4
-		QV files (ekstrakty z ODW) => \\i26674\Shared_drives\K_kam\08_D&I\02_Tools\QV files 
+		QV files (ekstrakty z ODW) => \\i26674\Shared_drives\K_kam\08_D&I\02_Tools\QV files => (file type: folder ;; last)
 		17 ASF Tool (ASF tool) => \\i26674\Shared_drives\K_kam\08_D&I\02_Tools\17 ASF Tool
 		01_Accounts (ASFy klientów na serwerze do trzymania BRek) => \\i26674\Shared_drives\K_kam\04_GASS\01_Accounts 
 		
@@ -27,6 +27,7 @@ BUSSINESS_REVIEW -> Implementation Process 	****https://dsvcorp.sharepoint.com/:
 				*in CW1 id starts with 64 (with these number customer could be invoiced)
 				*if report contain data from CargoLink apart from id provide country Code (where specific company is located)
 			C***  excel DEBTOR (ISSCDebtorsMerged):
+				**UNIVERSAL ID -> patrz OPSy
 				**nie zapisaywać tego pliku z pustymi wierszami albo z przefilrowanymi danymi. Nie filtrować po kolumnie Code tylko robić wyszukiwanie CTRL+F
 					*A&S (Air&Sea) Debtor Base File location: 
 						(Password is qweasd) \\i26674\Shared_drives\M_PL.ISS.GAS.QV_Report\QVConfig\Account_List\ISSCDebtorsMerged.xlsx

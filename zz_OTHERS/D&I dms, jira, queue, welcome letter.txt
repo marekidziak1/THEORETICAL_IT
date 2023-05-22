@@ -12,7 +12,7 @@ JIRA:
 			**active sprints - statusy implementacji w danym momencie (zakładka górna prawa - Only my Issues)
 				***zaznaczenie ile godzin spedzonych nad danym tematem (prawy przycisk na kaflu + po prawej stronie LOG WORK) (logowanie godzin powoduję zmniejszenie godzin estimated)
 				***przerzucenie zadania do sekcji DONE bez zalogowania godzin spowoduję automatyczne wyzerowanie czasu estimated
-				
+		*wstrzymanie tasku -> klikasz na task i w DETAILS -> LABELS wpisujesz 'ONHOLD'		
 DMS - DEVELOPMENT & IMPLEMENTATION SYSTEM:
 	1*PODSTAWY:	
 		*logowanie będąc w sieci DSV (lub VPN DSV) + tylko CHROME)

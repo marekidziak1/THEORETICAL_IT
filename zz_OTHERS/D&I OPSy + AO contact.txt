@@ -1,8 +1,37 @@
 OPSY:
+	*. Innovation Zone:
+		*Automation 20h rocznie --> trzeba wpisać do pliku: Department -> Automation KPI
+	0. DMS i Najczęstsze pytania od AO:
+			1. The report should be based on the only one code which I sent to you in the request. Why can I see another codes in shipper and consignee fields in the report?
+				***Organisation Code może być jedną ze stron transakcji i niekoniecznie musi to być Shipper/Consignee. Może to yc np Notiy Party. Wtedy nie organisation Code nie wystąpi w Shipper/Consignee tylko będą to inne kody
+			2. I just noticed that I would like to add another code based on which you created the report. Could you send me a new report in 1 hour?
+				***Nasza baza potrzebuję 24h do odświeżenia dlatego nie utworzymy nowego raportu na już. 
+			3. As far as I know new branches of my company opens each month. Unfortunately, it’s difficult to me to follow with this news. Nevertheless, I would like to have updated report every month with new 64-numbers of those branches. Could you advise what should I do?
+				***Do tego śłuży debtor maintaince process. 
+			4. Please find attached my Cost Center: 640896325 as you wish. Is it ok? 
+				***odpwiedz w dmsie w sekcji costs
+			5. Why the price of Business review Report is 180 EUR? The price list says that the reports costs EUR 90. 
+				***odpowiedz w welcome letter s6 oraz w dmsie w sekcji costs -> gdy dłużej robi się implementacje niż 3h. 
+			6. When I filtered Ocean mode I noticed that one shipment is shown multiple times. Why is that?  Are the costs not duplicated?
+				***w business review w Raw Data, 1 wiersz odpowiada jednemu kontenerowi a nie jednej przesyłce dlatego 1 shipment może wystapić w wielu wierszach. Wtedy koszta sa losowo przypisywane do danego wiersza gdzie występuję dany shipment.
+			7. PTD (actual) calculations seems to be wrong. Cargo Received Date is 15 March 2022 and Actual Time of Arrival is 10 March 2022. So why is the information shown that it only lasted 3 days?
+				***Niektóre logiki zawierają w sobie dni weekndowe (wzystkie dni kalendarzowe) a inne nie. Akurat w PortToDoor dni weekndowe sa wykluczone. 
+			8. The report looks perfect but could you add one more column in the RAW DATA with reference number SLV?
+				***traktować jako nową implementacje
+			9. What is ASF? What should I do with this file? 
+				***dokumentacja raportu - plik gdzie znajdują się wszystkie wymagania i opisy logik. 
+			10.Why the number of rows on the RAW Data tab is different from the number of shipments in the Overview tab in the Business Review Report? 
+				***w Business Review wiersze wystepują jako kontenery a nie shipmenty. Ponadto częsć danch to Financial Joby. Jeżeli pogrupuemy sobie po unikalnym shipmentcie (kolumna Unique shipment count = 1) to nam wszystko wyjdzie. Niestety przez to że opłaty są związane z shipmentami a nie kontenerami i opłaty te są Raw data rozmieszczene losowo dla kontenerów podlegających pod ten sam shipment nie da się zobaczyć w takim filtrowaniu charge'y.  
+			11.In the Business Review Report there is a type of shipment called Financial Job. What kind of shipment is this?
+				***shipment utworzony na potrzeby fakturowania. Nie jest to fizyczny shipement z punktu A do B. Opis dostęny w ASFie. 
 	1. Podstawy:
 		*opsy są rozdzielane przez Team Leadera danego dnia
 		*scheduler: Teams -> D&I Team -> General -> OPS_scheduler  (+dodatkowo mail z przypomnieniem danego dnia)
 		Przykłady:
+			*UNIVERSAL ID - dodanie kodów po UNIVERSAL ID:
+				*wchodzisz na ikonę qlickview z hasłem Michała (w ustawieniach przeglądarki podmieniasz folder do zapisu na inny niż downloads (na jakiś folder na serwerze))
+				*wchodzisz na stronę  http://reports.qlikview.dsv.com/ --> customer chierarchy -->NUMBER (po lewej) --> Universal DUNS Number (trzba to kliknąć (ten tekst) i zacząc wpisywac kod) -> tutaj wpisujesz Universal ID Number
+				*na wyświetlonej tabeli (a nie na ramce) PRAWY -> EXPORT -> opcja ALL FILES zamiast excel file seperated by coma LUB PRAWY -> Send to excel
 			*PROŚBA O ZAPRZESTANIE RAPORTU (USUNIĘCIE KLIENTA):
 				*instrukcja: TEAMS=>D&ITeam=>General=>06_MANUALS=>Work_Instructions=>Work_Instruction_Lost_client_removal)
 				*CUSTOMER OVERVIEW:
@@ -19,7 +48,8 @@ OPSY:
 								(dla roadów trzeba jeszcze usunąc wiersz z zakładki GASS_Customer_Group_Rep_Currency klienta by nie zaciągało waluty)
 				*Debtor Maintaince (tylko dla Air&Sea):
 					**\\i26674\Shared_drives\K_kam\08_D&I\02_Tools\15 Debtor Maintenance\AirSeaDebtorMeintenanceTool
-					**usunięcie w zamkładce mialinglist oraz main
+					**usunięcie/zmiana maila w zakładce mialinglist => dla wielu maili wypisujesz je po średniku
+					**dla Scheduled Reports ==> powstanie link w pliku ISCC_debtors w zakładce Scheduled reports -trzeba przefiltrowac po nazwie klienta i kliknąc w ten link (w CW1 trzeba być zalogowanym na branch XXX ==> Change report filters ==> Attach ==> (z wizzql dodajesz kod SQl (kody detorów) do filtrowanych danych) => Ok i Save&Close robisz 2 razy
 				*RODO (ASFy): 
 					**usunięcie informacji z ASFa o kliencie wraz z przeniesieniem całego folderu klienta do folderu inactive (w tej samej ścieżce) - trzeba to zrobić na serwerze i na TEMASACH/SHAREPOINT'cie:
 						***SHAREPOINT / TEAMS => CRDQ => Documents => 01_Accounts => nazwa_konta => ASF_... (edytuj za pomocą aplikacji desktopowej): zakładki title (zostawienie 2 literek AO) => w change logu (Name Correction)
@@ -34,8 +64,10 @@ OPSY:
 					**\\i26674\Shared_drives\K_kam\08_D&I\02_Tools\15 Debtor Maintenance\AirSeaDebtorMeintenanceTool
 					**zmiana w w zakładce mailing list dla danej firmy
 				*mail do zespołu reportingu z powierdzeniem i info dla DQteam w waidomości (do GAS.Support oraz do DQTeam)
-
-Poczta i Maile z AO:	
+DEBTOR MAINTAINCE:
+	Teams -> General -> mauals -> Work Instructions
+	Porozmawiac z Michałem na ten temat - > dac sobie większ bufor na Debtor maintance (porozmawiac z Gabrysią)
+Poczta i Maile z AO:
 	1.Good Practicies:
 		*wyszukiwanie zgłoszeń w skrzynce odbiorczej (GAS.Support) poprzez NUMER ZGŁOSZENIA
 		*REPLY ALL (dwie różowe strzałki)

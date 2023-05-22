@@ -52,6 +52,55 @@
 -------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+https://www.geeksforgeeks.org/python-pandas-series-combine/			
+		https://www.geeksforgeeks.org/python-pandas-tseries-offsets-dateoffset/
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 4. PRACA NA DATACH:
 	1)PODSTAWY:
 		*daty domyślnie ładują się jako Stringi:
@@ -60,6 +109,7 @@
 		*zmiana danych z datą ze Stringów na typ Date (Timestamp):
 			**trzeba podać formatowanie (tak jak w pythonie - ze strony: https://docs.python.org/3/library/datetime.html#strftime-and-strptime-behavior
 					df['Date'] = pd.to_datetime(df['Date'], format = '%Y-%m-%d %I-%p')
+			   #lub	df['Date'] = df['Date'].astype('datetime64[ns]')
 					df.loc[0,'Date']				#Timestamp('2020-03-13 20:00:00')
 			*wyświetlenie  dnia tygodnia:
 					df.loc[0,'Date'].day_name()					#'Friday'
@@ -408,7 +458,7 @@
 					### df['Date'].apply(dt.day_name) (NIE DZIAŁA!)
 					df['Date'].apply(lambda x: x.day_name())
 	 **UŻYWANE METODY --> (Będziesz przede wszystkim korzystał z APPLYMAP do funkcji 
-	   na danych i REPLACE do podmiany danych --> patrz pkt3):
+	   na danych i REPLACE do podmiany danych --> patrz pkt4):
 			*wywołanie funkcji na danych:
 				  APPLYMAP -> będącymi obiektami DateFrame
 				  APPLY    -> będącymi obiektami Series
@@ -438,6 +488,17 @@
 								# 2	Lukas	Lipka	 23   ll@gmail.com  30000	
 		b)Dodanie kolumny na bazie innych kolumn (nie wolno używać notacji z kropką)
 					df['fullname'] = df['first']+' '+ df['last']  # NIE df.fullname
+					df['fullname'] = df[['first', 'last']].apply(
+													lambda x: ' '.join(x), axis = 1)
+			**str.cat(others=None ,sep=None ,na_rep=None) - dodanie kolumny do 
+			  kolumny poprzez konktatenacje stringów z kolumny do kolumny:
+					df["Name"]= df["Name"].str.cat(others=df["Team"].copy(), 
+													sep =", ", na_rep="No name")
+								#do elementów kolumny df["Name"] dopisze kolumne 
+								#df["Team"]. Gdy w df["Name"] pojawi sie NULL to 
+								#zamieni go na napis "No name":
+								#					"marek	, Boston Celtics" 
+								#					"No name, Chicago Bulls"
 		c)Podział kolumny na inne kolumny:
 					df[['first','last']] = df['fullname'].str.split(' ',expand=True)
 		d)Usuwanie kolumny/kolumn (axis = 1)
@@ -489,7 +550,7 @@
 	C)TABELE - dodanie całej tabeli do tabeli:
 		x)APPEND() (ma zostać wycofane):
 					df = df.append(df2, ignore_index=True, sort=False)
-		a)pd.CONCAT() :
+		a)pd.CONCAT() / concat():
 			**argument ignore_index = True - indexy zostaną zignorowane a komórki 
 			  dla nie_tych_samych kolumn w tabelach dostaną wartość NaN:
 					df = pd.concat([df, df2], ignore_index=True)
@@ -499,35 +560,83 @@
 										# 2	Lukas	Lipka	ll@gmail.com	NaN
 										# 3	Ewela	Mus		NaN				400.0
 										# 4	Kal		Dziak	NaN				399.0
-			**argument join:
+			**argument axis
+				*axis=0 - dodawanie tabel poprzez dodanie wierszy nawet jeśli 
+				 istnieją te same indeksy.
+				*axis=1 - dodawanie tabel poprzez dodanie kolumn i łączenie 
+				 wierszy o tych samych indeksach.
+			**argument join (razem z argumentem axis=1):
 					people = {
 						"first": ['Marek', 'Anna', 'Lukas'],
 						"last": ['Dziak', Nacz, 'Lipka']
 					}
 					additionals = {
+						"first": ['Anna', 'Lukas','Darek'],
 						"email": ['an@gmail.com','ll@gmail.com','ki@gmail.com'],
 						"age": [33, 34, 45]
 					}
 					df1 = pd.DataFrame(people, index =[0,1,2])
 					df2 = pd.DataFrame(additionals, index = [1,2,3])
 			  **join ='outer' (domyślnie) - wiersze o tych samych indeksach 
-				zostaną połączone a reszta NIE ZOSTANIE usunięta:
-					df3 = pd.concat([df1,df2])		 				#join='outer'
-										# 	first	last	email			age
-										# 0	Marek	Dziak	NaN				NaN
-										# 1	Anna	Nacz	an@gmail.com	33
-										# 2	Lukas	Lipka	ll@gmail.com	34
-										# 3	NaN		NaN		ki@gmail.com	45
+				zostaną połączone a reszta NIEZOSTANIE usunięta:
+					df3 = pd.concat([df1,df2], axis=1)		 	   #join='outer'
+								# 	first	last	first	email			age
+								# 0	Marek	Dziak	NaN		NaN				NaN
+								# 1	Anna	Nacz	Anna	an@gmail.com	33
+								# 2	Lukas	Lipka	Lukas	ll@gmail.com	34
+								# 3	NaN		NaN		Darek	ki@gmail.com	45
 			  **join='inner' - wiersze o tych samych indeksach zostaną 
 				połączone a reszta ZOSTANIE usunięta:
-					df3 = pd.concat([df1,df2], join='inner')
-										# 	first	last	email			age
-										# 1	Anna	Nacz	an@gmail.com	33
-										# 2	Lukas	Lipka	ll@gmail.com	34
-		b)pd.MERGE() - łączenie tabel po kluczach będącymi osobnymi kolumnami
+					df3 = pd.concat([df1,df2], axis=1, join='inner')
+								# 	first	last	First	email			age
+								# 1	Anna	Nacz	Anna	an@gmail.com	33
+								# 2	Lukas	Lipka	Lukas	ll@gmail.com	34
+		b)join() - łączenie tabel TYLKO po domyślnych indeksach (nie pozwala na 
+		  łączenie tabel o tych samych nazwach kolumn nawet jeżeli sa ustawione 
+		  na indeksy)(nie pozwala na kolumny o tych samych nazwach w 2 tab)
 			**argument how = ['left', 'rigth', 'inner', 'outer'] - tak jak w sql
-			  można określić jak moją się łączyć tabele (domyślnie inner) 
+			  można określić jak mogą się łączyć tabele (domyślnie inner) 
 			  (użyte w poniższych przykładach)
+					people = {
+						"first": ['Marek', 'Anna', 'Lukas'],
+						"last": ['Dziak', 'Nacz', 'Lipka']
+					}
+					additionals = {
+						"email": ['ma@gmail.com','xx@gmail.com','yy@gmail.com'],
+						"age": [33, 34, 45]
+					}
+					df1 = pd.DataFrame(people)
+					df2 = pd.DataFrame(additionals, index = [0,7,8])
+					df3 = df1.join(df2, how='inner')
+								#	first	last	email		  age
+								#0	Marek	Dziak	ma@gmail.com  33
+			**argument on - w pierwszej tabeli musi być domyślny index a w 
+			drugiej (wewnątrz funkcji join) indexy ustawiasz poprzez odpowiednie 
+			nazwy (nie wolno ustawić indeksu na poszczególna kolumnę). W arg
+			on wskazujesz kolumne będącą kluczem ocym dla klucza głównego 
+			(indexu) w drugiej tabeli. Nie można zastosować w drugiej tabeli 
+			funkcji set_index():
+					people = {
+						"first": ['Mar', 'An', 'Lukas'],
+						"last": ['Dziak', 'Nacz', 'Lipka']
+					}
+					additionals = {
+						"email": ['an@gmail.com','ll@gmail.com','ki@gmail.com'],
+						"age": [33, 34, 45]
+					}
+					df1 = pd.DataFrame(people)
+					df2 = pd.DataFrame(additionals, index = ['Mar', 'An', 'D'])
+					df3 = df1.join(df2, on='first', how='outer')	
+								# 		first	last	email			age
+								# 0.0	Mar		Dziak	an@gmail.com	33.0
+								# 1.0	An		Nacz	ll@gmail.com	34.0
+								# 2.0	Lukas	Lipka	NaN				NaN
+								# NaN	Da		NaN		ki@gmail.com	45.0
+		c)pd.MERGE() - łączenie tabel po kluczach będącymi osobnymi kolumnami 
+					***nie pozwala lączyć tabel po indeksach (do indeksów join())
+					***powala na kolumny o tych samych nazwach w 2 tabelach.
+			**argument how = ['left', 'rigth', 'inner', 'outer'] - tak jak w sql
+			  zostało rozpisane w join() powyżej)(użyte w poniższych przykładach)
 			**argument on - klucze muszą mieć takie same nazwy kol w 2 tabelach:
 					data1 = {'key_P': ['K0', 'K1', 'K2'],
 							 'Name':['Jai', 'Princi', 'Gaurav']
@@ -587,6 +696,23 @@
 									# 2	K1		Princi	NaN		NaN		NaN
 									# 3	K2		Gaurav	s2		Alla	K2
 									# 4	NaN		NaN		s3		Bannu	K6
+	D)INNE:
+		a)dodawanie SERIES do SERIES:
+								sr1 = pd.Series(['New York', 'Chicago'])
+								sr2 = pd.Series(['Toronto', 'Lisbon'])
+								sr1.append(sr2, ignore_index=True)
+								# 0    New York
+								# 1     Chicago
+								# 2     Toronto
+								# 3      Lisbon
+								# dtype: object
+		b)dodawanie INDEXÓW do INDEXÓW:
+								df1 = pd.Index(['Jan', 'Feb', 'Mar', 'Apr'])
+								df2 = pd.Index(['May', 'Jun', 'Jul', 'Aug'])
+								df3 = pd.Index(['Sep', 'Oct', 'Nov', 'Dec'])
+								df1.append([df2, df3])
+								#Index(['Jan', 'Feb', 'Mar', 'Apr','May', 'Jun', 
+								#		'Jul', 'Aug','Sep', 'Oct', 'Nov', 'Dec'])
   3)CZYSZCZENIE DANYCH z NaN (np.nan) i None oraz ZMIANA TYPU WARTOŚCI:
 					import pandas as pd
 					import numpy as np
@@ -664,7 +790,77 @@
 			  **zamiana typu wartości:
 					df['YearsCode'] = df['YearsCode'].astype(float)
 					df['YearsCode'].mean()				 #teraz można użyć mean()
-  4)METODY:	
+  4)MODYFIKACJE TEKSTU:	
+		*str.lower(), str.upper(), str.title(), str.strip()/rstrip()/lstrip():
+			*zapis tylko dla 1 kolumny - działa tylko dla Series a nie na DataFrame!
+				*str.function()
+					df["Name"] = df["Name"].str.lower() 	
+					df.loc[[1,2,3],"Name"] = df.loc[[1,2,3],"Name"].str.upper()
+					df.loc[1:3,"Name"] = df.loc[1:3,"Name"].str.title() #1 litera
+				*apply(str.function) / apply(lambda x: x.function())
+					df.loc[1:1,"Name"].apply(str.rstrip) 	#zapis dla 1 komórki 
+					df['Name'].apply(lambda x: x.strip())	
+			*zapis dla obiektów DataFrame:
+					df.loc[[1,2,3],["Name", "Address"]].applymap(str.capitalize)
+					df.loc[:,["Name", "Address"]].applymap(lambda x: x.capitalize)
+		*str.replace() - zamiana wartości w obiektach Series:
+			*str.replace() działa tylko dla obiektów Series które sa Stringami a 
+					df["Address"].str.replace("Delhi", "Miami")
+			*obj_series.replace() / obj_dataframe.replace() - działa dla obiektów 
+			 o wszystkich typach czyli Series i DataFrame:
+					df["Age"].replace(24.0, "Twenty four")
+					df.loc[[2,3],["Age", "Name"]].replace("Anuj","xx")
+					df.replace(to_replace=["Boston", "Texas"], value="Omega")
+		*str.cat(others=None ,sep='my_str', na_rep='my_str')- konkatenacja Stringów 
+		 w Series - nie mogą byc to inne typy wartości niż String ani inne obiekty 
+		 niż Series:
+					df["Name"]= df["Name"].str.cat(df["Address"].copy() , sep =", ")
+														# 0            Jai, Delhi
+														# 1        Princi, Kanpur
+														# 2    Gaurav, Allahabada
+		*str.join() -  działa tylko na obiektach Series:
+			*gdy Series składa sie ze Stringów to wrzuca łącznik pomiędzy litery:
+					data["Name"]= data["Name"].str.join("-")
+														# 0    A-v-e-r-y- -B-r-a-d
+														# 1    G-e-o-r-g- -B-o-s-h
+			*gdy obiekt Series zawiera elementy będące listami to str.join() złączy
+			 elemety tej listy podanym łącznikiem. 
+					data["Team"]= data["Team"].str.split("t")
+														#zwróci Series list: 
+														# 0 ['Bos', 'on Cel','ics']	
+														# 1 ['Bos', 'on Cel','ics']	
+					data["Team"]= data["Team"].str.join("_")
+														# 0 'Bos_on Cel_ics'
+														# 1 'Bos_on Cel_ics'
+		*str.split() (przykład dla 'Allachabada'):
+			*rozdziela tylko po literach wewnątrz napisu (nie patrzy na 1 literę):
+					df.loc[1:1,"Address"].str.split("a")		  #[All, h, b, d,]
+			*w argumencie 'n' można podać maksymalną ilośc wystąpień	
+					df.loc[1:1,"Address"].str.split("a, n=2)	  #[All, h, bad]
+			*dla arg. expand=True - zwróci obiek Series:
+					df.loc[1:1,"Address"].str.split("a", n=2, expand=True)
+																  #   0	  1	2
+																  # 2 All h	bada
+				*chcąc zrobić przypisanie to można to zrobić tylko dla całych 
+				 kolumn i to bez używania .loc[] / .iloc. Ponadto trzeba przypisac 
+				 do takiej liczby kolumn jaka liczba podzielonych tekstu w 
+				 najbardziej licznym przypadku 
+					df[["Ad1","Ad2","Ad3","Ad4","Ad5"]] = df["Address"].str.split(
+																  "a", expand=True)
+					#	Name 	Address		Ad1		Ad2		Ad3		Ad4		Ad5
+					# 0	Jai		Delhi		Delhi	None	None	None	None
+					# 1 Gaurav	Allahabada	All		h		b		d	
+					# 2	Anuj	Kannauj		K		nn		uj		None	None
+		*str.extract() - działa tylko na obiektach Series. Wewnątrz podajesz REGEXa. 
+		 Gdy Regex jest bez grup to zwróci obiekt Series a dla kilku grup stworzy 
+		 DataFrame'a gdzie nazwy kolumn będą przejęte od nazw grup REGEXa.
+					s = pd.Series(['a1', 'b2', 'c3'])
+					s.str.extract(r'(?P<Geeks>[ab])(?P<For>\d)')
+														#  	 Geeks  For
+														# 0     a    1
+														# 1   NaN  NaN
+														# 2   NaN  NaN					
+  5)METODY:	
 	*APPLYMAP()
 	    a*wywołuję funkcję na wybranych danych
 		b*działa na obiektach klasy DataFrame, nie działa na obiektach klasy Series
@@ -978,7 +1174,6 @@
 				 kolumnie 'last' będą widoczne jako pierwsze lub jako ostatnie:
 					df.sort_values(by='last', ascending=False, inplace=True, 
 															na_position='last')
-				*
 			*po wielu kolumnach - liczba elem. w liście dla 'ascending' musi 
 			 odpowidać l. elem. w liście dla 'by':
 					df.sort_values(by=['last', 'first'], ascending=False, 	

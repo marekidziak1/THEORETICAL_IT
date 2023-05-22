@@ -21,6 +21,7 @@ ASF
 			**ponadto automatycznie otworzą się serwer (w lokalizacji: \\i26674\Shared_drives\K_kam\08_D&I\02_Tools\17 ASF Tool\Tool\NewASFs\) i Teams'y (w lokalizacji: CRDQ - Customer Reporting and Data Quality -> Documents > 01_Accounts) gdzie przeciągamy dane z tego serwera do Teams'ów (w tej lokalizacji) [w razie co Teamsy z lokalizacją można otworzyć poprzez macro znajdujące się w toolu: \\i26674\Shared_drives\K_kam\08_D&I\02_Tools\17 ASF Tool i wpisując tekst w wyszukiwarkę]
 			**ponadto na serwerze w lokalizacji:  \\i26674\Shared_drives\K_kam\04_GASS\01_Accounts\ zostanie utworzone konto z nazwą klienta gdzie będą wrzucone tylko 3 ostatnie foldery (06,07,08) dotyczące automatyzacji. (Jest umówione że wszystkie dokumenty i foldery związane z automatyzacjami są na SHAREPOINT'cie/TEAMS'ach a na serwerze tylko rzeczy dotyczące automatyzacji)
 			**w przypadku poprawy jakiś rzeczy najważniejsze jest to żeby poprawić je na Teamsach a nie na serwerze. Serwer służy tylko temu żeby wrzucić pierwszy draft BR'ki do folderu Implementation (Głownie ze względu na łatwośc wyszukiwania)
+		*ROAD --> wazne kolumny: ROAD, TransitTimes
 		*ZAKŁADKI:
 			**ASF:
 				***ACCOUNT NAME - nazwa skopiowana z nazwy wpisanej w excela Debtor
